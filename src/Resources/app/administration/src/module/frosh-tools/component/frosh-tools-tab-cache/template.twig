@@ -1,0 +1,31 @@
+<sw-card-view>
+    <sw-card title="Cache" :isLoading="isLoading">
+        <template #toolbar>
+            <!-- @todo: Make the refresh button fancy -->
+            <sw-button variant="ghost" @click="createdComponent"><sw-icon :small="true" name="default-arrow-360-left"></sw-icon></sw-button>
+        </template>
+
+        <sw-data-grid
+            :showSelection="false"
+            :dataSource="cacheFolders"
+            :columns="columns">
+
+            <template #column-name="{ item }">
+                <sw-label variant="success" appearance="pill" v-if="item.active" >
+                    Active
+                </sw-label>
+                {{ item.name }}
+            </template>
+
+            <template #column-size="{ item }">
+                {{ formatSize(item.size) }}
+            </template>
+
+            <template #actions="{ item }">
+                <sw-context-menu-item variant="danger" @click="deleteCache(item)">
+                    {{ $tc('global.default.delete') }}
+                </sw-context-menu-item>
+            </template>
+        </sw-data-grid>
+    </sw-card>
+</sw-card-view>
