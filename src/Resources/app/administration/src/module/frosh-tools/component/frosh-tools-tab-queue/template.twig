@@ -1,0 +1,27 @@
+<sw-card-view>
+    <sw-card title="Queue" :large="true">
+        <sw-entity-listing
+            :showSelection="false"
+            :fullPage="false"
+            :allowEdit="false"
+            :allowDelete="false"
+            :showActions="false"
+            :repository="queueRepository"
+            :items="queueEntries"
+            :columns="columns">
+        </sw-entity-listing>
+    </sw-card>
+
+    <sw-card title="Actions" :large="true">
+        <sw-button variant="danger" @click="showResetModal = true">Queue reset</sw-button>
+    </sw-card>
+
+    <sw-modal v-if="showResetModal" title="Delete Queue" variant="small" @modal-close="showResetModal = false">
+        Deleting Queue will remove all outgoing tasks.
+
+        <template #modal-footer>
+            <sw-button @click="showResetModal = false">Cancel</sw-button>
+            <sw-button variant="danger" @click="resetQueue">Delete</sw-button>
+        </template>
+    </sw-modal>
+</sw-card-view>

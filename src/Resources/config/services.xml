@@ -18,5 +18,14 @@
             <argument type="service" id="frosh.tools.cache.app"/>
             <argument type="service" id="frosh.tools.cache.http"/>
         </service>
+
+        <service id="Frosh\Tools\Controller\QueueController" public="true">
+            <argument type="service" id="Doctrine\DBAL\Connection"/>
+        </service>
+
+        <service id="Frosh\Tools\Controller\ScheduledTaskController" public="true">
+            <argument type="tagged" tag="messenger.message_handler"/>
+            <argument type="service" id="scheduled_task.repository"/>
+        </service>
     </services>
 </container>

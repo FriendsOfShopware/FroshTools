@@ -1,31 +1,33 @@
-<sw-page>
+<sw-page class="frosh-tools">
     <template slot="content">
-        <sw-tabs>
-            <sw-tabs-item :route="{ name: 'frosh.tools.index.index' }">
-                {{ $tc('frosh-tools.tabs.index.title') }}
-            </sw-tabs-item>
+        <sw-container>
+            <sw-tabs :small="false">
+                <sw-tabs-item :route="{ name: 'frosh.tools.index.index' }">
+                    {{ $tc('frosh-tools.tabs.index.title') }}
+                </sw-tabs-item>
 
-            <sw-tabs-item :route="{ name: 'frosh.tools.index.index' }">
-                {{ $tc('frosh-tools.tabs.systemInfo.title') }}
-            </sw-tabs-item>
+                <sw-tabs-item :route="{ name: 'frosh.tools.index.index' }">
+                    {{ $tc('frosh-tools.tabs.systemInfo.title') }}
+                </sw-tabs-item>
 
-            <sw-tabs-item :route="{ name: 'frosh.tools.index.cache' }">
-                {{ $tc('frosh-tools.tabs.cache.title') }}
-            </sw-tabs-item>
+                <sw-tabs-item :route="{ name: 'frosh.tools.index.cache' }">
+                    {{ $tc('frosh-tools.tabs.cache.title') }}
+                </sw-tabs-item>
 
-            <sw-tabs-item :route="{ name: 'frosh.tools.index.index' }">
-                {{ $tc('frosh-tools.tabs.scheduledTaskOverview.title') }}
-            </sw-tabs-item>
+                <sw-tabs-item :route="{ name: 'frosh.tools.index.scheduled' }">
+                    {{ $tc('frosh-tools.tabs.scheduledTaskOverview.title') }}
+                </sw-tabs-item>
 
-            <sw-tabs-item :route="{ name: 'frosh.tools.index.index' }">
-                {{ $tc('frosh-tools.tabs.queue.title') }}
-            </sw-tabs-item>
+                <sw-tabs-item :route="{ name: 'frosh.tools.index.queue' }">
+                    {{ $tc('frosh-tools.tabs.queue.title') }}
+                </sw-tabs-item>
 
-            <sw-tabs-item :route="{ name: 'frosh.tools.index.index' }">
-                {{ $tc('frosh-tools.tabs.elasticsearch.title') }}
-            </sw-tabs-item>
+                <sw-tabs-item :route="{ name: 'frosh.tools.index.index' }">
+                    {{ $tc('frosh-tools.tabs.elasticsearch.title') }}
+                </sw-tabs-item>
 
-        </sw-tabs>
+            </sw-tabs>
+        </sw-container>
 
         <router-view></router-view>
     </template>

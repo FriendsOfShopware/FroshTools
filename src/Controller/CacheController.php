@@ -10,7 +10,7 @@ use Symfony\Component\Routing\Annotation\Route;
 
 /**
  * @RouteScope(scopes={"api"})
- * @Route(path="/api/{version}/_action/frosh-tools", defaults={"auth_required"=false})
+ * @Route(path="/api/{version}/_action/frosh-tools")
  */
 class CacheController
 {
@@ -56,20 +56,25 @@ class CacheController
                 'name' => $folder,
                 'active' => $folder === basename($this->cacheDir),
                 'size' => CacheHelper::getSize($cacheDir),
-                'freeSpace' => disk_free_space($cacheDir)
+                'freeSpace' => disk_free_space($cacheDir),
+                'type' => 'Filesystem'
             ];
         }
 
         $result[] = [
             'name' => 'App Cache',
             'active' => true,
-            'size' => $this->appCache->getSize()
+            'size' => $this->appCache->getSize(),
+            'type' => $this->appCache->getType(),
+            'freeSpace' => $this->appCache->getFreeSize()
         ];
 
         $result[] = [
             'name' => 'Http Cache',
             'active' => true,
-            'size' => $this->httpCache->getSize()
+            'size' => $this->httpCache->getSize(),
+            'type' => $this->httpCache->getType(),
+            'freeSpace' => $this->httpCache->getFreeSize()
         ];
 
         return new JsonResponse($result);

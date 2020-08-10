@@ -28,6 +28,31 @@ class FroshTools extends ApiService {
             return ApiService.handleResponse(response);
         });
     }
+
+    deleteQueue() {
+        const apiRoute = `${this.getApiBasePath()}/queue`;
+        return this.httpClient.delete(
+            apiRoute,
+            {
+                headers: this.getBasicHeaders()
+            }
+        ).then((response) => {
+            return ApiService.handleResponse(response);
+        });
+    }
+
+    runScheduledTask(id) {
+        const apiRoute = `${this.getApiBasePath()}/scheduled-task/${id}`;
+        return this.httpClient.post(
+            apiRoute,
+            {},
+            {
+                headers: this.getBasicHeaders()
+            }
+        ).then((response) => {
+            return ApiService.handleResponse(response);
+        });
+    }
 }
 
 export default FroshTools;

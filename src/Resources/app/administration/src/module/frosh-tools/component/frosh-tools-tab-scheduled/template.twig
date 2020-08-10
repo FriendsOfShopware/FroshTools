@@ -1,0 +1,38 @@
+<sw-card-view>
+    <sw-card title="Scheduled Tasks" :large="true">
+        <sw-entity-listing
+            :showSelection="false"
+            :fullPage="false"
+            :allowInlineEdit="true"
+            :allowEdit="false"
+            :allowDelete="false"
+            :showActions="true"
+            :repository="scheduledRepository"
+            :items="items"
+            :columns="columns">
+
+            <template #column-lastExecutionTime="{ item }">
+                {{ item.lastExecutionTime | date({hour: '2-digit', minute: '2-digit'}) }}
+            </template>
+            <template #column-nextExecutionTime="{ item, column, compact, isInlineEdit }">
+                <sw-data-grid-inline-edit
+                    v-if="isInlineEdit"
+                    :column="column"
+                    :compact="compact"
+                    :value="item[column.property]"
+                    @input="item[column.property] = $event">
+                </sw-data-grid-inline-edit>
+
+                <span v-else>
+                     {{ item.nextExecutionTime | date({hour: '2-digit', minute: '2-digit'}) }}
+                </span>
+            </template>
+
+            <template #actions="{ item }">
+                <sw-context-menu-item variant="primary" @click="runTask(item)">
+                    Run task manuelly
+                </sw-context-menu-item>
+            </template>
+        </sw-entity-listing>
+    </sw-card>
+</sw-card-view>

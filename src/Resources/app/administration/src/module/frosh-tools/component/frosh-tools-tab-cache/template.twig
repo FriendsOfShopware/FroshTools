@@ -1,5 +1,5 @@
 <sw-card-view>
-    <sw-card title="Cache" :isLoading="isLoading">
+    <sw-card title="Cache" :isLoading="isLoading" :large="true">
         <template #toolbar>
             <!-- @todo: Make the refresh button fancy -->
             <sw-button variant="ghost" @click="createdComponent"><sw-icon :small="true" name="default-arrow-360-left"></sw-icon></sw-button>
@@ -14,11 +14,18 @@
                 <sw-label variant="success" appearance="pill" v-if="item.active" >
                     Active
                 </sw-label>
+                <sw-label variant="primary" appearance="pill" v-if="item.type" >
+                    {{ item.type }}
+                </sw-label>
                 {{ item.name }}
             </template>
 
             <template #column-size="{ item }">
                 {{ formatSize(item.size) }}
+            </template>
+
+            <template #column-freeSpace="{ item }">
+                {{ formatSize(item.freeSpace) }}
             </template>
 
             <template #actions="{ item }">
@@ -27,5 +34,9 @@
                 </sw-context-menu-item>
             </template>
         </sw-data-grid>
+    </sw-card>
+
+    <sw-card title="Actions" :isLoading="isLoading" :large="true">
+        <sw-button variant="primary" @click="compileTheme">Theme compile</sw-button>
     </sw-card>
 </sw-card-view>

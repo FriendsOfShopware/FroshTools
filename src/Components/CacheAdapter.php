@@ -34,6 +34,18 @@ class CacheAdapter
         return 0;
     }
 
+    public function getFreeSize(): int
+    {
+        switch (true) {
+            case $this->adapter instanceof RedisAdapter:
+                $info = $this->getRedis($this->adapter)->info();
+
+                return $info['total_system_memory'] - $info['used_memory'];
+            case $this->adapter instanceof FilesystemAdapter:
+                return (int) disk_free_space($this->getPathFromFilesystemAdapter($this->adapter));
+        }
+    }
+
     public function clear(): void
     {
         switch (true) {
@@ -44,6 +56,18 @@ class CacheAdapter
                 CacheHelper::removeDir($this->getPathFromFilesystemAdapter($this->adapter));
                 break;
         }
+    }
+
+    public function getType(): string
+    {
+        switch (true) {
+            case $this->adapter instanceof RedisAdapter:
+                return 'Redis ' . $this->getRedis($this->adapter)->info()['redis_version'];
+            case $this->adapter instanceof FilesystemAdapter:
+                return 'Filesystem';
+        }
+
+        return '';
     }
 
     private function getCacheAdapter(AdapterInterface $adapter): AdapterInterface

@@ -1,0 +1,15 @@
+{% block sw_data_grid_inline_edit_type_unknown %}
+    <sw-datepicker
+        v-else-if="column.inlineEdit === 'date'"
+        dateType="date"
+        v-model="currentValue">
+    </sw-datepicker>
+
+    <sw-datepicker
+        v-else-if="column.inlineEdit === 'datetime'"
+        dateType="datetime"
+        v-model="currentValue">
+    </sw-datepicker>
+
+    {% parent() %}
+{% endblock %}

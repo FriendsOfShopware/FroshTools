@@ -1,4 +1,6 @@
 import './component/frosh-tools-tab-cache';
+import './component/frosh-tools-tab-queue';
+import './component/frosh-tools-tab-scheduled';
 import './page/index';
 
 Shopware.Module.register('frosh-tools', {
@@ -25,6 +27,20 @@ Shopware.Module.register('frosh-tools', {
                 cache: {
                     component: 'frosh-tools-tab-cache',
                     path: 'cache',
+                    meta: {
+                        parentPath: 'frosh.tools.index'
+                    }
+                },
+                queue: {
+                    component: 'frosh-tools-tab-queue',
+                    path: 'queue',
+                    meta: {
+                        parentPath: 'frosh.tools.index'
+                    }
+                },
+                scheduled: {
+                    component: 'frosh-tools-tab-scheduled',
+                    path: 'scheduled',
                     meta: {
                         parentPath: 'frosh.tools.index'
                     }
