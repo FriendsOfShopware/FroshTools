@@ -29,6 +29,8 @@ class CacheAdapter
                 return $this->getRedis($this->adapter)->info()['used_memory'];
             case $this->adapter instanceof FilesystemAdapter:
                 return CacheHelper::getSize($this->getPathFromFilesystemAdapter($this->adapter));
+            case $this->adapter instanceof ArrayAdapter:
+                return 0;
         }
 
         return 0;
@@ -43,6 +45,8 @@ class CacheAdapter
                 return $info['total_system_memory'] - $info['used_memory'];
             case $this->adapter instanceof FilesystemAdapter:
                 return (int) disk_free_space($this->getPathFromFilesystemAdapter($this->adapter));
+            case $this->adapter instanceof ArrayAdapter:
+                return 0;
         }
     }
 
@@ -55,6 +59,8 @@ class CacheAdapter
             case $this->adapter instanceof FilesystemAdapter:
                 CacheHelper::removeDir($this->getPathFromFilesystemAdapter($this->adapter));
                 break;
+            case $this->adapter instanceof ArrayAdapter;
+                return;
         }
     }
 
@@ -65,6 +71,8 @@ class CacheAdapter
                 return 'Redis ' . $this->getRedis($this->adapter)->info()['redis_version'];
             case $this->adapter instanceof FilesystemAdapter:
                 return 'Filesystem';
+            case $this->adapter instanceof ArrayAdapter:
+                return 'Array';
         }
 
         return '';

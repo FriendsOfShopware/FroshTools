@@ -53,6 +53,18 @@ class FroshTools extends ApiService {
             return ApiService.handleResponse(response);
         });
     }
+
+    healthStatus() {
+        const apiRoute = `${this.getApiBasePath()}/health/status`;
+        return this.httpClient.get(
+            apiRoute,
+            {
+                headers: this.getBasicHeaders()
+            }
+        ).then((response) => {
+            return ApiService.handleResponse(response);
+        });
+    }
 }
 
 export default FroshTools;

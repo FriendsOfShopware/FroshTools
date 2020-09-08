@@ -1,0 +1,21 @@
+<sw-card-view>
+    <sw-card title="System Status" :large="true">
+        <sw-data-grid
+            v-if="health"
+            :showSelection="false"
+            :showActions="false"
+            :dataSource="health"
+            :columns="columns">
+
+            <template #column-status="{ item }">
+                <sw-label variant="success" appearance="pill" v-if="item.state === 'STATE_OK'" >Good</sw-label>
+                <sw-label variant="warning" appearance="pill" v-if="item.state === 'STATE_WARNING'" >Warning</sw-label>
+                <sw-label variant="danger" appearance="pill" v-if="item.state === 'STATE_ERROR'" >Error</sw-label>
+            </template>
+
+            <template #column-name="{ item }">
+                {{ $tc(item.snippet) }}
+            </template>
+        </sw-data-grid>
+    </sw-card>
+</sw-card-view>

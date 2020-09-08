@@ -1,6 +1,8 @@
+import './component/frosh-tools-tab-index';
 import './component/frosh-tools-tab-cache';
 import './component/frosh-tools-tab-queue';
 import './component/frosh-tools-tab-scheduled';
+import './component/frosh-tools-tab-elasticsearch';
 import './page/index';
 
 Shopware.Module.register('frosh-tools', {
@@ -17,13 +19,13 @@ Shopware.Module.register('frosh-tools', {
             component: 'frosh-tools-index',
             path: 'index',
             children: {
-                // index: {
-                //     component: 'frosh-tools-tab-cache',
-                //     path: 'index',
-                //     meta: {
-                //         parentPath: 'frosh.tools.index'
-                //     }
-                // },
+                index: {
+                    component: 'frosh-tools-tab-index',
+                    path: 'index',
+                    meta: {
+                        parentPath: 'frosh.tools.index'
+                    }
+                },
                 cache: {
                     component: 'frosh-tools-tab-cache',
                     path: 'cache',
@@ -45,6 +47,13 @@ Shopware.Module.register('frosh-tools', {
                         parentPath: 'frosh.tools.index'
                     }
                 },
+                elasticsearch: {
+                    component: 'frosh-tools-tab-elasticsearch',
+                    path: 'elasticsearch',
+                    meta: {
+                        parentPath: 'frosh.tools.index'
+                    }
+                },
             }
         },
     },
@@ -52,7 +61,7 @@ Shopware.Module.register('frosh-tools', {
     settingsItem: [
         {
             group: 'plugins',
-            to: 'frosh.tools.index',
+            to: 'frosh.tools.index.cache',
             icon: 'default-action-settings',
             name: 'frosh-tools.title'
         }

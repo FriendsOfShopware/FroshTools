@@ -37,7 +37,7 @@ class CacheController
     }
 
     /**
-     * @Route(path="/cache", methods={"GET"}, name="api.frosh.tools.cache.get", defaults={"auth_required"=false})
+     * @Route(path="/cache", methods={"GET"}, name="api.frosh.tools.cache.get")
      */
     public function cacheStatistics(): JsonResponse
     {

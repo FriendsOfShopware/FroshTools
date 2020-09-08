@@ -27,5 +27,18 @@
             <argument type="tagged" tag="messenger.message_handler"/>
             <argument type="service" id="scheduled_task.repository"/>
         </service>
+
+        <service id="Frosh\Tools\Controller\HealthController" public="true">
+            <argument type="tagged" tag="frosh_tools.health_checker"/>
+        </service>
+
+        <service id="Frosh\Tools\Components\Health\Checker\PhpChecker">
+            <tag name="frosh_tools.health_checker"/>
+        </service>
+
+        <service id="Frosh\Tools\Components\Health\Checker\QueueChecker">
+            <argument type="service" id="Doctrine\DBAL\Connection"/>
+            <tag name="frosh_tools.health_checker"/>
+        </service>
     </services>
 </container>
