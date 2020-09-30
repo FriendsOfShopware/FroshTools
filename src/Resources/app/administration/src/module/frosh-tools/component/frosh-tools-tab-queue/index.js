@@ -13,7 +13,8 @@ Component.register('frosh-tools-tab-queue', {
     data() {
         return {
             queueEntries: null,
-            showResetModal: false
+            showResetModal: false,
+            isLoading: true
         };
     },
 
@@ -52,14 +53,17 @@ Component.register('frosh-tools-tab-queue', {
                 let nameSplit = queue.name.split('\\')
                 queue.name = nameSplit[nameSplit.length - 1];
             }
+            this.isLoading = false;
         },
         async resetQueue() {
+            this.isLoading = true;
             await this.FroshToolsService.deleteQueue();
             this.showResetModal = false;
             this.createdComponent();
             this.createNotificationSuccess({
                 message: 'The queue has been cleared'
             })
+            this.isLoading = false;
         }
     }
 });
