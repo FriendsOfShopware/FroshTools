@@ -9,12 +9,20 @@ class PhpChecker implements CheckerInterface
 {
     public function collect(HealthCollection $collection): void
     {
-        if (version_compare('7.4.0', PHP_VERSION, '>')) {
-            $collection->add(HealthResult::error('frosh-tools.health.php-version'));
+        $minPhpVersion = '7.4.0';
+        $currentPhpVersion = PHP_VERSION;
+        if (version_compare($minPhpVersion, $currentPhpVersion, '>')) {
+            $collection->add(HealthResult::error('You should have at least PHP-Version ' . $minPhpVersion .'. Installed: ' . $currentPhpVersion));
+        } else {
+            $collection->add(HealthResult::ok('Installed PHP-Version: ' . $currentPhpVersion));
         }
 
-        if ($this->decodePhpSize(ini_get('memory_limit')) < $this->decodePhpSize('512m')) {
-            $collection->add(HealthResult::error('frosh-tools.health.php-memory'));
+        $minMemoryLimit = $this->decodePhpSize('512m');
+        $currentMemoryLimit = $this->decodePhpSize(ini_get('memory_limit'));
+        if ($currentMemoryLimit < $minMemoryLimit) {
+            $collection->add(HealthResult::error('You should have at least memory limit of ' . $this->formatSize($minMemoryLimit) .'. Currently: ' . $this->formatSize($currentMemoryLimit)));
+        } else {
+            $collection->add(HealthResult::ok('Memory limit: ' . $this->formatSize($currentMemoryLimit)));
         }
     }
 
@@ -38,5 +46,12 @@ class PhpChecker implements CheckerInterface
         }
 
         return $val;
+    }
+
+    private function formatSize($size): string
+    {
+        $base = log($size) / log(1024);
+        $suffix = array("", "k", "M", "G", "T")[floor($base)];
+        return (1024 ** ($base - floor($base))) . $suffix;
     }
 }

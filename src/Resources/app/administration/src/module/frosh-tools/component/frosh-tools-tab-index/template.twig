@@ -1,5 +1,5 @@
 <sw-card-view>
-    <sw-card title="System Status" :large="true">
+    <sw-card title="System Status" :isLoading="isLoading" :large="true">
         <sw-data-grid
             v-if="health"
             :showSelection="false"

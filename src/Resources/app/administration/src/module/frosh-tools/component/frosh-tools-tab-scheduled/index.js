@@ -13,7 +13,8 @@ Component.register('frosh-tools-tab-scheduled', {
     data() {
         return {
             items: null,
-            showResetModal: false
+            showResetModal: false,
+            isLoading: true
         };
     },
 
@@ -59,8 +60,11 @@ Component.register('frosh-tools-tab-scheduled', {
         async createdComponent() {
             const criteria = new Criteria;
             this.items = await this.scheduledRepository.search(criteria, Shopware.Context.api);
+            this.isLoading = false;
         },
         async runTask(item) {
+            this.isLoading = true;
+
             try {
                 this.createNotificationInfo({
                     message: `The scheduled task execution for ${item.name} started`
