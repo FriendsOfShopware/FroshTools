@@ -19,20 +19,20 @@ Component.override('sw-version', {
 
     computed: {
         healthVariant() {
-            let color = 'green';
+            let variant = 'success';
 
             for (let health of this.health) {
                 if (health.state === 'STATE_ERROR') {
-                    color = 'red';
+                    variant = 'error';
                     continue;
                 }
 
-                if (health.state === 'STATE_WARNING' && color === 'success') {
-                    color = 'orange';
+                if (health.state === 'STATE_WARNING' && variant === 'success') {
+                    variant = 'warning';
                 }
             }
 
-            return color;
+            return variant;
         },
 
         healthPlaceholder() {
