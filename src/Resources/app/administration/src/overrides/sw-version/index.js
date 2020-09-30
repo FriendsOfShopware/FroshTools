@@ -19,7 +19,7 @@ Component.override('sw-version', {
 
     computed: {
         healthVariant() {
-            let color = 'success';
+            let color = 'green';
 
             for (let health of this.health) {
                 if (health.state === 'STATE_ERROR') {
