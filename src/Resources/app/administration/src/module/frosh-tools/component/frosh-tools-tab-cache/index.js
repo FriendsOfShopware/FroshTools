@@ -57,6 +57,7 @@ Component.register('frosh-tools-tab-cache', {
 
     methods: {
         async createdComponent() {
+            this.isLoading = true;
             this.cacheInfo = await this.FroshToolsService.getCacheInfo();
             this.isLoading = false;
         },
