@@ -12,7 +12,7 @@ Shopware.Module.register('frosh-tools', {
     description: '',
     color: '#303A4F',
 
-    icon: 'default-communication-envelope',
+    icon: 'default-device-dashboard',
 
     routes: {
         index: {
