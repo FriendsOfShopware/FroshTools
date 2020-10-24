@@ -1,7 +1,7 @@
 {% block sw_version_status %}
-    <a :title="healthPlaceholder" class="sw-version__status" @click="openSystemStatus">
+    <router-link :to="{ name: 'frosh.tools.index.index' }" class="sw-version__status" :title="healthPlaceholder">
         {% block sw_version_status_badge %}
             <sw-color-badge v-if="health" :variant="healthVariant" :rounded="true"></sw-color-badge>
         {% endblock %}
-    </a>
+    </router-link>
 {% endblock %}

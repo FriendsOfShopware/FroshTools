@@ -55,13 +55,5 @@ Component.override('sw-version', {
 
             return msg;
         }
-    },
-
-    methods: {
-        openSystemStatus() {
-            this.$router.push({
-                name: 'frosh.tools.index.index'
-            })
-        }
     }
 })
