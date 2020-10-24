@@ -23,14 +23,17 @@ class QueueChecker implements CheckerInterface
         $oldestMessage = (int) $this->connection->fetchColumn('SELECT IFNULL(MIN(published_at), 0) FROM enqueue');
 
         if ($oldestMessage === 0) {
+            $collection->add(HealthResult::ok('Queues working good'));
             return;
         }
 
-        $oldestMessage = $oldestMessage / 10000;
+        $oldestMessage /= 10000;
 
         // When the oldest message is older then 15 minutes
         if (($oldestMessage + (15 * 60)) < time()) {
-            $collection->add(HealthResult::warning('frosh-tools.health.queue-old-entries'));
+            $collection->add(HealthResult::warning('Queues are older than 15 minutes'));
+        } else {
+            $collection->add(HealthResult::ok('Queues working good'));
         }
     }
 }
