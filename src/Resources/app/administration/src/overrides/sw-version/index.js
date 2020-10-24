@@ -9,6 +9,7 @@ Component.override('sw-version', {
 
     async created() {
         this.health = await this.FroshToolsService.healthStatus();
+        this.checkHealth();
     },
 
     data() {
@@ -54,6 +55,15 @@ Component.override('sw-version', {
             }
 
             return msg;
+        }
+    },
+
+    methods: {
+        checkHealth() {
+            const me = this;
+            setInterval(async() => {
+                me.health = await this.FroshToolsService.healthStatus();
+            }, 10000);
         }
     }
 })
