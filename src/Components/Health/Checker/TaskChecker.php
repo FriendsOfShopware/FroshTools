@@ -35,9 +35,9 @@ class TaskChecker implements CheckerInterface
         );
 
         $oldTasks = $this->scheduledTaskRepository
-            ->search($criteria, Context::createDefaultContext())->count();
+            ->searchIds($criteria, Context::createDefaultContext())->getIds();
 
-        if ($oldTasks === 0) {
+        if (count($oldTasks) === 0) {
             $collection->add(HealthResult::ok('Scheduled tasks working good'));
             return;
         }
