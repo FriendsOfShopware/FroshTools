@@ -2,14 +2,12 @@ import template from './template.twig';
 
 const { Component } = Shopware;
 
-
 Component.override('sw-version', {
     template,
     inject: ['FroshToolsService'],
 
     async created() {
-        this.health = await this.FroshToolsService.healthStatus();
-        this.checkHealth();
+        await this.checkHealth();
     },
 
     data() {
@@ -59,10 +57,11 @@ Component.override('sw-version', {
     },
 
     methods: {
-        checkHealth() {
-            const me = this;
+        async checkHealth() {
+            this.health = await this.FroshToolsService.healthStatus();
+
             setInterval(async() => {
-                me.health = await this.FroshToolsService.healthStatus();
+                this.health = await this.FroshToolsService.healthStatus();
             }, 10000);
         }
     }
