@@ -77,6 +77,13 @@ class CacheController
             'freeSpace' => $this->httpCache->getFreeSize()
         ];
 
+        $activeColumns = array_column($result, 'active');
+        $nameColumns = array_column($result, 'name');
+
+        array_multisort($activeColumns, SORT_DESC,
+            $nameColumns, SORT_ASC,
+            $result);
+
         return new JsonResponse($result);
     }
 
