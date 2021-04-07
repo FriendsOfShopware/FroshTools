@@ -41,8 +41,9 @@ class CacheAdapter
         switch (true) {
             case $this->adapter instanceof RedisAdapter:
                 $info = $this->getRedis($this->adapter)->info();
+                $totalMemory = $info['maxmemory'] ?? $info['total_system_memory'];
 
-                return $info['total_system_memory'] - $info['used_memory'];
+                return $totalMemory - $info['used_memory'];
             case $this->adapter instanceof FilesystemAdapter:
                 return (int) disk_free_space($this->getPathFromFilesystemAdapter($this->adapter));
             case $this->adapter instanceof ArrayAdapter:
