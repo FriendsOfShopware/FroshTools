@@ -81,7 +81,7 @@ class CacheAdapter
 
     private function getCacheAdapter(AdapterInterface $adapter): AdapterInterface
     {
-        if ($adapter instanceof CacheDecorator) {
+        if ($adapter instanceof CacheDecorator || $adapter instanceof \Shopware\Core\Framework\Adapter\Cache\CacheDecorator) {
             // Do not declare function as static
             $func = \Closure::bind(function () use ($adapter) {
                 return $adapter->decorated;

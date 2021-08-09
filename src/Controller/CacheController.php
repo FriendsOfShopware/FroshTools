@@ -10,7 +10,7 @@ use Symfony\Component\Routing\Annotation\Route;
 
 /**
  * @RouteScope(scopes={"api"})
- * @Route(path="/api/{version}/_action/frosh-tools")
+ * @Route(path="/api/_action/frosh-tools")
  */
 class CacheController
 {
