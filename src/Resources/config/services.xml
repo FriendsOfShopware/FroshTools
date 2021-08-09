@@ -5,6 +5,12 @@
            xsi:schemaLocation="http://symfony.com/schema/dic/services http://symfony.com/schema/dic/services/services-1.0.xsd">
 
     <services>
+        <service id="Frosh\Tools\Command\ChangeUserPasswordCommand">
+            <argument type="service" id="user.repository"/>
+            <tag name="console.command"/>
+        </service>
+
+
         <service id="frosh.tools.cache.app" class="Frosh\Tools\Components\CacheAdapter">
             <argument type="service" id="cache.object"/>
         </service>
@@ -27,6 +33,9 @@
             <argument type="tagged" tag="messenger.message_handler"/>
             <argument type="service" id="scheduled_task.repository"/>
         </service>
+
+
+        <!-- Health checkers -->
 
         <service id="Frosh\Tools\Controller\HealthController" public="true">
             <argument type="tagged" tag="frosh_tools.health_checker"/>
