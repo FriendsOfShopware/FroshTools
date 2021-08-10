@@ -29,7 +29,7 @@ class FroshTools extends ApiService {
         });
     }
 
-    deleteQueue() {
+    resetQueue() {
         const apiRoute = `${this.getApiBasePath()}/queue`;
         return this.httpClient.delete(
             apiRoute,

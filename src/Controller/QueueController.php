@@ -24,9 +24,9 @@ class QueueController
     }
 
     /**
-     * @Route(path="/queue", methods={"DELETE"}, name="api.frosh.tools.queue.delete")
+     * @Route(path="/queue", methods={"DELETE"}, name="api.frosh.tools.queue.clear")
      */
-    public function deleteQueue(): JsonResponse
+    public function resetQueue(): JsonResponse
     {
         $this->connection->executeUpdate('TRUNCATE `message_queue_stats`');
         $this->connection->executeUpdate('TRUNCATE `enqueue`');

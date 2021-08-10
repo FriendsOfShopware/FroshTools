@@ -23,12 +23,12 @@ Component.register('frosh-tools-tab-index', {
             return [
                 {
                     property: 'status',
-                    label: 'Status',
+                    label: 'frosh-tools.status',
                     rawData: true
                 },
                 {
                     property: 'name',
-                    label: 'Name',
+                    label: 'frosh-tools.name',
                     rawData: true
                 },
             ];

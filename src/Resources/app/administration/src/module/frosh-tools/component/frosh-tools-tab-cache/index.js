@@ -27,17 +27,17 @@ Component.register('frosh-tools-tab-cache', {
             return [
                 {
                     property: 'name',
-                    label: 'Name',
+                    label: 'frosh-tools.name',
                     rawData: true
                 },
                 {
                     property: 'size',
-                    label: 'Used',
+                    label: 'frosh-tools.used',
                     rawData: true
                 },
                 {
                     property: 'freeSpace',
-                    label: 'Free',
+                    label: 'frosh-tools.free',
                     rawData: true
                 }
             ];
@@ -82,7 +82,7 @@ Component.register('frosh-tools-tab-cache', {
             return bytes.toFixed(dp) + ' ' + units[u];
         },
 
-        async deleteCache(item) {
+        async clearCache(item) {
             this.isLoading = true;
             await this.FroshToolsService.clearCache(item.name);
             await this.createdComponent();
@@ -100,7 +100,7 @@ Component.register('frosh-tools-tab-cache', {
 
                 await this.themeService.assignTheme(theme.id, salesChannel.id);
                 this.createNotificationSuccess({
-                    message: `${salesChannel.translated.name} wurde kompeliert`
+                    message: `${salesChannel.translated.name}` + ': ' + this.$tc('frosh-tools.themecompiled')
                 })
             }
 
