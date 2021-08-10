@@ -19,6 +19,9 @@
             },
             "elasticsearch": {
                 "title": "Elasticsearch Manager"
+            },
+            "logs": {
+              "title": "Log viewer"
             }
         }
     }

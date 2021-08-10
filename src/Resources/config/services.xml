@@ -34,6 +34,9 @@
             <argument type="service" id="scheduled_task.repository"/>
         </service>
 
+        <service id="Frosh\Tools\Controller\LogController" public="true">
+            <argument>%kernel.logs_dir%</argument>
+        </service>
 
         <!-- Health checkers -->
 

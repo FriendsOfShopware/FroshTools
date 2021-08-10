@@ -65,6 +65,35 @@ class FroshTools extends ApiService {
             return ApiService.handleResponse(response);
         });
     }
+
+    getLogFiles() {
+        const apiRoute = `${this.getApiBasePath()}/logs/files`;
+        return this.httpClient.get(
+            apiRoute,
+            {
+                headers: this.getBasicHeaders()
+            }
+        ).then((response) => {
+            return ApiService.handleResponse(response);
+        });
+    }
+
+    getLogFile(file, offset = 0, limit = 20) {
+        const apiRoute = `${this.getApiBasePath()}/logs/file`;
+        return this.httpClient.get(
+            apiRoute,
+            {
+                params: {
+                    file,
+                    offset,
+                    limit
+                },
+                headers: this.getBasicHeaders()
+            }
+        ).then((response) => {
+            return response;
+        });
+    }
 }
 
 export default FroshTools;

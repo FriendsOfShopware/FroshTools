@@ -1,0 +1,25 @@
+<sw-card-view>
+    <sw-card title="Log viewer" :isLoading="isLoading" :large="true">
+        <sw-single-select
+            :options="logFiles"
+            labelProperty="name"
+            valueProperty="name"
+            v-model="selectedLogFile"
+            @change="onFileSelected"
+        ></sw-single-select>
+
+        <sw-data-grid
+            :showSelection="false"
+            :showActions="false"
+            :dataSource="logEntries"
+            :columns="columns">
+        </sw-data-grid>
+
+        <sw-pagination
+            :total="totalLogEntries"
+            :limit="limit"
+            :page="page"
+            @page-change="onPageChange"
+        ></sw-pagination>
+    </sw-card>
+</sw-card-view>
