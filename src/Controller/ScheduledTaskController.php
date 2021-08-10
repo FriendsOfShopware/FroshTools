@@ -52,6 +52,10 @@ class ScheduledTaskController
         $task->setTaskId($id);
 
         foreach ($this->taskHandler as $handler) {
+            if (! $handler instanceof AbstractMessageHandler) {
+                continue;
+            }
+
             if (!in_array($className, $handler::getHandledMessages(), true)) {
                 continue;
             }
