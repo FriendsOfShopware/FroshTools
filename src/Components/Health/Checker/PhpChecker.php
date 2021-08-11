@@ -26,9 +26,14 @@ class PhpChecker implements CheckerInterface
         $minPhpVersion = '7.4.0';
         $currentPhpVersion = PHP_VERSION;
         if (version_compare($minPhpVersion, $currentPhpVersion, '>')) {
-            $collection->add(HealthResult::error('You should have at least PHP-Version ' . $minPhpVersion . '. Installed: ' . $currentPhpVersion));
+            $collection->add(
+                HealthResult::error('frosh-tools.checker.phpOutdated',
+                    ['minPhpVersion' => $minPhpVersion, 'version' => $currentPhpVersion])
+            );
         } else {
-            $collection->add(HealthResult::ok('PHP-Version: ' . $currentPhpVersion));
+            $collection->add(
+                HealthResult::ok('frosh-tools.checker.phpGood', ['version' => $currentPhpVersion])
+            );
         }
     }
 
@@ -37,18 +42,21 @@ class PhpChecker implements CheckerInterface
         $minMemoryLimit = $this->decodePhpSize('512m');
         $currentMemoryLimit = $this->decodePhpSize(ini_get('memory_limit'));
         if ($currentMemoryLimit < $minMemoryLimit) {
-            $collection->add(HealthResult::error('You should have at least memory limit of ' . $this->formatSize($minMemoryLimit) . '. Currently: ' . $this->formatSize($currentMemoryLimit)));
+            $collection->add(
+                HealthResult::error('frosh-tools.checker.memoryLimitError',
+                    ['minMemoryLimit' => $this->formatSize($minMemoryLimit), 'memoryLimit' => $this->formatSize($currentMemoryLimit)])
+            );
         } else {
-            $collection->add(HealthResult::ok('Memory limit: ' . $this->formatSize($currentMemoryLimit)));
+            $collection->add(HealthResult::ok('frosh-tools.checker.memoryLimitGood', ['memoryLimit' => $this->formatSize($currentMemoryLimit)]));
         }
     }
 
     private function checkOpCacheActive(HealthCollection $collection): void
     {
         if (\extension_loaded('Zend OPcache') && ini_get('opcache.enable')) {
-            $collection->add(HealthResult::ok('Zend Opcache active'));
+            $collection->add(HealthResult::ok('frosh-tools.checker.zendOpcacheGood'));
         } else {
-            $collection->add(HealthResult::warning('Zend Opcache is not active'));
+            $collection->add(HealthResult::warning('frosh-tools.checker.zendOpcacheWarning'));
         }
     }
 

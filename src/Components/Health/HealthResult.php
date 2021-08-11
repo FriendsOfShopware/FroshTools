@@ -20,29 +20,37 @@ class HealthResult extends Struct
      */
     protected $snippet;
 
-    public static function ok(string $snippet): self
+    /**
+     * @var null|array
+     */
+    protected $parameters;
+
+    public static function ok(string $snippet, array $parameters = []): self
     {
         $me = new self();
         $me->state = self::GREEN;
         $me->snippet = $snippet;
+        $me->parameters = $parameters;
 
         return $me;
     }
 
-    public static function warning(string $snippet): self
+    public static function warning(string $snippet, array $parameters = []): self
     {
         $me = new self();
         $me->state = self::WARNING;
         $me->snippet = $snippet;
+        $me->parameters = $parameters;
 
         return $me;
     }
 
-    public static function error(string $snippet): self
+    public static function error(string $snippet, array $parameters = []): self
     {
         $me = new self();
         $me->state = self::ERROR;
         $me->snippet = $snippet;
+        $me->parameters = $parameters;
 
         return $me;
     }
@@ -55,5 +63,10 @@ class HealthResult extends Struct
     public function getSnippet(): string
     {
         return $this->snippet;
+    }
+
+    public function getParameters(): ?array
+    {
+        return $this->parameters;
     }
 }

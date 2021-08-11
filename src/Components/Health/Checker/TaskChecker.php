@@ -23,8 +23,10 @@ class TaskChecker implements CheckerInterface
 
     public function collect(HealthCollection $collection): void
     {
+        $minutes = 10;
+
         $date = new \DateTime();
-        $date->modify(sprintf('-%d minutes', 10));
+        $date->modify(sprintf('-%d minutes', $minutes));
 
         $criteria = new Criteria();
         $criteria->addFilter(
@@ -38,10 +40,10 @@ class TaskChecker implements CheckerInterface
             ->searchIds($criteria, Context::createDefaultContext())->getIds();
 
         if (count($oldTasks) === 0) {
-            $collection->add(HealthResult::ok('Scheduled tasks working good'));
+            $collection->add(HealthResult::ok('frosh-tools.checker.scheduledTaskGood'));
             return;
         }
 
-        $collection->add(HealthResult::warning('The scheduled tasks are waiting for executing for more than 10 minutes'));
+        $collection->add(HealthResult::warning('frosh-tools.checker.scheduledTaskWarning', ['minutes' => $minutes]));
     }
 }

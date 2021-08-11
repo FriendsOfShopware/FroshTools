@@ -1,5 +1,5 @@
 <sw-card-view>
-    <sw-card title="Queue" :isLoading="isLoading" :large="true">
+    <sw-card :title="$tc('frosh-tools.tabs.queue.title')" :isLoading="isLoading" :large="true">
         <sw-entity-listing
             :showSelection="false"
             :fullPage="false"
@@ -13,15 +13,15 @@
     </sw-card>
 
     <sw-card title="Actions" :large="true">
-        <sw-button variant="danger" @click="showResetModal = true">Queue reset</sw-button>
+        <sw-button variant="danger" @click="showResetModal = true">{{ $tc('frosh-tools.resetQueue') }}</sw-button>
     </sw-card>
 
-    <sw-modal v-if="showResetModal" title="Delete Queue" variant="small" @modal-close="showResetModal = false">
-        Deleting Queue will remove all outgoing tasks.
+    <sw-modal v-if="showResetModal" title="Reset Queue" variant="small" @modal-close="showResetModal = false">
+        Resetting Queue will remove all outgoing tasks.
 
         <template #modal-footer>
             <sw-button @click="showResetModal = false">Cancel</sw-button>
-            <sw-button variant="danger" @click="resetQueue">Delete</sw-button>
+            <sw-button variant="danger" @click="resetQueue">Reset</sw-button>
         </template>
     </sw-modal>
 </sw-card-view>

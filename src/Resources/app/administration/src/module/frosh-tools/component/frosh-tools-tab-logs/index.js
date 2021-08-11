@@ -34,22 +34,22 @@ Component.register('frosh-tools-tab-logs', {
             return [
                 {
                     property: 'date',
-                    label: 'Date',
+                    label: 'frosh-tools.date',
                     rawData: true
                 },
                 {
                     property: 'channel',
-                    label: 'Channel',
+                    label: 'frosh-tools.channel',
                     rawData: true
                 },
                 {
                     property: 'level',
-                    label: 'Level',
+                    label: 'frosh-tools.level',
                     rawData: true
                 },
                 {
                     property: 'message',
-                    label: 'Message',
+                    label: 'frosh-tools.message',
                     rawData: true
                 }
             ];

@@ -1,0 +1,71 @@
+{
+  "frosh-tools": {
+    "title": "Tools",
+    "tabs": {
+      "index": {
+        "title": "System-Status"
+      },
+      "systemInfo": {
+        "title": "System-Info"
+      },
+      "cache": {
+        "title": "Cache"
+      },
+      "scheduledTaskOverview": {
+        "title": "Geplante Aufgaben"
+      },
+      "queue": {
+        "title": "Warteschlange"
+      },
+      "elasticsearch": {
+        "title": "Elasticsearch"
+      },
+      "logs": {
+        "title": "Log viewer"
+      }
+    },
+    "clear": "Leeren",
+    "status": "Status",
+    "name": "Name",
+    "good": "Gut",
+    "warning": "Warnung",
+    "error": "Fehler",
+    "active": "Aktiv",
+    "used": "Belegt",
+    "free": "Frei",
+    "compileTheme": "Theme kompilieren",
+    "themecompiled": "Theme wurde kompiliert",
+    "actions": "Aktionen",
+    "scheduledTasks": "Geplante Aufgaben",
+    "interval": "Intervall",
+    "lastExecutionTime": "letzte Ausführung",
+    "nextExecutionTime": "nächste Ausführung",
+    "runManually": "starte manuell",
+    "scheduledTaskStarted": "Die geplante Aufgabe für \"{name}\" wurde gestartet",
+    "scheduledTaskSucceed": "Die geplante Aufgabe für \"{name}\" war erfolgreich",
+    "scheduledTaskFailed": "Die geplante Aufgabe für \"{name}\" ist fehlgeschlagen",
+    "checker": {
+      "scheduledTaskGood": "Die geplanten Aufgaben laufen regelmäßig",
+      "scheduledTaskWarning": "Die geplanten Aufgaben laufen seit mehr als {minutes} Minuten nicht",
+      "mysqlError": "MySQL Version cannot be checked",
+      "mysqlDbVersion": "MySQL-Version: {version}",
+      "mysqlDbVersionError": "MySQL Version {version} has technical problems",
+      "mysqlDbOutdated": "MySQL Version {version} has technical problems",
+      "mariaDbVersion": "MariaDB-Version: {version}",
+      "phpOutdated": "Verwende mindestens PHP-Version {minPhpVersion}. Installiert: {version}",
+      "phpGood": "PHP-Version: {version}",
+      "memoryLimitError": "Verwende mindestens einen Memory-Limit von {minMemoryLimit}. Aktuell: {memoryLimit}",
+      "memoryLimitGood": "Memory-Limit: {memoryLimit}",
+      "zendOpcacheGood": "Zend Opcache ist aktiv",
+      "zendOpcacheWarning": "Zend Opcache ist nicht aktiv",
+      "queuesGood": "Warteschlange läuft regelmäßig",
+      "queuesWarning": "Warteschlange enthält Daten, die älter als {minutes} Minuten sind"
+    },
+    "size": "Größe",
+    "resetQueue": "Queue zurücksetzen",
+    "date": "Zeitpunkt",
+    "channel": "Kanal",
+    "level": "Level",
+    "message": "Nachricht"
+  }
+}

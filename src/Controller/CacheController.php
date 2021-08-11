@@ -88,9 +88,9 @@ class CacheController
     }
 
     /**
-     * @Route(path="/cache/{folder}", methods={"DELETE"}, name="api.frosh.tools.cache.delete")
+     * @Route(path="/cache/{folder}", methods={"DELETE"}, name="api.frosh.tools.cache.clear")
      */
-    public function deleteCache(string $folder): JsonResponse
+    public function clearCache(string $folder): JsonResponse
     {
         if ($folder === 'App Cache') {
             $this->appCache->clear();

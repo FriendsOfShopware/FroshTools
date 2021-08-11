@@ -20,7 +20,7 @@ class MysqlChecker implements CheckerInterface
 
     public function collect(HealthCollection $collection): void
     {
-        $version = $this->connection->fetchColumn('SELECT VERSION()');
+        $version = $this->connection->fetchOne('SELECT VERSION()');
         $extractedVersion = $this->extract($version);
 
         if (isset($extractedVersion['mariadb'])) {
@@ -33,7 +33,7 @@ class MysqlChecker implements CheckerInterface
             return;
         }
 
-        $collection->add(HealthResult::error('MySQL Version cannot be checked'));
+        $collection->add(HealthResult::error('frosh-tools.checker.mysqlError'));
     }
 
     private function checkMariadbVersion($collection, $version): void
@@ -41,7 +41,7 @@ class MysqlChecker implements CheckerInterface
         $minVersion = '10.3';
 
         if (version_compare($version, $minVersion, '>=')) {
-            $collection->add(HealthResult::ok('MariaDB Version ' . $version));
+            $collection->add(HealthResult::ok('frosh-tools.checker.mariaDbVersion', ['version' => $version]));
         }
     }
 
@@ -54,16 +54,16 @@ class MysqlChecker implements CheckerInterface
         ];
 
         if (in_array($version, $brokenVersions, true)) {
-            $collection->add(HealthResult::error('MySQL Version '. $version . ' has technical problems'));
+            $collection->add(HealthResult::error('frosh-tools.checker.mysqlDbVersionError', ['version' => $version]));
             return;
         }
 
         if (version_compare($version, $minVersion, '>=')) {
-            $collection->add(HealthResult::ok('MySQL Version '. $version));
+            $collection->add(HealthResult::ok('frosh-tools.checker.mysqlDbVersion', ['version' => $version]));
             return;
         }
 
-        $collection->add(HealthResult::error('MySQL Version '. $version . ' is outdated'));
+        $collection->add(HealthResult::error('frosh-tools.checker.mysqlDbOutdated', ['version' => $version]));
     }
 
     private function extract(string $versionString): array

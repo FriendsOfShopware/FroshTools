@@ -1,5 +1,5 @@
 <sw-card-view>
-    <sw-card title="Scheduled Tasks" :isLoading="isLoading" :large="true">
+    <sw-card :title="$tc('frosh-tools.tabs.scheduledTaskOverview.title')" :isLoading="isLoading" :large="true">
         <sw-entity-listing
             :showSelection="false"
             :fullPage="false"
@@ -30,7 +30,7 @@
 
             <template #actions="{ item }">
                 <sw-context-menu-item variant="primary" @click="runTask(item)">
-                    Run task manually
+                    {{ $tc('frosh-tools.runManually') }}
                 </sw-context-menu-item>
             </template>
         </sw-entity-listing>

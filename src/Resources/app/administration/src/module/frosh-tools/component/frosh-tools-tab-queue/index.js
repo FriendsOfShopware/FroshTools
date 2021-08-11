@@ -57,7 +57,7 @@ Component.register('frosh-tools-tab-queue', {
         },
         async resetQueue() {
             this.isLoading = true;
-            await this.FroshToolsService.deleteQueue();
+            await this.FroshToolsService.resetQueue();
             this.showResetModal = false;
             this.createdComponent();
             this.createNotificationSuccess({

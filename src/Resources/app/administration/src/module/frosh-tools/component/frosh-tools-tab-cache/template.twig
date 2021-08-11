@@ -1,5 +1,5 @@
 <sw-card-view>
-    <sw-card title="Cache" :isLoading="isLoading" :large="true">
+    <sw-card :title="$tc('frosh-tools.tabs.cache.title')" :isLoading="isLoading" :large="true">
         <template #toolbar>
             <!-- @todo: Make the refresh button fancy -->
             <sw-button variant="ghost" @click="createdComponent"><sw-icon :small="true" name="default-arrow-360-left"></sw-icon></sw-button>
@@ -12,7 +12,7 @@
 
             <template #column-name="{ item }">
                 <sw-label variant="success" appearance="pill" v-if="item.active" >
-                    Active
+                    {{ $tc('frosh-tools.active') }}
                 </sw-label>
                 <sw-label variant="primary" appearance="pill" v-if="item.type" >
                     {{ item.type }}
@@ -29,14 +29,14 @@
             </template>
 
             <template #actions="{ item }">
-                <sw-context-menu-item variant="danger" @click="deleteCache(item)">
-                    {{ $tc('global.default.delete') }}
+                <sw-context-menu-item variant="danger" @click="clearCache(item)">
+                    {{ $tc('frosh-tools.clear') }}
                 </sw-context-menu-item>
             </template>
         </sw-data-grid>
     </sw-card>
 
-    <sw-card title="Actions" :isLoading="isLoading" :large="true">
-        <sw-button variant="primary" @click="compileTheme">Theme compile</sw-button>
+    <sw-card :title="$tc('frosh-tools.actions')" :isLoading="isLoading" :large="true">
+        <sw-button variant="primary" @click="compileTheme">{{ $tc('frosh-tools.compileTheme') }}</sw-button>
     </sw-card>
 </sw-card-view>

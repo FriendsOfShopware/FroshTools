@@ -31,24 +31,24 @@ Component.register('frosh-tools-tab-scheduled', {
             return [
                 {
                     property: 'name',
-                    label: 'Name',
+                    label: 'frosh-tools.name',
                     rawData: true,
                     primary: true
                 },
                 {
                     property: 'runInterval',
-                    label: 'Interval',
+                    label: 'frosh-tools.interval',
                     rawData: true,
                     inlineEdit: 'number'
                 },
                 {
                     property: 'lastExecutionTime',
-                    label: 'Last Execution Time',
+                    label: 'frosh-tools.lastExecutionTime',
                     rawData: true
                 },
                 {
                     property: 'nextExecutionTime',
-                    label: 'Next Execution Time',
+                    label: 'frosh-tools.nextExecutionTime',
                     rawData: true,
                     inlineEdit: 'datetime'
                 }
@@ -67,15 +67,15 @@ Component.register('frosh-tools-tab-scheduled', {
 
             try {
                 this.createNotificationInfo({
-                    message: `The scheduled task execution for ${item.name} started`
+                    message: this.$tc('frosh-tools.scheduledTaskStarted', 0, {'name': item.name})
                 })
                 await this.FroshToolsService.runScheduledTask(item.id);
                 this.createNotificationSuccess({
-                    message: `The scheduled task execution for ${item.name} succeed`
+                    message: this.$tc('frosh-tools.scheduledTaskSucceed', 0, {'name': item.name})
                 })
             } catch (e) {
                 this.createNotificationError({
-                    message: `The scheduled task execution for ${item.name} failed`
+                    message: this.$tc('frosh-tools.scheduledTaskFailed', 0, {'name': item.name})
                 })
             }
 
