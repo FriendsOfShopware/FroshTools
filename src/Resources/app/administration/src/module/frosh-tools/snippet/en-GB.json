@@ -59,7 +59,8 @@
       "zendOpcacheGood": "Zend Opcache is active",
       "zendOpcacheWarning": "Zend Opcache is not active",
       "queuesGood": "Queues working good",
-      "queuesWarning": "Queues are older than {minutes} minutes"
+      "queuesWarning": "Queues are older than {minutes} minutes",
+      "not-prod": "Shop is not in production mode"
     },
     "size": "Size",
     "resetQueue": "Reset Queue",
