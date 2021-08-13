@@ -1,4 +1,4 @@
-<?php
+<?php declare(strict_types=1);
 
 namespace Frosh\Tools\Controller;
 
@@ -47,7 +47,7 @@ class LogController
 
         $lineGenerator = LineReader::readLinesBackwards($filePath);
         $file = new \SplFileObject($filePath, 'r');
-        $file->seek(PHP_INT_MAX);
+        $file->seek(\PHP_INT_MAX);
 
         $reader = new \LimitIterator($lineGenerator, $offset, $limit);
 
@@ -71,7 +71,6 @@ class LogController
                 'date' => $matches['date'],
                 'level' => $matches['level'],
             ];
-
         }
 
         return new JsonResponse($result, Response::HTTP_OK, ['file-size' => $file->key()]);
@@ -100,13 +99,14 @@ class LogController
         $finder
             ->in($this->logDir)
             ->files()
-            ->ignoreDotFiles(true);
+            ->ignoreDotFiles(true)
+        ;
 
         $files = [];
 
         foreach ($finder->getIterator() as $file) {
             $files[] = [
-                'name' => $file->getFilename()
+                'name' => $file->getFilename(),
             ];
         }
 

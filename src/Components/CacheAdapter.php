@@ -60,8 +60,9 @@ class CacheAdapter
             case $this->adapter instanceof FilesystemAdapter:
                 CacheHelper::removeDir($this->getPathFromFilesystemAdapter($this->adapter));
                 break;
-            case $this->adapter instanceof ArrayAdapter;
+            case $this->adapter instanceof ArrayAdapter:
                 $this->adapter->clear();
+
                 return;
         }
     }

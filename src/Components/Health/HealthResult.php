@@ -21,7 +21,7 @@ class HealthResult extends Struct
     protected $snippet;
 
     /**
-     * @var null|array
+     * @var array|null
      */
     protected $parameters;
 

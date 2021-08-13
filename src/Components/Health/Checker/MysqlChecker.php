@@ -24,12 +24,14 @@ class MysqlChecker implements CheckerInterface
         $extractedVersion = $this->extract($version);
 
         if (isset($extractedVersion['mariadb'])) {
-           $this->checkMariadbVersion($collection, $extractedVersion['mariadb']);
-           return;
+            $this->checkMariadbVersion($collection, $extractedVersion['mariadb']);
+
+            return;
         }
 
         if (isset($extractedVersion['mysql'])) {
             $this->checkMysqlVersion($collection, $extractedVersion['mysql']);
+
             return;
         }
 
@@ -50,16 +52,18 @@ class MysqlChecker implements CheckerInterface
         $minVersion = '5.7.21';
         $brokenVersions = [
             '8.0.20',
-            '8.0.21'
+            '8.0.21',
         ];
 
         if (in_array($version, $brokenVersions, true)) {
             $collection->add(HealthResult::error('frosh-tools.checker.mysqlDbVersionError', ['version' => $version]));
+
             return;
         }
 
         if (version_compare($version, $minVersion, '>=')) {
             $collection->add(HealthResult::ok('frosh-tools.checker.mysqlDbVersion', ['version' => $version]));
+
             return;
         }
 
@@ -68,9 +72,9 @@ class MysqlChecker implements CheckerInterface
 
     private function extract(string $versionString): array
     {
-        if (stripos($versionString, 'mariadb') === false) {
-            if (strpos($versionString, '-')) {
-                $versionString = substr($versionString, 0, strpos($versionString, '-'));
+        if (mb_stripos($versionString, 'mariadb') === false) {
+            if (mb_strpos($versionString, '-')) {
+                $versionString = mb_substr($versionString, 0, mb_strpos($versionString, '-'));
             }
 
             return ['mysql' => $versionString];

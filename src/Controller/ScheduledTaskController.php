@@ -8,7 +8,6 @@ use Shopware\Core\Framework\DataAbstractionLayer\Search\Criteria;
 use Shopware\Core\Framework\MessageQueue\Handler\AbstractMessageHandler;
 use Shopware\Core\Framework\MessageQueue\ScheduledTask\ScheduledTaskDefinition;
 use Shopware\Core\Framework\MessageQueue\ScheduledTask\ScheduledTaskEntity;
-use Shopware\Core\Framework\MessageQueue\ScheduledTask\ScheduledTaskHandler;
 use Shopware\Core\Framework\Routing\Annotation\RouteScope;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\Routing\Annotation\Route;
@@ -43,8 +42,8 @@ class ScheduledTaskController
         $this->scheduledTaskRepository->update([
             [
                 'id' => $id,
-                'status' => ScheduledTaskDefinition::STATUS_QUEUED
-            ]
+                'status' => ScheduledTaskDefinition::STATUS_QUEUED,
+            ],
         ], $context);
 
         $className = $scheduledTask->getScheduledTaskClass();
@@ -52,7 +51,7 @@ class ScheduledTaskController
         $task->setTaskId($id);
 
         foreach ($this->taskHandler as $handler) {
-            if (! $handler instanceof AbstractMessageHandler) {
+            if (!$handler instanceof AbstractMessageHandler) {
                 continue;
             }
 

@@ -42,7 +42,7 @@ class CacheController
     public function cacheStatistics(): JsonResponse
     {
         $cacheFolder = dirname($this->cacheDir);
-        $folders = scandir($cacheFolder, SCANDIR_SORT_ASCENDING);
+        $folders = scandir($cacheFolder, \SCANDIR_SORT_ASCENDING);
 
         $result = [];
 
@@ -57,7 +57,7 @@ class CacheController
                 'active' => $folder === basename($this->cacheDir),
                 'size' => CacheHelper::getSize($cacheDir),
                 'freeSpace' => disk_free_space($cacheDir),
-                'type' => 'Filesystem'
+                'type' => 'Filesystem',
             ];
         }
 
@@ -66,7 +66,7 @@ class CacheController
             'active' => true,
             'size' => $this->appCache->getSize(),
             'type' => $this->appCache->getType(),
-            'freeSpace' => $this->appCache->getFreeSize()
+            'freeSpace' => $this->appCache->getFreeSize(),
         ];
 
         $result[] = [
@@ -74,14 +74,14 @@ class CacheController
             'active' => true,
             'size' => $this->httpCache->getSize(),
             'type' => $this->httpCache->getType(),
-            'freeSpace' => $this->httpCache->getFreeSize()
+            'freeSpace' => $this->httpCache->getFreeSize(),
         ];
 
         $activeColumns = array_column($result, 'active');
         $nameColumns = array_column($result, 'name');
 
-        array_multisort($activeColumns, SORT_DESC,
-            $nameColumns, SORT_ASC,
+        array_multisort($activeColumns, \SORT_DESC,
+            $nameColumns, \SORT_ASC,
             $result);
 
         return new JsonResponse($result);

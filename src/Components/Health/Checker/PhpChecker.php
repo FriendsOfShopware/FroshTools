@@ -17,14 +17,15 @@ class PhpChecker implements CheckerInterface
     private function formatSize($size): string
     {
         $base = log($size) / log(1024);
-        $suffix = array("", "k", "M", "G", "T")[floor($base)];
+        $suffix = ['', 'k', 'M', 'G', 'T'][floor($base)];
+
         return (1024 ** ($base - floor($base))) . $suffix;
     }
 
     private function checkPhp(HealthCollection $collection): void
     {
         $minPhpVersion = '7.4.0';
-        $currentPhpVersion = PHP_VERSION;
+        $currentPhpVersion = \PHP_VERSION;
         if (version_compare($minPhpVersion, $currentPhpVersion, '>')) {
             $collection->add(
                 HealthResult::error('frosh-tools.checker.phpOutdated',

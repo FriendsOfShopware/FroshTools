@@ -1,4 +1,4 @@
-<?php
+<?php declare(strict_types=1);
 
 namespace Frosh\Tools\Command;
 
@@ -25,7 +25,7 @@ class ChangeUserPasswordCommand extends Command
         $this->userRepository = $userRepository;
     }
 
-    protected function configure()
+    protected function configure(): void
     {
         $this->addArgument('username', InputArgument::REQUIRED, 'The username');
         $this->addArgument('password', InputArgument::OPTIONAL, 'The user password');
@@ -58,8 +58,8 @@ class ChangeUserPasswordCommand extends Command
         $this->userRepository->update([
             [
                 'id' => $id,
-                'password' => $password
-            ]
+                'password' => $password,
+            ],
         ], $context);
 
         $io->success('Successfully changed the password');

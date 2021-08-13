@@ -55,7 +55,7 @@
       "phpOutdated": "You should have at least PHP-Version {minPhpVersion}. Installed: {version}",
       "phpGood": "PHP Version: {version}",
       "memoryError": "You should have at least memory limit of {minMemoryLimit}. Currently: {memoryLimit}",
-      "memoryGood": "Memory limit: {memoryLimit}",
+      "memoryLimitGood": "Memory-Limit: {memoryLimit}",
       "zendOpcacheGood": "Zend Opcache is active",
       "zendOpcacheWarning": "Zend Opcache is not active",
       "queuesGood": "Queues working good",

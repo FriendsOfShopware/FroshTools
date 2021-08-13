@@ -24,6 +24,7 @@ class QueueChecker implements CheckerInterface
 
         if ($oldestMessage === 0) {
             $collection->add(HealthResult::ok('frosh-tools.checker.queuesGood'));
+
             return;
         }
 

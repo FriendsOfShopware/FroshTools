@@ -2,9 +2,7 @@
 
 namespace Frosh\Tools;
 
-use Shopware\Core\Content\Product\ProductEntity;
 use Shopware\Core\Framework\Plugin;
-use Shopware\Core\Kernel;
 
 if (file_exists($vendorPath = __DIR__ . '/../vendor/autoload.php')) {
     require_once $vendorPath;

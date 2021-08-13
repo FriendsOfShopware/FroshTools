@@ -1,18 +1,24 @@
 {
-  "name": "frosh/tools",
-  "description": "Provides some basic things for managing the Shopware Installation",
-  "type": "shopware-platform-plugin",
-  "license": "MIT",
-  "autoload": {
-    "psr-4": {
-      "Frosh\\Tools\\": "src/"
+    "name": "frosh/tools",
+    "description": "Provides some basic things for managing the Shopware Installation",
+    "type": "shopware-platform-plugin",
+    "license": "MIT",
+    "autoload": {
+        "psr-4": {
+            "Frosh\\Tools\\": "src/"
+        }
+    },
+    "extra": {
+        "shopware-plugin-class": "Frosh\\Tools\\FroshTools",
+        "label": {
+            "de-DE": "Tools",
+            "en-GB": "Tools"
+        }
+    },
+    "require-dev": {
+        "friendsofphp/php-cs-fixer": "~3.0"
+    },
+    "scripts": {
+        "cs-fixer": "php-cs-fixer fix"
     }
-  },
-  "extra": {
-    "shopware-plugin-class": "Frosh\\Tools\\FroshTools",
-    "label": {
-      "de-DE": "Tools",
-      "en-GB": "Tools"
-    }
-  }
 }

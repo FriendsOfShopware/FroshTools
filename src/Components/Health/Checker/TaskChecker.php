@@ -32,7 +32,7 @@ class TaskChecker implements CheckerInterface
         $criteria->addFilter(
             new RangeFilter(
                 'nextExecutionTime',
-                ['lte' => $date->format(DATE_ATOM)]
+                ['lte' => $date->format(\DATE_ATOM)]
             )
         );
 
@@ -41,6 +41,7 @@ class TaskChecker implements CheckerInterface
 
         if (count($oldTasks) === 0) {
             $collection->add(HealthResult::ok('frosh-tools.checker.scheduledTaskGood'));
+
             return;
         }
 
