@@ -18,7 +18,8 @@ use Symfony\Component\Routing\Annotation\Route;
  */
 class LogController
 {
-    private const LINE_MATCH = '/\[(?<date>.*)] (?<channel>\w*)\.(?<level>\w*):(?<message>.*)/m';
+    // https://regex101.com/r/bp4YYL/1
+    private const LINE_MATCH = '/\[(?<date>.*)] (?<channel>.*)\.(?<level>(DEBUG|INFO|NOTICE|WARNING|ERROR|CRITICAL|ALERT|EMERGENCY)):(?<message>.*)/m';
 
     private string $logDir;
 
