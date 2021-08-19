@@ -14,26 +14,25 @@ use Symfony\Component\Routing\Annotation\Route;
  */
 class CacheController
 {
-    /**
-     * @var string
-     */
-    private $cacheDir;
+    private string $cacheDir;
+    private CacheAdapter $appCache;
+    private CacheAdapter $httpCache;
+    private CacheAdapter $objectCache;
+    private CacheAdapter $tagsCache;
 
-    /**
-     * @var CacheAdapter
-     */
-    private $appCache;
-
-    /**
-     * @var CacheAdapter
-     */
-    private $httpCache;
-
-    public function __construct(string $cacheDir, CacheAdapter $appCache, CacheAdapter $httpCache)
+    public function __construct(
+        string $cacheDir,
+        CacheAdapter $appCache,
+        CacheAdapter $httpCache,
+        CacheAdapter $objectCache,
+        CacheAdapter $tagsCache
+    )
     {
         $this->cacheDir = $cacheDir;
         $this->appCache = $appCache;
         $this->httpCache = $httpCache;
+        $this->objectCache = $objectCache;
+        $this->tagsCache = $tagsCache;
     }
 
     /**
@@ -77,6 +76,22 @@ class CacheController
             'freeSpace' => $this->httpCache->getFreeSize(),
         ];
 
+        $result[] = [
+            'name' => 'Object Cache',
+            'active' => true,
+            'size' => $this->objectCache->getSize(),
+            'type' => $this->objectCache->getType(),
+            'freeSpace' => $this->objectCache->getFreeSize(),
+        ];
+
+        $result[] = [
+            'name' => 'Tags Cache',
+            'active' => true,
+            'size' => $this->tagsCache->getSize(),
+            'type' => $this->tagsCache->getType(),
+            'freeSpace' => $this->tagsCache->getFreeSize(),
+        ];
+
         $activeColumns = array_column($result, 'active');
         $nameColumns = array_column($result, 'name');
 
@@ -96,6 +111,10 @@ class CacheController
             $this->appCache->clear();
         } elseif ($folder === 'Http Cache') {
             $this->httpCache->clear();
+        } elseif ($folder === 'Object Cache') {
+            $this->objectCache->clear();
+        } elseif ($folder === 'Tags Cache') {
+            $this->tagsCache->clear();
         } else {
             CacheHelper::removeDir(dirname($this->cacheDir) . '/' . basename($folder));
         }

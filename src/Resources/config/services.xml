@@ -10,19 +10,28 @@
             <tag name="console.command"/>
         </service>
 
-
         <service id="frosh.tools.cache.app" class="Frosh\Tools\Components\CacheAdapter">
-            <argument type="service" id="cache.object"/>
+            <argument type="service" id="cache.app"/>
         </service>
 
         <service id="frosh.tools.cache.http" class="Frosh\Tools\Components\CacheAdapter">
             <argument type="service" id="cache.http"/>
         </service>
 
+        <service id="frosh.tools.cache.object" class="Frosh\Tools\Components\CacheAdapter">
+            <argument type="service" id="cache.object"/>
+        </service>
+
+        <service id="frosh.tools.cache.tags" class="Frosh\Tools\Components\CacheAdapter">
+            <argument type="service" id="cache.tags"/>
+        </service>
+
         <service id="Frosh\Tools\Controller\CacheController" public="true">
             <argument>%kernel.cache_dir%</argument>
             <argument type="service" id="frosh.tools.cache.app"/>
             <argument type="service" id="frosh.tools.cache.http"/>
+            <argument type="service" id="frosh.tools.cache.object"/>
+            <argument type="service" id="frosh.tools.cache.tags"/>
         </service>
 
         <service id="Frosh\Tools\Controller\QueueController" public="true">
