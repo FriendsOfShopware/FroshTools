@@ -6,16 +6,14 @@ use Shopware\Storefront\Framework\Cache\CacheDecorator;
 use Symfony\Component\Cache\Adapter\AdapterInterface;
 use Symfony\Component\Cache\Adapter\ArrayAdapter;
 use Symfony\Component\Cache\Adapter\FilesystemAdapter;
+use Symfony\Component\Cache\Adapter\PhpFilesAdapter;
 use Symfony\Component\Cache\Adapter\RedisAdapter;
 use Symfony\Component\Cache\Adapter\TagAwareAdapter;
 use Symfony\Component\Cache\Adapter\TraceableAdapter;
 
 class CacheAdapter
 {
-    /**
-     * @var AdapterInterface
-     */
-    private $adapter;
+    private AdapterInterface $adapter;
 
     public function __construct(AdapterInterface $adapter)
     {
@@ -41,29 +39,27 @@ class CacheAdapter
         switch (true) {
             case $this->adapter instanceof RedisAdapter:
                 $info = $this->getRedis($this->adapter)->info();
-                $totalMemory = $info['maxmemory'] ?? $info['total_system_memory'];
+                $totalMemory = $info['maxmemory'] === 0 ?  $info['total_system_memory'] : $info['maxmemory'];
 
                 return $totalMemory - $info['used_memory'];
             case $this->adapter instanceof FilesystemAdapter:
                 return (int) disk_free_space($this->getPathFromFilesystemAdapter($this->adapter));
-            case $this->adapter instanceof ArrayAdapter:
-                return 0;
+            case $this->adapter instanceof PhpFilesAdapter:
+                return (int) disk_free_space($this->getPathOfFilesAdapter($this->adapter));
         }
+
+        return 0;
     }
 
     public function clear(): void
     {
         switch (true) {
-            case $this->adapter instanceof RedisAdapter:
-                $this->getRedis($this->adapter)->flushDB();
-                break;
             case $this->adapter instanceof FilesystemAdapter:
                 CacheHelper::removeDir($this->getPathFromFilesystemAdapter($this->adapter));
                 break;
-            case $this->adapter instanceof ArrayAdapter:
+            case $this->adapter instanceof AdapterInterface:
                 $this->adapter->clear();
-
-                return;
+                break;
         }
     }
 
@@ -76,6 +72,8 @@ class CacheAdapter
                 return 'Filesystem';
             case $this->adapter instanceof ArrayAdapter:
                 return 'Array';
+            case $this->adapter instanceof PhpFilesAdapter:
+                return 'PHP files';
         }
 
         return '';
@@ -119,6 +117,15 @@ class CacheAdapter
     }
 
     private function getPathFromFilesystemAdapter(FilesystemAdapter $adapter): string
+    {
+        $getter = \Closure::bind(function () use ($adapter) {
+            return $adapter->directory;
+        }, $adapter, \get_class($adapter));
+
+        return $getter($adapter);
+    }
+
+    private function getPathOfFilesAdapter(PhpFilesAdapter $adapter): string
     {
         $getter = \Closure::bind(function () use ($adapter) {
             return $adapter->directory;

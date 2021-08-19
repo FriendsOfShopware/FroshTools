@@ -13,7 +13,7 @@ class CacheHelper
         return self::getSizeFast($dir) ?? self::getSizeFallback($dir);
     }
 
-    private function getSizeFast(string $dir): ?int
+    private static function getSizeFast(string $dir): ?int
     {
         $output = null;
         exec('du -s "' . $dir . '"', $output);
@@ -24,7 +24,7 @@ class CacheHelper
         return null;
     }
 
-    private function getSizeFallback(string $path): int
+    private static function getSizeFallback(string $path): int
     {
         $dirIterator = new RecursiveDirectoryIterator($path, RecursiveDirectoryIterator::SKIP_DOTS);
         $iterator = new RecursiveIteratorIterator(

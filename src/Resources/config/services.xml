@@ -21,8 +21,7 @@
 
         <service id="Frosh\Tools\Controller\CacheController" public="true">
             <argument>%kernel.cache_dir%</argument>
-            <argument type="service" id="frosh.tools.cache.app"/>
-            <argument type="service" id="frosh.tools.cache.http"/>
+            <argument type="service" id="Frosh\Tools\Components\CacheRegistry"/>
         </service>
 
         <service id="Frosh\Tools\Controller\QueueController" public="true">

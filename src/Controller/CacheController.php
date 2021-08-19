@@ -4,6 +4,7 @@ namespace Frosh\Tools\Controller;
 
 use Frosh\Tools\Components\CacheAdapter;
 use Frosh\Tools\Components\CacheHelper;
+use Frosh\Tools\Components\CacheRegistry;
 use Shopware\Core\Framework\Routing\Annotation\RouteScope;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\Routing\Annotation\Route;
@@ -14,26 +15,14 @@ use Symfony\Component\Routing\Annotation\Route;
  */
 class CacheController
 {
-    /**
-     * @var string
-     */
-    private $cacheDir;
+    private string $cacheDir;
 
-    /**
-     * @var CacheAdapter
-     */
-    private $appCache;
+    private CacheRegistry $cacheRegistry;
 
-    /**
-     * @var CacheAdapter
-     */
-    private $httpCache;
-
-    public function __construct(string $cacheDir, CacheAdapter $appCache, CacheAdapter $httpCache)
+    public function __construct(string $cacheDir, CacheRegistry $cacheRegistry)
     {
         $this->cacheDir = $cacheDir;
-        $this->appCache = $appCache;
-        $this->httpCache = $httpCache;
+        $this->cacheRegistry = $cacheRegistry;
     }
 
     /**
@@ -61,21 +50,15 @@ class CacheController
             ];
         }
 
-        $result[] = [
-            'name' => 'App Cache',
-            'active' => true,
-            'size' => $this->appCache->getSize(),
-            'type' => $this->appCache->getType(),
-            'freeSpace' => $this->appCache->getFreeSize(),
-        ];
-
-        $result[] = [
-            'name' => 'Http Cache',
-            'active' => true,
-            'size' => $this->httpCache->getSize(),
-            'type' => $this->httpCache->getType(),
-            'freeSpace' => $this->httpCache->getFreeSize(),
-        ];
+        foreach ($this->cacheRegistry->all() as $name => $adapter) {
+            $result[] = [
+                'name' => $name,
+                'active' => true,
+                'size' => $adapter->getSize(),
+                'type' => $adapter->getType(),
+                'freeSpace' => $adapter->getFreeSize(),
+            ];
+        }
 
         $activeColumns = array_column($result, 'active');
         $nameColumns = array_column($result, 'name');
@@ -92,10 +75,8 @@ class CacheController
      */
     public function clearCache(string $folder): JsonResponse
     {
-        if ($folder === 'App Cache') {
-            $this->appCache->clear();
-        } elseif ($folder === 'Http Cache') {
-            $this->httpCache->clear();
+        if ($this->cacheRegistry->has($folder)) {
+            $this->cacheRegistry->get($folder)->clear();
         } else {
             CacheHelper::removeDir(dirname($this->cacheDir) . '/' . basename($folder));
         }

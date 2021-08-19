@@ -2,7 +2,9 @@
 
 namespace Frosh\Tools;
 
+use Frosh\Tools\DependencyInjection\CacheCompilerPass;
 use Shopware\Core\Framework\Plugin;
+use Symfony\Component\DependencyInjection\ContainerBuilder;
 
 if (file_exists($vendorPath = __DIR__ . '/../vendor/autoload.php')) {
     require_once $vendorPath;
@@ -10,4 +12,9 @@ if (file_exists($vendorPath = __DIR__ . '/../vendor/autoload.php')) {
 
 class FroshTools extends Plugin
 {
+    public function build(ContainerBuilder $container): void
+    {
+        parent::build($container);
+        $container->addCompilerPass(new CacheCompilerPass());
+    }
 }
