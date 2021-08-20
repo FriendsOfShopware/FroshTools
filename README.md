@@ -19,6 +19,45 @@ The current feature set consists of:
 
 - Clone this repository into custom/plugins of your Shopware 6 installation
 
+## Commands
+
+### `frosh:env:list` - Listing of all environment variables
+
+`bin/console frosh:env:list`
+
+`bin/console frosh:env:list --json`
+Lists as json output
+
+### `frosh:env:get` - Get environment variables
+
+```bash
+bin/console frosh:env:get APP_URL
+http://localhost
+```
+
+```bash
+bin/console frosh:env:get APP_URL --key-value
+APP_URL=http://localhost
+```
+
+```bash
+bin/console frosh:env:get APP_URL --json
+{
+    "APP_URL": "http:\/\/localhost"
+}
+```
+
+### `frosh:env:set` - Set environment variables
+
+```bash
+bin/console frosh:env:set VARIABLE VALUE
+```
+
+### `frosh:env:del` - Delete environment variables
+
+```bash
+bin/console frosh:env:del VARIABLE
+```
 
 ## Screenshots
 

@@ -10,6 +10,22 @@
             <tag name="console.command"/>
         </service>
 
+        <service id="Frosh\Tools\Command\EnvGetCommand">
+            <argument>%kernel.project_dir%/.env</argument>
+            <tag name="console.command"/>
+        </service>
+
+        <service id="Frosh\Tools\Command\EnvListCommand" parent="Frosh\Tools\Command\EnvGetCommand"/>
+
+        <service id="Frosh\Tools\Command\EnvSetCommand">
+            <argument>%kernel.project_dir%/.env</argument>
+            <tag name="console.command"/>
+        </service>
+
+        <service id="Frosh\Tools\Command\EnvDelCommand">
+            <argument>%kernel.project_dir%/.env</argument>
+            <tag name="console.command"/>
+        </service>
 
         <service id="frosh.tools.cache.app" class="Frosh\Tools\Components\CacheAdapter">
             <argument type="service" id="cache.object"/>
