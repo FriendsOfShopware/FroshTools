@@ -39,9 +39,11 @@ class CacheAdapter
         switch (true) {
             case $this->adapter instanceof RedisAdapter:
                 $info = $this->getRedis($this->adapter)->info();
-                $totalMemory = $info['maxmemory'] === 0 ?  $info['total_system_memory'] : $info['maxmemory'];
+                if ($info['maxmemory'] === 0) {
+                    return 0;
+                }
 
-                return $totalMemory - $info['used_memory'];
+                return $info['maxmemory'] - $info['used_memory'];
             case $this->adapter instanceof FilesystemAdapter:
                 return (int) disk_free_space($this->getPathFromFilesystemAdapter($this->adapter));
             case $this->adapter instanceof PhpFilesAdapter:
@@ -56,6 +58,13 @@ class CacheAdapter
         switch (true) {
             case $this->adapter instanceof FilesystemAdapter:
                 CacheHelper::removeDir($this->getPathFromFilesystemAdapter($this->adapter));
+                break;
+            case $this->adapter instanceof RedisAdapter:
+                try {
+                    $this->getRedis($this->adapter)->flushDB();
+                } catch (\Exception $e) {
+                    $this->adapter->clear();
+                }
                 break;
             case $this->adapter instanceof AdapterInterface:
                 $this->adapter->clear();
