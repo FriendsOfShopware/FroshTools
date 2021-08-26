@@ -61,10 +61,12 @@ class CacheController
         }
 
         $activeColumns = array_column($result, 'active');
-        $nameColumns = array_column($result, 'name');
+        $freeSpaceColumns = array_column($result, 'freeSpace');
+        $sizeColumns = array_column($result, 'size');
 
         array_multisort($activeColumns, \SORT_DESC,
-            $nameColumns, \SORT_ASC,
+            $freeSpaceColumns, \SORT_ASC,
+            $sizeColumns, \SORT_DESC,
             $result);
 
         return new JsonResponse($result);
