@@ -54,7 +54,7 @@
       "mariaDbVersion": "MariaDB Version: {version}",
       "phpOutdated": "You should have at least PHP-Version {minPhpVersion}. Installed: {version}",
       "phpGood": "PHP Version: {version}",
-      "memoryError": "You should have at least memory limit of {minMemoryLimit}. Currently: {memoryLimit}",
+      "memoryLimitError": "You should have at least memory limit of {minMemoryLimit}. Currently: {memoryLimit}",
       "memoryLimitGood": "Memory-Limit: {memoryLimit}",
       "zendOpcacheGood": "Zend Opcache is active",
       "zendOpcacheWarning": "Zend Opcache is not active",
