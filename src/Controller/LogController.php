@@ -79,7 +79,7 @@ class LogController
     private function getFilePathByBag(Request $request): string
     {
         if (!$request->query->has('file')) {
-            return new MissingRequestParameterException('file');
+            throw new MissingRequestParameterException('file');
         }
 
         $fileName = $request->query->get('file');
@@ -100,6 +100,8 @@ class LogController
             ->in($this->logDir)
             ->files()
             ->ignoreDotFiles(true)
+            ->sortByChangedTime()
+            ->reverseSorting()
         ;
 
         $files = [];
