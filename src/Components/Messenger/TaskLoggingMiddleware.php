@@ -1,0 +1,103 @@
+<?php
+
+namespace Frosh\Tools\Components\Messenger;
+
+use http\Client\Curl\User;
+use Psr\Log\LoggerInterface;
+use Shopware\Core\Framework\MessageQueue\ScheduledTask\ScheduledTask;
+use Symfony\Component\Messenger\Envelope;
+use Symfony\Component\Messenger\Exception\HandlerFailedException;
+use Symfony\Component\Messenger\Middleware\MiddlewareInterface;
+use Symfony\Component\Messenger\Middleware\StackInterface;
+
+use Shopware\Core\Framework\DataAbstractionLayer\Indexing\EntityIndexingMessage;
+use Shopware\Core\Content\ImportExport\Message\DeleteFileMessage as DeleteImportExportFile;
+use Shopware\Core\Content\Media\Message\DeleteFileMessage;
+use Shopware\Core\Content\Media\Message\GenerateThumbnailsMessage;
+use Shopware\Storefront\Framework\Cache\CacheWarmer\WarmUpMessage;
+
+class TaskLoggingMiddleware implements MiddlewareInterface
+{
+    private LoggerInterface $logger;
+
+    public function __construct(LoggerInterface $logger)
+    {
+        $this->logger = $logger;
+    }
+
+    public function handle(Envelope $envelope, StackInterface $stack): Envelope
+    {
+        $taskLogging = (bool) ($_SERVER['FROSH_TOOLS_TASK_LOGGING'] ?? '0');
+        if ($taskLogging === false) {
+            return $stack->next()->handle($envelope, $stack);
+        }
+
+        $message = $envelope->getMessage();
+        $taskName = $this->getTaskName($message);
+        $args = $this->extractArgumentsFromMessage($message);
+
+        $start = microtime(true);
+        try {
+            return $stack->next()->handle($envelope, $stack);
+        } catch (HandlerFailedException $e) {
+            $args = $this->addExceptionToArgs($e, $args);
+
+            throw $e;
+        } finally {
+            $this->logTaskProcessing($taskName, $args, $start);
+        }
+    }
+
+    private function getTaskName(object $message): string
+    {
+        if ($message instanceof ScheduledTask) {
+            $taskName = $message->getTaskName();
+        } else {
+            $classParts = explode('\\', get_class($message));
+            $taskName = end($classParts);
+
+            if (substr($taskName, -7) === 'Message') {
+                $taskName = substr($taskName, 0, -7);
+            }
+        }
+
+        return $taskName;
+    }
+
+    private function extractArgumentsFromMessage(object $message): array
+    {
+        if ($message instanceof EntityIndexingMessage) {
+            $data = $message->getData();
+
+            if (is_array($data)) {
+                return ['data' => implode(',', $data)];
+            }
+        } else if ($message instanceof ScheduledTask) {
+            return ['taskId' => $message->getTaskId()];
+        } else if ($message instanceof DeleteImportExportFile || $message instanceof DeleteFileMessage) {
+           return ['files' => implode(',', array_map(function ($f) { return basename($f); }, $message->getFiles()))];
+        } else if ($message instanceof GenerateThumbnailsMessage) {
+           return ['mediaIds' => implode(',', $message->getMediaIds())];
+        } else if ($message instanceof WarmUpMessage) {
+           return ['route' => $message->getRoute(), 'domain' => $message->getDomain(), 'cache_id' => $message->getCacheId()];
+        }
+
+        return [];
+    }
+
+    private function logTaskProcessing(string $taskName, array $args, $start): void
+    {
+        $args['duration'] = number_format(microtime(true) - $start, 3);
+
+        $this->logger->info($taskName, $args);
+    }
+
+    private function addExceptionToArgs($e, array $args): array
+    {
+        $exceptions = $e->getNestedExceptions();
+        $args['exception'] = get_class($exceptions[0]);
+        $args['exception.msg'] = $exceptions[0]->getMessage();
+
+        return $args;
+    }
+}

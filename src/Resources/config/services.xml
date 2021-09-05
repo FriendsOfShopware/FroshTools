@@ -82,5 +82,15 @@
             <argument>%kernel.environment%</argument>
             <tag name="frosh_tools.health_checker"/>
         </service>
+
+        <service id="Frosh\Tools\Components\Messenger\TaskLoggingMiddleware">
+            <argument type="service" id="frosh_tools.logging.tasks"/>
+        </service>
+
+        <service id="frosh_tools.logging.tasks" class="Monolog\Logger">
+            <factory service="Shopware\Core\Framework\Log\LoggerFactory" method="createRotating"/>
+            <argument>task_logging</argument>
+            <argument>14</argument>
+        </service>
     </services>
 </container>

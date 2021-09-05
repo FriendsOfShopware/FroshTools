@@ -14,6 +14,8 @@ The current feature set consists of:
   - Shows the amount of messages in the queue
 - Log viewer
   - Shows the entries of /var/log/*.log files
+- Task Logging
+  - Can be enabled with env `FROSH_TOOLS_TASK_LOGGING=1` in `.env`. This will create a log in `var/log/task_logging-xx.log`
 
 ## Installation
 
