@@ -24,7 +24,8 @@
         "title": "Log viewer"
       },
       "files": {
-        "title": "Shopware Dateien Checker"
+        "title": "Shopware Dateien Checker",
+        "allFilesOk": "Alle Dateien wurden nicht manipuliert"
       }
     },
     "clear": "Leeren",
