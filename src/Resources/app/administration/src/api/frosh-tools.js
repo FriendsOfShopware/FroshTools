@@ -94,6 +94,18 @@ class FroshTools extends ApiService {
             return response;
         });
     }
+
+    getShopwareFiles() {
+        const apiRoute = `${this.getApiBasePath()}/shopware-files`;
+        return this.httpClient.get(
+            apiRoute,
+            {
+                headers: this.getBasicHeaders()
+            }
+        ).then((response) => {
+            return response;
+        });
+    }
 }
 
 export default FroshTools;

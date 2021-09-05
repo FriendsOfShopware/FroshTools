@@ -4,6 +4,7 @@ import './component/frosh-tools-tab-queue';
 import './component/frosh-tools-tab-scheduled';
 import './component/frosh-tools-tab-elasticsearch';
 import './component/frosh-tools-tab-logs';
+import './component/frosh-tools-tab-files';
 import './page/index';
 
 Shopware.Module.register('frosh-tools', {
@@ -58,6 +59,13 @@ Shopware.Module.register('frosh-tools', {
                 logs: {
                     component: 'frosh-tools-tab-logs',
                     path: 'logs',
+                    meta: {
+                        parentPath: 'frosh.tools.index'
+                    }
+                },
+                files: {
+                    component: 'frosh-tools-tab-files',
+                    path: 'files',
                     meta: {
                         parentPath: 'frosh.tools.index'
                     }

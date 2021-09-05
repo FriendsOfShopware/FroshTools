@@ -92,5 +92,10 @@
             <argument>task_logging</argument>
             <argument>14</argument>
         </service>
+
+        <service id="Frosh\Tools\Controller\ShopwareFilesController" public="true">
+            <argument>%kernel.shopware_version%</argument>
+            <argument>%kernel.project_dir%</argument>
+        </service>
     </services>
 </container>

@@ -1,0 +1,14 @@
+<sw-card-view>
+    <sw-card :title="$tc('frosh-tools.tabs.files.title')" :isLoading="isLoading" :large="true">
+        <sw-alert variant="error" v-if="items.error">{{ items.error }}</sw-alert>
+
+        <sw-alert variant="success" v-if="items.ok">All files are not modified</sw-alert>
+
+        <sw-data-grid
+            v-if="items.files"
+            :showSelection="false"
+            :dataSource="items.files"
+            :columns="columns">
+        </sw-data-grid>
+    </sw-card>
+</sw-card-view>

@@ -22,6 +22,9 @@
       },
       "logs": {
         "title": "Log viewer"
+      },
+      "files": {
+        "title": "Shopware Dateien Checker"
       }
     },
     "clear": "Leeren",
