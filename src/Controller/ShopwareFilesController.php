@@ -48,10 +48,10 @@ class ShopwareFilesController
 
         foreach (explode("\n", $data) as $row) {
             [$expectedMd5Sum, $file] = explode('  ', trim($row));
-            $fileAvailable = is_file($this->projectDir . $file);
+            $fileAvailable = is_file($this->projectDir . '/' . $file);
 
             if ($fileAvailable) {
-                $md5Sum = md5_file($this->projectDir . $file);
+                $md5Sum = md5_file($this->projectDir . '/' . $file);
 
                 // This file differs on update systems. This change is missing in update packages lol!
                 // @see: https://github.com/shopware/platform/commit/957e605c96feef67a6c759f00c58e35d2d1ac84f#diff-e49288a50f0d7d8acdabb5ffef2edcd5ac4f4126f764d3153d19913ce98aba1cL10-R80
