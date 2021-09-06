@@ -2,7 +2,7 @@ name: CheckSnippets
 on:
   push:
     branches:
-      - master
+      - main
     paths:
       - 'src/**/snippet/*.json'
   pull_request:
