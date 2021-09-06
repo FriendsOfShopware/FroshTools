@@ -2,8 +2,8 @@
 
 namespace Frosh\Tools\Components\Messenger;
 
-use http\Client\Curl\User;
 use Psr\Log\LoggerInterface;
+use Shopware\Core\Framework\DataAbstractionLayer\Indexing\MessageQueue\IterateEntityIndexerMessage;
 use Shopware\Core\Framework\MessageQueue\ScheduledTask\ScheduledTask;
 use Symfony\Component\Messenger\Envelope;
 use Symfony\Component\Messenger\Exception\HandlerFailedException;
@@ -51,14 +51,14 @@ class TaskLoggingMiddleware implements MiddlewareInterface
     private function getTaskName(object $message): string
     {
         if ($message instanceof ScheduledTask) {
-            $taskName = $message->getTaskName();
-        } else {
-            $classParts = explode('\\', get_class($message));
-            $taskName = end($classParts);
+            return $message->getTaskName();
+        }
 
-            if (substr($taskName, -7) === 'Message') {
-                $taskName = substr($taskName, 0, -7);
-            }
+        $classParts = explode('\\', get_class($message));
+        $taskName = end($classParts);
+
+        if (substr($taskName, -7) === 'Message') {
+            $taskName = substr($taskName, 0, -7);
         }
 
         return $taskName;
@@ -72,14 +72,26 @@ class TaskLoggingMiddleware implements MiddlewareInterface
             if (is_array($data)) {
                 return ['data' => implode(',', $data)];
             }
-        } else if ($message instanceof ScheduledTask) {
+        }
+
+        if ($message instanceof ScheduledTask) {
             return ['taskId' => $message->getTaskId()];
-        } else if ($message instanceof DeleteImportExportFile || $message instanceof DeleteFileMessage) {
-           return ['files' => implode(',', array_map(function ($f) { return basename($f); }, $message->getFiles()))];
-        } else if ($message instanceof GenerateThumbnailsMessage) {
-           return ['mediaIds' => implode(',', $message->getMediaIds())];
-        } else if ($message instanceof WarmUpMessage) {
-           return ['route' => $message->getRoute(), 'domain' => $message->getDomain(), 'cache_id' => $message->getCacheId()];
+        }
+
+        if ($message instanceof DeleteImportExportFile || $message instanceof DeleteFileMessage) {
+            return ['files' => implode(',', array_map(static function ($f) { return basename($f); }, $message->getFiles()))];
+        }
+
+        if ($message instanceof GenerateThumbnailsMessage) {
+            return ['mediaIds' => implode(',', $message->getMediaIds())];
+        }
+
+        if ($message instanceof WarmUpMessage) {
+            return ['route' => $message->getRoute(), 'domain' => $message->getDomain(), 'cache_id' => $message->getCacheId()];
+        }
+
+        if ($message instanceof IterateEntityIndexerMessage) {
+            return ['indexer' => $message->getIndexer()];
         }
 
         return [];
@@ -87,7 +99,12 @@ class TaskLoggingMiddleware implements MiddlewareInterface
 
     private function logTaskProcessing(string $taskName, array $args, $start): void
     {
-        $args['duration'] = number_format(microtime(true) - $start, 3);
+        $args = ['duration' => round(microtime(true) - $start, 3)] + $args;
+
+        if (isset($args['exception'])) {
+            $this->logger->error($taskName, $args);
+            return;
+        }
 
         $this->logger->info($taskName, $args);
     }
