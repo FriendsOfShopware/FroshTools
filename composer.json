@@ -9,6 +9,12 @@
             "Frosh\\Tools\\": "src/"
         }
     },
+    "authors": [
+        {
+            "name": "FriendsOfShopware",
+            "homepage": "https://friendsofshopware.com"
+        }
+    ],
     "extra": {
         "shopware-plugin-class": "Frosh\\Tools\\FroshTools",
         "label": {
@@ -16,16 +22,16 @@
             "en-GB": "Tools"
         },
         "description": {
-          "de-DE": "Das Plugin beinhaltet mehrere Werkzeuge um den Shop besser zu verwalten wie einen besserer Cache Manager, Log Viewer um die Logeinträge zu sehen, oder die Tasks auszuführen",
-          "en-GB": "The plugin includes several tools to better manage the store like a better cache manager, log viewer to see the log entries, run the tasks or see the system status."
+            "de-DE": "Das Plugin beinhaltet mehrere Werkzeuge um den Shop besser zu verwalten wie einen besserer Cache Manager, Log Viewer um die Logeinträge zu sehen, oder die Tasks auszuführen",
+            "en-GB": "The plugin includes several tools to better manage the store like a better cache manager, log viewer to see the log entries, run the tasks or see the system status."
         },
         "manufacturerLink": {
-          "de-DE": "https://github.com/FriendsOfShopware/FroshPlatformMailArchive",
-          "en-GB": "https://github.com/FriendsOfShopware/FroshPlatformMailArchive"
+            "de-DE": "https://github.com/FriendsOfShopware/FroshPlatformMailArchive",
+            "en-GB": "https://github.com/FriendsOfShopware/FroshPlatformMailArchive"
         },
         "supportLink": {
-          "de-DE": "https://github.com/FriendsOfShopware/FroshPlatformMailArchive/issues",
-          "en-GB": "https://github.com/FriendsOfShopware/FroshPlatformMailArchive/issues"
+            "de-DE": "https://github.com/FriendsOfShopware/FroshPlatformMailArchive/issues",
+            "en-GB": "https://github.com/FriendsOfShopware/FroshPlatformMailArchive/issues"
         }
     },
     "require": {
