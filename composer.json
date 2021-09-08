@@ -22,8 +22,8 @@
             "en-GB": "Tools"
         },
         "description": {
-            "de-DE": "Das Plugin beinhaltet mehrere Werkzeuge um den Shop besser zu verwalten wie einen besserer Cache Manager, Log Viewer um die Logeinträge zu sehen, oder die Tasks auszuführen",
-            "en-GB": "The plugin includes several tools to better manage the store like a better cache manager, log viewer to see the log entries, run the tasks or see the system status."
+            "de-DE": "Die kostenlose Shopware 6 App beinhaltet mehrere Werkzeuge um den Shop besser zu verwalten. Optimierter Cache Manager, Log Viewer um die Logeinträge zu sehen oder Tasks auszuführen.",
+            "en-GB": "The free Shopware 6 app include several tools to manage the store much better like a cache manager, log viewer to see the log entries, run the tasks or see the system status."
         },
         "manufacturerLink": {
             "de-DE": "https://github.com/FriendsOfShopware/FroshPlatformMailArchive",
