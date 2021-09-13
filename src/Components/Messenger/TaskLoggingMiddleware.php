@@ -16,6 +16,9 @@ use Shopware\Core\Content\Media\Message\DeleteFileMessage;
 use Shopware\Core\Content\Media\Message\GenerateThumbnailsMessage;
 use Shopware\Storefront\Framework\Cache\CacheWarmer\WarmUpMessage;
 
+/**
+ * @see https://tideways.com/profiler/blog/log-all-tasks-the-shopware-6-queue-processes
+ */
 class TaskLoggingMiddleware implements MiddlewareInterface
 {
     private LoggerInterface $logger;
