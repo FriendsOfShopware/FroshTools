@@ -51,6 +51,11 @@ Component.register('frosh-tools-tab-scheduled', {
                     label: 'frosh-tools.nextExecutionTime',
                     rawData: true,
                     inlineEdit: 'datetime'
+                },
+                {
+                    property: 'status',
+                    label: 'frosh-tools.status',
+                    rawData: true
                 }
             ];
         }
