@@ -64,7 +64,8 @@
       "zendOpcacheWarning": "Zend Opcache ist nicht aktiv",
       "queuesGood": "Warteschlange läuft regelmäßig",
       "queuesWarning": "Warteschlange enthält Daten, die älter als {minutes} Minuten sind",
-      "not-prod": "Shop ist nicht im produktivmodus"
+      "not-prod": "Shop ist nicht im Produktivmodus",
+      "prodGood": "Shop ist im Produktivmodus"
     },
     "size": "Größe",
     "resetQueue": "Queue zurücksetzen",
