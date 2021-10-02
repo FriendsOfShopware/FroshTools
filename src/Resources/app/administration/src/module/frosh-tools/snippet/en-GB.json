@@ -21,7 +21,10 @@
         "title": "Elasticsearch Manager"
       },
       "logs": {
-        "title": "Log viewer"
+        "title": "Log viewer",
+        "logFileSelect": {
+            "placeholder": "Choose file"
+        }
       },
       "files": {
         "title": "Shopware file checker",
@@ -38,7 +41,7 @@
     "used": "Used",
     "free": "Free",
     "compileTheme": "Compile theme",
-    "themecompiled": "Theme were compiled",
+    "themeCompiled": "Theme were compiled",
     "actions": "Actions",
     "scheduledTasks": "Scheduled Tasks",
     "interval": "Interval",

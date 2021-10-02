@@ -1,4 +1,5 @@
 import template from './template.twig';
+import './style.scss';
 
 const { Component } = Shopware;
 
@@ -8,17 +9,27 @@ Component.register('frosh-tools-tab-index', {
 
     data() {
         return {
-            isLoading: true,
-            health: null
+            healthStatus: null
         }
     },
 
     async created() {
-        this.health = await this.FroshToolsService.healthStatus();
-        this.isLoading = false;
+        this.healthStatus = await this.FroshToolsService.healthStatus();
     },
 
     computed: {
+        health() {
+            if (this.isLoading) {
+                return [];
+            }
+
+            return this.healthStatus;
+        },
+
+        isLoading() {
+            return this.healthStatus === null
+        },
+
         columns() {
             return [
                 {

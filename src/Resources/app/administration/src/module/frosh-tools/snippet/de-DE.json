@@ -21,7 +21,10 @@
         "title": "Elasticsearch"
       },
       "logs": {
-        "title": "Log viewer"
+        "title": "Log viewer",
+        "logFileSelect": {
+            "placeholder": "Datei auswählen"
+        }
       },
       "files": {
         "title": "Shopware Dateien Checker",
@@ -38,7 +41,7 @@
     "used": "Belegt",
     "free": "Frei",
     "compileTheme": "Theme kompilieren",
-    "themecompiled": "Theme wurde kompiliert",
+    "themeCompiled": "Theme wurde kompiliert",
     "actions": "Aktionen",
     "scheduledTasks": "Geplante Aufgaben",
     "interval": "Intervall",

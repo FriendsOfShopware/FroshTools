@@ -1,7 +1,6 @@
 <sw-card-view>
-    <sw-card :title="$tc('frosh-tools.tabs.index.title')" :isLoading="isLoading" :large="true">
+    <sw-card class="frosh-tools-tab-index__health-card" :title="$tc('frosh-tools.tabs.index.title')" :isLoading="isLoading" :large="true">
         <sw-data-grid
-            v-if="health"
             :showSelection="false"
             :showActions="false"
             :dataSource="health"

@@ -1,12 +1,16 @@
 <sw-card-view>
-    <sw-card :title="$tc('frosh-tools.tabs.logs.title')" :isLoading="isLoading" :large="true">
-        <sw-single-select
-            :options="logFiles"
-            labelProperty="name"
-            valueProperty="name"
-            v-model="selectedLogFile"
-            @change="onFileSelected"
-        ></sw-single-select>
+    <sw-card class="frosh-tools-tab-logs__logs-card" :title="$tc('frosh-tools.tabs.logs.title')" :isLoading="isLoading" :large="true">
+        <template #toolbar>
+            <sw-single-select
+                :options="logFiles"
+                :isLoading="isLoading"
+                :placeholder="$tc('frosh-tools.tabs.logs.logFileSelect.placeholder')"
+                labelProperty="name"
+                valueProperty="name"
+                v-model="selectedLogFile"
+                @change="onFileSelected"
+            ></sw-single-select>
+        </template>
 
         <sw-data-grid
             :showSelection="false"

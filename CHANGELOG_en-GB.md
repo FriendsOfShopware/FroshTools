@@ -5,3 +5,4 @@
 # 0.1.1
 
 * Added positive status message for the production mode check. 
+* Administration view improvements.

@@ -5,3 +5,4 @@
 # 0.1.1
 
 * Positive Statusnachricht für den Produktivmodus Check hinzugefügt. 
+* Verbesserungen der Administration-Oberfläche.

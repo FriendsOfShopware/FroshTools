@@ -1,5 +1,5 @@
 <sw-card-view>
-    <sw-card :title="$tc('frosh-tools.tabs.queue.title')" :isLoading="isLoading" :large="true">
+    <sw-card class="frosh-tools-tab-queue__manager-card" :title="$tc('frosh-tools.tabs.queue.title')" :isLoading="isLoading" :large="true">
         <sw-entity-listing
             :showSelection="false"
             :fullPage="false"
@@ -12,7 +12,7 @@
         </sw-entity-listing>
     </sw-card>
 
-    <sw-card title="Actions" :large="true">
+    <sw-card class="frosh-tools-tab-queue__action-card" title="Actions" :large="true">
         <sw-button variant="danger" @click="showResetModal = true">{{ $tc('frosh-tools.resetQueue') }}</sw-button>
     </sw-card>
 
