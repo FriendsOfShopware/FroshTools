@@ -18,6 +18,10 @@ class ProductionChecker implements CheckerInterface
     {
         if ($this->environment !== 'prod') {
             $collection->add(HealthResult::error('frosh-tools.checker.not-prod'));
+
+            return;
         }
+
+        $collection->add(HealthResult::ok('frosh-tools.checker.prodGood'));
     }
 }
