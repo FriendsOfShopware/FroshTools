@@ -44,6 +44,10 @@ Component.register('frosh-tools-tab-files', {
         async createdComponent() {
             this.items = (await this.froshToolsService.getShopwareFiles()).data;
             this.isLoading = false;
+        },
+
+        openUrl(url) {
+            window.open(url, '_blank');
         }
     }
 });

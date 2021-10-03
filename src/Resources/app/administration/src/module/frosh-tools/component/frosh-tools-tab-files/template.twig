@@ -3,12 +3,24 @@
         <sw-alert variant="error" v-if="items.error">{{ items.error }}</sw-alert>
 
         <sw-alert variant="success" v-if="items.ok">{{ $tc('frosh-tools.tabs.files.allFilesOk') }}</sw-alert>
+        <sw-alert variant="warning" v-else>{{ $tc('frosh-tools.tabs.files.notOk') }}</sw-alert>
+
+        <template #toolbar>
+            <!-- @todo: Make the refresh button fancy -->
+            <sw-button variant="ghost" @click="createdComponent"><sw-icon :small="true" name="default-arrow-360-left"></sw-icon></sw-button>
+        </template>
 
         <sw-data-grid
             v-if="items.files"
             :showSelection="false"
             :dataSource="items.files"
             :columns="columns">
+
+            <template #actions="{ item }">
+                <sw-context-menu-item variant="danger" @click="openUrl(item.shopwareUrl)">
+                    {{ $tc('frosh-tools.tabs.files.openOriginal') }}
+                </sw-context-menu-item>
+            </template>
         </sw-data-grid>
     </sw-card>
 </sw-card-view>
