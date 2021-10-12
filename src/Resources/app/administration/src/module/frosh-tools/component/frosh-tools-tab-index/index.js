@@ -13,9 +13,8 @@ Component.register('frosh-tools-tab-index', {
         }
     },
 
-    async created() {
-        this.health = await this.FroshToolsService.healthStatus();
-        this.isLoading = false;
+    created() {
+        this.createdComponent();
     },
 
     computed: {
@@ -32,6 +31,18 @@ Component.register('frosh-tools-tab-index', {
                     rawData: true
                 },
             ];
+        },
+    },
+
+    methods: {
+        async refresh() {
+            this.isLoading = true;
+            await this.createdComponent();
+        },
+
+        async createdComponent() {
+            this.health = await this.FroshToolsService.healthStatus();
+            this.isLoading = false;
         },
     }
 })
