@@ -1,5 +1,5 @@
 <sw-card-view>
-    <sw-card :title="$tc('frosh-tools.tabs.queue.title')" :isLoading="isLoading" :large="true">
+    <sw-card class="frosh-tools-tab-queue__manager-card" :title="$tc('frosh-tools.tabs.queue.title')" :isLoading="isLoading" :large="true">
         <template #toolbar>
             <!-- @todo: Make the refresh button fancy -->
             <sw-button variant="ghost" @click="refresh"><sw-icon :small="true" name="default-arrow-360-left"></sw-icon></sw-button>
@@ -17,7 +17,7 @@
         </sw-entity-listing>
     </sw-card>
 
-    <sw-card title="Actions" :large="true">
+    <sw-card class="frosh-tools-tab-queue__action-card" title="Actions" :large="true">
         <sw-button variant="danger" @click="showResetModal = true">{{ $tc('frosh-tools.resetQueue') }}</sw-button>
     </sw-card>
 

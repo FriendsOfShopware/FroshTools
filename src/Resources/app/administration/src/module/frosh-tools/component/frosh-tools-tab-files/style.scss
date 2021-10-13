@@ -1,0 +1,15 @@
+@import "~scss/variables";
+
+.frosh-tools-tab-files__files-card {
+    .sw-card__content {
+        .sw-alert {
+            margin: 30px;
+        }
+    }
+
+    &:not(.is-loading) {
+        .sw-card__content {
+            padding: 0;
+        }
+    }
+}

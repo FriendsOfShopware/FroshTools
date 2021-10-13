@@ -1,4 +1,5 @@
 import template from './template.twig';
+import './style.scss';
 
 const { Component, Mixin } = Shopware;
 const { Criteria } = Shopware.Data;
@@ -100,7 +101,7 @@ Component.register('frosh-tools-tab-cache', {
 
                 await this.themeService.assignTheme(theme.id, salesChannel.id);
                 this.createNotificationSuccess({
-                    message: `${salesChannel.translated.name}` + ': ' + this.$tc('frosh-tools.themecompiled')
+                    message: `${salesChannel.translated.name}` + ': ' + this.$tc('frosh-tools.themeCompiled')
                 })
             }
 

@@ -1,4 +1,5 @@
 import template from './template.twig';
+import './style.scss';
 
 const { Component, Mixin } = Shopware;
 
@@ -30,7 +31,13 @@ Component.register('frosh-tools-tab-files', {
                     primary: true
                 }
             ];
-        }
+        },
+
+        isLoadingClass() {
+            return {
+                'is-loading': this.isLoading
+            }
+        },
     },
 
     methods: {
