@@ -3,6 +3,12 @@
         padding: 0;
     }
 
+    .sw-card__toolbar {
+        display: grid;
+        grid-template-columns: auto 1fr;
+        grid-gap: 20px;
+    }
+
     .sw-single-select {
         margin: 0;
     }

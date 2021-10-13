@@ -31,7 +31,13 @@ Component.register('frosh-tools-tab-files', {
                     primary: true
                 }
             ];
-        }
+        },
+
+        isLoadingClass() {
+            return {
+                'is-loading': this.isLoading
+            }
+        },
     },
 
     methods: {
