@@ -58,12 +58,22 @@ Component.register('frosh-tools-tab-logs', {
     },
 
     methods: {
+        async refresh() {
+            this.isLoading = true;
+            await this.createdComponent();
+            await this.onFileSelected();
+        },
+
         async createdComponent() {
             this.logFiles = await this.FroshToolsService.getLogFiles();
             this.isLoading = false;
         },
 
         async onFileSelected() {
+            if (!this.selectedLogFile) {
+                return;
+            }
+
             const logEntries = await this.FroshToolsService.getLogFile(
                 this.selectedLogFile,
                 (this.page - 1) * this.limit,

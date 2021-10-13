@@ -63,6 +63,10 @@ Component.register('frosh-tools-tab-scheduled', {
     },
 
     methods: {
+        async refresh() {
+            this.isLoading = true;
+            await this.createdComponent();
+        },
         async createdComponent() {
             const criteria = new Criteria;
             criteria.addSorting(Criteria.sort('nextExecutionTime', 'ASC'));

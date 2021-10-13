@@ -12,6 +12,11 @@
             ></sw-single-select>
         </template>
 
+        <template #toolbar>
+            <!-- @todo: Make the refresh button fancy -->
+            <sw-button variant="ghost" @click="refresh"><sw-icon :small="true" name="default-arrow-360-left"></sw-icon></sw-button>
+        </template>
+
         <sw-data-grid
             :showSelection="false"
             :showActions="false"
