@@ -4,7 +4,7 @@ const { Component } = Shopware;
 
 Component.override('sw-version', {
     template,
-    inject: ['FroshToolsService'],
+    inject: ['froshToolsService'],
 
     async created() {
         await this.checkHealth();
@@ -58,10 +58,10 @@ Component.override('sw-version', {
 
     methods: {
         async checkHealth() {
-            this.health = await this.FroshToolsService.healthStatus();
+            this.health = await this.froshToolsService.healthStatus();
 
             setInterval(async() => {
-                this.health = await this.FroshToolsService.healthStatus();
+                this.health = await this.froshToolsService.healthStatus();
             }, 10000);
         }
     }

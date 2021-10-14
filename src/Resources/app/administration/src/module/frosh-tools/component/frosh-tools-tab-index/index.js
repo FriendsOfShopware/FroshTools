@@ -4,7 +4,7 @@ import './style.scss';
 const { Component } = Shopware;
 
 Component.register('frosh-tools-tab-index', {
-    inject: ['FroshToolsService'],
+    inject: ['froshToolsService'],
     template,
 
     data() {
@@ -42,7 +42,7 @@ Component.register('frosh-tools-tab-index', {
         },
 
         async createdComponent() {
-            this.health = await this.FroshToolsService.healthStatus();
+            this.health = await this.froshToolsService.healthStatus();
             this.isLoading = false;
         },
     }

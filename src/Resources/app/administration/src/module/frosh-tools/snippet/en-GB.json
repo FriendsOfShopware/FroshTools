@@ -71,6 +71,8 @@
       "prodGood": "Shop is in production mode"
     },
     "size": "Size",
+    "docs": "Documents",
+    "delete": "Delete",
     "resetQueue": "Reset Queue",
     "date": "Date",
     "channel": "Channel",

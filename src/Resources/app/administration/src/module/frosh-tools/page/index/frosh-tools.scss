@@ -7,6 +7,11 @@
     .sw-card-view__content {
         padding-top: 0;
     }
+    .sw-card-view {
+        position: initial;
+        height: initial;
+        width: initial;
+    }
 }
 
 .sw-version__status {

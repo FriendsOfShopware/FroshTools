@@ -5,7 +5,7 @@ const { Component, Mixin } = Shopware;
 
 Component.register('frosh-tools-tab-logs', {
     template,
-    inject: ['FroshToolsService'],
+    inject: ['froshToolsService'],
     mixins: [
         Mixin.getByName('notification')
     ],
@@ -65,7 +65,7 @@ Component.register('frosh-tools-tab-logs', {
         },
 
         async createdComponent() {
-            this.logFiles = await this.FroshToolsService.getLogFiles();
+            this.logFiles = await this.froshToolsService.getLogFiles();
             this.isLoading = false;
         },
 
@@ -74,7 +74,7 @@ Component.register('frosh-tools-tab-logs', {
                 return;
             }
 
-            const logEntries = await this.FroshToolsService.getLogFile(
+            const logEntries = await this.froshToolsService.getLogFile(
                 this.selectedLogFile,
                 (this.page - 1) * this.limit,
                 this.limit

@@ -71,6 +71,8 @@
       "prodGood": "Shop ist im Produktivmodus"
     },
     "size": "Größe",
+    "docs": "Dokumente",
+    "delete": "Löschen",
     "resetQueue": "Queue zurücksetzen",
     "date": "Zeitpunkt",
     "channel": "Kanal",

@@ -6,7 +6,7 @@ const { Criteria } = Shopware.Data;
 
 Component.register('frosh-tools-tab-scheduled', {
     template,
-    inject: ['repositoryFactory', 'FroshToolsService'],
+    inject: ['repositoryFactory', 'froshToolsService'],
     mixins: [
         Mixin.getByName('notification')
     ],
@@ -80,7 +80,7 @@ Component.register('frosh-tools-tab-scheduled', {
                 this.createNotificationInfo({
                     message: this.$tc('frosh-tools.scheduledTaskStarted', 0, {'name': item.name})
                 })
-                await this.FroshToolsService.runScheduledTask(item.id);
+                await this.froshToolsService.runScheduledTask(item.id);
                 this.createNotificationSuccess({
                     message: this.$tc('frosh-tools.scheduledTaskSucceed', 0, {'name': item.name})
                 })

@@ -97,5 +97,14 @@
             <argument>%kernel.shopware_version%</argument>
             <argument>%kernel.project_dir%</argument>
         </service>
+
+        <service id="Frosh\Tools\Components\Elasticsearch\ElasticsearchManager">
+            <argument type="service" id="Elasticsearch\Client"/>
+            <argument>%elasticsearch.enabled%</argument>
+        </service>
+
+        <service id="Frosh\Tools\Controller\ElasticsearchController" public="true">
+            <argument type="service" id="Frosh\Tools\Components\Elasticsearch\ElasticsearchManager"/>
+        </service>
     </services>
 </container>

@@ -7,7 +7,7 @@ const { Criteria } = Shopware.Data;
 Component.register('frosh-tools-tab-cache', {
     template,
 
-    inject: ['FroshToolsService', 'repositoryFactory', 'themeService'],
+    inject: ['froshToolsService', 'repositoryFactory', 'themeService'],
     mixins: [
         Mixin.getByName('notification')
     ],
@@ -59,7 +59,7 @@ Component.register('frosh-tools-tab-cache', {
     methods: {
         async createdComponent() {
             this.isLoading = true;
-            this.cacheInfo = await this.FroshToolsService.getCacheInfo();
+            this.cacheInfo = await this.froshToolsService.getCacheInfo();
             this.isLoading = false;
         },
 
@@ -85,7 +85,7 @@ Component.register('frosh-tools-tab-cache', {
 
         async clearCache(item) {
             this.isLoading = true;
-            await this.FroshToolsService.clearCache(item.name);
+            await this.froshToolsService.clearCache(item.name);
             await this.createdComponent();
         },
 

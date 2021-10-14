@@ -6,7 +6,7 @@ const { Criteria } = Shopware.Data;
 
 Component.register('frosh-tools-tab-queue', {
     template,
-    inject: ['repositoryFactory', 'FroshToolsService'],
+    inject: ['repositoryFactory', 'froshToolsService'],
     mixins: [
         Mixin.getByName('notification')
     ],
@@ -62,7 +62,7 @@ Component.register('frosh-tools-tab-queue', {
         },
         async resetQueue() {
             this.isLoading = true;
-            await this.FroshToolsService.resetQueue();
+            await this.froshToolsService.resetQueue();
             this.showResetModal = false;
             this.createdComponent();
             this.createNotificationSuccess({

@@ -5,7 +5,7 @@ const { Component, Mixin } = Shopware;
 
 Component.register('frosh-tools-tab-files', {
     template,
-    inject: ['repositoryFactory', 'FroshToolsService'],
+    inject: ['repositoryFactory', 'froshToolsService'],
     mixins: [
         Mixin.getByName('notification')
     ],
@@ -42,7 +42,7 @@ Component.register('frosh-tools-tab-files', {
 
     methods: {
         async createdComponent() {
-            this.items = (await this.FroshToolsService.getShopwareFiles()).data;
+            this.items = (await this.froshToolsService.getShopwareFiles()).data;
             this.isLoading = false;
         }
     }
