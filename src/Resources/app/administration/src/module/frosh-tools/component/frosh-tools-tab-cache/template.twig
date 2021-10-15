@@ -8,7 +8,8 @@
         <sw-data-grid
             :showSelection="false"
             :dataSource="cacheFolders"
-            :columns="columns">
+            :columns="columns"
+        >
 
             <template #column-name="{ item }">
                 <sw-label variant="success" appearance="pill" v-if="item.active" >
@@ -21,11 +22,21 @@
             </template>
 
             <template #column-size="{ item }">
-                {{ formatSize(item.size) }}
+                <template v-if="item.size < 0">
+                    unknown
+                </template>
+                <template v-else>
+                    {{ formatSize(item.size) }}
+                </template>
             </template>
 
             <template #column-freeSpace="{ item }">
-                {{ formatSize(item.freeSpace) }}
+                <template v-if="item.freeSpace < 0">
+                    unknown
+                </template>
+                <template v-else>
+                    {{ formatSize(item.freeSpace) }}
+                </template>
             </template>
 
             <template #actions="{ item }">

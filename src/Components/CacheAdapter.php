@@ -2,8 +2,10 @@
 
 namespace Frosh\Tools\Components;
 
+use APCUIterator;
 use Shopware\Storefront\Framework\Cache\CacheDecorator;
 use Symfony\Component\Cache\Adapter\AdapterInterface;
+use Symfony\Component\Cache\Adapter\ApcuAdapter;
 use Symfony\Component\Cache\Adapter\ArrayAdapter;
 use Symfony\Component\Cache\Adapter\FilesystemAdapter;
 use Symfony\Component\Cache\Adapter\PhpFilesAdapter;
@@ -29,28 +31,35 @@ class CacheAdapter
                 return CacheHelper::getSize($this->getPathFromFilesystemAdapter($this->adapter));
             case $this->adapter instanceof ArrayAdapter:
                 return 0;
+            case $this->adapter instanceof PhpFilesAdapter:
+                return CacheHelper::getSize($this->getPathOfFilesAdapter($this->adapter));
+            case $this->adapter instanceof ApcuAdapter:
+                $aPCUIterator = new APCUIterator();
+                return $aPCUIterator->getTotalSize();
         }
 
-        return 0;
+        return -1;
     }
 
-    public function getFreeSize(): int
+    public function getFreeSize(): ?int
     {
         switch (true) {
             case $this->adapter instanceof RedisAdapter:
                 $info = $this->getRedis($this->adapter)->info();
                 if ($info['maxmemory'] === 0) {
-                    return 0;
+                    return -1;
                 }
 
                 return $info['maxmemory'] - $info['used_memory'];
             case $this->adapter instanceof FilesystemAdapter:
                 return (int) disk_free_space($this->getPathFromFilesystemAdapter($this->adapter));
+            case $this->adapter instanceof ArrayAdapter:
+                return 0;
             case $this->adapter instanceof PhpFilesAdapter:
                 return (int) disk_free_space($this->getPathOfFilesAdapter($this->adapter));
         }
 
-        return 0;
+        return -1;
     }
 
     public function clear(): void
@@ -83,6 +92,8 @@ class CacheAdapter
                 return 'Array';
             case $this->adapter instanceof PhpFilesAdapter:
                 return 'PHP files';
+            case $this->adapter instanceof ApcuAdapter:
+                return 'APCu';
         }
 
         return '';

@@ -15,11 +15,18 @@ Component.register('frosh-tools-tab-cache', {
     data() {
         return {
             cacheInfo: null,
-            isLoading: true
+            isLoading: true,
+            numberFormater: null
         }
     },
 
     async created() {
+        const language = Shopware.Application.getContainer('factory').locale.getLastKnownLocale();
+        this.numberFormater = new Intl.NumberFormat(
+            language ?? navigator.language,
+            { maximumFractionDigits: 2 }
+        );
+
         this.createdComponent();
     },
 
@@ -64,23 +71,9 @@ Component.register('frosh-tools-tab-cache', {
         },
 
         formatSize(bytes) {
-            const thresh = 1024;
-            const dp = 1;
+            bytes /= 1024 * 1024;
 
-            if (Math.abs(bytes) < thresh) {
-                return bytes + ' B';
-            }
-
-            const units = ['KiB', 'MiB', 'GiB', 'TiB', 'PiB', 'EiB', 'ZiB', 'YiB'];
-            let u = -1;
-            const r = 10**dp;
-
-            do {
-                bytes /= thresh;
-                ++u;
-            } while (Math.round(Math.abs(bytes) * r) / r >= thresh && u < units.length - 1);
-
-            return bytes.toFixed(dp) + ' ' + units[u];
+            return this.numberFormater.format(bytes) + ' MiB';
         },
 
         async clearCache(item) {
