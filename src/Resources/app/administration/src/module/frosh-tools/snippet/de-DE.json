@@ -30,7 +30,11 @@
         "title": "Shopware Dateien Checker",
         "allFilesOk": "Alle Dateien wurden nicht manipuliert",
         "notOk": "Es gibt Dateien, die manipuliert wurden",
-        "openOriginal": "Öffne Originaldatei auf github"
+        "openOriginal": "Öffne Originaldatei auf github",
+        "restore": {
+          "diff": "Vergleiche Datei mit Original",
+          "restoreFile": "Datei wiederherstellen"
+        }
       }
     },
     "clear": "Leeren",

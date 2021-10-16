@@ -7,7 +7,7 @@
 
         <template #toolbar>
             <!-- @todo: Make the refresh button fancy -->
-            <sw-button variant="ghost" @click="createdComponent"><sw-icon :small="true" name="default-arrow-360-left"></sw-icon></sw-button>
+            <sw-button variant="ghost" @click="refresh"><sw-icon :small="true" name="default-arrow-360-left"></sw-icon></sw-button>
         </template>
 
         <sw-data-grid
@@ -17,10 +17,28 @@
             :columns="columns">
 
             <template #actions="{ item }">
-                <sw-context-menu-item variant="danger" @click="openUrl(item.shopwareUrl)">
+                <sw-context-menu-item @click="openUrl(item.shopwareUrl)">
                     {{ $tc('frosh-tools.tabs.files.openOriginal') }}
+                </sw-context-menu-item>
+                <sw-context-menu-item @click="diff(item.name, item.content, item.originalContent)">
+                    {{ $tc('frosh-tools.tabs.files.restore.diff') }}
                 </sw-context-menu-item>
             </template>
         </sw-data-grid>
     </sw-card>
+
+    <sw-modal v-if="showModal"
+        variant="large"
+        @modal-close="closeModal"
+        :title="diffData.file">
+
+        <span style="white-space: pre" v-html="diffData.html"></span>
+
+        <template slot="modal-footer">
+            <sw-button variant="ghost-danger" @click="restoreFile(diffData.file)">
+                <sw-icon name="default-badge-warning"></sw-icon>
+                {{ $tc('frosh-tools.tabs.files.restore.restoreFile') }}
+            </sw-button>
+        </template>
+    </sw-modal>
 </sw-card-view>

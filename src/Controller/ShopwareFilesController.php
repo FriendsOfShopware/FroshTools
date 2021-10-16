@@ -5,6 +5,7 @@ namespace Frosh\Tools\Controller;
 use Shopware\Core\Framework\Routing\Annotation\RouteScope;
 use Shopware\Core\Kernel;
 use Symfony\Component\HttpFoundation\JsonResponse;
+use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Routing\Annotation\Route;
 
 /**
@@ -48,12 +49,13 @@ class ShopwareFilesController
 
         foreach (explode("\n", $data) as $row) {
             [$expectedMd5Sum, $file] = explode('  ', trim($row));
+            $path = $this->projectDir . '/' . $file;
 
-            if (!is_file($this->projectDir . '/' . $file)) {
+            if (!is_file($path)) {
                 continue;
             }
 
-            $md5Sum = md5_file($this->projectDir . '/' . $file);
+            $md5Sum = md5_file($path);
 
             if ($this->isIgnoredFileHash($file, $md5Sum)) {
                 continue;
@@ -62,18 +64,57 @@ class ShopwareFilesController
             if ($md5Sum !== $expectedMd5Sum) {
                 $invalidFiles[] = [
                     'name' => $file,
-                    'shopwareUrl' => $this->getShopwareUrl($file)
+                    'shopwareUrl' => $this->getShopwareUrl($file),
+                    'content' => file_get_contents($path),
+                    'originalContent' => $this->getOriginalFileContent($file)
                 ];
             }
         }
 
-        return new JsonResponse(['ok' => empty($invalidFiles), 'files' => $invalidFiles]);
+        if (empty($invalidFiles)) {
+            return new JsonResponse(['ok' => true]);
+        }
+
+        return new JsonResponse(['ok' => false, 'files' => $invalidFiles]);
+    }
+
+    /**
+     * @Route(path="/shopware-file/restore", methods={"GET"}, name="api.frosh.tools.shopware-file.restore")
+     */
+    public function restoreShopwareFile(Request $request): JsonResponse
+    {
+        if ($this->shopwareVersion === Kernel::SHOPWARE_FALLBACK_VERSION) {
+            return new JsonResponse(['error' => 'Git version is not supported'], );
+        }
+
+        if (!file_exists($this->projectDir . '/vendor/shopware/core')) {
+            return new JsonResponse(['error' => 'Works only in Production template']);
+        }
+
+        $file = $request->query->get('file');
+        if (!$file) {
+            return new JsonResponse(['error' => 'no file provided']);
+        }
+
+        $path = realpath($this->projectDir . '/' . $file);
+        if ($path === false || !str_starts_with($path, $this->projectDir) || !is_file($path)) {
+            return new JsonResponse(['error' => 'File is invalid']);
+        }
+
+        file_put_contents($path, $this->getOriginalFileContent($file));
+
+        return new JsonResponse(['status' => sprintf('File at "%s" has been restored', $file)]);
     }
 
     private function getShopwareUrl(string $name): ?string
     {
         $name = preg_replace('/^vendor\/shopware\//', '', $name);
         return 'https://github.com/shopware/platform/blob/v' . $this->shopwareVersion . '/src/' . ucfirst($name);
+    }
+
+    private function getOriginalFileContent(string $name): ?string
+    {
+        return file_get_contents($this->getShopwareUrl($name) . '?raw=true');
     }
 
     private function isIgnoredFileHash(string $file, string $md5Sum): bool
