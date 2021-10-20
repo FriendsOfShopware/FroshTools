@@ -1,0 +1,9 @@
+{
+  "name": "Resources",
+  "version": "1.0.0",
+  "main": "index.js",
+  "dependencies": {
+    "diff-match-patch": "^1.0.5"
+  },
+  "license": "MIT"
+}
