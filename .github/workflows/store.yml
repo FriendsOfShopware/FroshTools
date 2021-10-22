@@ -25,6 +25,7 @@ jobs:
 
             -   name: Build & create zip
                 run: |
+                    npm install --prefix "./${PLUGIN_NAME}/src/Resources/app/administration/"
                     cp -r "./${PLUGIN_NAME}" "/plugins/${PLUGIN_NAME}"
                     start-mysql
                     pack-plugin "${PLUGIN_NAME}"
@@ -60,6 +61,7 @@ jobs:
 
             -   name: Build & create zip
                 run: |
+                    npm install --prefix "./${PLUGIN_NAME}/src/Resources/app/administration/"
                     cp -r "./${PLUGIN_NAME}" "/plugins/${PLUGIN_NAME}"
                     start-mysql
                     pack-plugin "${PLUGIN_NAME}"
