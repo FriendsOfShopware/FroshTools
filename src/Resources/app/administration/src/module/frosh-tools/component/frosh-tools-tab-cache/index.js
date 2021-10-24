@@ -23,8 +23,8 @@ Component.register('frosh-tools-tab-cache', {
     async created() {
         const language = Shopware.Application.getContainer('factory').locale.getLastKnownLocale();
         this.numberFormater = new Intl.NumberFormat(
-            language ?? navigator.language,
-            { maximumFractionDigits: 2 }
+            language,
+            { minimumFractionDigits: 2, maximumFractionDigits: 2 }
         );
 
         this.createdComponent();
@@ -41,12 +41,14 @@ Component.register('frosh-tools-tab-cache', {
                 {
                     property: 'size',
                     label: 'frosh-tools.used',
-                    rawData: true
+                    rawData: true,
+                    align: 'right'
                 },
                 {
                     property: 'freeSpace',
                     label: 'frosh-tools.free',
-                    rawData: true
+                    rawData: true,
+                    align: 'right'
                 }
             ];
         },
