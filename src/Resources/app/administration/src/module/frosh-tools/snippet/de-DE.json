@@ -67,6 +67,8 @@
       "mariaDbVersion": "MariaDB-Version: {version}",
       "phpOutdated": "Verwende mindestens PHP-Version {minPhpVersion}. Installiert: {version}",
       "phpGood": "PHP-Version: {version}",
+      "maxExecutionTimeError": "Verwende mindestens einen Max-Execution-Time von {minMaxExecutionTime} Sekunden. Aktuell: {maxExecutionTime} Sekunden",
+      "maxExecutionTimeGood": "Max-Execution-Time: {maxExecutionTime} Sekunden",
       "memoryLimitError": "Verwende mindestens einen Memory-Limit von {minMemoryLimit}. Aktuell: {memoryLimit}",
       "memoryLimitGood": "Memory-Limit: {memoryLimit}",
       "zendOpcacheGood": "Zend Opcache ist aktiv",
