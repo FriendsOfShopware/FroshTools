@@ -6,3 +6,4 @@
 
 * Added positive status message for the production mode check. 
 * Administration view improvements.
+* Added Max-Execution-Time check to system status.

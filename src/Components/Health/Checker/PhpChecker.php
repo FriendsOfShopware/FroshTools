@@ -10,6 +10,7 @@ class PhpChecker implements CheckerInterface
     public function collect(HealthCollection $collection): void
     {
         $this->checkPhp($collection);
+        $this->checkMaxExecutionTime($collection);
         $this->checkMemoryLimit($collection);
         $this->checkOpCacheActive($collection);
     }
@@ -36,6 +37,22 @@ class PhpChecker implements CheckerInterface
                 HealthResult::ok('frosh-tools.checker.phpGood', ['version' => $currentPhpVersion])
             );
         }
+    }
+
+    private function checkMaxExecutionTime(HealthCollection $collection): void
+    {
+        $minMaxExecutionTime = 30;
+        $currentMaxExecutionTime = (int)ini_get('max_execution_time');
+        if ($currentMaxExecutionTime < $minMaxExecutionTime) {
+            $collection->add(
+                HealthResult::error('frosh-tools.checker.maxExecutionTimeError',
+                    ['minMaxExecutionTime' => $minMaxExecutionTime, 'maxExecutionTime' => $currentMaxExecutionTime])
+            );
+
+            return;
+        }
+
+        $collection->add(HealthResult::ok('frosh-tools.checker.maxExecutionTimeGood', ['maxExecutionTime' => $currentMaxExecutionTime]));
     }
 
     private function checkMemoryLimit(HealthCollection $collection): void
