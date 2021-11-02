@@ -62,7 +62,7 @@ Component.override('sw-version', {
 
             setInterval(async() => {
                 this.health = await this.froshToolsService.healthStatus();
-            }, 10000);
+            }, 30000);
         }
     }
 })
