@@ -2,11 +2,11 @@
 
 namespace Frosh\Tools\Controller;
 
+use Frosh\Tools\Components\Environment\EnvironmentManager;
 use Shopware\Core\Framework\Feature;
 use Shopware\Core\Framework\Routing\Annotation\RouteScope;
 use Shopware\Core\Framework\Routing\Exception\InvalidRequestParameterException;
 use Shopware\Core\Framework\Routing\Exception\MissingRequestParameterException;
-use Symfony\Component\Dotenv\Dotenv;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -19,11 +19,11 @@ use Symfony\Component\Routing\Annotation\Route;
  */
 class FeatureFlagController
 {
-    private string $projectDir;
+    private string $envPath;
 
     public function __construct(string $projectDir)
     {
-        $this->projectDir = $projectDir;
+        $this->envPath = $projectDir . '/.env';
     }
 
     /**
@@ -48,10 +48,10 @@ class FeatureFlagController
     {
         $featureFlag = $request->get('flag');
 
-        if (!file_exists($this->projectDir . '/.env')) {
+        if (!file_exists($this->envPath)) {
             throw new HttpException(
                 Response::HTTP_INTERNAL_SERVER_ERROR,
-                sprintf('File at %s does not exist', $this->projectDir . '/.env')
+                sprintf('File at %s does not exist', $this->envPath)
             );
         }
 
@@ -63,28 +63,22 @@ class FeatureFlagController
             throw new InvalidRequestParameterException('flag');
         }
 
-        $dotEnvParsed = (new Dotenv())->parse(file_get_contents($this->projectDir . '/.env'));
-
-        if (Feature::isActive($featureFlag)) {
-            $dotEnvParsed[$featureFlag] = 0;
-        } else {
-            $dotEnvParsed[$featureFlag] = 1;
-        }
-
-        $this->updateEnvFile($dotEnvParsed);
+        $this->updateEnvFile($featureFlag);
 
         return new Response('', Response::HTTP_NO_CONTENT);
     }
 
-    private function updateEnvFile(array $configuration): void
+    private function updateEnvFile(string $featureFlag): void
     {
-        $envVars = '';
-        $envFile = $this->projectDir . '/.env';
+        $manager = new EnvironmentManager();
+        $file = $manager->read($this->envPath);
 
-        foreach ($configuration as $key => $value) {
-            $envVars .= $key . '=' . $value . \PHP_EOL;
+        if (Feature::isActive($featureFlag)) {
+            $file->set($featureFlag, '0');
+        } else {
+            $file->set($featureFlag, '1');
         }
 
-        file_put_contents($envFile, $envVars);
+        $manager->save($this->envPath, $file);
     }
 }
