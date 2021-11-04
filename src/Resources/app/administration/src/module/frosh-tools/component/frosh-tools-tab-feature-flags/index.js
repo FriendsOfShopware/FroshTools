@@ -70,9 +70,14 @@ Component.register('frosh-tools-tab-feature-flags', {
                     window.location.reload();
                 })
                 .catch((error) => {
-                    this.createNotificationError({
-                        message: error?.response?.data?.errors[0]?.detail
-                    });
+                    try {
+                        this.createNotificationError({
+                            message: error.response.data.errors[0].detail
+                        });
+                    }
+                    catch (e) {
+                        console.error(error);
+                    }
                     this.isLoading = false;
                 });
         }
