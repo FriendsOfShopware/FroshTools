@@ -35,6 +35,15 @@
           "diff": "Vergleiche Datei mit Original",
           "restoreFile": "Datei wiederherstellen"
         }
+      },
+      "feature-flags": {
+         "title": "Feature Flags",
+          "flag": "Feature Flag",
+          "description": "Beschreibung",
+          "major": "Major",
+          "default": "Default",
+          "deactivate": "Deaktivieren",
+          "activate": "Aktivieren"
       }
     },
     "clear": "Leeren",

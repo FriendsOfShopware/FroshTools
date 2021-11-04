@@ -106,5 +106,9 @@
         <service id="Frosh\Tools\Controller\ElasticsearchController" public="true">
             <argument type="service" id="Frosh\Tools\Components\Elasticsearch\ElasticsearchManager"/>
         </service>
+
+        <service id="Frosh\Tools\Controller\FeatureFlagController" public="true">
+            <argument>%kernel.project_dir%</argument>
+        </service>
     </services>
 </container>
