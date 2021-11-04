@@ -44,7 +44,7 @@ class FeatureFlagController
     /**
      * @Route(path="/feature-flag/toggle", methods={"POST"}, name="api.frosh.tools.feature-flag.toggle")
      */
-    public function toggle(Request $request): JsonResponse
+    public function toggle(Request $request): Response
     {
         $featureFlag = $request->get('flag');
 
@@ -73,7 +73,7 @@ class FeatureFlagController
 
         $this->updateEnvFile($dotEnvParsed);
 
-        return new JsonResponse($dotEnvParsed);
+        return new Response('', Response::HTTP_NO_CONTENT);
     }
 
     private function updateEnvFile(array $configuration): void
