@@ -37,7 +37,7 @@ jobs:
         needs: validatePlugin
         name: Update Store page
         container: ghcr.io/friendsofshopware/platform-plugin-dev:v6.4.0
-        if: startsWith(github.ref, 'refs/tags/') != true
+        if: startsWith(github.ref, 'refs/tags/') || contains(github.event.head_commit.message, '[store update]')
         runs-on: ubuntu-latest
         steps:
             -   name: Checkout
