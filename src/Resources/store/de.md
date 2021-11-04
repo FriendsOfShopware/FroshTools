@@ -14,6 +14,8 @@ Der aktuelle Funktionsumfang besteht aus:
     *   Zeigt die Einträge der Dateien /var/log/*.log an
 *   Task-Protokollierung
     *   Kann mit FROSH_TOOLS_TASK_LOGGING=1 in .env aktiviert werden. Dadurch wird ein Protokoll in var/log/task_logging-xx.log erstellt.
+*   Feature Flag Manager
+    *   Erlaubt das aktivieren/deaktivieren von Feature Flags
 
 Link to repository: [https://github.com/FriendsOfShopware/FroshTools](https://github.com/FriendsOfShopware/FroshTools)  
 

@@ -16,6 +16,8 @@ The current feature set consists of:
   - Shows the entries of /var/log/*.log files
 - Task Logging
   - Can be enabled with env `FROSH_TOOLS_TASK_LOGGING=1` in `.env`. This will create a log in `var/log/task_logging-xx.log`
+- Feature Flag Manager
+  - Provides the ability to enable or disable feature flags
 
 ## Installation
 

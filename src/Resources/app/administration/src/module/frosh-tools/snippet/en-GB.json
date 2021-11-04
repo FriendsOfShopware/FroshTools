@@ -35,6 +35,15 @@
           "diff": "Diff file with original",
           "restoreFile": "Restore file"
         }
+      },
+      "feature-flags": {
+          "title": "Feature Flags",
+          "flag": "Feature Flag",
+          "description": "Description",
+          "major": "Major",
+          "default": "Default",
+          "deactivate": "Deactivate",
+          "activate": "Activate"
       }
     },
     "clear": "Clear",
