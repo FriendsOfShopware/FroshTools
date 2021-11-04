@@ -7,7 +7,8 @@
 * Positive Statusnachricht für den Produktivmodus Check hinzugefügt. 
 * Verbesserungen der Administration-Oberfläche.
 * Max-Execution-Time Prüfung zum System Status hinzugefügt.
-
-# 0.1.2
-
+* Sortierung von Geplanten Aufgaben und Caches angepasst
+* Schaltflächen zum Aktualisieren von Daten in allen Komponenten hinzugefügt
+* Vergleichen-Funktion im Shopware-Files-Checker hinzugefügt
+* Wiederherstellen-Funktion im Shopware-Files-Checker hinzugefügt
 * Feature Flag Manager hinzugefügt

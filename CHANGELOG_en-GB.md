@@ -7,7 +7,8 @@
 * Added positive status message for the production mode check. 
 * Administration view improvements.
 * Added Max-Execution-Time check to system status.
-
-# 0.1.2
-
+* Adjusted sorting of Tasks and Caches.
+* Added buttons to refresh data in all components.
+* Added Diff-Function in Shopware-Files-Checker.
+* Added Restore-Function in Shopware-Files-Checker.
 * Added Feature Flag Manager
