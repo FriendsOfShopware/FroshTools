@@ -8,6 +8,9 @@ use Shopware\Core\Framework\Context;
 use Shopware\Core\Framework\DataAbstractionLayer\EntityRepositoryInterface;
 use Shopware\Core\Framework\DataAbstractionLayer\Search\Criteria;
 use Shopware\Core\Framework\DataAbstractionLayer\Search\Filter\RangeFilter;
+use Shopware\Core\Framework\DataAbstractionLayer\Search\Filter\NotFilter;
+use Shopware\Core\Framework\DataAbstractionLayer\Search\Filter\EqualsFilter;
+use Shopware\Core\Framework\MessageQueue\ScheduledTask\ScheduledTaskDefinition;
 
 class TaskChecker implements CheckerInterface
 {
@@ -35,6 +38,12 @@ class TaskChecker implements CheckerInterface
                 ['lte' => $date->format(\DATE_ATOM)]
             )
         );
+        $criteria->addFilter(new NotFilter(
+            NotFilter::CONNECTION_AND, 
+            [
+                new EqualsFilter('status', ScheduledTaskDefinition::STATUS_INACTIVE)
+            ]
+        ));
 
         $oldTasks = $this->scheduledTaskRepository
             ->searchIds($criteria, Context::createDefaultContext())->getIds();
