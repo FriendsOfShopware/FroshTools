@@ -27,6 +27,11 @@
             <tag name="console.command"/>
         </service>
 
+        <service id="Frosh\Tools\Command\DevEnvCommand">
+            <argument>%kernel.project_dir%/public</argument>
+            <tag name="console.command"/>
+        </service>
+
         <service id="frosh.tools.cache.app" class="Frosh\Tools\Components\CacheAdapter">
             <argument type="service" id="cache.object"/>
         </service>
