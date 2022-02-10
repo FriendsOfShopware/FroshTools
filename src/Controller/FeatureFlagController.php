@@ -38,6 +38,12 @@ class FeatureFlagController
             $featureFlags[$featureFlag]['active'] = Feature::isActive($featureFlag);
         }
 
+        $activeColumns = array_column($featureFlags, 'active');
+        $flagColumns = array_column($featureFlags, 'flag');
+        array_multisort($activeColumns, \SORT_DESC,
+            $flagColumns, \SORT_ASC,
+            $featureFlags);
+
         return new JsonResponse(array_values($featureFlags));
     }
 

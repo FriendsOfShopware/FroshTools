@@ -56,6 +56,10 @@ Component.register('frosh-tools-tab-feature-flags', {
     },
 
     methods: {
+        async refresh() {
+            await this.createdComponent();
+        },
+
         async createdComponent() {
             this.isLoading = true;
             this.featureFlags = await this.froshToolsService.getFeatureFlags();
