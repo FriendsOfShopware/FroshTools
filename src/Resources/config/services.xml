@@ -27,7 +27,7 @@
             <tag name="console.command"/>
         </service>
 
-        <service id="Frosh\Tools\Command\DevEnvCommand">
+        <service id="Frosh\Tools\Command\DevRobotsTxtCommand">
             <argument>%kernel.project_dir%/public</argument>
             <tag name="console.command"/>
         </service>
