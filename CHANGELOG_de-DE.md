@@ -12,3 +12,9 @@
 * Vergleichen-Funktion im Shopware-Files-Checker hinzugefügt
 * Wiederherstellen-Funktion im Shopware-Files-Checker hinzugefügt
 * Feature Flag Manager hinzugefügt
+
+# 0.1.2
+
+* Inaktive Aufgaben vom Task-Manager ausgeschloßen
+* Feature-flags sortiert und einen Aktualisieren-Button hinzugefügt
+* Support des neuen Incrementer für die Messages hinzugefügt

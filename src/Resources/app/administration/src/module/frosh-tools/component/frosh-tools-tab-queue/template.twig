@@ -5,16 +5,12 @@
             <sw-button variant="ghost" @click="refresh"><sw-icon :small="true" name="default-arrow-360-left"></sw-icon></sw-button>
         </template>
 
-        <sw-entity-listing
+        <sw-data-grid
             :showSelection="false"
-            :fullPage="false"
-            :allowEdit="false"
-            :allowDelete="false"
-            :showActions="false"
-            :repository="queueRepository"
-            :items="queueEntries"
-            :columns="columns">
-        </sw-entity-listing>
+            :dataSource="queueEntries"
+            :columns="columns"
+        >
+        </sw-data-grid>
     </sw-card>
 
     <sw-card class="frosh-tools-tab-queue__action-card" title="Actions" :large="true">

@@ -1,6 +1,6 @@
 {
     "name": "frosh/tools",
-    "version": "0.1.1",
+    "version": "0.1.2",
     "description": "Provides some basic things for managing the Shopware Installation",
     "type": "shopware-platform-plugin",
     "license": "MIT",
@@ -35,7 +35,7 @@
         }
     },
     "require": {
-        "shopware/core": "~6.4.0"
+        "shopware/core": "~6.4.7"
     },
     "require-dev": {
         "friendsofphp/php-cs-fixer": "~3.0"
