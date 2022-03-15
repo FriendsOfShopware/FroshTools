@@ -15,7 +15,7 @@ jobs:
     validatePlugin:
         if: startsWith(github.ref, 'refs/tags/') != true
         name: Check for Store compliance
-        container: ghcr.io/friendsofshopware/platform-plugin-dev:v6.4.0
+        container: ghcr.io/friendsofshopware/platform-plugin-dev:v6.4.7
         runs-on: ubuntu-latest
         steps:
             -   name: Checkout
@@ -36,7 +36,7 @@ jobs:
     StoreUpdate:
         needs: validatePlugin
         name: Update Store page
-        container: ghcr.io/friendsofshopware/platform-plugin-dev:v6.4.0
+        container: ghcr.io/friendsofshopware/platform-plugin-dev:v6.4.7
         if: startsWith(github.ref, 'refs/tags/') || contains(github.event.head_commit.message, '[store update]')
         runs-on: ubuntu-latest
         steps:
@@ -51,7 +51,7 @@ jobs:
     StoreRelease:
         if: startsWith(github.ref, 'refs/tags/')
         runs-on: ubuntu-latest
-        container: ghcr.io/friendsofshopware/platform-plugin-dev:v6.4.0
+        container: ghcr.io/friendsofshopware/platform-plugin-dev:v6.4.7
         name: Upload Extension to Store
         steps:
             -   name: Checkout
