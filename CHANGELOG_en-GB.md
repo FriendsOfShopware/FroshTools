@@ -12,3 +12,9 @@
 * Added Diff-Function in Shopware-Files-Checker.
 * Added Restore-Function in Shopware-Files-Checker.
 * Added Feature Flag Manager
+
+# 0.1.2
+
+* Exclude inactive tasks from health check
+* Sort feature-flags, add refresh-button onto feature-flags tab
+* Adsed support for the new message incrementer

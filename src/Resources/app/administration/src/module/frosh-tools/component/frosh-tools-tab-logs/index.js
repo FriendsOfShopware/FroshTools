@@ -27,10 +27,6 @@ Component.register('frosh-tools-tab-logs', {
     },
 
     computed: {
-        queueRepository() {
-            return this.repositoryFactory.create('message_queue_stats');
-        },
-
         columns() {
             return [
                 {

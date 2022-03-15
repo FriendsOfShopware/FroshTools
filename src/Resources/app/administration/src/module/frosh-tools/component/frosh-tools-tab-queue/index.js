@@ -24,10 +24,6 @@ Component.register('frosh-tools-tab-queue', {
     },
 
     computed: {
-        queueRepository() {
-            return this.repositoryFactory.create('message_queue_stats');
-        },
-
         columns() {
             return [
                 {
@@ -50,9 +46,7 @@ Component.register('frosh-tools-tab-queue', {
             await this.createdComponent();
         },
         async createdComponent() {
-            const criteria = new Criteria;
-            criteria.addSorting(Criteria.sort('size', 'DESC'))
-            this.queueEntries = await this.queueRepository.search(criteria, Shopware.Context.api);
+            this.queueEntries = await this.froshToolsService.getQueue();
 
             for (let queue of this.queueEntries) {
                 let nameSplit = queue.name.split('\\')
