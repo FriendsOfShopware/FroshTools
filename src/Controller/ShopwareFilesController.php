@@ -109,7 +109,17 @@ class ShopwareFilesController
     private function getShopwareUrl(string $name): ?string
     {
         $name = preg_replace('/^vendor\/shopware\//', '', $name);
-        return 'https://github.com/shopware/platform/blob/v' . $this->shopwareVersion . '/src/' . ucfirst($name);
+
+        $pathParts = \explode('/', $name);
+        $repo = $pathParts[0];
+        array_shift($pathParts);
+
+        return 'https://github.com/shopware/' .
+            $repo .
+            '/blob/v' .
+            $this->shopwareVersion .
+            '/' .
+            \implode('/', $pathParts);
     }
 
     private function getOriginalFileContent(string $name): ?string
