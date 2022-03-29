@@ -37,6 +37,12 @@
             <tag name="console.command"/>
         </service>
 
+        <service id="Frosh\Tools\Command\UpdateComposerPluginsCommand">
+            <argument>%kernel.project_dir%</argument>
+            <argument type="service" id="Shopware\Core\Framework\Plugin\KernelPluginLoader\KernelPluginLoader"/>
+            <tag name="console.command"/>
+        </service>
+
         <service id="frosh.tools.cache.app" class="Frosh\Tools\Components\CacheAdapter">
             <argument type="service" id="cache.object"/>
         </service>
