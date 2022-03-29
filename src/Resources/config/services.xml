@@ -32,6 +32,11 @@
             <tag name="console.command"/>
         </service>
 
+        <service id="Frosh\Tools\Command\UpdatePluginsCommand">
+            <argument type="service" id="kernel"/>
+            <tag name="console.command"/>
+        </service>
+
         <service id="frosh.tools.cache.app" class="Frosh\Tools\Components\CacheAdapter">
             <argument type="service" id="cache.object"/>
         </service>
