@@ -18,3 +18,9 @@
 * Inaktive Aufgaben vom Task-Manager ausgeschloßen
 * Feature-flags sortiert und einen Aktualisieren-Button hinzugefügt
 * Support des neuen Incrementer für die Messages hinzugefügt
+
+# 0.1.3
+
+* Neuer Befehl "frosh:dev:robots-txt" um in Testumgebungen Bots auszuschließen
+* Neuer Befehl "frosh:plugin:update" um alle Plugins mit Updates automatisch zu aktualisieren
+* Verbessere URL von Dateien im Shopware-Files-Checker

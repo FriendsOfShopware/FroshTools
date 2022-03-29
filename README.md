@@ -63,6 +63,24 @@ bin/console frosh:env:set VARIABLE VALUE
 bin/console frosh:env:del VARIABLE
 ```
 
+### `frosh:dev:robots-txt` - For testshops - add/change robots.txt to stop crawers
+
+```bash
+bin/console frosh:dev:robots-txt
+```
+
+### `frosh:dev:robots-txt -r` - For testshops - revert changes in robots.txt
+
+```bash
+bin/console frosh:dev:robots-txt -r
+```
+
+### `frosh:plugin:update` - update plugins with available updates at once
+
+```bash
+bin/console frosh:plugin:update
+```
+
 ## Screenshots
 
 ![System Status](https://i.imgur.com/jZBzVFo.png)

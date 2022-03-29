@@ -17,4 +17,10 @@
 
 * Exclude inactive tasks from health check
 * Sort feature-flags, add refresh-button onto feature-flags tab
-* Adsed support for the new message incrementer
+* Added support for the new message incrementer
+
+# 0.1.3
+
+* New command "frosh:dev:robots-txt" to stop crawers in test environments
+* New command "frosh:plugin:update" to update plugins with available updates at once
+* Improve url of files in Shopware-Files-Checker
