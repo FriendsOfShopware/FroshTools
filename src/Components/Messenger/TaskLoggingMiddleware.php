@@ -73,7 +73,10 @@ class TaskLoggingMiddleware implements MiddlewareInterface
             $data = $message->getData();
 
             if (is_array($data)) {
-                return ['data' => implode(',', $data)];
+                return [
+                    'indexer' => $message->getIndexer(),
+                    'data' => implode(',', $data)
+                ];
             }
         }
 
