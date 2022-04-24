@@ -24,7 +24,7 @@
       "logs": {
         "title": "Log viewer",
         "logFileSelect": {
-            "placeholder": "Choose file"
+          "placeholder": "Choose file"
         }
       },
       "files": {
@@ -38,13 +38,13 @@
         }
       },
       "feature-flags": {
-          "title": "Feature Flags",
-          "flag": "Feature Flag",
-          "description": "Description",
-          "major": "Major",
-          "default": "Default",
-          "deactivate": "Deactivate",
-          "activate": "Activate"
+        "title": "Feature Flags",
+        "flag": "Feature Flag",
+        "description": "Description",
+        "major": "Major",
+        "default": "Default",
+        "deactivate": "Deactivate",
+        "activate": "Activate"
       }
     },
     "clear": "Clear",
@@ -88,7 +88,11 @@
       "not-prod": "Shop is not in production mode",
       "prodGood": "Shop is in production mode",
       "esGood": "Elasticsearch is enabled",
-      "esWarning": "Elasticsearch is disabled"
+      "esWarning": "Elasticsearch is disabled",
+      "adminWorkerGood": "Admin-Worker is disabled",
+      "adminWorkerWarning": "Admin-Worker should be disabled",
+      "publicFilesystemGood": "PublicFilesystem is not local",
+      "publicFilesystemWarning": "PublicFilesystem should not be local"
     },
     "size": "Size",
     "docs": "Documents",
