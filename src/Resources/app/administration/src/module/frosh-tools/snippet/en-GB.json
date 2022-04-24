@@ -95,6 +95,13 @@
       "publicFilesystemWarning": "PublicFilesystem should not be local",
       "updateMailVarialesGood": "MailVariables are not updated frequently",
       "updateMailVarialesWarning": "MailVariables should not be updated frequently"
+      "esWarning": "Elasticsearch is disabled",
+      "mailNotSendWithQueue": "Mails should be sent using the message queue",
+      "mailSendWithQueue": "Mails are send with the message queue",
+      "incrementStorageIsDB": "Increment storage is heavily using the Storage. This feature should be disabled or Redis should be used",
+      "incrementStorageIsNotDB": "Increment storage is correct configured",
+      "queueIsDefault": "The default queue storage in database does not scale well with multiple workers",
+      "queueIsOk": "Configured queue storage is ok for multiple workers"
     },
     "size": "Size",
     "docs": "Documents",

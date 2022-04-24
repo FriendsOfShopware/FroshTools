@@ -114,6 +114,22 @@
             <tag name="frosh_tools.performance_checker"/>
         </service>
 
+        <service id="Frosh\Tools\Components\Health\Checker\PerformanceChecker\MailOverQueueChecker">
+            <argument>%frosh_tools.mail_over_queue%</argument>
+            <tag name="frosh_tools.performance_checker"/>
+        </service>
+
+        <service id="Frosh\Tools\Components\Health\Checker\PerformanceChecker\IncrementStorageChecker">
+            <argument>%shopware.increment.user_activity.type%</argument>
+            <argument>%shopware.increment.message_queue.type%</argument>
+            <tag name="frosh_tools.performance_checker"/>
+        </service>
+
+        <service id="Frosh\Tools\Components\Health\Checker\PerformanceChecker\QueueConnectionChecker">
+            <argument>%frosh_tools.queue_connection%</argument>
+            <tag name="frosh_tools.performance_checker"/>
+        </service>
+
         <service id="Frosh\Tools\Components\Health\Checker\PerformanceChecker\EsChecker">
             <argument type="service" id="Frosh\Tools\Components\Elasticsearch\ElasticsearchManager"/>
             <tag name="frosh_tools.performance_checker"/>
