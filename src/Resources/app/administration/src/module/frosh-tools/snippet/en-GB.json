@@ -92,7 +92,9 @@
       "adminWorkerGood": "Admin-Worker is disabled",
       "adminWorkerWarning": "Admin-Worker should be disabled",
       "publicFilesystemGood": "PublicFilesystem is not local",
-      "publicFilesystemWarning": "PublicFilesystem should not be local"
+      "publicFilesystemWarning": "PublicFilesystem should not be local",
+      "updateMailVarialesGood": "MailVariables are not updated frequently",
+      "updateMailVarialesWarning": "MailVariables should not be updated frequently"
     },
     "size": "Size",
     "docs": "Documents",
