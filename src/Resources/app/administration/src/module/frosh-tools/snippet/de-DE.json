@@ -101,7 +101,9 @@
       "incrementStorageIsDB": "Increment storage sollte im optimal fall Redis verwenden oder deaktiviert sein",
       "incrementStorageIsNotDB": "Increment storage ist richtig konfiguriert",
       "queueIsDefault": "Die Message Queue in der Datenbank skaliert nicht gut mit mehreren Workern",
-      "queueIsOk": "Die Message Queue ist richtig konfiguriert"
+      "queueIsOk": "Die Message Queue ist richtig konfiguriert",
+      "fixCacheIdNotSet": "Eine feste Cache-ID sollte konfiguriert sein, um diese nicht immer aus der Datenbank zu lesen",
+      "fixCacheIdIsSet": "Eine feste Cache-ID ist konfiguriert"
     },
     "size": "Größe",
     "docs": "Dokumente",

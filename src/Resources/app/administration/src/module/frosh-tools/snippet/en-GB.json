@@ -101,7 +101,9 @@
       "incrementStorageIsDB": "Increment storage is heavily using the Storage. This feature should be disabled or Redis should be used",
       "incrementStorageIsNotDB": "Increment storage is correct configured",
       "queueIsDefault": "The default queue storage in database does not scale well with multiple workers",
-      "queueIsOk": "Configured queue storage is ok for multiple workers"
+      "queueIsOk": "Configured queue storage is ok for multiple workers",
+      "fixCacheIdNotSet": "A fixed cache id should be set, so Shopware isn't loading it from Database on any request",
+      "fixCacheIdIsSet": "A fixed cache id is set"
     },
     "size": "Size",
     "docs": "Documents",

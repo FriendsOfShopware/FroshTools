@@ -140,6 +140,11 @@
             <tag name="frosh_tools.performance_checker"/>
         </service>
 
+        <service id="Frosh\Tools\Components\Health\Checker\PerformanceChecker\FixCacheSetChecker">
+            <argument>%kernel.shopware_version%</argument>
+            <tag name="frosh_tools.performance_checker"/>
+        </service>
+
         <service id="Frosh\Tools\Components\Messenger\TaskLoggingMiddleware">
             <argument type="service" id="frosh_tools.logging.tasks"/>
         </service>
