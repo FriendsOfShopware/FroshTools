@@ -1,11 +1,14 @@
 import template from './template.twig';
 
-const { Component } = Shopware;
+const { Mixin, Component } = Shopware;
 
 Component.register('frosh-tools-tab-elasticsearch', {
     template,
 
     inject: ['froshElasticSearch'],
+    mixins: [
+        Mixin.getByName('notification')
+    ],
 
     data() {
         return {
@@ -13,7 +16,8 @@ Component.register('frosh-tools-tab-elasticsearch', {
             isActive: true,
             statusInfo: {},
             indices: [],
-            consoleInput: 'GET /_cat/indices'
+            consoleInput: 'GET /_cat/indices',
+            consoleOutput: {},
         };
     },
 
@@ -87,6 +91,74 @@ Component.register('frosh-tools-tab-elasticsearch', {
         async deleteIndex(indexName) {
             await this.froshElasticSearch.deleteIndex(indexName);
             await this.createdComponent();
+        },
+
+        async onConsoleEnter() {
+            const lines = this.consoleInput.split("\n")
+            const requestLine = lines.shift();
+            const payload = lines.join("\n").trim();
+            const [method, uri] = requestLine.split(" ");
+
+            try {
+                this.consoleOutput = await this.froshElasticSearch.console(method, uri, payload);
+            } catch (e) {
+                this.consoleOutput = e.response.data
+            }
+        },
+
+        async reindex() {
+            await this.froshElasticSearch.reindex();
+
+            this.createNotificationSuccess({
+                    message: this.$tc('global.default.success')
+                }
+            );
+
+            await this.createdComponent()
+        },
+
+        async switchAlias() {
+            await this.froshElasticSearch.switchAlias();
+
+            this.createNotificationSuccess({
+                    message: this.$tc('global.default.success')
+                }
+            );
+
+            await this.createdComponent()
+        },
+
+        async flushAll() {
+            await this.froshElasticSearch.flushAll();
+
+            this.createNotificationSuccess({
+                    message: this.$tc('global.default.success')
+                }
+            );
+
+            await this.createdComponent()
+        },
+
+        async resetElasticsearch() {
+            await this.froshElasticSearch.reset();
+
+            this.createNotificationSuccess({
+                    message: this.$tc('global.default.success')
+                }
+            );
+
+            await this.createdComponent()
+        },
+
+        async cleanup() {
+            await this.froshElasticSearch.cleanup();
+
+            this.createNotificationSuccess({
+                    message: this.$tc('global.default.success')
+                }
+            );
+
+            await this.createdComponent()
         }
     }
 })

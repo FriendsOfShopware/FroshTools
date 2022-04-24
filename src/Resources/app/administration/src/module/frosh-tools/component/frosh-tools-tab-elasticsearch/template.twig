@@ -10,6 +10,11 @@
     </sw-card>
 
     <sw-card title="Indices" v-if="!isLoading && isActive" :large="true">
+        <template #toolbar>
+            <!-- @todo: Make the refresh button fancy -->
+            <sw-button variant="ghost" @click="createdComponent"><sw-icon :small="true" name="default-arrow-360-left"></sw-icon></sw-button>
+        </template>
+
         <sw-data-grid
             v-if="indices"
             :showSelection="false"
@@ -37,15 +42,29 @@
     </sw-card>
 
     <sw-card title="Actions" v-if="!isLoading && isActive" :large="true">
-        <sw-button variant="primary">Reindex</sw-button>
-        <sw-button>Trigger alias switching</sw-button>
+        <sw-button @click="reindex" variant="primary">Reindex</sw-button>
+        <sw-button @click="switchAlias">Trigger alias switching</sw-button>
+        <sw-button @click="flushAll">Flush all indices</sw-button>
+
+        <sw-button @click="cleanup">Cleanup unused Indices</sw-button>
+        <sw-button @click="resetElasticsearch" variant="danger">Delete all indices</sw-button>
     </sw-card>
 
     <sw-card title="Elasticsearch Console" v-if="!isLoading && isActive" :large="true">
-        <sw-code-editor completionMode="text" mode="twig" :softWraps="true" :setFocus="false" :disabled="false" :sanitizeInput="false" v-model="consoleInput"></sw-code-editor>
+        <sw-code-editor
+            completionMode="text"
+            mode="twig"
+            :softWraps="true"
+            :setFocus="false"
+            :disabled="false"
+            :sanitizeInput="false"
+            v-model="consoleInput"
+        ></sw-code-editor>
+
+        <sw-button @click="onConsoleEnter">Send</sw-button>
 
         <div><strong>Output:</strong></div>
 
-        <pre></pre>
+        <pre>{{ consoleOutput }}</pre>
     </sw-card>
 </sw-card-view>

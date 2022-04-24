@@ -118,6 +118,12 @@
         <service id="Frosh\Tools\Components\Elasticsearch\ElasticsearchManager">
             <argument type="service" id="Elasticsearch\Client"/>
             <argument>%elasticsearch.enabled%</argument>
+            <argument type="service" id="Shopware\Elasticsearch\Framework\Indexing\ElasticsearchIndexer"/>
+            <argument type="service" id="messenger.bus.shopware"/>
+            <argument type="service" id="Shopware\Elasticsearch\Framework\Indexing\CreateAliasTaskHandler"/>
+            <argument type="service" id="Shopware\Elasticsearch\Framework\ElasticsearchOutdatedIndexDetector"/>
+            <argument type="service" id="Doctrine\DBAL\Connection"/>
+            <argument type="service" id="shopware.increment.gateway.registry"/>
         </service>
 
         <service id="Frosh\Tools\Controller\ElasticsearchController" public="true">
