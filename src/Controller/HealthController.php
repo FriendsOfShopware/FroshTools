@@ -4,6 +4,7 @@ namespace Frosh\Tools\Controller;
 
 use Frosh\Tools\Components\Health\Checker\CheckerInterface;
 use Frosh\Tools\Components\Health\HealthCollection;
+use Frosh\Tools\Components\Health\PerformanceCollection;
 use Shopware\Core\Framework\Routing\Annotation\RouteScope;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\Routing\Annotation\Route;
@@ -14,14 +15,16 @@ use Symfony\Component\Routing\Annotation\Route;
  */
 class HealthController
 {
-    /**
-     * @var CheckerInterface[]
-     */
-    private $checkers;
+    /** @var CheckerInterface[] */
+    private iterable $healthCheckers;
 
-    public function __construct(iterable $checkers)
+    /** @var CheckerInterface[] */
+    private iterable $performanceCheckers;
+
+    public function __construct(iterable $healthCheckers, iterable $performanceCheckers)
     {
-        $this->checkers = $checkers;
+        $this->healthCheckers = $healthCheckers;
+        $this->performanceCheckers = $performanceCheckers;
     }
 
     /**
@@ -30,7 +33,20 @@ class HealthController
     public function status(): JsonResponse
     {
         $collection = new HealthCollection();
-        foreach ($this->checkers as $checker) {
+        foreach ($this->healthCheckers as $checker) {
+            $checker->collect($collection);
+        }
+
+        return new JsonResponse($collection);
+    }
+
+    /**
+     * @Route(path="/performance/status", methods={"GET"}, name="api.frosh.tools.performance.status")
+     */
+    public function performanceStatus(): JsonResponse
+    {
+        $collection = new PerformanceCollection();
+        foreach ($this->performanceCheckers as $checker) {
             $checker->collect($collection);
         }
 

@@ -1,9 +1,10 @@
 <?php declare(strict_types=1);
 
-namespace Frosh\Tools\Components\Health\Checker;
+namespace Frosh\Tools\Components\Health\Checker\HealthChecker;
 
+use Frosh\Tools\Components\Health\Checker\CheckerInterface;
 use Frosh\Tools\Components\Health\HealthCollection;
-use Frosh\Tools\Components\Health\HealthResult;
+use Frosh\Tools\Components\Health\SettingsResult;
 
 class PhpChecker implements CheckerInterface
 {
@@ -29,12 +30,17 @@ class PhpChecker implements CheckerInterface
         $currentPhpVersion = \PHP_VERSION;
         if (version_compare($minPhpVersion, $currentPhpVersion, '>')) {
             $collection->add(
-                HealthResult::error('frosh-tools.checker.phpOutdated',
-                    ['minPhpVersion' => $minPhpVersion, 'version' => $currentPhpVersion])
+                SettingsResult::error('frosh-tools.checker.phpOutdated',
+                    $currentPhpVersion,
+                    'min ' . $minPhpVersion
+                )
             );
         } else {
             $collection->add(
-                HealthResult::ok('frosh-tools.checker.phpGood', ['version' => $currentPhpVersion])
+                SettingsResult::ok('frosh-tools.checker.phpGood',
+                    $currentPhpVersion,
+                    'min ' . $minPhpVersion
+                )
             );
         }
     }
@@ -45,14 +51,19 @@ class PhpChecker implements CheckerInterface
         $currentMaxExecutionTime = (int)ini_get('max_execution_time');
         if ($currentMaxExecutionTime < $minMaxExecutionTime) {
             $collection->add(
-                HealthResult::error('frosh-tools.checker.maxExecutionTimeError',
-                    ['minMaxExecutionTime' => $minMaxExecutionTime, 'maxExecutionTime' => $currentMaxExecutionTime])
+                SettingsResult::error('frosh-tools.checker.maxExecutionTimeError',
+                    (string) $currentMaxExecutionTime,
+                    'min ' . $minMaxExecutionTime
+                )
             );
 
             return;
         }
 
-        $collection->add(HealthResult::ok('frosh-tools.checker.maxExecutionTimeGood', ['maxExecutionTime' => $currentMaxExecutionTime]));
+        $collection->add(SettingsResult::ok('frosh-tools.checker.maxExecutionTimeGood',
+            (string) $currentMaxExecutionTime,
+            'min ' . $minMaxExecutionTime
+        ));
     }
 
     private function checkMemoryLimit(HealthCollection $collection): void
@@ -61,21 +72,28 @@ class PhpChecker implements CheckerInterface
         $currentMemoryLimit = $this->decodePhpSize(ini_get('memory_limit'));
         if ($currentMemoryLimit < $minMemoryLimit) {
             $collection->add(
-                HealthResult::error('frosh-tools.checker.memoryLimitError',
-                    ['minMemoryLimit' => $this->formatSize($minMemoryLimit), 'memoryLimit' => $this->formatSize($currentMemoryLimit)])
+                SettingsResult::error('frosh-tools.checker.memoryLimitError',
+                    $this->formatSize($currentMemoryLimit),
+                    'min ' . $this->formatSize($minMemoryLimit)
+                )
             );
-        } else {
-            $collection->add(HealthResult::ok('frosh-tools.checker.memoryLimitGood', ['memoryLimit' => $this->formatSize($currentMemoryLimit)]));
+            return;
         }
+
+        $collection->add(SettingsResult::ok('frosh-tools.checker.memoryLimitGood',
+            $this->formatSize($currentMemoryLimit),
+            'min ' . $this->formatSize($minMemoryLimit)
+        ));
     }
 
     private function checkOpCacheActive(HealthCollection $collection): void
     {
         if (\extension_loaded('Zend OPcache') && ini_get('opcache.enable')) {
-            $collection->add(HealthResult::ok('frosh-tools.checker.zendOpcacheGood'));
-        } else {
-            $collection->add(HealthResult::warning('frosh-tools.checker.zendOpcacheWarning'));
+            $collection->add(SettingsResult::ok('frosh-tools.checker.zendOpcacheGood'));
+            return;
         }
+
+        $collection->add(SettingsResult::warning('frosh-tools.checker.zendOpcacheWarning'));
     }
 
     private function decodePhpSize($val): float

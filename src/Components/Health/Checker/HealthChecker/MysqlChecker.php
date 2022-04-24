@@ -1,17 +1,15 @@
 <?php declare(strict_types=1);
 
-namespace Frosh\Tools\Components\Health\Checker;
+namespace Frosh\Tools\Components\Health\Checker\HealthChecker;
 
 use Doctrine\DBAL\Connection;
+use Frosh\Tools\Components\Health\Checker\CheckerInterface;
 use Frosh\Tools\Components\Health\HealthCollection;
-use Frosh\Tools\Components\Health\HealthResult;
+use Frosh\Tools\Components\Health\SettingsResult;
 
 class MysqlChecker implements CheckerInterface
 {
-    /**
-     * @var Connection
-     */
-    private $connection;
+    private Connection $connection;
 
     public function __construct(Connection $connection)
     {
@@ -35,7 +33,7 @@ class MysqlChecker implements CheckerInterface
             return;
         }
 
-        $collection->add(HealthResult::error('frosh-tools.checker.mysqlError'));
+        $collection->add(SettingsResult::error('frosh-tools.checker.mysqlError'));
     }
 
     private function checkMariadbVersion($collection, $version): void
@@ -43,7 +41,10 @@ class MysqlChecker implements CheckerInterface
         $minVersion = '10.3';
 
         if (version_compare($version, $minVersion, '>=')) {
-            $collection->add(HealthResult::ok('frosh-tools.checker.mariaDbVersion', ['version' => $version]));
+            $collection->add(SettingsResult::ok('frosh-tools.checker.mariaDbVersion',
+                $version,
+                'min ' . $minVersion
+            ));
         }
     }
 
@@ -55,19 +56,30 @@ class MysqlChecker implements CheckerInterface
             '8.0.21',
         ];
 
+        $recommended = 'min ' . $minVersion . ', but not ' . \implode(' or ', $brokenVersions);
+
         if (in_array($version, $brokenVersions, true)) {
-            $collection->add(HealthResult::error('frosh-tools.checker.mysqlDbVersionError', ['version' => $version]));
+            $collection->add(SettingsResult::error('frosh-tools.checker.mysqlDbVersionError',
+                $version,
+                $recommended
+            ));
 
             return;
         }
 
         if (version_compare($version, $minVersion, '>=')) {
-            $collection->add(HealthResult::ok('frosh-tools.checker.mysqlDbVersion', ['version' => $version]));
+            $collection->add(SettingsResult::ok('frosh-tools.checker.mysqlDbVersion',
+                $version,
+                $recommended
+            ));
 
             return;
         }
 
-        $collection->add(HealthResult::error('frosh-tools.checker.mysqlDbOutdated', ['version' => $version]));
+        $collection->add(SettingsResult::error('frosh-tools.checker.mysqlDbOutdated',
+            $version,
+            'min ' . $minVersion
+        ));
     }
 
     private function extract(string $versionString): array
