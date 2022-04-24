@@ -24,3 +24,10 @@
 * Neuer Befehl "frosh:dev:robots-txt" um in Testumgebungen Bots auszuschließen
 * Neuer Befehl "frosh:plugin:update" um alle Plugins mit Updates automatisch zu aktualisieren
 * Verbessere URL von Dateien im Shopware-Files-Checker
+
+# 0.1.4
+
+* New command "frosh:composer-plugin:update" to update plugins installed with composer
+* Show IndexerName for TaskLogger
+* Add manager for Elasticsearch
+* Add performance checks
