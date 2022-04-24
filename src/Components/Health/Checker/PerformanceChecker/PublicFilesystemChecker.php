@@ -31,7 +31,7 @@ class PublicFilesystemChecker implements CheckerInterface
         }
 
         $collection->add(
-            SettingsResult::warning('frosh-tools.checker.publicFilesystemBad',
+            SettingsResult::warning('frosh-tools.checker.publicFilesystemWarning',
                 $this->fileSystemType,
                 'not local',
                 $url
