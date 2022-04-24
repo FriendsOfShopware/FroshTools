@@ -94,15 +94,14 @@
       "publicFilesystemGood": "PublicFilesystem is not local",
       "publicFilesystemWarning": "PublicFilesystem should not be local",
       "updateMailVarialesGood": "MailVariables are not updated frequently",
-      "updateMailVarialesWarning": "MailVariables should not be updated frequently"
-      "esWarning": "Elasticsearch is disabled",
+      "updateMailVarialesWarning": "MailVariables should not be updated frequently",
       "mailNotSendWithQueue": "Mails should be sent using the message queue",
       "mailSendWithQueue": "Mails are send with the message queue",
       "incrementStorageIsDB": "Increment storage is heavily using the Storage. This feature should be disabled or Redis should be used",
       "incrementStorageIsNotDB": "Increment storage is correct configured",
       "queueIsDefault": "The default queue storage in database does not scale well with multiple workers",
       "queueIsOk": "Configured queue storage is ok for multiple workers",
-      "fixCacheIdNotSet": "A fixed cache id should be set, so Shopware isn't loading it from Database on any request",
+      "fixCacheIdNotSet": "A fixed cache id should be set",
       "fixCacheIdIsSet": "A fixed cache id is set"
     },
     "size": "Size",

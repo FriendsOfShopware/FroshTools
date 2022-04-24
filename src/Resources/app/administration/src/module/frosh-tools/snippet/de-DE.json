@@ -94,16 +94,17 @@
       "publicFilesystemGood": "PublicFilesystem ist nicht lokal",
       "publicFilesystemWarning": "PublicFilesystem sollte nicht lokal sein",
       "updateMailVarialesGood": "MailVariables werden nicht aktualisiert",
-      "updateMailVarialesWarning": "MailVariables sollten nicht aktualisiert werden"
-      "esWarning": "Elasticsearch ist deaktiviert",
+      "updateMailVarialesWarning": "MailVariables sollten nicht aktualisiert werden",
       "mailNotSendWithQueue": "Die Mails sollten im Hintergrund versendet werden",
       "mailSendWithQueue": "Die Mails werden im Hintergrund versendet",
       "incrementStorageIsDB": "Increment storage sollte im optimal fall Redis verwenden oder deaktiviert sein",
       "incrementStorageIsNotDB": "Increment storage ist richtig konfiguriert",
       "queueIsDefault": "Die Message Queue in der Datenbank skaliert nicht gut mit mehreren Workern",
       "queueIsOk": "Die Message Queue ist richtig konfiguriert",
-      "fixCacheIdNotSet": "Eine feste Cache-ID sollte konfiguriert sein, um diese nicht immer aus der Datenbank zu lesen",
-      "fixCacheIdIsSet": "Eine feste Cache-ID ist konfiguriert"
+      "fixCacheIdNotSet": "Eine feste Cache-ID sollte konfiguriert sein",
+      "fixCacheIdIsSet": "Eine feste Cache-ID ist konfiguriert",
+      "BusinessEventHandlerLevelGood": "BusinessEventHandler loggt keine Infos",
+      "BusinessEventHandlerLevelWarning": "BusinessEventHandler loggt alle Infos"
     },
     "size": "Größe",
     "docs": "Dokumente",

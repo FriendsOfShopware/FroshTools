@@ -9,7 +9,7 @@ use Shopware\Core\DevOps\Environment\EnvironmentHelper;
 use function sprintf;
 use function version_compare;
 
-class FixCacheSetChecker implements CheckerInterface
+class FixCacheIdSetChecker implements CheckerInterface
 {
     protected string $shopwareVersion;
 
