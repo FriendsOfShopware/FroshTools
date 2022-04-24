@@ -3,7 +3,8 @@
     "title": "Tools",
     "tabs": {
       "index": {
-        "title": "System-Status"
+        "title": "System-Status",
+        "performance": "Performance"
       },
       "systemInfo": {
         "title": "System-Info"
@@ -23,7 +24,7 @@
       "logs": {
         "title": "Log viewer",
         "logFileSelect": {
-            "placeholder": "Datei auswählen"
+          "placeholder": "Datei auswählen"
         }
       },
       "files": {
@@ -37,13 +38,13 @@
         }
       },
       "feature-flags": {
-         "title": "Feature Flags",
-          "flag": "Feature Flag",
-          "description": "Beschreibung",
-          "major": "Major",
-          "default": "Default",
-          "deactivate": "Deaktivieren",
-          "activate": "Aktivieren"
+        "title": "Feature Flags",
+        "flag": "Feature Flag",
+        "description": "Beschreibung",
+        "major": "Major",
+        "default": "Default",
+        "deactivate": "Deaktivieren",
+        "activate": "Aktivieren"
       }
     },
     "clear": "Leeren",
@@ -69,23 +70,41 @@
     "checker": {
       "scheduledTaskGood": "Die geplanten Aufgaben laufen regelmäßig",
       "scheduledTaskWarning": "Die geplanten Aufgaben laufen seit mehr als {minutes} Minuten nicht",
-      "mysqlError": "MySQL Version cannot be checked",
-      "mysqlDbVersion": "MySQL-Version: {version}",
-      "mysqlDbVersionError": "MySQL Version {version} has technical problems",
-      "mysqlDbOutdated": "MySQL Version {version} has technical problems",
-      "mariaDbVersion": "MariaDB-Version: {version}",
-      "phpOutdated": "Verwende mindestens PHP-Version {minPhpVersion}. Installiert: {version}",
-      "phpGood": "PHP-Version: {version}",
-      "maxExecutionTimeError": "Verwende mindestens einen Max-Execution-Time von {minMaxExecutionTime} Sekunden. Aktuell: {maxExecutionTime} Sekunden",
-      "maxExecutionTimeGood": "Max-Execution-Time: {maxExecutionTime} Sekunden",
-      "memoryLimitError": "Verwende mindestens einen Memory-Limit von {minMemoryLimit}. Aktuell: {memoryLimit}",
-      "memoryLimitGood": "Memory-Limit: {memoryLimit}",
+      "mysqlError": "MySQL-Version kann nicht geprüft werden",
+      "mysqlDbVersion": "MySQL-Version",
+      "mysqlDbVersionError": "MySQL-Version hat technische Probleme",
+      "mysqlDbOutdated": "MySQL-Version ist veraltet",
+      "mariaDbVersion": "MariaDB-Version",
+      "phpOutdated": "PHP-Version ist veraltet",
+      "phpGood": "PHP-Version",
+      "maxExecutionTimeError": "Max-Execution-Time zu gering",
+      "maxExecutionTimeGood": "Max-Execution-Time",
+      "memoryLimitError": "Memory-Limit zu gering",
+      "memoryLimitGood": "Memory-Limit",
       "zendOpcacheGood": "Zend Opcache ist aktiv",
       "zendOpcacheWarning": "Zend Opcache ist nicht aktiv",
       "queuesGood": "Warteschlange läuft regelmäßig",
-      "queuesWarning": "Warteschlange enthält Daten, die älter als {minutes} Minuten sind",
+      "queuesWarning": "Warteschlange enthält Daten, die älter als 15 Minuten sind",
       "not-prod": "Shop ist nicht im Produktivmodus",
-      "prodGood": "Shop ist im Produktivmodus"
+      "prodGood": "Shop ist im Produktivmodus",
+      "esGood": "Elasticsearch ist aktiviert",
+      "esWarning": "Elasticsearch ist deaktiviert",
+      "adminWorkerGood": "Admin-Worker ist deaktiviert",
+      "adminWorkerWarning": "Admin-Worker sollte deaktiviert sein",
+      "publicFilesystemGood": "PublicFilesystem ist nicht lokal",
+      "publicFilesystemWarning": "PublicFilesystem sollte nicht lokal sein",
+      "updateMailVarialesGood": "MailVariables werden nicht aktualisiert",
+      "updateMailVarialesWarning": "MailVariables sollten nicht aktualisiert werden",
+      "mailNotSendWithQueue": "Die Mails sollten im Hintergrund versendet werden",
+      "mailSendWithQueue": "Die Mails werden im Hintergrund versendet",
+      "incrementStorageIsDB": "Increment storage sollte im optimal fall Redis verwenden oder deaktiviert sein",
+      "incrementStorageIsNotDB": "Increment storage ist richtig konfiguriert",
+      "queueIsDefault": "Die Message Queue in der Datenbank skaliert nicht gut mit mehreren Workern",
+      "queueIsOk": "Die Message Queue ist richtig konfiguriert",
+      "fixCacheIdNotSet": "Eine feste Cache-ID sollte konfiguriert sein",
+      "fixCacheIdIsSet": "Eine feste Cache-ID ist konfiguriert",
+      "BusinessEventHandlerLevelGood": "BusinessEventHandler loggt keine Infos",
+      "BusinessEventHandlerLevelWarning": "BusinessEventHandler loggt alle Infos"
     },
     "size": "Größe",
     "docs": "Dokumente",
@@ -94,6 +113,8 @@
     "date": "Zeitpunkt",
     "channel": "Kanal",
     "level": "Level",
-    "message": "Nachricht"
+    "message": "Nachricht",
+    "current": "aktuell",
+    "recommended": "empfohlen"
   }
 }

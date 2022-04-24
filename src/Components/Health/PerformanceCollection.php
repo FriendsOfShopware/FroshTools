@@ -4,7 +4,7 @@ namespace Frosh\Tools\Components\Health;
 
 use Shopware\Core\Framework\Struct\Collection;
 
-class HealthCollection extends Collection
+class PerformanceCollection extends HealthCollection
 {
     protected function getExpectedClass(): ?string
     {

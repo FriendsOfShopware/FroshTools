@@ -24,3 +24,10 @@
 * New command "frosh:dev:robots-txt" to stop crawers in test environments
 * New command "frosh:plugin:update" to update plugins with available updates at once
 * Improve url of files in Shopware-Files-Checker
+
+# 0.1.4
+
+* New command "frosh:composer-plugin:update" to update plugins installed with composer
+* Show IndexerName for TaskLogger
+* Add manager for Elasticsearch
+* Add performance checks

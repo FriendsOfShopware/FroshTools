@@ -10,7 +10,8 @@ Component.register('frosh-tools-tab-index', {
     data() {
         return {
             isLoading: true,
-            health: null
+            health: null,
+            performanceStatus: null,
         }
     },
 
@@ -22,13 +23,18 @@ Component.register('frosh-tools-tab-index', {
         columns() {
             return [
                 {
-                    property: 'status',
-                    label: 'frosh-tools.status',
+                    property: 'name',
+                    label: 'frosh-tools.name',
                     rawData: true
                 },
                 {
-                    property: 'name',
-                    label: 'frosh-tools.name',
+                    property: 'current',
+                    label: 'frosh-tools.current',
+                    rawData: true
+                },
+                {
+                    property: 'recommended',
+                    label: 'frosh-tools.recommended',
                     rawData: true
                 },
             ];
@@ -43,6 +49,7 @@ Component.register('frosh-tools-tab-index', {
 
         async createdComponent() {
             this.health = await this.froshToolsService.healthStatus();
+            this.performanceStatus = await this.froshToolsService.performanceStatus();
             this.isLoading = false;
         },
     }

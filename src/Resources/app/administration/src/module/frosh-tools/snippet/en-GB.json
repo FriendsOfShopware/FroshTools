@@ -3,7 +3,8 @@
     "title": "Tools",
     "tabs": {
       "index": {
-        "title": "System Status"
+        "title": "System Status",
+        "performance": "Performance"
       },
       "systemInfo": {
         "title": "System Info"
@@ -23,7 +24,7 @@
       "logs": {
         "title": "Log viewer",
         "logFileSelect": {
-            "placeholder": "Choose file"
+          "placeholder": "Choose file"
         }
       },
       "files": {
@@ -37,13 +38,13 @@
         }
       },
       "feature-flags": {
-          "title": "Feature Flags",
-          "flag": "Feature Flag",
-          "description": "Description",
-          "major": "Major",
-          "default": "Default",
-          "deactivate": "Deactivate",
-          "activate": "Activate"
+        "title": "Feature Flags",
+        "flag": "Feature Flag",
+        "description": "Description",
+        "major": "Major",
+        "default": "Default",
+        "deactivate": "Deactivate",
+        "activate": "Activate"
       }
     },
     "clear": "Clear",
@@ -68,24 +69,42 @@
     "scheduledTaskFailed": "The scheduled task execution for \"{name}\" failed",
     "checker": {
       "scheduledTaskGood": "Scheduled tasks working scheduled",
-      "scheduledTaskWarning": "The scheduled tasks are waiting for executing for more than {minutes} minutes",
+      "scheduledTaskWarning": "The scheduled tasks are waiting for executing for more than 15 minutes",
       "mysqlError": "MySQL Version cannot be checked",
-      "mysqlDbVersion": "MySQL Version: {version}",
-      "mysqlDbVersionError": "MySQL Version {version} has technical problems",
-      "mysqlDbOutdated": "MySQL Version {version} has technical problems",
-      "mariaDbVersion": "MariaDB Version: {version}",
-      "phpOutdated": "You should have at least PHP-Version {minPhpVersion}. Installed: {version}",
-      "phpGood": "PHP Version: {version}",
-      "maxExecutionTimeError": "You should have at least Max-Execution-Time of {minMaxExecutionTime} seconds. Currently: {maxExecutionTime} seconds",
-      "maxExecutionTimeGood": "Max-Execution-Time: {maxExecutionTime} seconds",
-      "memoryLimitError": "You should have at least memory limit of {minMemoryLimit}. Currently: {memoryLimit}",
-      "memoryLimitGood": "Memory-Limit: {memoryLimit}",
+      "mysqlDbVersion": "MySQL Version",
+      "mysqlDbVersionError": "MySQL Version has technical problems",
+      "mysqlDbOutdated": "MySQL Version is outdated",
+      "mariaDbVersion": "MariaDB Version",
+      "phpOutdated": "PHP Version is outdated",
+      "phpGood": "PHP Version",
+      "maxExecutionTimeError": "Max-Execution-Time is too low",
+      "maxExecutionTimeGood": "Max-Execution-Time",
+      "memoryLimitError": "Memory-Limit is too low",
+      "memoryLimitGood": "Memory-Limit",
       "zendOpcacheGood": "Zend Opcache is active",
       "zendOpcacheWarning": "Zend Opcache is not active",
       "queuesGood": "Queues working good",
-      "queuesWarning": "Queues are older than {minutes} minutes",
+      "queuesWarning": "Open Queues older than 15 minutes found",
       "not-prod": "Shop is not in production mode",
-      "prodGood": "Shop is in production mode"
+      "prodGood": "Shop is in production mode",
+      "esGood": "Elasticsearch is enabled",
+      "esWarning": "Elasticsearch is disabled",
+      "adminWorkerGood": "Admin-Worker is disabled",
+      "adminWorkerWarning": "Admin-Worker should be disabled",
+      "publicFilesystemGood": "PublicFilesystem is not local",
+      "publicFilesystemWarning": "PublicFilesystem should not be local",
+      "updateMailVarialesGood": "MailVariables are not updated frequently",
+      "updateMailVarialesWarning": "MailVariables should not be updated frequently",
+      "mailNotSendWithQueue": "Mails should be sent using the message queue",
+      "mailSendWithQueue": "Mails are send with the message queue",
+      "incrementStorageIsDB": "Increment storage is heavily using the Storage. This feature should be disabled or Redis should be used",
+      "incrementStorageIsNotDB": "Increment storage is correct configured",
+      "queueIsDefault": "The default queue storage in database does not scale well with multiple workers",
+      "queueIsOk": "Configured queue storage is ok for multiple workers",
+      "fixCacheIdNotSet": "A fixed cache id should be set",
+      "fixCacheIdIsSet": "A fixed cache id is set",
+      "BusinessEventHandlerLevelGood": "BusinessEventHandler does not log infos",
+      "BusinessEventHandlerLevelWarning": "BusinessEventHandler is logging infos"
     },
     "size": "Size",
     "docs": "Documents",
@@ -94,6 +113,8 @@
     "date": "Date",
     "channel": "Channel",
     "level": "Level",
-    "message": "Message"
+    "message": "Message",
+    "current": "current",
+    "recommended": "recommended"
   }
 }
