@@ -102,7 +102,9 @@
       "queueIsDefault": "The default queue storage in database does not scale well with multiple workers",
       "queueIsOk": "Configured queue storage is ok for multiple workers",
       "fixCacheIdNotSet": "A fixed cache id should be set",
-      "fixCacheIdIsSet": "A fixed cache id is set"
+      "fixCacheIdIsSet": "A fixed cache id is set",
+      "BusinessEventHandlerLevelGood": "BusinessEventHandler does not log infos",
+      "BusinessEventHandlerLevelWarning": "BusinessEventHandler is logging infos"
     },
     "size": "Size",
     "docs": "Documents",
