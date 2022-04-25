@@ -31,3 +31,7 @@
 * Show IndexerName for TaskLogger
 * Add manager for Elasticsearch
 * Add performance checks
+
+# 0.1.5
+
+* Fix QueueChecker to show correct message

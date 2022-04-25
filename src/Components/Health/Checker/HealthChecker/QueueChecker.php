@@ -25,7 +25,7 @@ class QueueChecker implements CheckerInterface
         $minutes = 15;
 
         // When the oldest message is older then $minutes minutes
-        if (($oldestMessage + ($minutes * 60)) < time()) {
+        if ($oldestMessage && ($oldestMessage + ($minutes * 60)) < time()) {
             $result = SettingsResult::warning('frosh-tools.checker.queuesWarning');
         }
 
