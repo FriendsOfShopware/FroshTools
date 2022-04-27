@@ -35,3 +35,8 @@
 # 0.1.5
 
 * Fix QueueChecker to show correct message
+
+# 0.1.6
+
+* Show formatted date in logs
+* Correct empty Console body for newer Elasticsearch version
