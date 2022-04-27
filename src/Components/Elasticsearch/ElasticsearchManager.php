@@ -84,6 +84,10 @@ class ElasticsearchManager
 
     public function proxy(string $method, string $path, array $params, array $body): array
     {
+        if ($body === []) {
+            $body = null;
+        }
+        
         $response = $this->client->transport->performRequest($method, $path, $params, $body);
 
         return $this->client->transport->resultOrFuture($response);
