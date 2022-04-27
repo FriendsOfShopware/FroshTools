@@ -19,6 +19,9 @@
             :showActions="false"
             :dataSource="logEntries"
             :columns="columns">
+            <template slot="column-date" slot-scope="{ item }">
+                {{ item.date | date({hour: '2-digit', minute: '2-digit', second: '2-digit'}) }}
+            </template>
         </sw-data-grid>
 
         <sw-pagination
