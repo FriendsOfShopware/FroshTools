@@ -183,5 +183,12 @@
         <service id="Frosh\Tools\Controller\FeatureFlagController" public="true">
             <argument>%kernel.project_dir%</argument>
         </service>
+
+        <service id="Frosh\Tools\Components\Elasticsearch\EsProductDefinition" decorates="Shopware\Elasticsearch\Product\ElasticsearchProductDefinition">
+            <argument type="service" id="Frosh\Tools\Components\Elasticsearch\EsProductDefinition.inner"/>
+            <argument type="service" id="Doctrine\DBAL\Connection"/>
+            <argument>%frosh_tools.elasticsearch.product_fields%</argument>
+            <argument>%frosh_tools.elasticsearch.product_minimum_should_match%</argument>
+        </service>
     </services>
 </container>
