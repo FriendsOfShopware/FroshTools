@@ -94,10 +94,12 @@ Component.register('frosh-tools-tab-cache', {
             for (let salesChannel of salesChannels) {
                 const theme = salesChannel.extensions.themes.first();
 
-                await this.themeService.assignTheme(theme.id, salesChannel.id);
-                this.createNotificationSuccess({
-                    message: `${salesChannel.translated.name}` + ': ' + this.$tc('frosh-tools.themeCompiled')
-                })
+                if (theme.id) {
+                    await this.themeService.assignTheme(theme.id, salesChannel.id);
+                    this.createNotificationSuccess({
+                        message: `${salesChannel.translated.name}` + ': ' + this.$tc('frosh-tools.themeCompiled')
+                    })
+                }
             }
 
             this.isLoading = false;
