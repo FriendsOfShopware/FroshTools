@@ -69,6 +69,12 @@ class EsProductDefinition extends AbstractElasticsearchDefinition
     {
         $data = $this->inner->fetch($ids, $context);
 
+        $fields = $this->getFields();
+
+        if ($fields === []) {
+            return $data;
+        }
+
         $query = new QueryBuilder($this->connection);
         $query
             ->addSelect('LOWER(HEX(p.id)) AS id')
@@ -80,8 +86,6 @@ class EsProductDefinition extends AbstractElasticsearchDefinition
             ->andWhere('p.version_id = :liveVersionId')
             ->andWhere('(p.child_count = 0 OR p.parent_id IS NOT NULL)')
             ->groupBy('p.id');
-
-        $fields = $this->getFields();
 
         foreach ($fields as [$field, $config]) {
             if ($config['translateable']) {
