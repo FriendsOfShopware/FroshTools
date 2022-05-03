@@ -94,7 +94,7 @@ Component.register('frosh-tools-tab-cache', {
             for (let salesChannel of salesChannels) {
                 const theme = salesChannel.extensions.themes.first();
 
-                if (theme.id) {
+                if (theme) {
                     await this.themeService.assignTheme(theme.id, salesChannel.id);
                     this.createNotificationSuccess({
                         message: `${salesChannel.translated.name}` + ': ' + this.$tc('frosh-tools.themeCompiled')

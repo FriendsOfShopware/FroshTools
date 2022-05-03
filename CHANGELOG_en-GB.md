@@ -40,3 +40,7 @@
 
 * Show formatted date in logs
 * Correct empty Console body for newer Elasticsearch version
+
+# 0.1.7
+
+* Fixed theme compile button in Administration
