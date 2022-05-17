@@ -1,4 +1,4 @@
-<?php
+<?php declare(strict_types=1);
 
 namespace Frosh\Tools\Controller;
 
@@ -66,7 +66,7 @@ class ShopwareFilesController
                     'name' => $file,
                     'shopwareUrl' => $this->getShopwareUrl($file),
                     'content' => file_get_contents($path),
-                    'originalContent' => $this->getOriginalFileContent($file)
+                    'originalContent' => $this->getOriginalFileContent($file),
                 ];
             }
         }
@@ -84,7 +84,7 @@ class ShopwareFilesController
     public function restoreShopwareFile(Request $request): JsonResponse
     {
         if ($this->shopwareVersion === Kernel::SHOPWARE_FALLBACK_VERSION) {
-            return new JsonResponse(['error' => 'Git version is not supported'], );
+            return new JsonResponse(['error' => 'Git version is not supported']);
         }
 
         if (!file_exists($this->projectDir . '/vendor/shopware/core')) {
@@ -132,16 +132,16 @@ class ShopwareFilesController
         // This file differs on update systems. This change is missing in update packages lol!
         // @see: https://github.com/shopware/platform/commit/957e605c96feef67a6c759f00c58e35d2d1ac84f#diff-e49288a50f0d7d8acdabb5ffef2edcd5ac4f4126f764d3153d19913ce98aba1cL10-R80
         // @see: https://issues.shopware.com/issues/NEXT-11618
-        if ($file === 'vendor/shopware/core/Checkout/Order/Aggregate/OrderAddress/OrderAddressDefinition.php' &&
-            $md5Sum === 'e3da59baff091fd044a12a61cd445385') {
+        if ($file === 'vendor/shopware/core/Checkout/Order/Aggregate/OrderAddress/OrderAddressDefinition.php'
+            && $md5Sum === 'e3da59baff091fd044a12a61cd445385') {
             return true;
         }
 
         // This file differs on update systems. This change is missing in update packages lol!
         // @see: https://github.com/shopware/platform/commit/bbdcbe254e3239e92eb1f71a7afedfb94b7fb150
         // @see: https://issues.shopware.com/issues/NEXT-11775
-        if ($file === 'vendor/shopware/administration/Resources/app/administration/src/app/component/media/sw-media-compact-upload-v2/index.js' &&
-            $md5Sum === '74d18e580ffe87559e6501627090efb3') {
+        if ($file === 'vendor/shopware/administration/Resources/app/administration/src/app/component/media/sw-media-compact-upload-v2/index.js'
+            && $md5Sum === '74d18e580ffe87559e6501627090efb3') {
             return true;
         }
 

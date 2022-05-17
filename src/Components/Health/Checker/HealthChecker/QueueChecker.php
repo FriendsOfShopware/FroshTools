@@ -29,7 +29,7 @@ class QueueChecker implements CheckerInterface
             $result = SettingsResult::warning('frosh-tools.checker.queuesWarning');
         }
 
-        $result->url = 'https://developer.shopware.com/docs/guides/hosting/infrastructure/message-queue';;
+        $result->url = 'https://developer.shopware.com/docs/guides/hosting/infrastructure/message-queue';
         $collection->add($result);
     }
 }

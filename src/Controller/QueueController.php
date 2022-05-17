@@ -31,6 +31,7 @@ class QueueController
         $incrementer = $this->incrementer->get(IncrementGatewayRegistry::MESSAGE_QUEUE_POOL);
 
         $list = $incrementer->list('message_queue_stats', -1);
+
         return new JsonResponse(array_map(static function (array $entry) {
             return [
                 'name' => $entry['key'],

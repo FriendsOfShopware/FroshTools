@@ -1,4 +1,4 @@
-<?php
+<?php declare(strict_types=1);
 
 namespace Frosh\Tools\DependencyInjection;
 
@@ -8,7 +8,7 @@ use Symfony\Component\DependencyInjection\Extension\Extension;
 
 class FroshToolsExtension extends Extension
 {
-    public function load(array $configs, ContainerBuilder $container)
+    public function load(array $configs, ContainerBuilder $container): void
     {
         $config = $this->processConfiguration($this->getConfiguration($configs, $container), $configs);
         $this->addConfig($container, $this->getAlias(), $config);

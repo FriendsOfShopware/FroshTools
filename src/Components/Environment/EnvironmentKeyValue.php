@@ -1,4 +1,4 @@
-<?php
+<?php declare(strict_types=1);
 
 namespace Frosh\Tools\Components\Environment;
 
@@ -32,7 +32,7 @@ class EnvironmentKeyValue implements EnvironmentLine
         return $this->key . '=' . $this->value;
     }
 
-    public static function parse(string $line): EnvironmentKeyValue
+    public static function parse(string $line): self
     {
         $self = new self();
         [$self->key, $self->value] = explode('=', $line, 2);

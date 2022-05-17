@@ -1,20 +1,19 @@
-<?php
+<?php declare(strict_types=1);
 
 namespace Frosh\Tools\Components\Messenger;
 
 use Psr\Log\LoggerInterface;
+use Shopware\Core\Content\ImportExport\Message\DeleteFileMessage as DeleteImportExportFile;
+use Shopware\Core\Content\Media\Message\DeleteFileMessage;
+use Shopware\Core\Content\Media\Message\GenerateThumbnailsMessage;
+use Shopware\Core\Framework\DataAbstractionLayer\Indexing\EntityIndexingMessage;
 use Shopware\Core\Framework\DataAbstractionLayer\Indexing\MessageQueue\IterateEntityIndexerMessage;
 use Shopware\Core\Framework\MessageQueue\ScheduledTask\ScheduledTask;
+use Shopware\Storefront\Framework\Cache\CacheWarmer\WarmUpMessage;
 use Symfony\Component\Messenger\Envelope;
 use Symfony\Component\Messenger\Exception\HandlerFailedException;
 use Symfony\Component\Messenger\Middleware\MiddlewareInterface;
 use Symfony\Component\Messenger\Middleware\StackInterface;
-
-use Shopware\Core\Framework\DataAbstractionLayer\Indexing\EntityIndexingMessage;
-use Shopware\Core\Content\ImportExport\Message\DeleteFileMessage as DeleteImportExportFile;
-use Shopware\Core\Content\Media\Message\DeleteFileMessage;
-use Shopware\Core\Content\Media\Message\GenerateThumbnailsMessage;
-use Shopware\Storefront\Framework\Cache\CacheWarmer\WarmUpMessage;
 
 /**
  * @see https://tideways.com/profiler/blog/log-all-tasks-the-shopware-6-queue-processes
@@ -75,7 +74,7 @@ class TaskLoggingMiddleware implements MiddlewareInterface
             if (is_array($data)) {
                 return [
                     'indexer' => $message->getIndexer(),
-                    'data' => implode(',', $data)
+                    'data' => implode(',', $data),
                 ];
             }
         }
@@ -109,6 +108,7 @@ class TaskLoggingMiddleware implements MiddlewareInterface
 
         if (isset($args['exception'])) {
             $this->logger->error($taskName, $args);
+
             return;
         }
 

@@ -2,7 +2,6 @@
 
 namespace Frosh\Tools\Controller;
 
-use Frosh\Tools\Components\CacheAdapter;
 use Frosh\Tools\Components\CacheHelper;
 use Frosh\Tools\Components\CacheRegistry;
 use Shopware\Core\Framework\Routing\Annotation\RouteScope;

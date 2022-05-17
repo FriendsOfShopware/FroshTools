@@ -1,4 +1,4 @@
-<?php
+<?php declare(strict_types=1);
 
 namespace Frosh\Tools\DependencyInjection;
 
@@ -27,7 +27,7 @@ class CacheCompilerPass implements CompilerPassInterface
 
             $cacheRegistry->addMethodCall('addAdapter', [
                 $config[0]['name'] ?? $id,
-                $def
+                $def,
             ]);
         }
     }

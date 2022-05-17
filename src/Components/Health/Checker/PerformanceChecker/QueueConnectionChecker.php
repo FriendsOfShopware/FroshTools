@@ -6,8 +6,8 @@ use Frosh\Tools\Components\Health\Checker\CheckerInterface;
 use Frosh\Tools\Components\Health\HealthCollection;
 use Frosh\Tools\Components\Health\SettingsResult;
 use function parse_url;
-use function str_starts_with;
 use const PHP_URL_SCHEME;
+use function str_starts_with;
 
 class QueueConnectionChecker implements CheckerInterface
 {

@@ -63,7 +63,7 @@ class UpdatePluginsCommand extends Command
         $pluginUpdate = new ArrayInput([
             'command' => 'plugin:update',
             'plugins' => $upgradablePlugins,
-            '-n'
+            '-n',
         ]);
         $application->run($pluginUpdate);
 
