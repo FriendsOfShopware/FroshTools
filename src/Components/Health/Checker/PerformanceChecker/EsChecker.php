@@ -18,7 +18,6 @@ class EsChecker implements CheckerInterface
 
     public function collect(HealthCollection $collection): void
     {
-
         if (!$this->esEnabled) {
             $collection->add(
                 SettingsResult::warning('frosh-tools.checker.esWarning',

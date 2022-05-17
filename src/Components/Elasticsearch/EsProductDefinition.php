@@ -1,8 +1,18 @@
-<?php
+<?php declare(strict_types=1);
 
 namespace Frosh\Tools\Components\Elasticsearch;
 
+use function array_keys;
+use function array_map;
+use function array_merge;
+use function array_splice;
+use function array_values;
 use Doctrine\DBAL\Connection;
+use function implode;
+use function is_array;
+use function json_decode;
+use const JSON_THROW_ON_ERROR;
+use function mb_strtolower;
 use ONGR\ElasticsearchDSL\BuilderInterface;
 use ONGR\ElasticsearchDSL\Query\Compound\BoolQuery;
 use ONGR\ElasticsearchDSL\Query\FullText\MatchPhrasePrefixQuery;
@@ -26,19 +36,9 @@ use Shopware\Core\Framework\DataAbstractionLayer\Field\TranslatedField;
 use Shopware\Core\Framework\DataAbstractionLayer\Search\Criteria;
 use Shopware\Core\Framework\Uuid\Uuid;
 use Shopware\Elasticsearch\Framework\AbstractElasticsearchDefinition;
-use function array_keys;
-use function array_map;
-use function array_merge;
-use function array_splice;
-use function array_values;
-use function implode;
-use function is_array;
-use function json_decode;
-use function mb_strtolower;
 use function sprintf;
 use function str_replace;
 use function substr;
-use const JSON_THROW_ON_ERROR;
 
 class EsProductDefinition extends AbstractElasticsearchDefinition
 {
@@ -49,11 +49,10 @@ class EsProductDefinition extends AbstractElasticsearchDefinition
 
     public function __construct(
         AbstractElasticsearchDefinition $elasticsearchDefinition,
-        Connection                      $connection,
-        array                           $fields,
-        int                             $minimumShouldMatch
-    )
-    {
+        Connection $connection,
+        array $fields,
+        int $minimumShouldMatch
+    ) {
         $this->inner = $elasticsearchDefinition;
         $this->connection = $connection;
         $this->fields = $fields;
@@ -85,7 +84,8 @@ class EsProductDefinition extends AbstractElasticsearchDefinition
             ->where('p.id IN (:ids)')
             ->andWhere('p.version_id = :liveVersionId')
             ->andWhere('(p.child_count = 0 OR p.parent_id IS NOT NULL)')
-            ->groupBy('p.id');
+            ->groupBy('p.id')
+        ;
 
         foreach ($fields as [$field, $config]) {
             if ($config['translateable']) {
@@ -167,12 +167,12 @@ class EsProductDefinition extends AbstractElasticsearchDefinition
                 }
 
                 return json_decode($value, true, 512, JSON_THROW_ON_ERROR);
-            case $field instanceof BoolField;
-                return (bool)$value;
-            case $field instanceof IntField;
-                return (int)$value;
-            case $field instanceof FloatField;
-                return (float)$value;
+            case $field instanceof BoolField:
+                return (bool) $value;
+            case $field instanceof IntField:
+                return (int) $value;
+            case $field instanceof FloatField:
+                return (float) $value;
             case $field instanceof IdField:
             case $field instanceof FkField:
                 if ($value === null) {

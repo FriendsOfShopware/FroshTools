@@ -48,7 +48,7 @@ class PhpChecker implements CheckerInterface
     private function checkMaxExecutionTime(HealthCollection $collection): void
     {
         $minMaxExecutionTime = 30;
-        $currentMaxExecutionTime = (int)ini_get('max_execution_time');
+        $currentMaxExecutionTime = (int) ini_get('max_execution_time');
         if ($currentMaxExecutionTime < $minMaxExecutionTime) {
             $collection->add(
                 SettingsResult::error('frosh-tools.checker.maxExecutionTimeError',
@@ -77,6 +77,7 @@ class PhpChecker implements CheckerInterface
                     'min ' . $this->formatSize($minMemoryLimit)
                 )
             );
+
             return;
         }
 
@@ -90,6 +91,7 @@ class PhpChecker implements CheckerInterface
     {
         if (\extension_loaded('Zend OPcache') && ini_get('opcache.enable')) {
             $collection->add(SettingsResult::ok('frosh-tools.checker.zendOpcacheGood'));
+
             return;
         }
 

@@ -1,4 +1,4 @@
-<?php
+<?php declare(strict_types=1);
 
 namespace Frosh\Tools\Command;
 
@@ -40,8 +40,8 @@ class EnvGetCommand extends Command
 
         if ($input->getArgument('variable') === null) {
             if ($mode === 'json') {
-                $output->writeln(json_encode($file->values(), JSON_PRETTY_PRINT));
-            } else if ($mode) {
+                $output->writeln(json_encode($file->values(), \JSON_PRETTY_PRINT));
+            } elseif ($mode) {
                 $output->writeln($file->__toString());
             }
 
@@ -55,8 +55,8 @@ class EnvGetCommand extends Command
         }
 
         if ($mode === 'json') {
-            $output->writeln(json_encode([$var->getKey() => $var->getValue()], JSON_PRETTY_PRINT));
-        } else if ($mode === 'kv') {
+            $output->writeln(json_encode([$var->getKey() => $var->getValue()], \JSON_PRETTY_PRINT));
+        } elseif ($mode === 'kv') {
             $output->writeln($var->getLine());
         } else {
             $output->writeln($var->getValue());

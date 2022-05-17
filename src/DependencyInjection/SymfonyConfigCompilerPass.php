@@ -1,10 +1,10 @@
-<?php
+<?php declare(strict_types=1);
 
 namespace Frosh\Tools\DependencyInjection;
 
+use function is_string;
 use Symfony\Component\DependencyInjection\Compiler\CompilerPassInterface;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
-use function is_string;
 
 class SymfonyConfigCompilerPass implements CompilerPassInterface
 {

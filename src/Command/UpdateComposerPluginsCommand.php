@@ -36,7 +36,7 @@ class UpdateComposerPluginsCommand extends Command
         $plugins = $this->pluginLoader->getPluginInfos();
 
         $composerNames = [];
-        foreach($plugins as $plugin) {
+        foreach ($plugins as $plugin) {
             if ($plugin['managedByComposer'] === true) {
                 $composerNames[] = $plugin['composerName'];
             }
@@ -48,7 +48,7 @@ class UpdateComposerPluginsCommand extends Command
                 'command' => 'outdated',
                 '--working-dir' => $this->projectDir,
                 '--direct' => null,
-                '--format' => 'json'
+                '--format' => 'json',
             ]
         );
 
@@ -59,6 +59,7 @@ class UpdateComposerPluginsCommand extends Command
 
         if (!isset($packages['installed'])) {
             $io->error('No installed composer packages found!');
+
             return self::FAILURE;
         }
 
@@ -104,6 +105,7 @@ class UpdateComposerPluginsCommand extends Command
         }
 
         $io->success('Finished!');
+
         return self::SUCCESS;
     }
 }

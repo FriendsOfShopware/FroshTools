@@ -1,4 +1,4 @@
-<?php
+<?php declare(strict_types=1);
 
 namespace Frosh\Tools\Components\Environment;
 
@@ -83,7 +83,7 @@ class EnvironmentFile
         $content = '';
 
         foreach ($this->items as $item) {
-            $content .= $item->getLine() . PHP_EOL;
+            $content .= $item->getLine() . \PHP_EOL;
         }
 
         return $content;

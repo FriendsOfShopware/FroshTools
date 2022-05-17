@@ -1,4 +1,4 @@
-<?php
+<?php declare(strict_types=1);
 
 namespace Frosh\Tools\Components\Elasticsearch;
 
@@ -52,7 +52,7 @@ class ElasticsearchManager
     {
         return [
             'info' => $this->client->info(),
-            'health' => $this->client->cluster()->health()
+            'health' => $this->client->cluster()->health(),
         ];
     }
 
@@ -87,7 +87,7 @@ class ElasticsearchManager
         if ($body === []) {
             $body = null;
         }
-        
+
         $response = $this->client->transport->performRequest($method, $path, $params, $body);
 
         return $this->client->transport->resultOrFuture($response);

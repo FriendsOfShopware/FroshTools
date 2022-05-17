@@ -35,6 +35,7 @@ class CacheAdapter
                 return CacheHelper::getSize($this->getPathOfFilesAdapter($this->adapter));
             case $this->adapter instanceof ApcuAdapter:
                 $aPCUIterator = new APCUIterator();
+
                 return $aPCUIterator->getTotalSize();
         }
 

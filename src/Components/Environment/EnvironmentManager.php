@@ -1,4 +1,4 @@
-<?php
+<?php declare(strict_types=1);
 
 namespace Frosh\Tools\Components\Environment;
 
@@ -13,7 +13,7 @@ class EnvironmentManager
 
         $lines = preg_split('/\r\n|\r|\n/', $content);
         $parsedLines = [];
-        $lineCount = count($lines) -1;
+        $lineCount = count($lines) - 1;
         foreach ($lines as $i => $line) {
             $line = trim($line);
 
