@@ -112,7 +112,10 @@ class TaskLoggingMiddleware implements MiddlewareInterface
             return;
         }
 
-        $this->logger->info($taskName, $args);
+        $taskLoggingInfo = (bool) ($_SERVER['FROSH_TOOLS_TASK_LOGGING_INFO'] ?? '0');
+        if ($taskLoggingInfo) {
+            $this->logger->info($taskName, $args);
+        }
     }
 
     private function addExceptionToArgs($e, array $args): array
