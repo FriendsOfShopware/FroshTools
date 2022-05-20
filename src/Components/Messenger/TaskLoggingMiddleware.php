@@ -6,6 +6,7 @@ use Psr\Log\LoggerInterface;
 use Shopware\Core\Content\ImportExport\Message\DeleteFileMessage as DeleteImportExportFile;
 use Shopware\Core\Content\Media\Message\DeleteFileMessage;
 use Shopware\Core\Content\Media\Message\GenerateThumbnailsMessage;
+use Shopware\Core\DevOps\Environment\EnvironmentHelper;
 use Shopware\Core\Framework\DataAbstractionLayer\Indexing\EntityIndexingMessage;
 use Shopware\Core\Framework\DataAbstractionLayer\Indexing\MessageQueue\IterateEntityIndexerMessage;
 use Shopware\Core\Framework\MessageQueue\ScheduledTask\ScheduledTask;
@@ -29,7 +30,7 @@ class TaskLoggingMiddleware implements MiddlewareInterface
 
     public function handle(Envelope $envelope, StackInterface $stack): Envelope
     {
-        $taskLogging = (bool) ($_SERVER['FROSH_TOOLS_TASK_LOGGING'] ?? '0');
+        $taskLogging = (bool) EnvironmentHelper::getVariable('FROSH_TOOLS_TASK_LOGGING', '0');
         if ($taskLogging === false) {
             return $stack->next()->handle($envelope, $stack);
         }
@@ -59,7 +60,7 @@ class TaskLoggingMiddleware implements MiddlewareInterface
         $classParts = explode('\\', get_class($message));
         $taskName = end($classParts);
 
-        if (substr($taskName, -7) === 'Message') {
+        if (str_ends_with($taskName, 'Message')) {
             $taskName = substr($taskName, 0, -7);
         }
 
@@ -112,7 +113,7 @@ class TaskLoggingMiddleware implements MiddlewareInterface
             return;
         }
 
-        $taskLoggingInfo = (bool) ($_SERVER['FROSH_TOOLS_TASK_LOGGING_INFO'] ?? '0');
+        $taskLoggingInfo = (bool) EnvironmentHelper::getVariable('FROSH_TOOLS_TASK_LOGGING_INFO', '0');
         if ($taskLoggingInfo) {
             $this->logger->info($taskName, $args);
         }
