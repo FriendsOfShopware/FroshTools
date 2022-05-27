@@ -19,11 +19,13 @@ class IncrementStorageChecker implements CheckerInterface
 
     public function collect(HealthCollection $collection): void
     {
+        $recommended = 'array or redis';
+
         if ($this->userActivity === 'mysql' || $this->queueActivity === 'mysql') {
             $collection->add(
                 SettingsResult::warning('frosh-tools.checker.incrementStorageIsDB',
                     'mysql',
-                    'array or redis',
+                    $recommended,
                     'https://developer.shopware.com/docs/guides/hosting/performance/performance-tweaks#increment-storage'
                 )
             );
@@ -34,7 +36,7 @@ class IncrementStorageChecker implements CheckerInterface
         $collection->add(
             SettingsResult::ok('frosh-tools.checker.incrementStorageIsNotDB',
                 $this->userActivity,
-                $this->userActivity
+                $recommended
             )
         );
     }
