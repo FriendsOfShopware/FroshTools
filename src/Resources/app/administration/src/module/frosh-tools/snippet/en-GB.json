@@ -69,7 +69,7 @@
     "scheduledTaskFailed": "The scheduled task execution for \"{name}\" failed",
     "checker": {
       "scheduledTaskGood": "Scheduled tasks working scheduled",
-      "scheduledTaskWarning": "The scheduled tasks are waiting for executing for more than 15 minutes",
+      "scheduledTaskWarning": "The scheduled tasks are waiting for executing for more than 10 minutes",
       "mysqlError": "MySQL Version cannot be checked",
       "mysqlDbVersion": "MySQL Version",
       "mysqlDbVersionError": "MySQL Version has technical problems",
