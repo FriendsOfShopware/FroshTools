@@ -4,13 +4,11 @@ namespace Frosh\Tools\Controller;
 
 use Frosh\Tools\Components\CacheHelper;
 use Frosh\Tools\Components\CacheRegistry;
-use Shopware\Core\Framework\Routing\Annotation\RouteScope;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\Routing\Annotation\Route;
 
 /**
- * @RouteScope(scopes={"api"})
- * @Route(path="/api/_action/frosh-tools")
+ * @Route(path="/api/_action/frosh-tools", defaults={"_routeScope"={"api"}})
  */
 class CacheController
 {

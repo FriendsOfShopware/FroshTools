@@ -2,15 +2,13 @@
 
 namespace Frosh\Tools\Controller;
 
-use Shopware\Core\Framework\Routing\Annotation\RouteScope;
 use Shopware\Core\Kernel;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Routing\Annotation\Route;
 
 /**
- * @RouteScope(scopes={"api"})
- * @Route(path="/api/_action/frosh-tools")
+ * @Route(path="/api/_action/frosh-tools", defaults={"_routeScope"={"api"}})
  */
 class ShopwareFilesController
 {
