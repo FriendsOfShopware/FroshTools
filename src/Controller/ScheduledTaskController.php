@@ -43,6 +43,7 @@ class ScheduledTaskController
             [
                 'id' => $id,
                 'status' => ScheduledTaskDefinition::STATUS_QUEUED,
+                'nextExecutionTime' => new \DateTime(),
             ],
         ], $context);
 
