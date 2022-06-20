@@ -22,6 +22,7 @@ use Shopware\Core\Framework\Context;
 use Shopware\Core\Framework\DataAbstractionLayer\Dbal\EntityDefinitionQueryHelper;
 use Shopware\Core\Framework\DataAbstractionLayer\Dbal\QueryBuilder;
 use Shopware\Core\Framework\DataAbstractionLayer\Doctrine\FetchModeHelper;
+use Shopware\Core\Framework\DataAbstractionLayer\EntityCollection;
 use Shopware\Core\Framework\DataAbstractionLayer\EntityDefinition;
 use Shopware\Core\Framework\DataAbstractionLayer\Field\AssociationField;
 use Shopware\Core\Framework\DataAbstractionLayer\Field\BoolField;
@@ -62,6 +63,11 @@ class EsProductDefinition extends AbstractElasticsearchDefinition
     public function getEntityDefinition(): EntityDefinition
     {
         return $this->inner->getEntityDefinition();
+    }
+
+    public function extendEntities(EntityCollection $entityCollection): EntityCollection
+    {
+        return $entityCollection;
     }
 
     public function fetch(array $ids, Context $context): array
