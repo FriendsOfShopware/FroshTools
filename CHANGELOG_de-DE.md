@@ -44,3 +44,10 @@
 # 0.1.7
 
 * Fixed theme compile button in Administration
+
+# 0.2.0
+
+* Fixed reschedule Task to not stack the nextExecutionTime
+* Added env FROSH_TOOLS_TASK_LOGGING_INFO to log everything in tasks
+* Changed FROSH_TOOLS_TASK_LOGGING to just log exceptions
+* Fixed recommended value for IncrementStorage
