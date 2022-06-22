@@ -51,3 +51,7 @@
 * Added env FROSH_TOOLS_TASK_LOGGING_INFO to log everything in tasks
 * Changed FROSH_TOOLS_TASK_LOGGING to just log exceptions
 * Fixed recommended value for IncrementStorage
+
+# 0.2.1
+
+* Fixed support to Enterprise Search
