@@ -10,6 +10,7 @@ use Symfony\Component\Cache\Adapter\ArrayAdapter;
 use Symfony\Component\Cache\Adapter\FilesystemAdapter;
 use Symfony\Component\Cache\Adapter\PhpFilesAdapter;
 use Symfony\Component\Cache\Adapter\RedisAdapter;
+use Symfony\Component\Cache\Adapter\RedisTagAwareAdapter;
 use Symfony\Component\Cache\Adapter\TagAwareAdapter;
 use Symfony\Component\Cache\Adapter\TraceableAdapter;
 
@@ -26,6 +27,7 @@ class CacheAdapter
     {
         switch (true) {
             case $this->adapter instanceof RedisAdapter:
+            case $this->adapter instanceof RedisTagAwareAdapter:
                 return $this->getRedis($this->adapter)->info()['used_memory'];
             case $this->adapter instanceof FilesystemAdapter:
                 return CacheHelper::getSize($this->getPathFromFilesystemAdapter($this->adapter));
@@ -46,6 +48,7 @@ class CacheAdapter
     {
         switch (true) {
             case $this->adapter instanceof RedisAdapter:
+            case $this->adapter instanceof RedisTagAwareAdapter:
                 $info = $this->getRedis($this->adapter)->info();
                 if ($info['maxmemory'] === 0) {
                     return -1;
@@ -70,6 +73,7 @@ class CacheAdapter
                 CacheHelper::removeDir($this->getPathFromFilesystemAdapter($this->adapter));
                 break;
             case $this->adapter instanceof RedisAdapter:
+            case $this->adapter instanceof RedisTagAwareAdapter:
                 try {
                     $this->getRedis($this->adapter)->flushDB();
                 } catch (\Exception $e) {
@@ -86,6 +90,7 @@ class CacheAdapter
     {
         switch (true) {
             case $this->adapter instanceof RedisAdapter:
+            case $this->adapter instanceof RedisTagAwareAdapter:
                 return 'Redis ' . $this->getRedis($this->adapter)->info()['redis_version'];
             case $this->adapter instanceof FilesystemAdapter:
                 return 'Filesystem';
@@ -125,9 +130,16 @@ class CacheAdapter
 
     private function getRedis(AdapterInterface $adapter): ?\Redis
     {
-        $redisProxyGetter = \Closure::bind(function () use ($adapter) {
-            return $adapter->redis;
-        }, $adapter, \get_class($adapter));
+        if ($adapter instanceof RedisTagAwareAdapter) {
+            $redisProxyGetter = \Closure::bind(function () use ($adapter) {
+                return $adapter->redis;
+            }, $adapter, RedisTagAwareAdapter::class);
+        } else {
+            $redisProxyGetter = \Closure::bind(function () use ($adapter) {
+                return $adapter->redis;
+            }, $adapter, RedisAdapter::class);
+        }
+
         $redisProxy = $redisProxyGetter($adapter);
 
         $redisGetter = \Closure::bind(function () use ($redisProxy) {
