@@ -104,7 +104,17 @@
       "fixCacheIdNotSet": "A fixed cache id should be set",
       "fixCacheIdIsSet": "A fixed cache id is set",
       "BusinessEventHandlerLevelGood": "BusinessEventHandler does not log infos",
-      "BusinessEventHandlerLevelWarning": "BusinessEventHandler is logging infos"
+      "BusinessEventHandlerLevelWarning": "BusinessEventHandler is logging infos",
+      "AssertActiveGood": "PHP value assert.active is disabled",
+      "AssertActiveWarning": "PHP value assert.active is not disabled",
+      "EnableFileOverrideGood": "PHP value opcache.enable_file_override is enabled",
+      "EnableFileOverrideWarning": "PHP value opcache.enable_file_override is not enabled",
+      "InternedStringsBufferGood": "PHP value opcache.interned_strings_buffer has minimum value",
+      "InternedStringsBufferWarning": "PHP value opcache.interned_strings_buffer is too low",
+      "ZendDetectUnicodeGood": "PHP value zend.detect_unicode is disabled",
+      "ZendDetectUnicodeWarning": "PHP value zend.detect_unicode is not disabled",
+      "RealpathCacheTtlGood": "PHP value realpath_cache_ttl is good",
+      "RealpathCacheTtlWarning": "PHP value realpath_cache_ttl is low"
     },
     "size": "Size",
     "docs": "Documents",

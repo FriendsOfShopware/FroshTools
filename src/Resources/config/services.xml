@@ -104,6 +104,10 @@
             <tag name="frosh_tools.performance_checker"/>
         </service>
 
+        <service id="Frosh\Tools\Components\Health\Checker\PerformanceChecker\PhpSettingsChecker">
+            <tag name="frosh_tools.performance_checker"/>
+        </service>
+
         <service id="Frosh\Tools\Components\Health\Checker\PerformanceChecker\AdminWorkerChecker">
             <argument>%shopware.admin_worker.enable_admin_worker%</argument>
             <tag name="frosh_tools.performance_checker"/>
