@@ -55,3 +55,8 @@
 # 0.2.1
 
 * Fixed support to Enterprise Search
+
+# 0.2.2
+
+* Added more recommendations for performance
+* Fix Redis for newer shopware versions
