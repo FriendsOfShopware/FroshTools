@@ -104,7 +104,17 @@
       "fixCacheIdNotSet": "Eine feste Cache-ID sollte konfiguriert sein",
       "fixCacheIdIsSet": "Eine feste Cache-ID ist konfiguriert",
       "BusinessEventHandlerLevelGood": "BusinessEventHandler loggt keine Infos",
-      "BusinessEventHandlerLevelWarning": "BusinessEventHandler loggt alle Infos"
+      "BusinessEventHandlerLevelWarning": "BusinessEventHandler loggt alle Infos",
+      "AssertActiveGood": "PHP-Einstellung assert.active ist deaktiviert",
+      "AssertActiveWarning": "PHP-Einstellung assert.active ist nicht deaktiviert",
+      "EnableFileOverrideGood": "PHP-Einstellung opcache.enable_file_override ist aktiviert",
+      "EnableFileOverrideWarning": "PHP-Einstellung opcache.enable_file_override ist nicht aktiviert",
+      "InternedStringsBufferGood": "PHP-Einstellung opcache.interned_strings_buffer ist gut",
+      "InternedStringsBufferWarning": "PHP-Einstellung opcache.interned_strings_buffer ist zu gering",
+      "ZendDetectUnicodeGood": "PHP-Einstellung zend.detect_unicode ist deaktiviert",
+      "ZendDetectUnicodeWarning": "PHP-Einstellung zend.detect_unicode ist nicht deaktiviert",
+      "RealpathCacheTtlGood": "PHP-Einstellung realpath_cache_ttl ist gut",
+      "RealpathCacheTtlWarning": "PHP-Einstellung realpath_cache_ttl ist zu gering"
     },
     "size": "Größe",
     "docs": "Dokumente",
