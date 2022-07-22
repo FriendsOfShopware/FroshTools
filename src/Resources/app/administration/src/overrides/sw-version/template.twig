@@ -1,5 +1,12 @@
 {% block sw_version_status %}
-    <router-link :to="{ name: 'frosh.tools.index.index' }" class="sw-version__status" :title="healthPlaceholder">
+    <router-link
+        :to="{ name: 'frosh.tools.index.index' }"
+        class="sw-version__status"
+        v-tooltip="{
+            showDelay: 300,
+            message: healthPlaceholder
+        }"
+    >
         {% block sw_version_status_badge %}
             <sw-color-badge v-if="health" :variant="healthVariant" :rounded="true"></sw-color-badge>
         {% endblock %}

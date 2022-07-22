@@ -1,10 +1,11 @@
 import template from './template.twig';
+import DiffMatchPatch from "diff-match-patch";
 
 const { Component, Mixin } = Shopware;
 
 Component.register('frosh-tools-tab-files', {
     template,
-    inject: ['repositoryFactory', 'FroshToolsService'],
+    inject: ['repositoryFactory', 'froshToolsService'],
     mixins: [
         Mixin.getByName('notification')
     ],
@@ -12,7 +13,12 @@ Component.register('frosh-tools-tab-files', {
     data() {
         return {
             items: {},
-            isLoading: true
+            isLoading: true,
+            diffData: {
+                html: '',
+                file: ''
+            },
+            showModal: false,
         };
     },
 
@@ -30,13 +36,66 @@ Component.register('frosh-tools-tab-files', {
                     primary: true
                 }
             ];
-        }
+        },
+
+        isLoadingClass() {
+            return {
+                'is-loading': this.isLoading
+            }
+        },
     },
 
     methods: {
+        async refresh() {
+            this.isLoading = true;
+            await this.createdComponent();
+        },
+
         async createdComponent() {
-            this.items = (await this.FroshToolsService.getShopwareFiles()).data;
+            this.items = (await this.froshToolsService.getShopwareFiles()).data;
             this.isLoading = false;
-        }
+        },
+
+        openUrl(url) {
+            window.open(url, '_blank');
+        },
+
+        diff(name, content, originalContent) {
+            const dmp = new DiffMatchPatch();
+            const diff = dmp.diff_main(originalContent, content);
+            dmp.diff_cleanupSemantic(diff);
+            this.diffData.html = dmp.diff_prettyHtml(diff)
+                .replace(new RegExp('background:#e6ffe6;', 'g'), 'background:#ABF2BC;')
+                .replace(new RegExp('background:#ffe6e6;', 'g'), 'background:rgba(255,129,130,0.4);');
+            this.diffData.file = name;
+
+            this.openModal();
+        },
+
+        async restoreFile(name) {
+            this.closeModal();
+            this.isLoading = true;
+            const response = await this.froshToolsService.restoreShopwareFile(name);
+
+            if (response.data.status) {
+                this.createNotificationSuccess({
+                    message: response.data.status
+                })
+            } else {
+                this.createNotificationError({
+                    message: response.data.error
+                })
+            }
+
+            await this.refresh();
+        },
+
+        openModal() {
+            this.showModal = true;
+        },
+
+        closeModal() {
+            this.showModal = false;
+        },
     }
 });

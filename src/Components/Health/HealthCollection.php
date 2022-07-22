@@ -8,6 +8,6 @@ class HealthCollection extends Collection
 {
     protected function getExpectedClass(): ?string
     {
-        return HealthResult::class;
+        return SettingsResult::class;
     }
 }

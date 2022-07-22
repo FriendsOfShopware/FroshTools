@@ -1,21 +1,24 @@
-<?php
+<?php declare(strict_types=1);
 
 namespace Frosh\Tools\Components\Messenger;
 
 use Psr\Log\LoggerInterface;
+use Shopware\Core\Content\ImportExport\Message\DeleteFileMessage as DeleteImportExportFile;
+use Shopware\Core\Content\Media\Message\DeleteFileMessage;
+use Shopware\Core\Content\Media\Message\GenerateThumbnailsMessage;
+use Shopware\Core\DevOps\Environment\EnvironmentHelper;
+use Shopware\Core\Framework\DataAbstractionLayer\Indexing\EntityIndexingMessage;
 use Shopware\Core\Framework\DataAbstractionLayer\Indexing\MessageQueue\IterateEntityIndexerMessage;
 use Shopware\Core\Framework\MessageQueue\ScheduledTask\ScheduledTask;
+use Shopware\Storefront\Framework\Cache\CacheWarmer\WarmUpMessage;
 use Symfony\Component\Messenger\Envelope;
 use Symfony\Component\Messenger\Exception\HandlerFailedException;
 use Symfony\Component\Messenger\Middleware\MiddlewareInterface;
 use Symfony\Component\Messenger\Middleware\StackInterface;
 
-use Shopware\Core\Framework\DataAbstractionLayer\Indexing\EntityIndexingMessage;
-use Shopware\Core\Content\ImportExport\Message\DeleteFileMessage as DeleteImportExportFile;
-use Shopware\Core\Content\Media\Message\DeleteFileMessage;
-use Shopware\Core\Content\Media\Message\GenerateThumbnailsMessage;
-use Shopware\Storefront\Framework\Cache\CacheWarmer\WarmUpMessage;
-
+/**
+ * @see https://tideways.com/profiler/blog/log-all-tasks-the-shopware-6-queue-processes
+ */
 class TaskLoggingMiddleware implements MiddlewareInterface
 {
     private LoggerInterface $logger;
@@ -27,7 +30,7 @@ class TaskLoggingMiddleware implements MiddlewareInterface
 
     public function handle(Envelope $envelope, StackInterface $stack): Envelope
     {
-        $taskLogging = (bool) ($_SERVER['FROSH_TOOLS_TASK_LOGGING'] ?? '0');
+        $taskLogging = (bool) EnvironmentHelper::getVariable('FROSH_TOOLS_TASK_LOGGING', '0');
         if ($taskLogging === false) {
             return $stack->next()->handle($envelope, $stack);
         }
@@ -57,7 +60,7 @@ class TaskLoggingMiddleware implements MiddlewareInterface
         $classParts = explode('\\', get_class($message));
         $taskName = end($classParts);
 
-        if (substr($taskName, -7) === 'Message') {
+        if (str_ends_with($taskName, 'Message')) {
             $taskName = substr($taskName, 0, -7);
         }
 
@@ -70,7 +73,10 @@ class TaskLoggingMiddleware implements MiddlewareInterface
             $data = $message->getData();
 
             if (is_array($data)) {
-                return ['data' => implode(',', $data)];
+                return [
+                    'indexer' => $message->getIndexer(),
+                    'data' => implode(',', $data),
+                ];
             }
         }
 
@@ -103,10 +109,14 @@ class TaskLoggingMiddleware implements MiddlewareInterface
 
         if (isset($args['exception'])) {
             $this->logger->error($taskName, $args);
+
             return;
         }
 
-        $this->logger->info($taskName, $args);
+        $taskLoggingInfo = (bool) EnvironmentHelper::getVariable('FROSH_TOOLS_TASK_LOGGING_INFO', '0');
+        if ($taskLoggingInfo) {
+            $this->logger->info($taskName, $args);
+        }
     }
 
     private function addExceptionToArgs($e, array $args): array

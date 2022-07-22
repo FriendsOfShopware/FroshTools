@@ -1,9 +1,16 @@
+import FroshToolsService from "./frosh-tools";
+import Elasticsearch from "./elasticsearch";
+
 const { Application } = Shopware;
 
-import FroshToolsService from "./frosh-tools";
-
-Application.addServiceProvider('FroshToolsService', (container) => {
+Application.addServiceProvider('froshToolsService', (container) => {
     const initContainer = Application.getContainer('init');
 
     return new FroshToolsService(initContainer.httpClient, container.loginService);
+});
+
+Application.addServiceProvider('froshElasticSearch', (container) => {
+    const initContainer = Application.getContainer('init');
+
+    return new Elasticsearch(initContainer.httpClient, container.loginService);
 });

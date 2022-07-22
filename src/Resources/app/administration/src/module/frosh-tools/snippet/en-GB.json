@@ -3,7 +3,8 @@
     "title": "Tools",
     "tabs": {
       "index": {
-        "title": "System Status"
+        "title": "System Status",
+        "performance": "Performance"
       },
       "systemInfo": {
         "title": "System Info"
@@ -21,11 +22,29 @@
         "title": "Elasticsearch Manager"
       },
       "logs": {
-        "title": "Log viewer"
+        "title": "Log viewer",
+        "logFileSelect": {
+          "placeholder": "Choose file"
+        }
       },
       "files": {
         "title": "Shopware file checker",
-        "allFilesOk": "All files are not modified"
+        "allFilesOk": "All files are not modified",
+        "notOk": "There are modified files",
+        "openOriginal": "Open original file on github",
+        "restore": {
+          "diff": "Diff file with original",
+          "restoreFile": "Restore file"
+        }
+      },
+      "feature-flags": {
+        "title": "Feature Flags",
+        "flag": "Feature Flag",
+        "description": "Description",
+        "major": "Major",
+        "default": "Default",
+        "deactivate": "Deactivate",
+        "activate": "Activate"
       }
     },
     "clear": "Clear",
@@ -38,7 +57,7 @@
     "used": "Used",
     "free": "Free",
     "compileTheme": "Compile theme",
-    "themecompiled": "Theme were compiled",
+    "themeCompiled": "Theme were compiled",
     "actions": "Actions",
     "scheduledTasks": "Scheduled Tasks",
     "interval": "Interval",
@@ -50,27 +69,62 @@
     "scheduledTaskFailed": "The scheduled task execution for \"{name}\" failed",
     "checker": {
       "scheduledTaskGood": "Scheduled tasks working scheduled",
-      "scheduledTaskWarning": "The scheduled tasks are waiting for executing for more than {minutes} minutes",
+      "scheduledTaskWarning": "The scheduled tasks are waiting for executing for more than 10 minutes",
       "mysqlError": "MySQL Version cannot be checked",
-      "mysqlDbVersion": "MySQL Version: {version}",
-      "mysqlDbVersionError": "MySQL Version {version} has technical problems",
-      "mysqlDbOutdated": "MySQL Version {version} has technical problems",
-      "mariaDbVersion": "MariaDB Version: {version}",
-      "phpOutdated": "You should have at least PHP-Version {minPhpVersion}. Installed: {version}",
-      "phpGood": "PHP Version: {version}",
-      "memoryLimitError": "You should have at least memory limit of {minMemoryLimit}. Currently: {memoryLimit}",
-      "memoryLimitGood": "Memory-Limit: {memoryLimit}",
+      "mysqlDbVersion": "MySQL Version",
+      "mysqlDbVersionError": "MySQL Version has technical problems",
+      "mysqlDbOutdated": "MySQL Version is outdated",
+      "mariaDbVersion": "MariaDB Version",
+      "phpOutdated": "PHP Version is outdated",
+      "phpGood": "PHP Version",
+      "maxExecutionTimeError": "Max-Execution-Time is too low",
+      "maxExecutionTimeGood": "Max-Execution-Time",
+      "memoryLimitError": "Memory-Limit is too low",
+      "memoryLimitGood": "Memory-Limit",
       "zendOpcacheGood": "Zend Opcache is active",
       "zendOpcacheWarning": "Zend Opcache is not active",
       "queuesGood": "Queues working good",
-      "queuesWarning": "Queues are older than {minutes} minutes",
-      "not-prod": "Shop is not in production mode"
+      "queuesWarning": "Open Queues older than 15 minutes found",
+      "not-prod": "Shop is not in production mode",
+      "prodGood": "Shop is in production mode",
+      "esGood": "Elasticsearch is enabled",
+      "esWarning": "Elasticsearch is disabled",
+      "adminWorkerGood": "Admin-Worker is disabled",
+      "adminWorkerWarning": "Admin-Worker should be disabled",
+      "publicFilesystemGood": "PublicFilesystem is not local",
+      "publicFilesystemWarning": "PublicFilesystem should not be local",
+      "updateMailVarialesGood": "MailVariables are not updated frequently",
+      "updateMailVarialesWarning": "MailVariables should not be updated frequently",
+      "mailNotSendWithQueue": "Mails should be sent using the message queue",
+      "mailSendWithQueue": "Mails are send with the message queue",
+      "incrementStorageIsDB": "Increment storage is heavily using the Storage. This feature should be disabled or Redis should be used",
+      "incrementStorageIsNotDB": "Increment storage is correct configured",
+      "queueIsDefault": "The default queue storage in database does not scale well with multiple workers",
+      "queueIsOk": "Configured queue storage is ok for multiple workers",
+      "fixCacheIdNotSet": "A fixed cache id should be set",
+      "fixCacheIdIsSet": "A fixed cache id is set",
+      "BusinessEventHandlerLevelGood": "BusinessEventHandler does not log infos",
+      "BusinessEventHandlerLevelWarning": "BusinessEventHandler is logging infos",
+      "AssertActiveGood": "PHP value assert.active is disabled",
+      "AssertActiveWarning": "PHP value assert.active is not disabled",
+      "EnableFileOverrideGood": "PHP value opcache.enable_file_override is enabled",
+      "EnableFileOverrideWarning": "PHP value opcache.enable_file_override is not enabled",
+      "InternedStringsBufferGood": "PHP value opcache.interned_strings_buffer has minimum value",
+      "InternedStringsBufferWarning": "PHP value opcache.interned_strings_buffer is too low",
+      "ZendDetectUnicodeGood": "PHP value zend.detect_unicode is disabled",
+      "ZendDetectUnicodeWarning": "PHP value zend.detect_unicode is not disabled",
+      "RealpathCacheTtlGood": "PHP value realpath_cache_ttl is good",
+      "RealpathCacheTtlWarning": "PHP value realpath_cache_ttl is low"
     },
     "size": "Size",
+    "docs": "Documents",
+    "delete": "Delete",
     "resetQueue": "Reset Queue",
     "date": "Date",
     "channel": "Channel",
     "level": "Level",
-    "message": "Message"
+    "message": "Message",
+    "current": "current",
+    "recommended": "recommended"
   }
 }

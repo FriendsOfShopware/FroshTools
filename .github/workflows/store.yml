@@ -1,0 +1,72 @@
+name: Store
+on:
+    push:
+        branches:
+            - 'main'
+        tags:
+            - '*'
+
+env:
+    PLUGIN_NAME: ${{ github.event.repository.name }}
+    ACCOUNT_USER: ${{ secrets.ACCOUNT_USER }}
+    ACCOUNT_PASSWORD: ${{ secrets.ACCOUNT_PASSWORD }}
+
+jobs:
+    validatePlugin:
+        if: startsWith(github.ref, 'refs/tags/') != true
+        name: Check for Store compliance
+        container: ghcr.io/friendsofshopware/platform-plugin-dev:v6.4.7
+        runs-on: ubuntu-latest
+        steps:
+            -   name: Checkout
+                uses: actions/checkout@v2.3.1
+                with:
+                    path: ${{ env.PLUGIN_NAME }}
+
+            -   name: Build & create zip
+                run: |
+                    npm install --prefix "./${PLUGIN_NAME}/src/Resources/app/administration/"
+                    cp -r "./${PLUGIN_NAME}" "/plugins/${PLUGIN_NAME}"
+                    start-mysql
+                    pack-plugin "${PLUGIN_NAME}"
+
+            -   name: Validate Zip
+                run: /opt/bin/plugin-uploader ext:validate $(pwd)/${PLUGIN_NAME}*.zip
+
+    StoreUpdate:
+        needs: validatePlugin
+        name: Update Store page
+        container: ghcr.io/friendsofshopware/platform-plugin-dev:v6.4.7
+        if: startsWith(github.ref, 'refs/tags/') || contains(github.event.head_commit.message, '[store update]')
+        runs-on: ubuntu-latest
+        steps:
+            -   name: Checkout
+                uses: actions/checkout@v2.3.1
+                with:
+                    path: ${{ env.PLUGIN_NAME }}
+
+            -   name: StoreUpdate
+                run: /opt/bin/plugin-uploader ext:update $(pwd)/${{ env.PLUGIN_NAME }}/
+
+    StoreRelease:
+        if: startsWith(github.ref, 'refs/tags/')
+        runs-on: ubuntu-latest
+        container: ghcr.io/friendsofshopware/platform-plugin-dev:v6.4.7
+        name: Upload Extension to Store
+        steps:
+            -   name: Checkout
+                uses: actions/checkout@v2.3.1
+                with:
+                    path: ${{ env.PLUGIN_NAME }}
+
+            -   name: Build & create zip
+                run: |
+                    npm install --prefix "./${PLUGIN_NAME}/src/Resources/app/administration/"
+                    cp -r "./${PLUGIN_NAME}" "/plugins/${PLUGIN_NAME}"
+                    start-mysql
+                    pack-plugin "${PLUGIN_NAME}"
+
+            -   name: StoreUpload
+                run: /opt/bin/plugin-uploader ext:upload $(pwd)/${PLUGIN_NAME}*.zip --createRelease
+                env:
+                    GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}

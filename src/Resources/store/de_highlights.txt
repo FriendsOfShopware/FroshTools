@@ -1,0 +1,3 @@
+Geplanter Task-Manager
+Warteschlangen-Manager
+Log-Viewer

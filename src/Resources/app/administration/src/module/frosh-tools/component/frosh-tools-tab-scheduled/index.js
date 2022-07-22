@@ -1,11 +1,12 @@
 import template from './template.twig';
+import './style.scss';
 
 const { Component, Mixin } = Shopware;
 const { Criteria } = Shopware.Data;
 
 Component.register('frosh-tools-tab-scheduled', {
     template,
-    inject: ['repositoryFactory', 'FroshToolsService'],
+    inject: ['repositoryFactory', 'froshToolsService'],
     mixins: [
         Mixin.getByName('notification')
     ],
@@ -51,14 +52,24 @@ Component.register('frosh-tools-tab-scheduled', {
                     label: 'frosh-tools.nextExecutionTime',
                     rawData: true,
                     inlineEdit: 'datetime'
+                },
+                {
+                    property: 'status',
+                    label: 'frosh-tools.status',
+                    rawData: true
                 }
             ];
         }
     },
 
     methods: {
+        async refresh() {
+            this.isLoading = true;
+            await this.createdComponent();
+        },
         async createdComponent() {
             const criteria = new Criteria;
+            criteria.addSorting(Criteria.sort('nextExecutionTime', 'ASC'));
             this.items = await this.scheduledRepository.search(criteria, Shopware.Context.api);
             this.isLoading = false;
         },
@@ -69,7 +80,7 @@ Component.register('frosh-tools-tab-scheduled', {
                 this.createNotificationInfo({
                     message: this.$tc('frosh-tools.scheduledTaskStarted', 0, {'name': item.name})
                 })
-                await this.FroshToolsService.runScheduledTask(item.id);
+                await this.froshToolsService.runScheduledTask(item.id);
                 this.createNotificationSuccess({
                     message: this.$tc('frosh-tools.scheduledTaskSucceed', 0, {'name': item.name})
                 })

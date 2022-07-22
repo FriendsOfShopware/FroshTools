@@ -1,0 +1,23 @@
+{
+  "storeAvailabilities": [
+    "International",
+    "German"
+  ],
+  "standardLocale": "en_GB",
+  "localizations": ["de_DE","en_GB","fr_FR","nl_NL","es_ES","it_IT"],
+  "categories": ["BackendBearbeitung", "System"],
+  "productType": "extension",
+  "responsive": true,
+  "tags": {
+    "en": [
+      "tools",
+      "scheduled event",
+      "scheduled task"
+    ],
+    "de": [
+      "tools",
+      "scheduled event",
+      "scheduled task"
+    ]
+  }
+}

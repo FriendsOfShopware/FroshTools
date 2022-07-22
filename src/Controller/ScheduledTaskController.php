@@ -43,6 +43,7 @@ class ScheduledTaskController
             [
                 'id' => $id,
                 'status' => ScheduledTaskDefinition::STATUS_QUEUED,
+                'nextExecutionTime' => new \DateTime(),
             ],
         ], $context);
 
@@ -55,7 +56,11 @@ class ScheduledTaskController
                 continue;
             }
 
-            if (!in_array($className, $handler::getHandledMessages(), true)) {
+            $handledMessages = $handler::getHandledMessages();
+            if (!is_array($handledMessages)) {
+                $handledMessages = iterator_to_array($handledMessages);
+            }
+            if (!in_array($className, $handledMessages, true)) {
                 continue;
             }
 

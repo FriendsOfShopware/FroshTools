@@ -1,5 +1,6 @@
 {
     "name": "frosh/tools",
+    "version": "0.2.2",
     "description": "Provides some basic things for managing the Shopware Installation",
     "type": "shopware-platform-plugin",
     "license": "MIT",
@@ -8,12 +9,33 @@
             "Frosh\\Tools\\": "src/"
         }
     },
+    "authors": [
+        {
+            "name": "FriendsOfShopware",
+            "homepage": "https://friendsofshopware.com"
+        }
+    ],
     "extra": {
         "shopware-plugin-class": "Frosh\\Tools\\FroshTools",
         "label": {
             "de-DE": "Tools",
             "en-GB": "Tools"
+        },
+        "description": {
+            "de-DE": "Die kostenlose Shopware 6 App beinhaltet mehrere Werkzeuge um den Shop besser zu verwalten. Optimierter Cache Manager, Log Viewer um die Logeinträge zu sehen oder Tasks auszuführen.",
+            "en-GB": "The free Shopware 6 app include several tools to manage the store much better like a cache manager, log viewer to see the log entries, run the tasks or see the system status."
+        },
+        "manufacturerLink": {
+            "de-DE": "https://github.com/FriendsOfShopware/FroshPlatformMailArchive",
+            "en-GB": "https://github.com/FriendsOfShopware/FroshPlatformMailArchive"
+        },
+        "supportLink": {
+            "de-DE": "https://github.com/FriendsOfShopware/FroshPlatformMailArchive/issues",
+            "en-GB": "https://github.com/FriendsOfShopware/FroshPlatformMailArchive/issues"
         }
+    },
+    "require": {
+        "shopware/core": "~6.4.7"
     },
     "require-dev": {
         "friendsofphp/php-cs-fixer": "~3.0"

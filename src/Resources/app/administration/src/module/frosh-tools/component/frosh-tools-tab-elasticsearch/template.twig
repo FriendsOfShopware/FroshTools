@@ -1,3 +1,70 @@
 <sw-card-view>
-    <sw-card :title="$tc('frosh-tools.tabs.elasticsearch.title')" :large="true"></sw-card>
+    <sw-card :title="$tc('frosh-tools.tabs.elasticsearch.title')" :large="true" :isLoading="isLoading">
+        <sw-alert variant="error" v-if="!isLoading && !isActive">Elasticsearch is not enabled</sw-alert>
+
+        <div v-if="!isLoading && isActive">
+            <div><strong>Elasticsearch version: </strong> {{ statusInfo.info.version.number }}</div>
+            <div><strong>Nodes: </strong> {{ statusInfo.health.number_of_nodes }}</div>
+            <div><strong>Cluster status: </strong> {{ statusInfo.health.status }}</div>
+        </div>
+    </sw-card>
+
+    <sw-card title="Indices" v-if="!isLoading && isActive" :large="true">
+        <template #toolbar>
+            <!-- @todo: Make the refresh button fancy -->
+            <sw-button variant="ghost" @click="createdComponent"><sw-icon :small="true" name="default-arrow-360-left"></sw-icon></sw-button>
+        </template>
+
+        <sw-data-grid
+            v-if="indices"
+            :showSelection="false"
+            :dataSource="indices"
+            :columns="columns">
+
+            <template #column-name="{ item }">
+                <sw-label variant="primary" appearance="pill" v-if="item.aliases.length">
+                    {{ $tc('frosh-tools.active') }}
+                </sw-label>
+
+                {{ item.name }}<br>
+            </template>
+
+            <template #column-indexSize="{ item }">
+                {{ formatSize(item.indexSize) }}<br>
+            </template>
+
+            <template #actions="{ item }">
+                <sw-context-menu-item variant="danger" @click="deleteIndex(item.name)">
+                    {{ $tc('frosh-tools.delete') }}
+                </sw-context-menu-item>
+            </template>
+        </sw-data-grid>
+    </sw-card>
+
+    <sw-card title="Actions" v-if="!isLoading && isActive" :large="true">
+        <sw-button @click="reindex" variant="primary">Reindex</sw-button>
+        <sw-button @click="switchAlias">Trigger alias switching</sw-button>
+        <sw-button @click="flushAll">Flush all indices</sw-button>
+
+        <sw-button @click="cleanup">Cleanup unused Indices</sw-button>
+        <sw-button @click="resetElasticsearch" variant="danger">Delete all indices</sw-button>
+    </sw-card>
+
+    <sw-card title="Elasticsearch Console" v-if="!isLoading && isActive" :large="true">
+        <sw-code-editor
+            completionMode="text"
+            mode="twig"
+            :softWraps="true"
+            :setFocus="false"
+            :disabled="false"
+            :sanitizeInput="false"
+            v-model="consoleInput"
+        ></sw-code-editor>
+
+        <sw-button @click="onConsoleEnter">Send</sw-button>
+
+        <div><strong>Output:</strong></div>
+
+        <pre>{{ consoleOutput }}</pre>
+    </sw-card>
 </sw-card-view>

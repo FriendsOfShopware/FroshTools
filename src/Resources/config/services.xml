@@ -27,6 +27,22 @@
             <tag name="console.command"/>
         </service>
 
+        <service id="Frosh\Tools\Command\DevRobotsTxtCommand">
+            <argument>%kernel.project_dir%/public</argument>
+            <tag name="console.command"/>
+        </service>
+
+        <service id="Frosh\Tools\Command\UpdatePluginsCommand">
+            <argument type="service" id="kernel"/>
+            <tag name="console.command"/>
+        </service>
+
+        <service id="Frosh\Tools\Command\UpdateComposerPluginsCommand">
+            <argument>%kernel.project_dir%</argument>
+            <argument type="service" id="Shopware\Core\Framework\Plugin\KernelPluginLoader\KernelPluginLoader"/>
+            <tag name="console.command"/>
+        </service>
+
         <service id="frosh.tools.cache.app" class="Frosh\Tools\Components\CacheAdapter">
             <argument type="service" id="cache.object"/>
         </service>
@@ -42,6 +58,7 @@
 
         <service id="Frosh\Tools\Controller\QueueController" public="true">
             <argument type="service" id="Doctrine\DBAL\Connection"/>
+            <argument type="service" id="shopware.increment.gateway.registry"/>
         </service>
 
         <service id="Frosh\Tools\Controller\ScheduledTaskController" public="true">
@@ -54,33 +71,87 @@
         </service>
 
         <!-- Health checkers -->
-
         <service id="Frosh\Tools\Controller\HealthController" public="true">
             <argument type="tagged" tag="frosh_tools.health_checker"/>
+            <argument type="tagged" tag="frosh_tools.performance_checker"/>
         </service>
 
-        <service id="Frosh\Tools\Components\Health\Checker\PhpChecker">
+        <service id="Frosh\Tools\Components\Health\Checker\HealthChecker\PhpChecker">
             <tag name="frosh_tools.health_checker"/>
         </service>
 
-        <service id="Frosh\Tools\Components\Health\Checker\MysqlChecker">
+        <service id="Frosh\Tools\Components\Health\Checker\HealthChecker\MysqlChecker">
             <argument type="service" id="Doctrine\DBAL\Connection"/>
             <tag name="frosh_tools.health_checker"/>
         </service>
 
-        <service id="Frosh\Tools\Components\Health\Checker\QueueChecker">
+        <service id="Frosh\Tools\Components\Health\Checker\HealthChecker\QueueChecker">
             <argument type="service" id="Doctrine\DBAL\Connection"/>
             <tag name="frosh_tools.health_checker"/>
         </service>
 
-        <service id="Frosh\Tools\Components\Health\Checker\TaskChecker">
+        <service id="Frosh\Tools\Components\Health\Checker\HealthChecker\TaskChecker">
             <argument type="service" id="scheduled_task.repository"/>
             <tag name="frosh_tools.health_checker"/>
         </service>
 
-        <service id="Frosh\Tools\Components\Health\Checker\ProductionChecker">
+        <service id="Frosh\Tools\Components\Health\Checker\HealthChecker\ProductionChecker">
             <argument>%kernel.environment%</argument>
             <tag name="frosh_tools.health_checker"/>
+        </service>
+
+        <service id="Frosh\Tools\Components\Health\Checker\PerformanceChecker\PhpChecker">
+            <tag name="frosh_tools.performance_checker"/>
+        </service>
+
+        <service id="Frosh\Tools\Components\Health\Checker\PerformanceChecker\PhpSettingsChecker">
+            <tag name="frosh_tools.performance_checker"/>
+        </service>
+
+        <service id="Frosh\Tools\Components\Health\Checker\PerformanceChecker\AdminWorkerChecker">
+            <argument>%shopware.admin_worker.enable_admin_worker%</argument>
+            <tag name="frosh_tools.performance_checker"/>
+        </service>
+
+        <service id="Frosh\Tools\Components\Health\Checker\PerformanceChecker\PublicFilesystemChecker">
+            <argument>%shopware.filesystem.public.type%</argument>
+            <tag name="frosh_tools.performance_checker"/>
+        </service>
+
+        <service id="Frosh\Tools\Components\Health\Checker\PerformanceChecker\MailOverQueueChecker">
+            <argument>%frosh_tools.mail_over_queue%</argument>
+            <tag name="frosh_tools.performance_checker"/>
+        </service>
+
+        <service id="Frosh\Tools\Components\Health\Checker\PerformanceChecker\IncrementStorageChecker">
+            <argument>%shopware.increment.user_activity.type%</argument>
+            <argument>%shopware.increment.message_queue.type%</argument>
+            <tag name="frosh_tools.performance_checker"/>
+        </service>
+
+        <service id="Frosh\Tools\Components\Health\Checker\PerformanceChecker\QueueConnectionChecker">
+            <argument>%frosh_tools.queue_connection%</argument>
+            <tag name="frosh_tools.performance_checker"/>
+        </service>
+
+        <service id="Frosh\Tools\Components\Health\Checker\PerformanceChecker\EsChecker">
+            <argument type="service" id="Frosh\Tools\Components\Elasticsearch\ElasticsearchManager"/>
+            <tag name="frosh_tools.performance_checker"/>
+        </service>
+
+        <service id="Frosh\Tools\Components\Health\Checker\PerformanceChecker\DisabledMailUpdatesChecker">
+            <argument type="service" id="parameter_bag"/>
+            <tag name="frosh_tools.performance_checker"/>
+        </service>
+
+        <service id="Frosh\Tools\Components\Health\Checker\PerformanceChecker\FixCacheIdSetChecker">
+            <argument>%kernel.shopware_version%</argument>
+            <tag name="frosh_tools.performance_checker"/>
+        </service>
+
+        <service id="Frosh\Tools\Components\Health\Checker\PerformanceChecker\LoggerLevelChecker">
+            <argument type="service" id="monolog.handler.business_event_handler_buffer"/>
+            <tag name="frosh_tools.performance_checker"/>
         </service>
 
         <service id="Frosh\Tools\Components\Messenger\TaskLoggingMiddleware">
@@ -96,6 +167,32 @@
         <service id="Frosh\Tools\Controller\ShopwareFilesController" public="true">
             <argument>%kernel.shopware_version%</argument>
             <argument>%kernel.project_dir%</argument>
+        </service>
+
+        <service id="Frosh\Tools\Components\Elasticsearch\ElasticsearchManager">
+            <argument type="service" id="Elasticsearch\Client"/>
+            <argument>%elasticsearch.enabled%</argument>
+            <argument type="service" id="Shopware\Elasticsearch\Framework\Indexing\ElasticsearchIndexer"/>
+            <argument type="service" id="messenger.bus.shopware"/>
+            <argument type="service" id="Shopware\Elasticsearch\Framework\Indexing\CreateAliasTaskHandler"/>
+            <argument type="service" id="Shopware\Elasticsearch\Framework\ElasticsearchOutdatedIndexDetector"/>
+            <argument type="service" id="Doctrine\DBAL\Connection"/>
+            <argument type="service" id="shopware.increment.gateway.registry"/>
+        </service>
+
+        <service id="Frosh\Tools\Controller\ElasticsearchController" public="true">
+            <argument type="service" id="Frosh\Tools\Components\Elasticsearch\ElasticsearchManager"/>
+        </service>
+
+        <service id="Frosh\Tools\Controller\FeatureFlagController" public="true">
+            <argument>%kernel.project_dir%</argument>
+        </service>
+
+        <service id="Frosh\Tools\Components\Elasticsearch\EsProductDefinition" decorates="Shopware\Elasticsearch\Product\ElasticsearchProductDefinition">
+            <argument type="service" id="Frosh\Tools\Components\Elasticsearch\EsProductDefinition.inner"/>
+            <argument type="service" id="Doctrine\DBAL\Connection"/>
+            <argument>%frosh_tools.elasticsearch.product_fields%</argument>
+            <argument>%frosh_tools.elasticsearch.product_minimum_should_match%</argument>
         </service>
     </services>
 </container>

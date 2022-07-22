@@ -1,9 +1,10 @@
 <?php declare(strict_types=1);
 
-namespace Frosh\Tools\Components\Health\Checker;
+namespace Frosh\Tools\Components\Health\Checker\HealthChecker;
 
+use Frosh\Tools\Components\Health\Checker\CheckerInterface;
 use Frosh\Tools\Components\Health\HealthCollection;
-use Frosh\Tools\Components\Health\HealthResult;
+use Frosh\Tools\Components\Health\SettingsResult;
 
 class ProductionChecker implements CheckerInterface
 {
@@ -17,7 +18,11 @@ class ProductionChecker implements CheckerInterface
     public function collect(HealthCollection $collection): void
     {
         if ($this->environment !== 'prod') {
-            $collection->add(HealthResult::error('frosh-tools.checker.not-prod'));
+            $collection->add(SettingsResult::error('frosh-tools.checker.not-prod'));
+
+            return;
         }
+
+        $collection->add(SettingsResult::ok('frosh-tools.checker.prodGood'));
     }
 }

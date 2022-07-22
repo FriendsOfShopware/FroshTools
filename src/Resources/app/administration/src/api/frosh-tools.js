@@ -29,6 +29,18 @@ class FroshTools extends ApiService {
         });
     }
 
+    getQueue() {
+        const apiRoute = `${this.getApiBasePath()}/queue/list`;
+        return this.httpClient.get(
+            apiRoute,
+            {
+                headers: this.getBasicHeaders()
+            }
+        ).then((response) => {
+            return ApiService.handleResponse(response);
+        });
+    }
+
     resetQueue() {
         const apiRoute = `${this.getApiBasePath()}/queue`;
         return this.httpClient.delete(
@@ -56,6 +68,18 @@ class FroshTools extends ApiService {
 
     healthStatus() {
         const apiRoute = `${this.getApiBasePath()}/health/status`;
+        return this.httpClient.get(
+            apiRoute,
+            {
+                headers: this.getBasicHeaders()
+            }
+        ).then((response) => {
+            return ApiService.handleResponse(response);
+        });
+    }
+
+    performanceStatus() {
+        const apiRoute = `${this.getApiBasePath()}/performance/status`;
         return this.httpClient.get(
             apiRoute,
             {
@@ -104,6 +128,46 @@ class FroshTools extends ApiService {
             }
         ).then((response) => {
             return response;
+        });
+    }
+
+    restoreShopwareFile(file) {
+        const apiRoute = `${this.getApiBasePath()}/shopware-file/restore`;
+        return this.httpClient.get(
+            apiRoute,
+            {
+                params: {
+                    file,
+                },
+                headers: this.getBasicHeaders()
+            }
+        ).then((response) => {
+            return response;
+        });
+    }
+
+    getFeatureFlags() {
+        const apiRoute = `${this.getApiBasePath()}/feature-flag/list`;
+        return this.httpClient.get(
+            apiRoute,
+            {
+                headers: this.getBasicHeaders()
+            }
+        ).then((response) => {
+            return ApiService.handleResponse(response);
+        });
+    }
+
+    toggleFeatureFlag(flag) {
+        const apiRoute = `${this.getApiBasePath()}/feature-flag/toggle`;
+        return this.httpClient.post(
+            apiRoute,
+            { flag },
+            {
+                headers: this.getBasicHeaders()
+            }
+        ).then((response) => {
+            return ApiService.handleResponse(response);
         });
     }
 }

@@ -4,6 +4,8 @@ namespace Frosh\Tools;
 
 use Frosh\Tools\Components\Messenger\TaskLoggingMiddlewareCompilerPass;
 use Frosh\Tools\DependencyInjection\CacheCompilerPass;
+use Frosh\Tools\DependencyInjection\FroshToolsExtension;
+use Frosh\Tools\DependencyInjection\SymfonyConfigCompilerPass;
 use Shopware\Core\Framework\Plugin;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
 
@@ -18,5 +20,11 @@ class FroshTools extends Plugin
         parent::build($container);
         $container->addCompilerPass(new CacheCompilerPass());
         $container->addCompilerPass(new TaskLoggingMiddlewareCompilerPass());
+        $container->addCompilerPass(new SymfonyConfigCompilerPass());
+    }
+
+    public function createContainerExtension(): FroshToolsExtension
+    {
+        return new FroshToolsExtension();
     }
 }

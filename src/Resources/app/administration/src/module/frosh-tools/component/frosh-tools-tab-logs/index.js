@@ -1,10 +1,11 @@
 import template from './template.twig';
+import './style.scss';
 
 const { Component, Mixin } = Shopware;
 
 Component.register('frosh-tools-tab-logs', {
     template,
-    inject: ['FroshToolsService'],
+    inject: ['froshToolsService'],
     mixins: [
         Mixin.getByName('notification')
     ],
@@ -26,10 +27,6 @@ Component.register('frosh-tools-tab-logs', {
     },
 
     computed: {
-        queueRepository() {
-            return this.repositoryFactory.create('message_queue_stats');
-        },
-
         columns() {
             return [
                 {
@@ -57,13 +54,23 @@ Component.register('frosh-tools-tab-logs', {
     },
 
     methods: {
+        async refresh() {
+            this.isLoading = true;
+            await this.createdComponent();
+            await this.onFileSelected();
+        },
+
         async createdComponent() {
-            this.logFiles = await this.FroshToolsService.getLogFiles();
+            this.logFiles = await this.froshToolsService.getLogFiles();
             this.isLoading = false;
         },
 
         async onFileSelected() {
-            const logEntries = await this.FroshToolsService.getLogFile(
+            if (!this.selectedLogFile) {
+                return;
+            }
+
+            const logEntries = await this.froshToolsService.getLogFile(
                 this.selectedLogFile,
                 (this.page - 1) * this.limit,
                 this.limit

@@ -1,27 +1,77 @@
 <sw-card-view>
-    <sw-card :title="$tc('frosh-tools.tabs.index.title')" :isLoading="isLoading" :large="true">
-        <sw-data-grid
-            v-if="health"
-            :showSelection="false"
-            :showActions="false"
-            :dataSource="health"
-            :columns="columns">
+    <sw-card class="frosh-tools-tab-index__health-card" :isLoading="isLoading" :large="true">
 
-            <template #column-status="{ item }">
-                <sw-label variant="success" appearance="pill" v-if="item.state === 'STATE_OK'" >
-                    {{ $tc('frosh-tools.good') }}
-                </sw-label>
-                <sw-label variant="warning" appearance="pill" v-if="item.state === 'STATE_WARNING'" >
-                    {{ $tc('frosh-tools.warning') }}
-                </sw-label>
-                <sw-label variant="danger" appearance="pill" v-if="item.state === 'STATE_ERROR'" >
-                    {{ $tc('frosh-tools.error') }}
-                </sw-label>
-            </template>
+        <template #toolbar>
+            <!-- @todo: Make the refresh button fancy -->
+            <sw-button variant="ghost" @click="refresh">
+                <sw-icon :small="true" name="default-arrow-360-left"></sw-icon>
+            </sw-button>
+        </template>
 
-            <template #column-name="{ item }">
-                {{ $tc(item.snippet, 0, item.parameters) }}
-            </template>
-        </sw-data-grid>
+        <sw-card class="frosh-tools-tab-index__health-card" :title="$tc('frosh-tools.tabs.index.title')" :large="true">
+            <sw-data-grid
+                v-if="health"
+                :showSelection="false"
+                :showActions="false"
+                :dataSource="health"
+                :columns="columns">
+
+                <template #column-current="{ item }">
+                    {{ item.current }}
+                </template>
+
+                <template #column-name="{ item }">
+                    <template>
+                        <sw-label variant="success" appearance="pill" v-if="item.state === 'STATE_OK'">
+                            {{ $tc('frosh-tools.good') }}
+                        </sw-label>
+                        <sw-label variant="warning" appearance="pill" v-if="item.state === 'STATE_WARNING'">
+                            {{ $tc('frosh-tools.warning') }}
+                        </sw-label>
+                        <sw-label variant="danger" appearance="pill" v-if="item.state === 'STATE_ERROR'">
+                            {{ $tc('frosh-tools.error') }}
+                        </sw-label>
+                    </template>
+
+                    <template v-if="item.url">
+                        <a :href="item.url" target="_blank">{{ $tc(item.snippet) }}</a>
+                    </template>
+                    <template v-else>{{ $tc(item.snippet) }}</template>
+                </template>
+            </sw-data-grid>
+        </sw-card>
+
+        <sw-card class="frosh-tools-tab-index__health-card" :title="$tc('frosh-tools.tabs.index.performance')" :large="true">
+            <sw-data-grid
+                v-if="performanceStatus"
+                :showSelection="false"
+                :showActions="false"
+                :dataSource="performanceStatus"
+                :columns="columns">
+
+                <template #column-current="{ item }">
+                    {{ item.current }}
+                </template>
+
+                <template #column-name="{ item }">
+                    <template>
+                        <sw-label variant="success" appearance="pill" v-if="item.state === 'STATE_OK'">
+                            {{ $tc('frosh-tools.good') }}
+                        </sw-label>
+                        <sw-label variant="warning" appearance="pill" v-if="item.state === 'STATE_WARNING'">
+                            {{ $tc('frosh-tools.warning') }}
+                        </sw-label>
+                        <sw-label variant="danger" appearance="pill" v-if="item.state === 'STATE_ERROR'">
+                            {{ $tc('frosh-tools.error') }}
+                        </sw-label>
+                    </template>
+
+                    <template v-if="item.url">
+                        <a :href="item.url" target="_blank">{{ $tc(item.snippet) }}</a>
+                    </template>
+                    <template v-else>{{ $tc(item.snippet) }}</template>
+                </template>
+            </sw-data-grid>
+        </sw-card>
     </sw-card>
 </sw-card-view>

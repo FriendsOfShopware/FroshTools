@@ -1,4 +1,5 @@
 import template from './template.twig';
+import './style.scss';
 
 const { Component, Mixin } = Shopware;
 const { Criteria } = Shopware.Data;
@@ -6,7 +7,7 @@ const { Criteria } = Shopware.Data;
 Component.register('frosh-tools-tab-cache', {
     template,
 
-    inject: ['FroshToolsService', 'repositoryFactory', 'themeService'],
+    inject: ['froshToolsService', 'repositoryFactory', 'themeService'],
     mixins: [
         Mixin.getByName('notification')
     ],
@@ -14,11 +15,18 @@ Component.register('frosh-tools-tab-cache', {
     data() {
         return {
             cacheInfo: null,
-            isLoading: true
+            isLoading: true,
+            numberFormater: null
         }
     },
 
     async created() {
+        const language = Shopware.Application.getContainer('factory').locale.getLastKnownLocale();
+        this.numberFormater = new Intl.NumberFormat(
+            language,
+            { minimumFractionDigits: 2, maximumFractionDigits: 2 }
+        );
+
         this.createdComponent();
     },
 
@@ -33,12 +41,14 @@ Component.register('frosh-tools-tab-cache', {
                 {
                     property: 'size',
                     label: 'frosh-tools.used',
-                    rawData: true
+                    rawData: true,
+                    align: 'right'
                 },
                 {
                     property: 'freeSpace',
                     label: 'frosh-tools.free',
-                    rawData: true
+                    rawData: true,
+                    align: 'right'
                 }
             ];
         },
@@ -58,33 +68,19 @@ Component.register('frosh-tools-tab-cache', {
     methods: {
         async createdComponent() {
             this.isLoading = true;
-            this.cacheInfo = await this.FroshToolsService.getCacheInfo();
+            this.cacheInfo = await this.froshToolsService.getCacheInfo();
             this.isLoading = false;
         },
 
         formatSize(bytes) {
-            const thresh = 1024;
-            const dp = 1;
+            bytes /= 1024 * 1024;
 
-            if (Math.abs(bytes) < thresh) {
-                return bytes + ' B';
-            }
-
-            const units = ['KiB', 'MiB', 'GiB', 'TiB', 'PiB', 'EiB', 'ZiB', 'YiB'];
-            let u = -1;
-            const r = 10**dp;
-
-            do {
-                bytes /= thresh;
-                ++u;
-            } while (Math.round(Math.abs(bytes) * r) / r >= thresh && u < units.length - 1);
-
-            return bytes.toFixed(dp) + ' ' + units[u];
+            return this.numberFormater.format(bytes) + ' MiB';
         },
 
         async clearCache(item) {
             this.isLoading = true;
-            await this.FroshToolsService.clearCache(item.name);
+            await this.froshToolsService.clearCache(item.name);
             await this.createdComponent();
         },
 
@@ -98,10 +94,12 @@ Component.register('frosh-tools-tab-cache', {
             for (let salesChannel of salesChannels) {
                 const theme = salesChannel.extensions.themes.first();
 
-                await this.themeService.assignTheme(theme.id, salesChannel.id);
-                this.createNotificationSuccess({
-                    message: `${salesChannel.translated.name}` + ': ' + this.$tc('frosh-tools.themecompiled')
-                })
+                if (theme) {
+                    await this.themeService.assignTheme(theme.id, salesChannel.id);
+                    this.createNotificationSuccess({
+                        message: `${salesChannel.translated.name}` + ': ' + this.$tc('frosh-tools.themeCompiled')
+                    })
+                }
             }
 
             this.isLoading = false;

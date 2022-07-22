@@ -2,7 +2,6 @@
 
 namespace Frosh\Tools\Controller;
 
-use Frosh\Tools\Components\CacheAdapter;
 use Frosh\Tools\Components\CacheHelper;
 use Frosh\Tools\Components\CacheRegistry;
 use Shopware\Core\Framework\Routing\Annotation\RouteScope;
@@ -61,10 +60,12 @@ class CacheController
         }
 
         $activeColumns = array_column($result, 'active');
-        $nameColumns = array_column($result, 'name');
+        $freeSpaceColumns = array_column($result, 'freeSpace');
+        $sizeColumns = array_column($result, 'size');
 
         array_multisort($activeColumns, \SORT_DESC,
-            $nameColumns, \SORT_ASC,
+            $freeSpaceColumns, \SORT_ASC,
+            $sizeColumns, \SORT_DESC,
             $result);
 
         return new JsonResponse($result);

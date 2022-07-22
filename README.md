@@ -16,6 +16,9 @@ The current feature set consists of:
   - Shows the entries of /var/log/*.log files
 - Task Logging
   - Can be enabled with env `FROSH_TOOLS_TASK_LOGGING=1` in `.env`. This will create a log in `var/log/task_logging-xx.log`
+    - Set `FROSH_TOOLS_TASK_LOGGING_INFO=1` in `.env` to log all tasks
+- Feature Flag Manager
+  - Provides the ability to enable or disable feature flags
 
 ## Installation
 
@@ -59,6 +62,24 @@ bin/console frosh:env:set VARIABLE VALUE
 
 ```bash
 bin/console frosh:env:del VARIABLE
+```
+
+### `frosh:dev:robots-txt` - For testshops - add/change robots.txt to stop crawers
+
+```bash
+bin/console frosh:dev:robots-txt
+```
+
+### `frosh:dev:robots-txt -r` - For testshops - revert changes in robots.txt
+
+```bash
+bin/console frosh:dev:robots-txt -r
+```
+
+### `frosh:plugin:update` - update plugins with available updates at once
+
+```bash
+bin/console frosh:plugin:update
 ```
 
 ## Screenshots
