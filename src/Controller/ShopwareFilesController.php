@@ -124,11 +124,36 @@ class ShopwareFilesController
 
     private function getOriginalFileContent(string $name): ?string
     {
-        return file_get_contents($this->getShopwareUrl($name) . '?raw=true');
+        return file_get_contents($this->getShopwareUrl($name) . '?raw=true') ?: null;
     }
 
     private function isIgnoredFileHash(string $file, string $md5Sum): bool
     {
+        $ignoredFiles = [
+            'vendor/shopware/recovery/Common/vendor/autoload.php',
+            'vendor/shopware/recovery/Common/vendor/composer/ClassLoader.php',
+            'vendor/shopware/recovery/Common/vendor/composer/InstalledVersions.php',
+            'vendor/shopware/recovery/Common/vendor/composer/autoload_classmap.php',
+            'vendor/shopware/recovery/Common/vendor/composer/autoload_files.php',
+            'vendor/shopware/recovery/Common/vendor/composer/autoload_namespaces.php',
+            'vendor/shopware/recovery/Common/vendor/composer/autoload_psr4.php',
+            'vendor/shopware/recovery/Common/vendor/composer/autoload_real.php',
+            'vendor/shopware/recovery/Common/vendor/composer/autoload_static.php',
+            'vendor/shopware/recovery/Common/vendor/composer/installed.php',
+            'vendor/shopware/recovery/vendor/autoload.php',
+            'vendor/shopware/recovery/vendor/composer/ClassLoader.php',
+            'vendor/shopware/recovery/vendor/composer/InstalledVersions.php',
+            'vendor/shopware/recovery/vendor/composer/autoload_classmap.php',
+            'vendor/shopware/recovery/vendor/composer/autoload_namespaces.php',
+            'vendor/shopware/recovery/vendor/composer/autoload_psr4.php',
+            'vendor/shopware/recovery/vendor/composer/autoload_real.php',
+            'vendor/shopware/recovery/vendor/composer/autoload_static.php',
+        ];
+
+        if (\in_array($file, $ignoredFiles)) {
+            return true;
+        }
+
         // This file differs on update systems. This change is missing in update packages lol!
         // @see: https://github.com/shopware/platform/commit/957e605c96feef67a6c759f00c58e35d2d1ac84f#diff-e49288a50f0d7d8acdabb5ffef2edcd5ac4f4126f764d3153d19913ce98aba1cL10-R80
         // @see: https://issues.shopware.com/issues/NEXT-11618
