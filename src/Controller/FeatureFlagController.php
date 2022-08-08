@@ -4,7 +4,6 @@ namespace Frosh\Tools\Controller;
 
 use Frosh\Tools\Components\Environment\EnvironmentManager;
 use Shopware\Core\Framework\Feature;
-use Shopware\Core\Framework\Routing\Annotation\RouteScope;
 use Shopware\Core\Framework\Routing\Exception\InvalidRequestParameterException;
 use Shopware\Core\Framework\Routing\Exception\MissingRequestParameterException;
 use Symfony\Component\HttpFoundation\JsonResponse;
@@ -14,8 +13,7 @@ use Symfony\Component\HttpKernel\Exception\HttpException;
 use Symfony\Component\Routing\Annotation\Route;
 
 /**
- * @RouteScope(scopes={"api"})
- * @Route(path="/api/_action/frosh-tools")
+ * @Route(path="/api/_action/frosh-tools", defaults={"_routeScope"={"api"}})
  */
 class FeatureFlagController
 {

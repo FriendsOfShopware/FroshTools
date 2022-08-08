@@ -3,7 +3,6 @@
 namespace Frosh\Tools\Controller;
 
 use Frosh\Tools\Components\LineReader;
-use Shopware\Core\Framework\Routing\Annotation\RouteScope;
 use Shopware\Core\Framework\Routing\Exception\InvalidRequestParameterException;
 use Shopware\Core\Framework\Routing\Exception\MissingRequestParameterException;
 use Symfony\Component\Finder\Finder;
@@ -13,8 +12,7 @@ use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 
 /**
- * @RouteScope(scopes={"api"})
- * @Route(path="/api/_action/frosh-tools")
+ * @Route(path="/api/_action/frosh-tools", defaults={"_routeScope"={"api"}})
  */
 class LogController
 {

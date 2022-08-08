@@ -44,7 +44,7 @@ class PhpSettingsChecker implements CheckerInterface
 
     private function checkEnableFileOverride(HealthCollection $collection, string $url): void
     {
-        $currentValue = \ini_get('opcache.enable_file_override');
+        $currentValue = \ini_get('opcache.enable_file_override') ?: 'not set';
         if ($currentValue !== '1') {
             $collection->add(
                 SettingsResult::warning('frosh-tools.checker.EnableFileOverrideWarning',
@@ -68,8 +68,8 @@ class PhpSettingsChecker implements CheckerInterface
 
     private function checkInternedStringsBuffer(HealthCollection $collection, string $url): void
     {
-        $currentValue = \ini_get('opcache.interned_strings_buffer');
-        if ((int) $currentValue < 20) {
+        $currentValue = \ini_get('opcache.interned_strings_buffer') ?: 'not set';
+        if ((int)$currentValue < 20) {
             $collection->add(
                 SettingsResult::warning('frosh-tools.checker.InternedStringsBufferWarning',
                     $currentValue,
@@ -92,7 +92,7 @@ class PhpSettingsChecker implements CheckerInterface
 
     private function checkZendDetectUnicode(HealthCollection $collection, string $url): void
     {
-        $currentValue = \ini_get('zend.detect_unicode');
+        $currentValue = \ini_get('zend.detect_unicode') ?: 'not set';
         if ($currentValue !== '0') {
             $collection->add(
                 SettingsResult::warning('frosh-tools.checker.ZendDetectUnicodeWarning',
@@ -116,8 +116,8 @@ class PhpSettingsChecker implements CheckerInterface
 
     private function checkRealpathCacheTtl(HealthCollection $collection, string $url): void
     {
-        $currentValue = \ini_get('realpath_cache_ttl');
-        if ((int) $currentValue < 3600) {
+        $currentValue = \ini_get('realpath_cache_ttl') ?: 'not set';
+        if ((int)$currentValue < 3600) {
             $collection->add(
                 SettingsResult::warning('frosh-tools.checker.RealpathCacheTtlWarning',
                     $currentValue,

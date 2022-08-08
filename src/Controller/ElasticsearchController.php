@@ -3,15 +3,13 @@
 namespace Frosh\Tools\Controller;
 
 use Frosh\Tools\Components\Elasticsearch\ElasticsearchManager;
-use Shopware\Core\Framework\Routing\Annotation\RouteScope;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 
 /**
- * @RouteScope(scopes={"api"})
- * @Route(path="/api/_action/frosh-tools/elasticsearch")
+ * @Route(path="/api/_action/frosh-tools/elasticsearch", defaults={"_routeScope"={"api"}})
  */
 class ElasticsearchController
 {
