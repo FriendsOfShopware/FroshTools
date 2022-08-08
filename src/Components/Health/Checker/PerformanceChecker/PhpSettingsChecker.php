@@ -69,7 +69,7 @@ class PhpSettingsChecker implements CheckerInterface
     private function checkInternedStringsBuffer(HealthCollection $collection, string $url): void
     {
         $currentValue = \ini_get('opcache.interned_strings_buffer') ?: 'not set';
-        if ((int)$currentValue < 20) {
+        if ((int) $currentValue < 20) {
             $collection->add(
                 SettingsResult::warning('frosh-tools.checker.InternedStringsBufferWarning',
                     $currentValue,
@@ -117,7 +117,7 @@ class PhpSettingsChecker implements CheckerInterface
     private function checkRealpathCacheTtl(HealthCollection $collection, string $url): void
     {
         $currentValue = \ini_get('realpath_cache_ttl') ?: 'not set';
-        if ((int)$currentValue < 3600) {
+        if ((int) $currentValue < 3600) {
             $collection->add(
                 SettingsResult::warning('frosh-tools.checker.RealpathCacheTtlWarning',
                     $currentValue,
