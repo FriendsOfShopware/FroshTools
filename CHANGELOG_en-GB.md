@@ -60,3 +60,8 @@
 
 * Added more recommendations for performance
 * Fix Redis for newer shopware versions
+
+# 0.2.3
+
+* Fix deprecation messages with 6.4.11 and higher for api
+* Fix ini-check not to throw error when is has not set
