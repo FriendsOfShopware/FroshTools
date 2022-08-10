@@ -65,3 +65,7 @@
 
 * Fix deprecation messages with 6.4.11 and higher for api
 * Fix ini-check not to throw error when is has not set
+
+# 0.2.4
+
+* Fix support for restricted envirnments
