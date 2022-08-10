@@ -10,6 +10,10 @@ class CacheHelper
 {
     public static function getSize(string $dir): int
     {
+        if (\is_file($dir)) {
+            return \filesize($dir);
+        }
+
         return self::getSizeFast($dir) ?? self::getSizeFallback($dir);
     }
 
@@ -76,6 +80,6 @@ class CacheHelper
         $output = null;
         exec('command -v rsync', $output);
 
-        return count($output) > 0;
+        return isset($output[0]) && count($output) > 0;
     }
 }
