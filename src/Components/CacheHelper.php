@@ -17,7 +17,12 @@ class CacheHelper
     {
         $output = null;
         exec('du -s "' . $dir . '"', $output);
-        if (preg_match('/[0-9]+/', $output[0], $match)) {
+
+        if (!isset($output[0])) {
+            return null;
+        }
+
+        if (preg_match('/\d+/', $output[0], $match)) {
             return $match[0] * 1024;
         }
 
