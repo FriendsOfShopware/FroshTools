@@ -26,12 +26,12 @@
             "en-GB": "The free Shopware 6 app include several tools to manage the store much better like a cache manager, log viewer to see the log entries, run the tasks or see the system status."
         },
         "manufacturerLink": {
-            "de-DE": "https://github.com/FriendsOfShopware/FroshPlatformMailArchive",
-            "en-GB": "https://github.com/FriendsOfShopware/FroshPlatformMailArchive"
+            "de-DE": "https://github.com/FriendsOfShopware/FroshTools",
+            "en-GB": "https://github.com/FriendsOfShopware/FroshTools"
         },
         "supportLink": {
-            "de-DE": "https://github.com/FriendsOfShopware/FroshPlatformMailArchive/issues",
-            "en-GB": "https://github.com/FriendsOfShopware/FroshPlatformMailArchive/issues"
+            "de-DE": "https://github.com/FriendsOfShopware/FroshTools/issues",
+            "en-GB": "https://github.com/FriendsOfShopware/FroshTools/issues"
         }
     },
     "require": {
