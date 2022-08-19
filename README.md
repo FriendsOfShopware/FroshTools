@@ -19,6 +19,8 @@ The current feature set consists of:
     - Set `FROSH_TOOLS_TASK_LOGGING_INFO=1` in `.env` to log all tasks
 - Feature Flag Manager
   - Provides the ability to enable or disable feature flags
+- State Machine Visualisation
+  - basic view of order, transaction and delivery states
 
 ## Installation
 
