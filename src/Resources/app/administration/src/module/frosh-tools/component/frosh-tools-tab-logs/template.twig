@@ -22,6 +22,9 @@
             <template slot="column-date" slot-scope="{ item }">
                 {{ item.date | date({hour: '2-digit', minute: '2-digit', second: '2-digit'}) }}
             </template>
+            <template slot="column-message" slot-scope="{ item }">
+                <a @click="showInfoModal(item)">{{ item.message | raw }}</a>
+            </template>
         </sw-data-grid>
 
         <sw-pagination
@@ -31,4 +34,34 @@
             @page-change="onPageChange"
         ></sw-pagination>
     </sw-card>
+
+    <sw-modal v-if="displayedLog"
+              variant="large">
+
+        <template slot="modal-header">
+            <div class="sw-modal__titles">
+                <h4 class="sw-modal__title">
+                    {{ displayedLog.channel }} - {{ displayedLog.level }}
+                </h4>
+
+                <h5 class="sw-modal__subtitle">
+                    {{ displayedLog.date | date({hour: '2-digit', minute: '2-digit', second: '2-digit'}) }}
+                </h5>
+            </div>
+
+            <button
+                class="sw-modal__close"
+                :title="$tc('global.sw-modal.labelClose')"
+                :aria-label="$tc('global.sw-modal.labelClose')"
+                @click="closeInfoModal"
+            >
+                <sw-icon
+                    name="regular-times-s"
+                    small
+                />
+            </button>
+        </template>
+
+        <div v-html="displayedLog.message"></div>
+    </sw-modal>
 </sw-card-view>
