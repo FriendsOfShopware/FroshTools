@@ -1,5 +1,6 @@
 <?php
 declare(strict_types=1);
+
 namespace Frosh\Tools\Components\StateMachines;
 
 use Shopware\Core\System\StateMachine\StateMachineEntity;
@@ -8,12 +9,11 @@ use Twig\Loader\FilesystemLoader;
 
 /**
  * @author erikpoehler
- *
  */
 final class Plantuml implements ExportInterface
 {
-    protected Environment $twig;
-    
+    private Environment $twig;
+
     private const DEFAULT_PATH = __DIR__ . '/../../Resources/views/administration/plantuml';
 
     public function __construct()
@@ -23,8 +23,8 @@ final class Plantuml implements ExportInterface
     }
 
     /**
-     * 
      * {@inheritDoc}
+     *
      * @see \Frosh\Tools\Components\StateMachines\ExportInterface::export()
      */
     public function export(StateMachineEntity $stateMachine, string $title = ''): string
