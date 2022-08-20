@@ -1,0 +1,23 @@
+<sw-card-view>
+    <sw-card
+        class="frosh-tools-tab-state-machines__state-machines-card"
+        :title="$tc('frosh-tools.tabs.state-machines.title')"
+        :isLoading="isLoading"
+        :large="true"
+    >
+
+        <div class="frosh-tools-tab-state-machines__state-machines-card-image-wrapper">
+            <img id="state_machine" class="frosh-tools-tab-state-machines__state-machines-card-image" type="image/svg+xml" src="/bundles/administration/static/img/empty-states/media-empty-state.svg" alt="State Machine" width="100%" height="auto" style="text-align:center; display:inline-block; opacity:0; "/>
+        </div>
+            
+        <template #toolbar>
+            <sw-select-field size="small" aside="true" @change="onStateMachineChange(event)" :label=" $tc('frosh-tools.tabs.state-machines.label') " :helpText="$tc('frosh-tools.tabs.state-machines.helpText')">
+                <option selected="selected" value="">{{ $tc('frosh-tools.chooseStateMachine') }}</option>
+                <option value="order.state">{{ $tc('frosh-tools.order') }}</option>
+                <option value="order_transaction.state">{{ $tc('frosh-tools.transaction') }}</option>
+                <option value="order_delivery.state">{{ $tc('frosh-tools.delivery') }}</option>
+            </sw-select-field>
+        </template>
+
+    </sw-card>
+</sw-card-view>

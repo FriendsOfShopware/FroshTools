@@ -69,3 +69,6 @@
 # 0.2.4
 
 * Fix support for restricted envirnments
+
+# 0.2.5
+* Added a first version of order, transaction and delivery state machine visualisations
