@@ -18,7 +18,8 @@ Component.register('frosh-tools-tab-logs', {
             totalLogEntries: 0,
             limit: 25,
             page: 1,
-            isLoading: true
+            isLoading: true,
+            displayedLog: null
         };
     },
 
@@ -84,6 +85,14 @@ Component.register('frosh-tools-tab-logs', {
             this.page = page.page;
             this.limit = page.limit;
             await this.onFileSelected();
-        }
+        },
+
+        showInfoModal(entryContents) {
+            this.displayedLog = entryContents;
+        },
+
+        closeInfoModal() {
+            this.displayedLog = null;
+        },
     }
 });
