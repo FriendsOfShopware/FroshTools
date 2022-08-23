@@ -2,6 +2,7 @@
 
 namespace Frosh\Tools;
 
+use Composer\Autoload\ClassLoader;
 use Frosh\Tools\Components\Messenger\TaskLoggingMiddlewareCompilerPass;
 use Frosh\Tools\DependencyInjection\CacheCompilerPass;
 use Frosh\Tools\DependencyInjection\FroshToolsExtension;
@@ -26,5 +27,23 @@ class FroshTools extends Plugin
     public function createContainerExtension(): FroshToolsExtension
     {
         return new FroshToolsExtension();
+    }
+
+    public static function classLoader(): void
+    {
+        $file = __DIR__ . '/../vendor/autoload.php';
+        if (!is_file($file)) {
+            return;
+        }
+
+        /** @noinspection UsingInclusionOnceReturnValueInspection */
+        $classLoader = require_once $file;
+
+        if (!$classLoader instanceof ClassLoader) {
+            return;
+        }
+
+        $classLoader->unregister();
+        $classLoader->register(false);
     }
 }
