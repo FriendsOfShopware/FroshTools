@@ -68,7 +68,9 @@
 
 # 0.2.4
 
-* Fix support for restricted envirnments
+* Fix support for restricted environments
 
 # 0.2.5
-* Added a first version of order, transaction and delivery state machine visualisations
+* Fix wrong ini-check for 0-value
+* Added modal to check message in log viewer
+* Added State Machine Viewer
