@@ -4,6 +4,7 @@ declare(strict_types=1);
 namespace Frosh\Tools\Controller;
 
 use Frosh\Tools\Components\StateMachines\Plantuml;
+use Frosh\Tools\FroshTools;
 use function Jawira\PlantUml\encodep;
 use Shopware\Core\Framework\Context;
 use Shopware\Core\Framework\DataAbstractionLayer\EntityRepository;
@@ -12,7 +13,6 @@ use Shopware\Core\Framework\DataAbstractionLayer\Search\Filter\EqualsFilter;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Routing\Annotation\Route;
-use Symfony\Contracts\Translation\TranslatorInterface;
 
 /**
  * @Route(path="/api/_action/frosh-tools", defaults={"_routeScope"={"api"}})
@@ -21,12 +21,9 @@ final class StateMachineController
 {
     private EntityRepository $stateMachineRepository;
 
-    private TranslatorInterface $translator;
-
-    public function __construct(EntityRepository $stateMachineRepository, TranslatorInterface $translator)
+    public function __construct(EntityRepository $stateMachineRepository)
     {
         $this->stateMachineRepository = $stateMachineRepository;
-        $this->translator = $translator;
     }
 
     /**
@@ -43,9 +40,6 @@ final class StateMachineController
         $tmp = explode('.', $stateMachineType);
         $title = ucwords(str_replace('_', ' ', $tmp[0]));
 
-        /**
-         * @var \Shopware\Core\Framework\DataAbstractionLayer\Search\Criteria $criteria
-         */
         $criteria = new Criteria();
         $criteria->addFilter(new EqualsFilter('technicalName', $stateMachineType));
         $criteria->addAssociations([
@@ -57,6 +51,8 @@ final class StateMachineController
 
         $exporter = new Plantuml();
         $generatedPlantuml = $exporter->export($stateMachine, $title);
+
+        FroshTools::classLoader();
 
         $response = new JsonResponse();
         $encode = encodep($generatedPlantuml);

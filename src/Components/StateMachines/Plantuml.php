@@ -7,9 +7,6 @@ use Shopware\Core\System\StateMachine\StateMachineEntity;
 use Twig\Environment;
 use Twig\Loader\FilesystemLoader;
 
-/**
- * @author erikpoehler
- */
 final class Plantuml implements ExportInterface
 {
     private Environment $twig;
