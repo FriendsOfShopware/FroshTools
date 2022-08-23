@@ -20,7 +20,7 @@ class PhpSettingsChecker implements CheckerInterface
 
     private function checkAssertActive(HealthCollection $collection, string $url): void
     {
-        $currentValue = \ini_get('assert.active');
+        $currentValue = $this->iniGetFailover('assert.active');
         if ($currentValue !== '0') {
             $collection->add(
                 SettingsResult::warning('frosh-tools.checker.AssertActiveWarning',
@@ -44,7 +44,7 @@ class PhpSettingsChecker implements CheckerInterface
 
     private function checkEnableFileOverride(HealthCollection $collection, string $url): void
     {
-        $currentValue = \ini_get('opcache.enable_file_override') ?: 'not set';
+        $currentValue = $this->iniGetFailover('opcache.enable_file_override');
         if ($currentValue !== '1') {
             $collection->add(
                 SettingsResult::warning('frosh-tools.checker.EnableFileOverrideWarning',
@@ -68,7 +68,7 @@ class PhpSettingsChecker implements CheckerInterface
 
     private function checkInternedStringsBuffer(HealthCollection $collection, string $url): void
     {
-        $currentValue = \ini_get('opcache.interned_strings_buffer') ?: 'not set';
+        $currentValue = $this->iniGetFailover('opcache.interned_strings_buffer');
         if ((int) $currentValue < 20) {
             $collection->add(
                 SettingsResult::warning('frosh-tools.checker.InternedStringsBufferWarning',
@@ -92,11 +92,11 @@ class PhpSettingsChecker implements CheckerInterface
 
     private function checkZendDetectUnicode(HealthCollection $collection, string $url): void
     {
-        $currentValue = \ini_get('zend.detect_unicode') ?: 'not set';
+        $currentValue = $this->iniGetFailover('zend.detect_unicode');
         if ($currentValue !== '0') {
             $collection->add(
                 SettingsResult::warning('frosh-tools.checker.ZendDetectUnicodeWarning',
-                    $currentValue,
+                    (string) $currentValue,
                     '0',
                     $url
                 )
@@ -116,7 +116,7 @@ class PhpSettingsChecker implements CheckerInterface
 
     private function checkRealpathCacheTtl(HealthCollection $collection, string $url): void
     {
-        $currentValue = \ini_get('realpath_cache_ttl') ?: 'not set';
+        $currentValue = $this->iniGetFailover('realpath_cache_ttl');
         if ((int) $currentValue < 3600) {
             $collection->add(
                 SettingsResult::warning('frosh-tools.checker.RealpathCacheTtlWarning',
@@ -136,5 +136,15 @@ class PhpSettingsChecker implements CheckerInterface
                 $url
             )
         );
+    }
+
+    private function iniGetFailover(string $option): string
+    {
+        $currentValue = \ini_get($option);
+        if (\is_string($currentValue)) {
+            return $currentValue;
+        }
+
+        return 'not set';
     }
 }
