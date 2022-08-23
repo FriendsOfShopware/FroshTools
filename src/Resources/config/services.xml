@@ -60,10 +60,9 @@
             <argument type="service" id="Doctrine\DBAL\Connection"/>
             <argument type="service" id="shopware.increment.gateway.registry"/>
         </service>
-        
+
         <service id="Frosh\Tools\Controller\StateMachineController" public="true">
             <argument type="service" id="state_machine.repository"/>
-            <argument type="service" id="translator" />
         </service>
 
         <service id="Frosh\Tools\Controller\ScheduledTaskController" public="true">
