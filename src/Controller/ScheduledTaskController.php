@@ -30,8 +30,7 @@ class ScheduledTaskController
         iterable $taskHandler,
         EntityRepositoryInterface $scheduledTaskRepository,
         TaskRegistry $taskRegistry
-    )
-    {
+    ) {
         $this->taskHandler = $taskHandler;
         $this->scheduledTaskRepository = $scheduledTaskRepository;
         $this->taskRegistry = $taskRegistry;
