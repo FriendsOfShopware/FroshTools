@@ -66,6 +66,19 @@ class FroshTools extends ApiService {
         });
     }
 
+    scheduledTasksRegister() {
+        const apiRoute = `${this.getApiBasePath()}/scheduled-tasks/register`;
+        return this.httpClient.post(
+            apiRoute,
+            {},
+            {
+                headers: this.getBasicHeaders()
+            }
+        ).then((response) => {
+            return ApiService.handleResponse(response);
+        });
+    }
+
     healthStatus() {
         const apiRoute = `${this.getApiBasePath()}/health/status`;
         return this.httpClient.get(
@@ -170,7 +183,7 @@ class FroshTools extends ApiService {
             return ApiService.handleResponse(response);
         });
     }
-    
+
     stateMachines(stateMachine) {
         const apiRoute = `${this.getApiBasePath()}/state-machines/load`;
         return this.httpClient.get(

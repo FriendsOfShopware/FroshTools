@@ -67,12 +67,14 @@ Component.register('frosh-tools-tab-scheduled', {
             this.isLoading = true;
             await this.createdComponent();
         },
+
         async createdComponent() {
             const criteria = new Criteria;
             criteria.addSorting(Criteria.sort('nextExecutionTime', 'ASC'));
             this.items = await this.scheduledRepository.search(criteria, Shopware.Context.api);
             this.isLoading = false;
         },
+
         async runTask(item) {
             this.isLoading = true;
 
@@ -91,6 +93,26 @@ Component.register('frosh-tools-tab-scheduled', {
             }
 
             this.createdComponent();
-        }
+        },
+
+        async registerScheduledTasks() {
+            this.isLoading = true;
+
+            try {
+                this.createNotificationInfo({
+                    message: this.$tc('frosh-tools.scheduledTasksRegisterStarted')
+                })
+                await this.froshToolsService.scheduledTasksRegister();
+                this.createNotificationSuccess({
+                    message: this.$tc('frosh-tools.scheduledTasksRegisterSucceed')
+                })
+            } catch (e) {
+                this.createNotificationError({
+                    message: this.$tc('frosh-tools.scheduledTasksRegisterFailed')
+                })
+            }
+
+            this.createdComponent();
+        },
     }
 });

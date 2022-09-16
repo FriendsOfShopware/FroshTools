@@ -2,8 +2,8 @@
     <sw-card class="frosh-tools-tab-scheduled__tasks-card" :title="$tc('frosh-tools.tabs.scheduledTaskOverview.title')" :isLoading="isLoading" :large="true">
 
         <template #toolbar>
-            <!-- @todo: Make the refresh button fancy -->
             <sw-button variant="ghost" @click="refresh"><sw-icon :small="true" name="default-arrow-360-left"></sw-icon></sw-button>
+            <sw-button variant="primary" @click="registerScheduledTasks">{{ $tc('frosh-tools.scheduledTasksRegisterStarted') }}</sw-button>
         </template>
 
         <sw-entity-listing

@@ -68,6 +68,7 @@
         <service id="Frosh\Tools\Controller\ScheduledTaskController" public="true">
             <argument type="tagged" tag="messenger.message_handler"/>
             <argument type="service" id="scheduled_task.repository"/>
+            <argument type="service" id="Shopware\Core\Framework\MessageQueue\ScheduledTask\Registry\TaskRegistry"/>
         </service>
 
         <service id="Frosh\Tools\Controller\LogController" public="true">
