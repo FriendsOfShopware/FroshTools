@@ -75,6 +75,9 @@
     "scheduledTaskStarted": "The scheduled task execution for \"{name}\" started",
     "scheduledTaskSucceed": "The scheduled task execution for \"{name}\" succeed",
     "scheduledTaskFailed": "The scheduled task execution for \"{name}\" failed",
+    "scheduledTasksRegisterStarted": "Register scheduled tasks",
+    "scheduledTasksRegisterSucceed": "Scheduled tasks registered",
+    "scheduledTasksRegisterFailed": "Scheduled tasks registration failed",
     "checker": {
       "scheduledTaskGood": "Scheduled tasks working scheduled",
       "scheduledTaskWarning": "The scheduled tasks are waiting for executing for more than 10 minutes",

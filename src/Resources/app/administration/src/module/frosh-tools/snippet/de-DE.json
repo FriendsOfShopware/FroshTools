@@ -75,6 +75,9 @@
     "scheduledTaskStarted": "Die geplante Aufgabe für \"{name}\" wurde gestartet",
     "scheduledTaskSucceed": "Die geplante Aufgabe für \"{name}\" war erfolgreich",
     "scheduledTaskFailed": "Die geplante Aufgabe für \"{name}\" ist fehlgeschlagen",
+    "scheduledTasksRegisterStarted": "Registriere geplante Aufgaben",
+    "scheduledTasksRegisterSucceed": "Geplante Aufgaben registriert",
+    "scheduledTasksRegisterFailed": "Es ist ein Fehler beim registrieren aufgetreten",
     "checker": {
       "scheduledTaskGood": "Die geplanten Aufgaben laufen regelmäßig",
       "scheduledTaskWarning": "Die geplanten Aufgaben laufen seit mehr als 10 Minuten nicht",

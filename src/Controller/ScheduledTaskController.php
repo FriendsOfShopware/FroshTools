@@ -6,6 +6,7 @@ use Shopware\Core\Framework\Context;
 use Shopware\Core\Framework\DataAbstractionLayer\EntityRepositoryInterface;
 use Shopware\Core\Framework\DataAbstractionLayer\Search\Criteria;
 use Shopware\Core\Framework\MessageQueue\Handler\AbstractMessageHandler;
+use Shopware\Core\Framework\MessageQueue\ScheduledTask\Registry\TaskRegistry;
 use Shopware\Core\Framework\MessageQueue\ScheduledTask\ScheduledTaskDefinition;
 use Shopware\Core\Framework\MessageQueue\ScheduledTask\ScheduledTaskEntity;
 use Symfony\Component\HttpFoundation\JsonResponse;
@@ -23,10 +24,17 @@ class ScheduledTaskController
 
     private EntityRepositoryInterface $scheduledTaskRepository;
 
-    public function __construct(iterable $taskHandler, EntityRepositoryInterface $scheduledTaskRepository)
+    private TaskRegistry $taskRegistry;
+
+    public function __construct(
+        iterable $taskHandler,
+        EntityRepositoryInterface $scheduledTaskRepository,
+        TaskRegistry $taskRegistry
+    )
     {
         $this->taskHandler = $taskHandler;
         $this->scheduledTaskRepository = $scheduledTaskRepository;
+        $this->taskRegistry = $taskRegistry;
     }
 
     /**
@@ -64,6 +72,16 @@ class ScheduledTaskController
 
             $handler->handle($task);
         }
+
+        return new JsonResponse(null, JsonResponse::HTTP_NO_CONTENT);
+    }
+
+    /**
+     * @Route(path="/scheduled-tasks/register", methods={"POST"}, name="api.frosh.tools.scheduled.tasks.register")
+     */
+    public function registerTasks(): JsonResponse
+    {
+        $this->taskRegistry->registerTasks();
 
         return new JsonResponse(null, JsonResponse::HTTP_NO_CONTENT);
     }
