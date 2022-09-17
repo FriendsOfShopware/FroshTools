@@ -20,7 +20,7 @@ class EsChecker implements CheckerInterface
     {
         if (!$this->esEnabled) {
             $collection->add(
-                SettingsResult::warning('frosh-tools.checker.esWarning',
+                SettingsResult::info('frosh-tools.checker.esInfo',
                     'disabled',
                     'enabled',
                     'https://developer.shopware.com/docs/guides/hosting/infrastructure/infrastructure/elasticsearch-setup'
