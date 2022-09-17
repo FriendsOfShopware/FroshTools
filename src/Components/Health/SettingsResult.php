@@ -9,6 +9,7 @@ class SettingsResult extends Struct
     private const GREEN = 'STATE_OK';
     private const WARNING = 'STATE_WARNING';
     private const ERROR = 'STATE_ERROR';
+    private const INFO = 'STATE_INFO';
 
     protected string $state;
 
@@ -48,6 +49,18 @@ class SettingsResult extends Struct
     {
         $me = new self();
         $me->state = self::ERROR;
+        $me->snippet = $snippet;
+        $me->current = $current;
+        $me->recommended = $recommended;
+        $me->url = $url;
+
+        return $me;
+    }
+
+    public static function info(string $snippet, string $current = '', string $recommended = '', ?string $url = null): self
+    {
+        $me = new self();
+        $me->state = self::INFO;
         $me->snippet = $snippet;
         $me->current = $current;
         $me->recommended = $recommended;

@@ -31,6 +31,9 @@
                         <sw-label variant="danger" appearance="pill" v-if="item.state === 'STATE_ERROR'">
                             {{ $tc('frosh-tools.error') }}
                         </sw-label>
+                        <sw-label variant="info" appearance="pill" v-if="item.state === 'STATE_INFO'">
+                            {{ $tc('frosh-tools.info') }}
+                        </sw-label>
                     </template>
 
                     <template v-if="item.url">
@@ -63,6 +66,9 @@
                         </sw-label>
                         <sw-label variant="danger" appearance="pill" v-if="item.state === 'STATE_ERROR'">
                             {{ $tc('frosh-tools.error') }}
+                        </sw-label>
+                        <sw-label variant="info" appearance="pill" v-if="item.state === 'STATE_INFO'">
+                            {{ $tc('frosh-tools.info') }}
                         </sw-label>
                     </template>
 
