@@ -122,7 +122,7 @@ class ShopwareFilesController
 
     private function getOriginalFileContent(string $name): ?string
     {
-        return file_get_contents($this->getShopwareUrl($name) . '?raw=true');
+        return @file_get_contents($this->getShopwareUrl($name) . '?raw=true') ?: null;
     }
 
     private function isIgnoredFileHash(string $file, string $md5Sum): bool
