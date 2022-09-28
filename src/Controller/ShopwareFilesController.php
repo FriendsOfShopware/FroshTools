@@ -63,8 +63,6 @@ class ShopwareFilesController
                 $invalidFiles[] = [
                     'name' => $file,
                     'shopwareUrl' => $this->getShopwareUrl($file),
-                    'content' => file_get_contents($path),
-                    'originalContent' => $this->getOriginalFileContent($file),
                 ];
             }
         }
@@ -74,6 +72,37 @@ class ShopwareFilesController
         }
 
         return new JsonResponse(['ok' => false, 'files' => $invalidFiles]);
+    }
+
+    /**
+     * @Route(path="/file-contents", methods={"GET"}, name="api.frosh.tools.file-contents")
+     */
+    public function getFileContents(Request $request): JsonResponse
+    {
+        if ($this->shopwareVersion === Kernel::SHOPWARE_FALLBACK_VERSION) {
+            return new JsonResponse(['error' => 'Git version is not supported']);
+        }
+
+        if (!file_exists($this->projectDir . '/vendor/shopware/core')) {
+            return new JsonResponse(['error' => 'Works only in Production template']);
+        }
+
+        $file = $request->query->get('file');
+        if (!$file) {
+            return new JsonResponse(['error' => 'no file provided']);
+        }
+
+        $path = realpath($this->projectDir . '/' . $file);
+        if ($path === false || !str_starts_with($path, $this->projectDir) || !is_file($path)) {
+            return new JsonResponse(['error' => 'File is invalid']);
+        }
+
+        return new JsonResponse([
+            'name' => $file,
+            'shopwareUrl' => $this->getShopwareUrl($file),
+            'content' => file_get_contents($path),
+            'originalContent' => $this->getOriginalFileContent($file),
+        ]);
     }
 
     /**
@@ -99,7 +128,12 @@ class ShopwareFilesController
             return new JsonResponse(['error' => 'File is invalid']);
         }
 
-        file_put_contents($path, $this->getOriginalFileContent($file));
+        $content = $this->getOriginalFileContent($file);
+        if ($content === null || $content === '') {
+            return new JsonResponse(['error' => 'File would be empty!']);
+        }
+
+        file_put_contents($path, $content);
 
         return new JsonResponse(['status' => sprintf('File at "%s" has been restored', $file)]);
     }
