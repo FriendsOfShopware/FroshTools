@@ -20,7 +20,7 @@
                 <sw-context-menu-item @click="openUrl(item.shopwareUrl)">
                     {{ $tc('frosh-tools.tabs.files.openOriginal') }}
                 </sw-context-menu-item>
-                <sw-context-menu-item @click="diff(item.name, item.content, item.originalContent)">
+                <sw-context-menu-item @click="diff(item.name)">
                     {{ $tc('frosh-tools.tabs.files.restore.diff') }}
                 </sw-context-menu-item>
             </template>

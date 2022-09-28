@@ -60,9 +60,11 @@ Component.register('frosh-tools-tab-files', {
             window.open(url, '_blank');
         },
 
-        diff(name, content, originalContent) {
+        async diff(name) {
+            const fileContents = (await this.froshToolsService.getFileContents(name)).data;
+
             const dmp = new DiffMatchPatch();
-            const diff = dmp.diff_main(originalContent, content);
+            const diff = dmp.diff_main(fileContents.originalContent, fileContents.content);
             dmp.diff_cleanupSemantic(diff);
             this.diffData.html = dmp.diff_prettyHtml(diff)
                 .replace(new RegExp('background:#e6ffe6;', 'g'), 'background:#ABF2BC;')
