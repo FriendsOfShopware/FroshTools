@@ -74,3 +74,9 @@
 * Fix wrong ini-check for 0-value
 * Added modal to check message in log viewer
 * Added State Machine Viewer
+
+# 0.2.6
+* Change warning of local filesystem into info
+* Change warning of missing ElasticSearch into info
+* Add Button to reregister Scheduled Tasks
+* Optimize performance for checking modified shopware files
