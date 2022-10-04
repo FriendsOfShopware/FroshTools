@@ -23,6 +23,8 @@ class MonitorCommand extends Command
 {
     private const MONITOR_EMAIL_OPTION = 'email';
     private const MONITOR_SALESCHANNEL_ARG = 'sales-channel';
+    public static $defaultName = 'frosh:monitor';
+    public static $defaultDescription = 'Monitor your scheduled task and queue with this command and get notified via email.';
 
     private AbstractMailService       $mailService;
     private SystemConfigService       $configService;
@@ -40,10 +42,8 @@ class MonitorCommand extends Command
 
     protected function configure(): void
     {
-        $this->setName('frosh:monitor');
         $this->addArgument('sales-channel', InputArgument::REQUIRED, 'Sales Channel ID.');
         $this->addOption(self::MONITOR_EMAIL_OPTION, 'em', InputOption::VALUE_OPTIONAL, 'Custom mail address');
-        $this->setDescription('');
     }
 
     protected function execute(InputInterface $input, OutputInterface $output): int
