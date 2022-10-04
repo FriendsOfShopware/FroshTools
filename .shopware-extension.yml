@@ -1,0 +1,6 @@
+build:
+  zip:
+    assets:
+      enabled: true
+      enable_es_build_for_admin: true
+      enable_es_build_for_storefront: true
