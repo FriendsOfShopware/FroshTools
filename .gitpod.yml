@@ -1,0 +1,9 @@
+ports:
+  - port: 80
+    visibility: private
+    description: Shopware
+    onOpen: open-browser
+  
+tasks:
+  - name: Run Shopware
+    command: docker run -it -p 80:80 -e "APP_URL=$(gp url 80)/shop/public" -v $(pwd):/var/www/html/custom/plugins/$(basename $PWD) ghcr.io/shopwarelabs/testenv:6.4.14
