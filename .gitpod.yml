@@ -6,4 +6,4 @@ ports:
   
 tasks:
   - name: Run Shopware
-    command: docker run -it -p 80:80 -e "APP_URL=$(gp url 80)/shop/public" -v $(pwd):/var/www/html/custom/plugins/$(basename $PWD) ghcr.io/shopwarelabs/testenv:6.4.14
+    command: docker run -it -p 80:80 -e APP_DEBUG=1 -e "APP_URL=$(gp url 80)/shop/public" -v $(pwd):/var/www/shop/vendor/frosh/tools/ ghcr.io/shopwarelabs/testenv:6.4.14
