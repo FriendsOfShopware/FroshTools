@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<config xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:noNamespaceSchemaLocation="https://raw.githubusercontent.com/shopware/platform/master/src/Core/System/SystemConfig/Schema/config.xsd">
+
+    <card>
+        <title>Monitoring</title>
+        <title lang="de-DE">Überwachung</title>
+
+        <input-field type="text">
+            <name>monitorMail</name>
+            <label>Monitor mail address</label>
+            <label lang="de-DE">Überwachungsmailadresse</label>
+            <helpText>This email address is used when you use the CLI command frosh:monitor</helpText>
+            <helpText lang="de-DE">Diese Mailadresse wird beim Aufruf vom CLI Kommando frosh:monitor genutzt</helpText>
+        </input-field>
+
+        <input-field type="int">
+            <name>monitorQueueGraceTime</name>
+            <label>Scheduled task grace time</label>
+            <label lang="de-DE">Geplante Karenzzeit der Queue</label>
+            <helpText>After X minutes a queue is considered stuck / faulty</helpText>
+            <helpText lang="de-DE">Nach X Minuten gilt eine Queue als festgefahren / fehlerhaft</helpText>
+            <defaultValue>15</defaultValue>
+        </input-field>
+
+        <input-field type="int">
+            <name>monitorTaskGraceTime</name>
+            <label>Scheduled task grace time</label>
+            <label lang="de-DE">Geplante Karenzzeit der Aufgabe</label>
+            <helpText>After X minutes a scheudled task is considered stuck / faulty</helpText>
+            <helpText lang="de-DE">Nach X Minuten gilt eine geplante Aufgabe als festgefahren / fehlerhaft</helpText>
+            <defaultValue>10</defaultValue>
+        </input-field>
+    </card>
+
+</config>

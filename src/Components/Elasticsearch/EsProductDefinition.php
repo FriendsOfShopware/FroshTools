@@ -39,7 +39,6 @@ use Shopware\Core\Framework\Uuid\Uuid;
 use Shopware\Elasticsearch\Framework\AbstractElasticsearchDefinition;
 use function sprintf;
 use function str_replace;
-use function substr;
 
 class EsProductDefinition extends AbstractElasticsearchDefinition
 {
@@ -239,7 +238,7 @@ class EsProductDefinition extends AbstractElasticsearchDefinition
             }
         }
 
-        return substr($coalesce, 0, -1) . ')';
+        return mb_substr($coalesce, 0, -1) . ')';
     }
 
     private function getTranslationQuery(array $fields, Context $context): QueryBuilder

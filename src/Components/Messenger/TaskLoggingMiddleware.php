@@ -61,7 +61,7 @@ class TaskLoggingMiddleware implements MiddlewareInterface
         $taskName = end($classParts);
 
         if (str_ends_with($taskName, 'Message')) {
-            $taskName = substr($taskName, 0, -7);
+            $taskName = mb_substr($taskName, 0, -7);
         }
 
         return $taskName;
