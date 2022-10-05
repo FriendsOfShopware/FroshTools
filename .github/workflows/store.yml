@@ -15,7 +15,7 @@ jobs:
     validatePlugin:
         if: startsWith(github.ref, 'refs/tags/') != true
         name: Check for Store compliance
-        container: ghcr.io/friendsofshopware/platform-plugin-dev:v6.4.7
+        container: ghcr.io/friendsofshopware/shopware-cli:0.1.37
         runs-on: ubuntu-latest
         steps:
             -   name: Checkout
@@ -24,14 +24,10 @@ jobs:
                     path: ${{ env.PLUGIN_NAME }}
 
             -   name: Build & create zip
-                run: |
-                    npm install --prefix "./${PLUGIN_NAME}/src/Resources/app/administration/"
-                    cp -r "./${PLUGIN_NAME}" "/plugins/${PLUGIN_NAME}"
-                    start-mysql
-                    pack-plugin "${PLUGIN_NAME}"
+                run: shopware-cli extension zip --disable-git ${{ env.PLUGIN_NAME }}
 
             -   name: Validate Zip
-                run: /opt/bin/plugin-uploader ext:validate $(pwd)/${PLUGIN_NAME}*.zip
+                run: shopware-cli extension validate ${{ env.PLUGIN_NAME }}.zip
 
     StoreUpdate:
         needs: validatePlugin
