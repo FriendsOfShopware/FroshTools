@@ -1,6 +1,3 @@
-additionalRepositories:
-  - url: https://github.com/shopware/platform
-    checkoutLocation: shopware  
 checkoutLocation: "shopware/custom/plugins/FroshTools"
 workspaceLocation: "shopware"
 
