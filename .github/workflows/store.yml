@@ -21,7 +21,7 @@ jobs:
         steps:
             - name: Download shopware-cli
               run: |
-                wget -q https://github.com/FriendsOfShopware/shopware-cli/releases/download/${SHOPWARE_CLI_VERSION}/shopware-cli_${SHOPWARE_CLI_VERSION}_Linux_x86_64.tar.gz
+                wget -q https://github.com/FriendsOfShopware/shopware-cli/releases/download/0.1.37/shopware-cli_0.1.37_Linux_x86_64.tar.gz
                 tar -zxf shopware-cli_*.tar.gz shopware-cli
                 mv shopware-cli /usr/bin/shopware-cli
                 rm shopware-cli_*.tar.gz
