@@ -4,7 +4,7 @@ image:
 tasks:
   - name: Shopware
     before: |
-      echo 'alias admin-watch="APP_URL=http://localhost:8000 composer run watch:admin"' >> ~/.bashrc
+      echo 'alias admin-watch="LOAD_DOTENV=0 APP_URL=http://localhost:8000 ./bin/watch-administration.sh"' >> ~/.bashrc
     init: |
       EXTENSION_NAME=$(basename $PWD)
       TMP_DIR=$(mktemp -d)
@@ -12,24 +12,27 @@ tasks:
       mv * .* "$TMP_DIR" || true
       
       composer create-project shopware/production:dev-flex . -n
-      composer req --dev profiler
+      composer req --dev profiler fakerphp/faker mbezhanov/faker-provider-collection maltyxx/images-generator
 
       # Run MySQL
       docker run --restart always -d --name=mysql -p 127.0.0.1:3306:3306 -e MYSQL_ROOT_PASSWORD=root mysql:8
       docker run --restart always -d --name=adminer --link mysql:mysql -p 5000:8080 -e ADMINER_DESIGN=pepa-linha -e ADMINER_DEFAULT_SERVER=mysql -e ADMINER_PLUGINS="tables-filter table-structure json-column version-noverify" ghcr.io/shyim/shopware-docker/adminer
 
       # Configure Shopware
-      sed -i -e 's/DATABASE_URL=.*$/DATABASE_URL=mysql://root:root@127.0.0.1:3306/shopware' .env
-      sed -i -e "s/APP_URL=.*$/APP_URL=$(gp url 8000)" .env
+      sed -i -e "s;APP_ENV=.*$;APP_URL=dev;" .env
+      sed -i -e 's;DATABASE_URL=.*$;DATABASE_URL=mysql://root:root@127.0.0.1:3306/shopware;' .env
+      sed -i -e "s;APP_URL=.*$;APP_URL=$(gp url 8000);" .env
       echo "TRUSTED_PROXIES=192.168.0.0/16" >> .env
       
-      ./bin/console system:install --basic-setup
+      ./bin/console system:install --basic-setup --create-database --drop-database
+      ./bin/console framework:demodata -e prod
+      ./bin/console dal:refresh:index -e prod
+
+      rm -rf var/cache/*
       
       # Move actual repository
-      
-      mkdir -p custom/plugins || true
       mv "$TMP_DIR" "custom/plugins/$EXTENSION_NAME"
-    command: docker ps && sleep 2 && ./bin/console sales-channel:update:domain $(gp url 8000 | awk -F[/:] '{print $4}') && symfony serve --port=8000
+    command: docker ps && sleep 2 && ./bin/console sales-channel:update:domain $(gp url 8000 | awk -F[/:] '{print $4}') && symfony server:start --port 8000 -d
 
 ports:
   - port: 8000
