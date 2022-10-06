@@ -31,6 +31,9 @@ tasks:
       echo "TRUSTED_PROXIES=192.168.0.0/16" >> .env
       
       ./bin/console system:install --basic-setup --create-database --drop-database
+      
+      ./bin/console framework:demodata --products 300
+      ./bin/console dal:refresh:index
 
       rm -rf var/cache/*
 
