@@ -70,8 +70,14 @@ jetbrains:
     - de.shyim.shopware6
     - de.shyim.ideaphpstantoolbox
   phpstorm:
+    vmoptions: "-Xmx4g"
     prebuilds:
       version: stable
+
+vscode:
+  extensions:
+    - bmewburn.vscode-intelephense-client
+    - redhat.vscode-yaml
 
 github:
   prebuilds:
