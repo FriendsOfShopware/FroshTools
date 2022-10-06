@@ -35,7 +35,9 @@
         "restore": {
           "diff": "Vergleiche Datei mit Original",
           "restoreFile": "Datei wiederherstellen"
-        }
+        },
+        "expectedAll": "Datei wurde manipuliert",
+        "expectedProject": "Datei wurde manipuliert, Fehler wird ignoriert durch Projekt Konfiguration"
       },
       "feature-flags": {
         "title": "Feature Flags",

@@ -35,7 +35,9 @@
         "restore": {
           "diff": "Diff file with original",
           "restoreFile": "Restore file"
-        }
+        },
+        "expectedAll": "File has been modified",
+        "expectedProject": "File has been modified, but will be ignored by project settings"
       },
       "feature-flags": {
         "title": "Feature Flags",

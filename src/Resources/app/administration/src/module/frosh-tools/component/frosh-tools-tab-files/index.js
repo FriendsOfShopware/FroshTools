@@ -34,6 +34,12 @@ Component.register('frosh-tools-tab-files', {
                     label: 'frosh-tools.name',
                     rawData: true,
                     primary: true
+                },
+                {
+                    property: 'expected',
+                    label: 'frosh-tools.status',
+                    rawData: true,
+                    primary: true
                 }
             ];
         },
@@ -60,8 +66,8 @@ Component.register('frosh-tools-tab-files', {
             window.open(url, '_blank');
         },
 
-        async diff(name) {
-            const fileContents = (await this.froshToolsService.getFileContents(name)).data;
+        async diff(file) {
+            const fileContents = (await this.froshToolsService.getFileContents(file.name)).data;
 
             const dmp = new DiffMatchPatch();
             const diff = dmp.diff_main(fileContents.originalContent, fileContents.content);
@@ -69,7 +75,7 @@ Component.register('frosh-tools-tab-files', {
             this.diffData.html = dmp.diff_prettyHtml(diff)
                 .replace(new RegExp('background:#e6ffe6;', 'g'), 'background:#ABF2BC;')
                 .replace(new RegExp('background:#ffe6e6;', 'g'), 'background:rgba(255,129,130,0.4);');
-            this.diffData.file = name;
+            this.diffData.file = file;
 
             this.openModal();
         },

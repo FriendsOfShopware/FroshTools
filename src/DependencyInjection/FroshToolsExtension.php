@@ -36,5 +36,9 @@ class FroshToolsExtension extends Extension
         if (!$container->hasParameter('frosh_tools.elasticsearch.product_minimum_should_match')) {
             $container->setParameter('frosh_tools.elasticsearch.product_minimum_should_match', 1);
         }
+
+        if (!$container->hasParameter('frosh_tools.file_checker.exclude_files')) {
+            $container->setParameter('frosh_tools.file_checker.exclude_files', []);
+        }
     }
 }

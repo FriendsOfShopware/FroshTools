@@ -11,16 +11,21 @@
         </template>
 
         <sw-data-grid
-            v-if="items.files"
+            v-if="items.files && items.files.length"
             :showSelection="false"
             :dataSource="items.files"
             :columns="columns">
+
+            <template #column-expected="{ item }">
+                <span v-if="item.expected">{{ $tc('frosh-tools.tabs.files.expectedProject') }}</span>
+                <span v-else>{{ $tc('frosh-tools.tabs.files.expectedAll') }}</span>
+            </template>
 
             <template #actions="{ item }">
                 <sw-context-menu-item @click="openUrl(item.shopwareUrl)">
                     {{ $tc('frosh-tools.tabs.files.openOriginal') }}
                 </sw-context-menu-item>
-                <sw-context-menu-item @click="diff(item.name)">
+                <sw-context-menu-item @click="diff(item)">
                     {{ $tc('frosh-tools.tabs.files.restore.diff') }}
                 </sw-context-menu-item>
             </template>
@@ -35,7 +40,7 @@
         <span style="white-space: pre" v-html="diffData.html"></span>
 
         <template slot="modal-footer">
-            <sw-button variant="ghost-danger" @click="restoreFile(diffData.file)">
+            <sw-button variant="ghost-danger" @click="restoreFile(diffData.file.name)" :disabled="diffData.file.expected">
                 <sw-icon name="default-badge-warning"></sw-icon>
                 {{ $tc('frosh-tools.tabs.files.restore.restoreFile') }}
             </sw-button>
