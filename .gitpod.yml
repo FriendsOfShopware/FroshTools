@@ -29,7 +29,9 @@ tasks:
       
       mkdir -p custom/plugins || true
       mv "$TMP_DIR" "custom/plugins/$EXTENSION_NAME"
-    command: symfony serve --port=8000
+    command: |
+       ./bin/console sales-channel:update:domain $(gp url 8000 | awk -F[/:] '{print $4}')
+      symfony serve --port=8000
 
 ports:
   - port: 8000
