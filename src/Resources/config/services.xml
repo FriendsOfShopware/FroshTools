@@ -4,6 +4,10 @@
            xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
            xsi:schemaLocation="http://symfony.com/schema/dic/services http://symfony.com/schema/dic/services/services-1.0.xsd">
 
+    <imports>
+        <import resource="services/elasticsearch.xml"/>
+    </imports>
+
     <services>
         <service id="Frosh\Tools\Command\MonitorCommand">
             <argument type="service" id="Shopware\Core\Content\Mail\Service\MailService"/>
@@ -182,30 +186,8 @@
             <argument>%kernel.project_dir%</argument>
         </service>
 
-        <service id="Frosh\Tools\Components\Elasticsearch\ElasticsearchManager">
-            <argument type="service" id="Elasticsearch\Client"/>
-            <argument>%elasticsearch.enabled%</argument>
-            <argument type="service" id="Shopware\Elasticsearch\Framework\Indexing\ElasticsearchIndexer"/>
-            <argument type="service" id="messenger.bus.shopware"/>
-            <argument type="service" id="Shopware\Elasticsearch\Framework\Indexing\CreateAliasTaskHandler"/>
-            <argument type="service" id="Shopware\Elasticsearch\Framework\ElasticsearchOutdatedIndexDetector"/>
-            <argument type="service" id="Doctrine\DBAL\Connection"/>
-            <argument type="service" id="shopware.increment.gateway.registry"/>
-        </service>
-
-        <service id="Frosh\Tools\Controller\ElasticsearchController" public="true">
-            <argument type="service" id="Frosh\Tools\Components\Elasticsearch\ElasticsearchManager"/>
-        </service>
-
         <service id="Frosh\Tools\Controller\FeatureFlagController" public="true">
             <argument>%kernel.project_dir%</argument>
-        </service>
-
-        <service id="Frosh\Tools\Components\Elasticsearch\EsProductDefinition" decorates="Shopware\Elasticsearch\Product\ElasticsearchProductDefinition">
-            <argument type="service" id="Frosh\Tools\Components\Elasticsearch\EsProductDefinition.inner"/>
-            <argument type="service" id="Doctrine\DBAL\Connection"/>
-            <argument>%frosh_tools.elasticsearch.product_fields%</argument>
-            <argument>%frosh_tools.elasticsearch.product_minimum_should_match%</argument>
         </service>
     </services>
 </container>
