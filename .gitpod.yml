@@ -1,6 +1,8 @@
 tasks:
   - name: Shopware
     init: |
+      echo 'alias admin-watch="APP_URL=http://localhost:8000 composer run watch:admin"' >> ~/.bashrc
+    
       EXTENSION_NAME=$(basename $PWD)
       TMP_DIR=$(mktemp -d)
       
@@ -9,7 +11,8 @@ tasks:
       git clone https://github.com/shopware/platform .
       
       # Run MySQL
-      docker run -d --name=mysql -p 127.0.0.1:3306:3306 -e MYSQL_ROOT_PASSWORD=root mysql:8
+      docker run --restart always -d --name=mysql -p 127.0.0.1:3306:3306 -e MYSQL_ROOT_PASSWORD=root mysql:8
+      docker run --restart always --link mysql:mysql -p 5000:8080 -e ADMINER_DESIGN=pepa-linha -e ADMINER_DEFAULT_SERVER=mysql -e ADMINER_PLUGINS="tables-filter table-structure json-column version-noverify" ghcr.io/shyim/shopware-docker/adminer
       sudo apt update
       
       # Needed to improve performance in Symfony CLI
@@ -33,7 +36,37 @@ tasks:
     command: symfony serve --port=8000
 
 ports:
-  - port: 80
+  - port: 8000
     visibility: private
     description: Shopware
     onOpen: open-browser
+  - port: 5000
+    visibility: private
+    description: Adminer
+    onOpen: notify
+  - name: Admin-Watcher
+    port: 8080
+    onOpen: notify
+    description: "Use Forward Proxy to localhost to access this service"
+
+jetbrains:
+  plugins:
+    - com.jetbrains.php
+    - com.intellij.php.tools.quality.phpstan
+    - com.intellij.php.psalm
+    - org.jetbrains.plugins.yaml
+    - com.jetbrains.twig
+    - de.espend.idea.php.annotation
+    - fr.adrienbrault.idea.symfony2plugin
+    - de.shyim.shopware6
+    - de.shyim.ideaphpstantoolbox
+
+github:
+  prebuilds:
+    master: true
+    branches: true
+    pullRequests: true
+    pullRequestsFromForks: true
+    addCheck: false
+    addComment: false
+    addBadge: true
