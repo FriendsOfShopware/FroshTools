@@ -1,26 +1,22 @@
+image:
+  file: .gitpod.Dockerfile
+
 tasks:
   - name: Shopware
-    init: |
+    before: |
       echo 'alias admin-watch="APP_URL=http://localhost:8000 composer run watch:admin"' >> ~/.bashrc
-    
+    init: |
       EXTENSION_NAME=$(basename $PWD)
       TMP_DIR=$(mktemp -d)
       
       mv * .* "$TMP_DIR" || true
       
-      git clone https://github.com/shopware/platform .
+      git clone https://github.com/shopware/platform --depth=1 .
       
       # Run MySQL
       docker run --restart always -d --name=mysql -p 127.0.0.1:3306:3306 -e MYSQL_ROOT_PASSWORD=root mysql:8
       docker run --restart always -d --link mysql:mysql -p 5000:8080 -e ADMINER_DESIGN=pepa-linha -e ADMINER_DEFAULT_SERVER=mysql -e ADMINER_PLUGINS="tables-filter table-structure json-column version-noverify" ghcr.io/shyim/shopware-docker/adminer
-      sudo apt update
-      
-      # Needed to improve performance in Symfony CLI
-      sudo apt install -y php8.1-fpm
-      
-      # Install Symfony CLI + Shopware CLI
-      brew install symfony-cli/tap/symfony-cli FriendsOfShopware/tap/shopware-cli
-      
+
       # Configure Shopware
       composer install
       ./bin/console system:setup -n --database-url "mysql://root:root@127.0.0.1:3306/shopware" --app-url "$(gp url 8000)" --app-env dev
