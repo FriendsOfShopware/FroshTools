@@ -11,19 +11,19 @@ tasks:
       
       mv * .* "$TMP_DIR" || true
       
-      git clone https://github.com/shopware/platform --depth=1 .
-      
+      composer create-project shopware/production:dev-flex . -n
+      composer req --dev profiler
+
       # Run MySQL
       docker run --restart always -d --name=mysql -p 127.0.0.1:3306:3306 -e MYSQL_ROOT_PASSWORD=root mysql:8
       docker run --restart always -d --name=adminer --link mysql:mysql -p 5000:8080 -e ADMINER_DESIGN=pepa-linha -e ADMINER_DEFAULT_SERVER=mysql -e ADMINER_PLUGINS="tables-filter table-structure json-column version-noverify" ghcr.io/shyim/shopware-docker/adminer
 
       # Configure Shopware
-      composer install
-      ./bin/console system:setup -n --database-url "mysql://root:root@127.0.0.1:3306/shopware" --app-url "$(gp url 8000)" --app-env dev
-      
-      # Setup Trusted Proxies
+      sed -i -e 's/DATABASE_URL=.*$/DATABASE_URL=mysql://root:root@127.0.0.1:3306/shopware' .env
+      sed -i -e "s/APP_URL=.*$/APP_URL=$(gp url 8000)" .env
       echo "TRUSTED_PROXIES=192.168.0.0/16" >> .env
-      composer run setup
+      
+      ./bin/console system:install --basic-setup
       
       # Move actual repository
       
