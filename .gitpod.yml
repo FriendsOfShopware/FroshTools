@@ -1,12 +1,39 @@
-checkoutLocation: "shopware/custom/plugins/FroshTools"
-workspaceLocation: "shopware"
+tasks:
+  - name: Shopware
+    init: |
+      EXTENSION_NAME=$(basename $PWD)
+      TMP_DIR=$(mktemp -d)
+      
+      mv * .* "$TMP_DIR" || true
+      
+      git clone https://github.com/shopware/platform .
+      
+      # Run MySQL
+      docker run -d --name=mysql -p 127.0.0.1:3306:3306 -e MYSQL_ROOT_PASSWORD=root mysql:8
+      sudo apt update
+      
+      # Needed to improve performance in Symfony CLI
+      sudo apt install -y php8.1-fpm
+      
+      # Install Symfony CLI + Shopware CLI
+      brew install symfony-cli/tap/symfony-cli FriendsOfShopware/tap/shopware-cli
+      
+      # Configure Shopware
+      composer install
+      ./bin/console system:setup -n --database-url "mysql://root:root@127.0.0.1:3306/shopware" --app-url "$(gp url 8000)" --app-env dev
+      
+      # Setup Trusted Proxies
+      echo "TRUSTED_PROXIES=192.168.0.0/16" >> .env
+      composer run setup
+      
+      # Move actual repository
+      
+      mkdir -p custom/plugins || true
+      mv "$TMP_DIR" "custom/plugins/$EXTENSION_NAME"
+    command: symfony serve --port=8000
 
 ports:
   - port: 80
     visibility: private
     description: Shopware
     onOpen: open-browser
-  
-tasks:
-  - name: Run Shopware
-    command: docker run -it -p 80:80 -e APP_DEBUG=1 -e "APP_URL=$(gp url 80)/shop/public" -v $(pwd):/var/www/shop/vendor/frosh/tools/ ghcr.io/shopwarelabs/testenv:6.4.14
