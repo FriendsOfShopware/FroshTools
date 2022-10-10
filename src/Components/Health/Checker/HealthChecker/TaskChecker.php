@@ -49,7 +49,8 @@ class TaskChecker implements CheckerInterface
         ));
 
         $oldTasks = $this->scheduledTaskRepository
-            ->search($criteria, Context::createDefaultContext());
+            ->search($criteria, Context::createDefaultContext())
+        ;
 
         $oldTasks = $oldTasks->filter(function (ScheduledTaskEntity $task) {
             $taskClass = $task->getScheduledTaskClass();
