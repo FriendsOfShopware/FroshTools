@@ -1,85 +1,15 @@
-name: Store
+name: Build extension
 on:
-    pull_request:
     push:
         branches:
-            - 'main'
-            - 'without-docker'
-        tags:
-            - '*'
-
-env:
-    PLUGIN_NAME: ${{ github.event.repository.name }}
-    SHOPWARE_CLI_ACCOUNT_EMAIL: ${{ secrets.ACCOUNT_USER }}
-    SHOPWARE_CLI_ACCOUNT_PASSWORD: ${{ secrets.ACCOUNT_PASSWORD }}
+            - main
 
 jobs:
-    validatePlugin:
-        if: startsWith(github.ref, 'refs/tags/') != true
-        name: Check for Store compliance
-        runs-on: ubuntu-latest
-        steps:
-            - name: Download shopware-cli
-              run: |
-                wget -q https://github.com/FriendsOfShopware/shopware-cli/releases/download/0.1.37/shopware-cli_0.1.37_Linux_x86_64.tar.gz
-                tar -zxf shopware-cli_*.tar.gz shopware-cli
-                sudo mv shopware-cli /usr/bin/shopware-cli
-                rm shopware-cli_*.tar.gz
-
-            -   name: Checkout
-                uses: actions/checkout@v2.3.1
-                with:
-                    path: ${{ env.PLUGIN_NAME }}
-
-            -   name: Build & create zip
-                run: shopware-cli extension zip --disable-git ${{ env.PLUGIN_NAME }}
-
-            -   name: Validate Zip
-                run: shopware-cli extension validate ${{ env.PLUGIN_NAME }}.zip
-
-    StoreUpdate:
-        needs: validatePlugin
-        name: Update Store page
-        if: startsWith(github.ref, 'refs/tags/') || contains(github.event.head_commit.message, '[store update]')
-        runs-on: ubuntu-latest
-        steps:
-            - name: Download shopware-cli
-              run: |
-                wget -q https://github.com/FriendsOfShopware/shopware-cli/releases/download/0.1.37/shopware-cli_0.1.37_Linux_x86_64.tar.gz
-                tar -zxf shopware-cli_*.tar.gz shopware-cli
-                sudo mv shopware-cli /usr/bin/shopware-cli
-                rm shopware-cli_*.tar.gz
-
-            -   name: Checkout
-                uses: actions/checkout@v2.3.1
-                with:
-                    path: ${{ env.PLUGIN_NAME }}
-
-            -   name: StoreUpdate
-                run: shopware-cli account producer extension info push $(pwd)/${{ env.PLUGIN_NAME }}/
-
-    StoreRelease:
-        if: startsWith(github.ref, 'refs/tags/')
-        runs-on: ubuntu-latest
-        name: Upload Extension to Store
-        steps:
-            - name: Download shopware-cli
-              run: |
-                wget -q https://github.com/FriendsOfShopware/shopware-cli/releases/download/0.1.37/shopware-cli_0.1.37_Linux_x86_64.tar.gz
-                tar -zxf shopware-cli_*.tar.gz shopware-cli
-                sudo mv shopware-cli /usr/bin/shopware-cli
-                rm shopware-cli_*.tar.gz
-        
-            -   name: Checkout
-                uses: actions/checkout@v2.3.1
-                with:
-                    path: ${{ env.PLUGIN_NAME }}
-
-            -   name: Build & create zip
-                run: |
-                    shopware-cli extension zip --disable-git ${{ env.PLUGIN_NAME }}
-
-            -   name: StoreUpload
-                run: shopware-cli account producer extension upload $(pwd)/${PLUGIN_NAME}*.zip
-                env:
-                    GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+    build:
+        uses: FriendsOfShopware/actions/.github/workflows/store-shopware-cli.yml@main
+        with:
+            extensionName: ${{ github.event.repository.name }}
+        secrets:
+            accountUser: ${{ secrets.ACCOUNT_USER }}
+            accountPassword: ${{ secrets.ACCOUNT_PASSWORD }}
+            ghToken: ${{ secrets.GITHUB_TOKEN }}
