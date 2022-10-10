@@ -10,8 +10,8 @@ on:
 
 env:
     PLUGIN_NAME: ${{ github.event.repository.name }}
-    ACCOUNT_USER: ${{ secrets.ACCOUNT_USER }}
-    ACCOUNT_PASSWORD: ${{ secrets.ACCOUNT_PASSWORD }}
+    SHOPWARE_CLI_ACCOUNT_EMAIL: ${{ secrets.ACCOUNT_USER }}
+    SHOPWARE_CLI_ACCOUNT_PASSWORD: ${{ secrets.ACCOUNT_PASSWORD }}
 
 jobs:
     validatePlugin:
