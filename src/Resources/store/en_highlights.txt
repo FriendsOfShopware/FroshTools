@@ -1,3 +1,0 @@
-Scheduled Task Manager
-Queue Manager
-Log viewer
