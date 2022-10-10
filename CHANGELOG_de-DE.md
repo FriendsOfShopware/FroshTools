@@ -80,3 +80,9 @@
 * Change warning of missing ElasticSearch into info
 * Add Button to reregister Scheduled Tasks
 * Optimize performance for checking modified shopware files
+
+# 0.2.7
+* Fixed reporting of scheduled task did not run on cache invalidate task
+* Switched to shopware-cli
+* Optimized datetime view in scheduled task
+* Added simple maintainance command
