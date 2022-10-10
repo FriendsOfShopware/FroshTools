@@ -109,6 +109,7 @@
 
         <service id="Frosh\Tools\Components\Health\Checker\HealthChecker\TaskChecker">
             <argument type="service" id="scheduled_task.repository"/>
+            <argument type="service" id="parameter_bag"/>
             <tag name="frosh_tools.health_checker"/>
         </service>
 

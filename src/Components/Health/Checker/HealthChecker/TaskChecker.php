@@ -12,14 +12,19 @@ use Shopware\Core\Framework\DataAbstractionLayer\Search\Filter\EqualsFilter;
 use Shopware\Core\Framework\DataAbstractionLayer\Search\Filter\NotFilter;
 use Shopware\Core\Framework\DataAbstractionLayer\Search\Filter\RangeFilter;
 use Shopware\Core\Framework\MessageQueue\ScheduledTask\ScheduledTaskDefinition;
+use Shopware\Core\Framework\MessageQueue\ScheduledTask\ScheduledTaskEntity;
+use Symfony\Component\DependencyInjection\ParameterBag\ParameterBagInterface;
 
 class TaskChecker implements CheckerInterface
 {
     private EntityRepositoryInterface $scheduledTaskRepository;
 
-    public function __construct(EntityRepositoryInterface $scheduledTaskRepository)
+    private ParameterBagInterface $parameterBag;
+
+    public function __construct(EntityRepositoryInterface $scheduledTaskRepository, ParameterBagInterface $parameterBag)
     {
         $this->scheduledTaskRepository = $scheduledTaskRepository;
+        $this->parameterBag = $parameterBag;
     }
 
     public function collect(HealthCollection $collection): void
@@ -44,9 +49,20 @@ class TaskChecker implements CheckerInterface
         ));
 
         $oldTasks = $this->scheduledTaskRepository
-            ->searchIds($criteria, Context::createDefaultContext())->getIds();
+            ->search($criteria, Context::createDefaultContext());
 
-        if (count($oldTasks) === 0) {
+        $oldTasks = $oldTasks->filter(function (ScheduledTaskEntity $task) {
+            $taskClass = $task->getScheduledTaskClass();
+
+            // Old Shopware version
+            if (!method_exists($taskClass, 'shouldRun')) {
+                return true;
+            }
+
+            return $taskClass::shouldRun($this->parameterBag);
+        });
+
+        if ($oldTasks->count() === 0) {
             $collection->add(SettingsResult::ok('frosh-tools.checker.scheduledTaskGood'));
 
             return;
