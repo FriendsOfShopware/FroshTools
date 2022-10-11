@@ -13,7 +13,7 @@ RUN sudo add-apt-repository ppa:ondrej/php -y && \
     shopware-cli \
     mysql-client-8.0 \
     nodejs && \
-    apt-get upgrade -y && \
+    sudo apt-get upgrade -y && \
     echo "memory_limit=512M" > php.ini && \
     echo "assert.active=0" >> php.ini && \
     echo "opcache.interned_strings_buffer=20" >> php.ini && \
