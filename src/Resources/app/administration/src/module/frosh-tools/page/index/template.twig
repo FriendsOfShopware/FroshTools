@@ -30,7 +30,7 @@
                     {{ $tc('frosh-tools.tabs.files.title') }}
                 </sw-tabs-item>
 
-                <sw-tabs-item :route="{ name: 'frosh.tools.index.elasticsearch' }">
+                <sw-tabs-item :route="{ name: 'frosh.tools.index.elasticsearch' }" v-if="elasticsearchAvailable">
                     {{ $tc('frosh-tools.tabs.elasticsearch.title') }}
                 </sw-tabs-item>
 
