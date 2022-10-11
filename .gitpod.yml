@@ -79,6 +79,11 @@ jetbrains:
     - de.shyim.shopware6
     - de.shyim.ideaphpstantoolbox
   phpstorm:
+    plugins:
+      - de.espend.idea.php.annotation
+      - fr.adrienbrault.idea.symfony2plugin
+      - de.shyim.shopware6
+      - de.shyim.ideaphpstantoolbox
     vmoptions: "-Xmx4g"
     prebuilds:
       version: stable
