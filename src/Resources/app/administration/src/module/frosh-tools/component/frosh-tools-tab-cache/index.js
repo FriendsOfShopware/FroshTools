@@ -73,9 +73,9 @@ Component.register('frosh-tools-tab-cache', {
         },
 
         formatSize(bytes) {
-            bytes /= 1024 * 1024;
+            const formatted = bytes / 1024 * 1024;
 
-            return this.numberFormater.format(bytes) + ' MiB';
+            return this.numberFormater.format(formatted) + ' MiB';
         },
 
         async clearCache(item) {
@@ -97,7 +97,7 @@ Component.register('frosh-tools-tab-cache', {
                 if (theme) {
                     await this.themeService.assignTheme(theme.id, salesChannel.id);
                     this.createNotificationSuccess({
-                        message: `${salesChannel.translated.name}` + ': ' + this.$tc('frosh-tools.themeCompiled')
+                        message: `${salesChannel.translated.name}: ${this.$tc('frosh-tools.themeCompiled')}`
                     })
                 }
             }
