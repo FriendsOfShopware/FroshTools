@@ -15,19 +15,10 @@ tasks:
       docker run --restart always -d --name=mysql -p 127.0.0.1:3306:3306 -e MYSQL_ROOT_PASSWORD=root mysql:8
       docker run --restart always -d --name=adminer --link mysql:mysql -p 5000:8080 -e ADMINER_DESIGN=pepa-linha -e ADMINER_DEFAULT_SERVER=mysql -e ADMINER_PLUGINS="tables-filter table-structure json-column version-noverify" ghcr.io/shyim/shopware-docker/adminer
       
-      # Configure Github Token. Needed for Symfony Flex
-      sudo chown -R gitpod:gitpod /home/gitpod/.config/composer
       composer config --global github-oauth.github.com $(printf '%s\n' host=github.com | gp credential-helper get | sort | head -2 | tail -1 | sed 's;password=;;')
       
       composer create-project shopware/production:dev-flex . -n
       composer req --dev profiler fakerphp/faker mbezhanov/faker-provider-collection maltyxx/images-generator
-      
-      # PHP Settings
-      echo "memory_limit=512M" > php.ini
-      echo "assert.active=0" >> php.ini
-      echo "opcache.interned_strings_buffer=20" >> php.ini
-      echo "zend.detect_unicode=0" >> php.ini
-      echo "realpath_cache_ttl=3600" >> php.ini
 
       # Configure Shopware
       sed -i -e 's;DATABASE_URL=.*$;DATABASE_URL=mysql://root:root@127.0.0.1:3306/shopware;' .env
@@ -51,7 +42,15 @@ tasks:
       
       shopware-cli extension prepare "custom/plugins/$EXTENSION_NAME"
       shopware-cli extension build "custom/plugins/$EXTENSION_NAME"
-    command: docker ps && sleep 2 && ./bin/console sales-channel:update:domain $(gp url 8000 | awk -F[/:] '{print $4}') && symfony server:start --port 8000 -d
+    command: docker ps && gp ports await 3306 && ./bin/console sales-channel:update:domain $(gp url 8000 | awk -F[/:] '{print $4}') && symfony server:start --port 8000 -d
+  - name: Getting Started
+    command: |
+      echo 'Hey!. Your environment is starting soon. You can see the progress in the Shopware Terminal'
+      echo 'If you want to run the Admin Watch, just use the Terminal alias: admin-watch'
+      echo 'Happy Coding!'
+      echo "Shop URL: ${gp url 8000}"
+      echo "Admin-Watcher URL: ${gp url 8080}"
+      echo "Adminer URL: ${gp url 5000}"
 
 ports:
   - port: 8000
