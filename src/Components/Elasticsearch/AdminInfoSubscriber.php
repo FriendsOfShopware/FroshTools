@@ -1,4 +1,4 @@
-<?php
+<?php declare(strict_types=1);
 
 namespace Frosh\Tools\Components\Elasticsearch;
 
@@ -26,5 +26,4 @@ final class AdminInfoSubscriber
 
         $event->getResponse()->setContent(json_encode($json, \JSON_THROW_ON_ERROR));
     }
-
 }
