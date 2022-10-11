@@ -42,7 +42,7 @@ tasks:
       
       shopware-cli extension prepare "custom/plugins/$EXTENSION_NAME"
       shopware-cli extension build "custom/plugins/$EXTENSION_NAME"
-    command: docker ps && sleep 2 && ./bin/console sales-channel:update:domain $(gp url 8000 | awk -F[/:] '{print $4}') && symfony server:start --port 8000 -d
+    command: docker ps && gp ports await 3306 && ./bin/console sales-channel:update:domain $(gp url 8000 | awk -F[/:] '{print $4}') && symfony server:start --port 8000 -d
 
 ports:
   - port: 8000
