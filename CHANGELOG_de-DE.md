@@ -86,3 +86,6 @@
 * Switched to shopware-cli
 * Optimized datetime view in scheduled task
 * Added simple maintainance command
+
+# 0.2.8
+* Improve Elasticsearch usage
