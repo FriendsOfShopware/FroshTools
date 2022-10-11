@@ -34,6 +34,8 @@ The current feature set consists of:
 
 ### Git
 - Clone this repository into custom/plugins of your Shopware 6 installation
+- Install composer dependencies `shopware-cli extension prepare custom/plugins/FroshTools`
+- Build the assets with `shopware-cli extension build custom/plugins/FroshTools`
 
 ### Store (Bearer token required from packages.shopware.com)
     composer require store.shopware.com/froshtools

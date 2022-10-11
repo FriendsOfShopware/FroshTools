@@ -1,3 +1,5 @@
 /.php-cs-fixer.cache
 /composer.lock
 /vendor
+/src/Resources/public/
+/src/Resources/app/administration/node_modules/
