@@ -14,6 +14,7 @@ class PhpChecker implements CheckerInterface
         $this->checkMaxExecutionTime($collection);
         $this->checkMemoryLimit($collection);
         $this->checkOpCacheActive($collection);
+        $this->checkApcuCacheActive($collection);
     }
 
     private function formatSize($size): string
@@ -96,6 +97,17 @@ class PhpChecker implements CheckerInterface
         }
 
         $collection->add(SettingsResult::warning('frosh-tools.checker.zendOpcacheWarning'));
+    }
+
+    private function checkApcuCacheActive(HealthCollection $collection): void
+    {
+        if (\extension_loaded('apcu') && ini_get('apc.enabled')) {
+            $collection->add(SettingsResult::ok('frosh-tools.checker.apcuCacheGood'));
+
+            return;
+        }
+
+        $collection->add(SettingsResult::warning('frosh-tools.checker.apcuCacheWarning'));
     }
 
     private function decodePhpSize($val): float

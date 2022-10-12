@@ -97,6 +97,8 @@
       "memoryLimitGood": "Memory-Limit",
       "zendOpcacheGood": "Zend Opcache ist aktiv",
       "zendOpcacheWarning": "Zend Opcache ist nicht aktiv",
+      "apcuCacheGood": "APCu cache ist aktiv",
+      "apcuCacheWarning": "APCu cache ist nicht aktiv",
       "queuesGood": "Warteschlange läuft regelmäßig",
       "queuesWarning": "Warteschlange enthält Daten, die älter als 15 Minuten sind",
       "not-prod": "Shop ist nicht im Produktivmodus",

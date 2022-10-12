@@ -97,6 +97,8 @@
       "memoryLimitGood": "Memory-Limit",
       "zendOpcacheGood": "Zend Opcache is active",
       "zendOpcacheWarning": "Zend Opcache is not active",
+      "apcuCacheGood": "APCu cache is actice",
+      "apcuCacheWarning": "APCu cache is not active",
       "queuesGood": "Queues working good",
       "queuesWarning": "Open Queues older than 15 minutes found",
       "not-prod": "Shop is not in production mode",
