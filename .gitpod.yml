@@ -42,7 +42,23 @@ tasks:
       
       shopware-cli extension prepare "custom/plugins/$EXTENSION_NAME"
       shopware-cli extension build "custom/plugins/$EXTENSION_NAME"
-    command: docker ps && gp ports await 3306 && ./bin/console sales-channel:update:domain $(gp url 8000 | awk -F[/:] '{print $4}') && symfony server:start --port 8000 -d
+    command: |
+      # Gitpod registers the ports on first docker command
+      docker ps
+      
+      # Wait for port open
+      gp ports await 3306
+      
+      # Wait until MySQL is reachable
+      until mysqladmin ping; do
+          sleep 1
+      done
+      
+      # Update domain url
+      ./bin/console sales-channel:update:domain $(gp url 8000 | awk -F[/:] '{print $4}')
+      
+      # Start Webserver
+      symfony server:start --port 8000 -d
   - name: Getting Started
     command: |
       echo 'Hey!. Your environment is starting soon. You can see the progress in the Shopware Terminal'
