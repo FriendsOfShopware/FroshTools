@@ -16,7 +16,15 @@
         "title": "Scheduled Tasks Manager"
       },
       "queue": {
-        "title": "Queue Manager"
+        "title": "Queue Manager",
+        "reset": {
+          "modal": {
+            "title": "Reset Queue",
+            "description": "Resetting Queue will remove all outgoing tasks.",
+            "reset": "Reset"
+          },
+          "success": "The queue has been cleared"
+        }
       },
       "elasticsearch": {
         "title": "Elasticsearch Manager"

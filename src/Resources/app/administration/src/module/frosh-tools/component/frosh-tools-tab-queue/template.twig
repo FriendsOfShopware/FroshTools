@@ -1,28 +1,25 @@
 <sw-card-view>
     <sw-card class="frosh-tools-tab-queue__manager-card" :title="$tc('frosh-tools.tabs.queue.title')" :isLoading="isLoading" :large="true">
         <template #toolbar>
-            <!-- @todo: Make the refresh button fancy -->
             <sw-button variant="ghost" @click="refresh"><sw-icon :small="true" name="default-arrow-360-left"></sw-icon></sw-button>
+            <sw-button variant="danger" @click="showResetModal = true">{{ $tc('frosh-tools.resetQueue') }}</sw-button>
         </template>
 
         <sw-data-grid
             :showSelection="false"
             :dataSource="queueEntries"
             :columns="columns"
+            :showActions="false"
         >
         </sw-data-grid>
     </sw-card>
 
-    <sw-card class="frosh-tools-tab-queue__action-card" title="Actions" :large="true">
-        <sw-button variant="danger" @click="showResetModal = true">{{ $tc('frosh-tools.resetQueue') }}</sw-button>
-    </sw-card>
-
-    <sw-modal v-if="showResetModal" title="Reset Queue" variant="small" @modal-close="showResetModal = false">
-        Resetting Queue will remove all outgoing tasks.
+    <sw-modal v-if="showResetModal" :title="$tc('frosh-tools.tabs.queue.reset.modal.title')" variant="small" @modal-close="showResetModal = false">
+        {{ $tc('frosh-tools.tabs.queue.reset.modal.description') }}
 
         <template #modal-footer>
-            <sw-button @click="showResetModal = false">Cancel</sw-button>
-            <sw-button variant="danger" @click="resetQueue">Reset</sw-button>
+            <sw-button @click="showResetModal = false">{{ $tc('global.default.cancel') }}</sw-button>
+            <sw-button variant="danger" @click="resetQueue">{{ $tc('frosh-tools.tabs.queue.reset.modal.reset') }}</sw-button>
         </template>
     </sw-modal>
 </sw-card-view>

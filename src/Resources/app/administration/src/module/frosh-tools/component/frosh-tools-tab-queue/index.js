@@ -2,7 +2,6 @@ import template from './template.twig';
 import './style.scss';
 
 const { Component, Mixin } = Shopware;
-const { Criteria } = Shopware.Data;
 
 Component.register('frosh-tools-tab-queue', {
     template,
@@ -60,7 +59,7 @@ Component.register('frosh-tools-tab-queue', {
             this.showResetModal = false;
             this.createdComponent();
             this.createNotificationSuccess({
-                message: 'The queue has been cleared'
+                message: this.$tc('frosh-tools.tabs.queue.reset.success')
             })
             this.isLoading = false;
         }
