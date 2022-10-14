@@ -16,7 +16,15 @@
         "title": "Geplante Aufgaben"
       },
       "queue": {
-        "title": "Warteschlange"
+        "title": "Warteschlange",
+        "reset": {
+          "modal": {
+            "title": "Warteschlange zurücksetzen",
+            "description": "Durch das Zurücksetzen der Warteschlange werden alle ausgehenden Aufgaben entfernt.",
+            "reset": "Zurücksetzen"
+          },
+          "success": "Die Warteschlange wurde geleert"
+        }
       },
       "elasticsearch": {
         "title": "Elasticsearch"
@@ -133,7 +141,7 @@
     "size": "Größe",
     "docs": "Dokumente",
     "delete": "Löschen",
-    "resetQueue": "Queue zurücksetzen",
+    "resetQueue": "Warteschlange zurücksetzen",
     "date": "Zeitpunkt",
     "channel": "Kanal",
     "level": "Level",
