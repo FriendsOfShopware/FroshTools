@@ -29,14 +29,14 @@ class LoggerLevelChecker implements CheckerInterface
     private function checkBusinessEventHandlerLevel(): SettingsResult
     {
         if ($this->businessEventHandlerLevel >= Logger::WARNING) {
-            return SettingsResult::ok('frosh-tools.checker.BusinessEventHandlerLevelGood',
+            return SettingsResult::ok('BusinessEventHandler does not log infos',
                 Logger::getLevelName($this->businessEventHandlerLevel),
                 'min WARNING',
                 $this->url
             );
         }
 
-        return SettingsResult::warning('frosh-tools.checker.BusinessEventHandlerLevelWarning',
+        return SettingsResult::warning('BusinessEventHandler is logging infos',
             Logger::getLevelName($this->businessEventHandlerLevel),
             'min WARNING',
             $this->url

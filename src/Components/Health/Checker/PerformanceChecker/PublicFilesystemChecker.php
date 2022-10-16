@@ -20,7 +20,7 @@ class PublicFilesystemChecker implements CheckerInterface
         $url = 'https://developer.shopware.com/docs/guides/hosting/infrastructure/filesystem#integrated-adapter-configurations';
         if ($this->fileSystemType !== 'local') {
             $collection->add(
-                SettingsResult::ok('frosh-tools.checker.publicFilesystemGood',
+                SettingsResult::ok('PublicFilesystem is not local',
                     $this->fileSystemType,
                     'not local',
                     $url
@@ -31,7 +31,7 @@ class PublicFilesystemChecker implements CheckerInterface
         }
 
         $collection->add(
-            SettingsResult::info('frosh-tools.checker.publicFilesystemInfo',
+            SettingsResult::info('PublicFilesystem should not be local',
                 $this->fileSystemType,
                 'not local',
                 $url

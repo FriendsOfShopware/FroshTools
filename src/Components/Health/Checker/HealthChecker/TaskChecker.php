@@ -64,11 +64,11 @@ class TaskChecker implements CheckerInterface
         });
 
         if ($oldTasks->count() === 0) {
-            $collection->add(SettingsResult::ok('frosh-tools.checker.scheduledTaskGood'));
+            $collection->add(SettingsResult::ok('Scheduled tasks working scheduled'));
 
             return;
         }
 
-        $collection->add(SettingsResult::warning('frosh-tools.checker.scheduledTaskWarning'));
+        $collection->add(SettingsResult::warning('The scheduled tasks are waiting for executing for more than 10 minutes'));
     }
 }

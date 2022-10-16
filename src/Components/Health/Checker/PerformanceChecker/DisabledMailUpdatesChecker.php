@@ -22,11 +22,11 @@ class DisabledMailUpdatesChecker implements CheckerInterface
             return;
         }
 
-        $result = SettingsResult::ok('frosh-tools.checker.updateMailVarialesGood', 'disabled');
+        $result = SettingsResult::ok('MailVariables are not updated frequently', 'disabled');
         $setting = $this->params->get('shopware.mail.update_mail_variables_on_send');
 
         if ($setting) {
-            $result = SettingsResult::warning('frosh-tools.checker.updateMailVarialesWarning');
+            $result = SettingsResult::warning('MailVariables should not be updated frequently');
             $result->current = 'enabled';
         }
 

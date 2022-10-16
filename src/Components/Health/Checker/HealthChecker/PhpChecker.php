@@ -30,14 +30,14 @@ class PhpChecker implements CheckerInterface
         $currentPhpVersion = \PHP_VERSION;
         if (version_compare($minPhpVersion, $currentPhpVersion, '>')) {
             $collection->add(
-                SettingsResult::error('frosh-tools.checker.phpOutdated',
+                SettingsResult::error('PHP Version is outdated',
                     $currentPhpVersion,
                     'min ' . $minPhpVersion
                 )
             );
         } else {
             $collection->add(
-                SettingsResult::ok('frosh-tools.checker.phpGood',
+                SettingsResult::ok('PHP Version',
                     $currentPhpVersion,
                     'min ' . $minPhpVersion
                 )
@@ -51,7 +51,7 @@ class PhpChecker implements CheckerInterface
         $currentMaxExecutionTime = (int) ini_get('max_execution_time');
         if ($currentMaxExecutionTime < $minMaxExecutionTime) {
             $collection->add(
-                SettingsResult::error('frosh-tools.checker.maxExecutionTimeError',
+                SettingsResult::error('Max-Execution-Time is too low',
                     (string) $currentMaxExecutionTime,
                     'min ' . $minMaxExecutionTime
                 )
@@ -60,7 +60,7 @@ class PhpChecker implements CheckerInterface
             return;
         }
 
-        $collection->add(SettingsResult::ok('frosh-tools.checker.maxExecutionTimeGood',
+        $collection->add(SettingsResult::ok('Max-Execution-Time',
             (string) $currentMaxExecutionTime,
             'min ' . $minMaxExecutionTime
         ));
@@ -72,7 +72,7 @@ class PhpChecker implements CheckerInterface
         $currentMemoryLimit = $this->decodePhpSize(ini_get('memory_limit'));
         if ($currentMemoryLimit < $minMemoryLimit) {
             $collection->add(
-                SettingsResult::error('frosh-tools.checker.memoryLimitError',
+                SettingsResult::error('Memory-Limit is too low',
                     $this->formatSize($currentMemoryLimit),
                     'min ' . $this->formatSize($minMemoryLimit)
                 )
@@ -81,7 +81,7 @@ class PhpChecker implements CheckerInterface
             return;
         }
 
-        $collection->add(SettingsResult::ok('frosh-tools.checker.memoryLimitGood',
+        $collection->add(SettingsResult::ok('Memory-Limit',
             $this->formatSize($currentMemoryLimit),
             'min ' . $this->formatSize($minMemoryLimit)
         ));
@@ -90,12 +90,12 @@ class PhpChecker implements CheckerInterface
     private function checkOpCacheActive(HealthCollection $collection): void
     {
         if (\extension_loaded('Zend OPcache') && ini_get('opcache.enable')) {
-            $collection->add(SettingsResult::ok('frosh-tools.checker.zendOpcacheGood'));
+            $collection->add(SettingsResult::ok('Zend Opcache is active'));
 
             return;
         }
 
-        $collection->add(SettingsResult::warning('frosh-tools.checker.zendOpcacheWarning'));
+        $collection->add(SettingsResult::warning('Zend Opcache is not active'));
     }
 
     private function decodePhpSize($val): float

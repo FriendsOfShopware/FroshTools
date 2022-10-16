@@ -33,7 +33,7 @@ class MysqlChecker implements CheckerInterface
             return;
         }
 
-        $collection->add(SettingsResult::error('frosh-tools.checker.mysqlError'));
+        $collection->add(SettingsResult::error('MySQL Version cannot be checked'));
     }
 
     private function checkMariadbVersion($collection, $version): void
@@ -41,7 +41,7 @@ class MysqlChecker implements CheckerInterface
         $minVersion = '10.3';
 
         if (version_compare($version, $minVersion, '>=')) {
-            $collection->add(SettingsResult::ok('frosh-tools.checker.mariaDbVersion',
+            $collection->add(SettingsResult::ok('MariaDB Version',
                 $version,
                 'min ' . $minVersion
             ));
@@ -59,7 +59,7 @@ class MysqlChecker implements CheckerInterface
         $recommended = 'min ' . $minVersion . ', but not ' . \implode(' or ', $brokenVersions);
 
         if (in_array($version, $brokenVersions, true)) {
-            $collection->add(SettingsResult::error('frosh-tools.checker.mysqlDbVersionError',
+            $collection->add(SettingsResult::error('MySQL Version has technical problems',
                 $version,
                 $recommended
             ));
@@ -68,7 +68,7 @@ class MysqlChecker implements CheckerInterface
         }
 
         if (version_compare($version, $minVersion, '>=')) {
-            $collection->add(SettingsResult::ok('frosh-tools.checker.mysqlDbVersion',
+            $collection->add(SettingsResult::ok('MySQL version',
                 $version,
                 $recommended
             ));
@@ -76,7 +76,7 @@ class MysqlChecker implements CheckerInterface
             return;
         }
 
-        $collection->add(SettingsResult::error('frosh-tools.checker.mysqlDbOutdated',
+        $collection->add(SettingsResult::error('MySQL Version is outdated',
             $version,
             'min ' . $minVersion
         ));

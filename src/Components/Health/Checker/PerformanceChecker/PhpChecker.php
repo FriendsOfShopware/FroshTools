@@ -14,7 +14,7 @@ class PhpChecker implements CheckerInterface
         $currentPhpVersion = \PHP_VERSION;
         if (version_compare($minPhpVersion, $currentPhpVersion, '>')) {
             $collection->add(
-                SettingsResult::warning('frosh-tools.checker.phpOutdated',
+                SettingsResult::warning('PHP Version is outdated',
                     $currentPhpVersion,
                     'min ' . $minPhpVersion
                 )
@@ -24,7 +24,7 @@ class PhpChecker implements CheckerInterface
         }
 
         $collection->add(
-            SettingsResult::ok('frosh-tools.checker.phpGood',
+            SettingsResult::ok('PHP Version',
                 $currentPhpVersion,
                 'min ' . $minPhpVersion
             )

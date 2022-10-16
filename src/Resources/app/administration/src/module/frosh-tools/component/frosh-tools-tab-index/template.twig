@@ -37,9 +37,9 @@
                     </template>
 
                     <template v-if="item.url">
-                        <a :href="item.url" target="_blank">{{ $tc(item.snippet) }}</a>
+                        <a :href="item.url" target="_blank">{{ item.snippet }}</a>
                     </template>
-                    <template v-else>{{ $tc(item.snippet) }}</template>
+                    <template v-else>{{ item.snippet }}</template>
                 </template>
             </sw-data-grid>
         </sw-card>
@@ -73,9 +73,9 @@
                     </template>
 
                     <template v-if="item.url">
-                        <a :href="item.url" target="_blank">{{ $tc(item.snippet) }}</a>
+                        <a :href="item.url" target="_blank">{{ item.snippet }}</a>
                     </template>
-                    <template v-else>{{ $tc(item.snippet) }}</template>
+                    <template v-else>{{ item.snippet }}</template>
                 </template>
             </sw-data-grid>
         </sw-card>

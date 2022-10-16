@@ -23,7 +23,7 @@ class IncrementStorageChecker implements CheckerInterface
 
         if ($this->userActivity === 'mysql' || $this->queueActivity === 'mysql') {
             $collection->add(
-                SettingsResult::warning('frosh-tools.checker.incrementStorageIsDB',
+                SettingsResult::warning('Increment storage is heavily using the Storage. This feature should be disabled or Redis should be used',
                     'mysql',
                     $recommended,
                     'https://developer.shopware.com/docs/guides/hosting/performance/performance-tweaks#increment-storage'
@@ -34,7 +34,7 @@ class IncrementStorageChecker implements CheckerInterface
         }
 
         $collection->add(
-            SettingsResult::ok('frosh-tools.checker.incrementStorageIsNotDB',
+            SettingsResult::ok('Increment storage is correct configured',
                 $this->userActivity,
                 $recommended
             )

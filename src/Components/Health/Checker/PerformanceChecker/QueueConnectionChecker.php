@@ -22,7 +22,7 @@ class QueueConnectionChecker implements CheckerInterface
     {
         if (str_starts_with($this->connection, 'enqueue://default')) {
             $collection->add(
-                SettingsResult::warning('frosh-tools.checker.queueIsDefault',
+                SettingsResult::warning('The default queue storage in database does not scale well with multiple workers',
                     'default',
                     'redis or rabbitmq',
                     'https://developer.shopware.com/docs/guides/hosting/infrastructure/message-queue#transport-rabbitmq-example'
@@ -33,7 +33,7 @@ class QueueConnectionChecker implements CheckerInterface
         }
 
         $collection->add(
-            SettingsResult::ok('frosh-tools.checker.queueIsOk',
+            SettingsResult::ok('Configured queue storage is ok for multiple workers',
                 parse_url($this->connection, PHP_URL_SCHEME),
                 'redis or rabbitmq',
             )

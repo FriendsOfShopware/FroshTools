@@ -18,11 +18,11 @@ class ProductionChecker implements CheckerInterface
     public function collect(HealthCollection $collection): void
     {
         if ($this->environment !== 'prod') {
-            $collection->add(SettingsResult::error('frosh-tools.checker.not-prod'));
+            $collection->add(SettingsResult::error('Shop is not in production mode'));
 
             return;
         }
 
-        $collection->add(SettingsResult::ok('frosh-tools.checker.prodGood'));
+        $collection->add(SettingsResult::ok('Shop is in production mode'));
     }
 }

@@ -19,7 +19,7 @@ class AdminWorkerChecker implements CheckerInterface
     {
         if ($this->adminWorkerEnabled) {
             $collection->add(
-                SettingsResult::warning('frosh-tools.checker.adminWorkerWarning',
+                SettingsResult::warning('Admin-Worker should be disabled',
                     'enabled',
                     'disabled',
                     'https://developer.shopware.com/docs/guides/plugins/plugins/framework/message-queue/add-message-handler#the-admin-worker'
@@ -30,7 +30,7 @@ class AdminWorkerChecker implements CheckerInterface
         }
 
         $collection->add(
-            SettingsResult::ok('frosh-tools.checker.adminWorkerGood',
+            SettingsResult::ok('Admin-Worker is disabled',
                 'disabled',
                 'disabled'
             )
