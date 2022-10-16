@@ -26,11 +26,18 @@ class PhpChecker implements CheckerInterface
 
     private function checkPhp(HealthCollection $collection): void
     {
-        $minPhpVersion = '7.4.0';
+        $minPhpVersion = '8.1.0';
         $currentPhpVersion = \PHP_VERSION;
-        if (version_compare($minPhpVersion, $currentPhpVersion, '>')) {
+        if (version_compare('8.0.0', $currentPhpVersion, '>')) {
             $collection->add(
                 SettingsResult::error('PHP Version is outdated',
+                    $currentPhpVersion,
+                    'min ' . $minPhpVersion
+                )
+            );
+        } else if (version_compare('8.1.0', $currentPhpVersion, '>')) { 
+            $collection->add(
+                SettingsResult::warning('PHP Version is outdated',
                     $currentPhpVersion,
                     'min ' . $minPhpVersion
                 )
