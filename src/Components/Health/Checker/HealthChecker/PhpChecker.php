@@ -35,7 +35,7 @@ class PhpChecker implements CheckerInterface
                     'min ' . $minPhpVersion
                 )
             );
-        } else if (version_compare('8.1.0', $currentPhpVersion, '>')) { 
+        } elseif (version_compare('8.1.0', $currentPhpVersion, '>')) {
             $collection->add(
                 SettingsResult::warning('PHP Version is outdated',
                     $currentPhpVersion,
