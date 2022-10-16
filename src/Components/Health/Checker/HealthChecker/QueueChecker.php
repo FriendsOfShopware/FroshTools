@@ -18,7 +18,7 @@ class QueueChecker implements CheckerInterface
 
     public function collect(HealthCollection $collection): void
     {
-        $result = SettingsResult::ok('Queues working good');
+        $result = SettingsResult::ok('queue', 'Queues working good');
 
         $oldestMessage = (int) $this->connection->fetchOne('SELECT IFNULL(MIN(published_at), 0) FROM enqueue');
         $oldestMessage /= 10000;
@@ -26,7 +26,7 @@ class QueueChecker implements CheckerInterface
 
         // When the oldest message is older then $minutes minutes
         if ($oldestMessage && ($oldestMessage + ($minutes * 60)) < time()) {
-            $result = SettingsResult::warning('Open Queues older than 15 minutes found');
+            $result = SettingsResult::warning('queue', 'Open Queues older than 15 minutes found');
         }
 
         $result->url = 'https://developer.shopware.com/docs/guides/hosting/infrastructure/message-queue';

@@ -23,7 +23,7 @@ class PhpSettingsChecker implements CheckerInterface
         $currentValue = $this->iniGetFailover('assert.active');
         if ($currentValue !== '0') {
             $collection->add(
-                SettingsResult::warning('PHP value assert.active is not disabled',
+                SettingsResult::warning('assert.active', 'PHP value assert.active is not disabled',
                     $currentValue,
                     '0',
                     $url
@@ -34,7 +34,7 @@ class PhpSettingsChecker implements CheckerInterface
         }
 
         $collection->add(
-            SettingsResult::ok('PHP value assert.active is disabled',
+            SettingsResult::ok('assert.active', 'PHP value assert.active is disabled',
                 $currentValue,
                 '0',
                 $url
@@ -47,7 +47,7 @@ class PhpSettingsChecker implements CheckerInterface
         $currentValue = $this->iniGetFailover('opcache.enable_file_override');
         if ($currentValue !== '1') {
             $collection->add(
-                SettingsResult::warning('PHP value opcache.enable_file_override is not enabled',
+                SettingsResult::warning('php.opcache.enable_file_override', 'PHP value opcache.enable_file_override is not enabled',
                     $currentValue,
                     '1',
                     $url
@@ -58,7 +58,7 @@ class PhpSettingsChecker implements CheckerInterface
         }
 
         $collection->add(
-            SettingsResult::ok('PHP value opcache.enable_file_override is enabled',
+            SettingsResult::ok('php.opcache.enable_file_override', 'PHP value opcache.enable_file_override is enabled',
                 $currentValue,
                 '1',
                 $url
@@ -71,7 +71,7 @@ class PhpSettingsChecker implements CheckerInterface
         $currentValue = $this->iniGetFailover('opcache.interned_strings_buffer');
         if ((int) $currentValue < 20) {
             $collection->add(
-                SettingsResult::warning('PHP value opcache.interned_strings_buffer is too low',
+                SettingsResult::warning('php.opcache.interned_strings_buffer', 'PHP value opcache.interned_strings_buffer is too low',
                     $currentValue,
                     'min 20',
                     $url
@@ -82,7 +82,7 @@ class PhpSettingsChecker implements CheckerInterface
         }
 
         $collection->add(
-            SettingsResult::ok('PHP value opcache.interned_strings_buffer has minimum value',
+            SettingsResult::ok('php.opcache.interned_strings_buffer', 'PHP value opcache.interned_strings_buffer has minimum value',
                 $currentValue,
                 'min 20',
                 $url
@@ -95,7 +95,7 @@ class PhpSettingsChecker implements CheckerInterface
         $currentValue = $this->iniGetFailover('zend.detect_unicode');
         if ($currentValue !== '0') {
             $collection->add(
-                SettingsResult::warning('PHP value zend.detect_unicode is not disabled',
+                SettingsResult::warning('php.zend.detect_unicode', 'PHP value zend.detect_unicode is not disabled',
                     (string) $currentValue,
                     '0',
                     $url
@@ -106,7 +106,7 @@ class PhpSettingsChecker implements CheckerInterface
         }
 
         $collection->add(
-            SettingsResult::ok('PHP value zend.detect_unicode is disabled',
+            SettingsResult::ok('php.zend.detect_unicode', 'PHP value zend.detect_unicode is disabled',
                 $currentValue,
                 '0',
                 $url
@@ -119,7 +119,7 @@ class PhpSettingsChecker implements CheckerInterface
         $currentValue = $this->iniGetFailover('realpath_cache_ttl');
         if ((int) $currentValue < 3600) {
             $collection->add(
-                SettingsResult::warning('PHP value realpath_cache_ttl is low',
+                SettingsResult::warning('php.zend.realpath_cache_ttl', 'PHP value realpath_cache_ttl is low',
                     $currentValue,
                     'min 3600',
                     $url
@@ -130,7 +130,7 @@ class PhpSettingsChecker implements CheckerInterface
         }
 
         $collection->add(
-            SettingsResult::ok('PHP value realpath_cache_ttl is good',
+            SettingsResult::ok('php.zend.realpath_cache_ttl', 'PHP value realpath_cache_ttl is good',
                 $currentValue,
                 'min 3600',
                 $url

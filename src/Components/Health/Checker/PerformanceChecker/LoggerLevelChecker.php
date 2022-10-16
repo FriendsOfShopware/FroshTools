@@ -29,14 +29,14 @@ class LoggerLevelChecker implements CheckerInterface
     private function checkBusinessEventHandlerLevel(): SettingsResult
     {
         if ($this->businessEventHandlerLevel >= Logger::WARNING) {
-            return SettingsResult::ok('BusinessEventHandler does not log infos',
+            return SettingsResult::ok('business_logger', 'BusinessEventHandler does not log infos',
                 Logger::getLevelName($this->businessEventHandlerLevel),
                 'min WARNING',
                 $this->url
             );
         }
 
-        return SettingsResult::warning('BusinessEventHandler is logging infos',
+        return SettingsResult::warning('business_logger', 'BusinessEventHandler is logging infos',
             Logger::getLevelName($this->businessEventHandlerLevel),
             'min WARNING',
             $this->url

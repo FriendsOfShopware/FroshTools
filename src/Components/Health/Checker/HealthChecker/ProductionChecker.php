@@ -18,11 +18,11 @@ class ProductionChecker implements CheckerInterface
     public function collect(HealthCollection $collection): void
     {
         if ($this->environment !== 'prod') {
-            $collection->add(SettingsResult::error('Shop is not in production mode'));
+            $collection->add(SettingsResult::error('app.env', 'Shop is not in production mode'));
 
             return;
         }
 
-        $collection->add(SettingsResult::ok('Shop is in production mode'));
+        $collection->add(SettingsResult::ok('app.env', 'Shop is in production mode'));
     }
 }

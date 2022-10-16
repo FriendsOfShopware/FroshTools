@@ -11,6 +11,8 @@ class SettingsResult extends Struct
     private const ERROR = 'STATE_ERROR';
     private const INFO = 'STATE_INFO';
 
+    protected string $id;
+
     protected string $state;
 
     protected string $snippet;
@@ -21,9 +23,10 @@ class SettingsResult extends Struct
 
     public ?string $url = null;
 
-    public static function ok(string $snippet, string $current = '', string $recommended = '', ?string $url = null): self
+    public static function ok(string $id, string $snippet, string $current = '', string $recommended = '', ?string $url = null): self
     {
         $me = new self();
+        $me->id = $id;
         $me->state = self::GREEN;
         $me->snippet = $snippet;
         $me->current = $current;
@@ -33,9 +36,10 @@ class SettingsResult extends Struct
         return $me;
     }
 
-    public static function warning(string $snippet, string $current = '', string $recommended = '', ?string $url = null): self
+    public static function warning(string $id, string $snippet, string $current = '', string $recommended = '', ?string $url = null): self
     {
         $me = new self();
+        $me->id = $id;
         $me->state = self::WARNING;
         $me->snippet = $snippet;
         $me->current = $current;
@@ -45,9 +49,10 @@ class SettingsResult extends Struct
         return $me;
     }
 
-    public static function error(string $snippet, string $current = '', string $recommended = '', ?string $url = null): self
+    public static function error(string $id, string $snippet, string $current = '', string $recommended = '', ?string $url = null): self
     {
         $me = new self();
+        $me->id = $id;
         $me->state = self::ERROR;
         $me->snippet = $snippet;
         $me->current = $current;
@@ -57,9 +62,10 @@ class SettingsResult extends Struct
         return $me;
     }
 
-    public static function info(string $snippet, string $current = '', string $recommended = '', ?string $url = null): self
+    public static function info(string $id, string $snippet, string $current = '', string $recommended = '', ?string $url = null): self
     {
         $me = new self();
+        $me->id = $id;
         $me->state = self::INFO;
         $me->snippet = $snippet;
         $me->current = $current;

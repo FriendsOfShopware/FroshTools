@@ -19,7 +19,7 @@ class MailOverQueueChecker implements CheckerInterface
     {
         if (!$this->mailerIsOverQueue) {
             $collection->add(
-                SettingsResult::warning('Mails should be sent using the message queue',
+                SettingsResult::warning('mail', 'Mails should be sent using the message queue',
                     'disabled',
                     'enabled',
                     'https://developer.shopware.com/docs/guides/hosting/infrastructure/message-queue#sending-mails-over-the-message-queue'
@@ -30,7 +30,7 @@ class MailOverQueueChecker implements CheckerInterface
         }
 
         $collection->add(
-            SettingsResult::ok('Mails are send with the message queue',
+            SettingsResult::ok('mail', 'Mails are send with the message queue',
                 'enabled',
                 'enabled'
             )
