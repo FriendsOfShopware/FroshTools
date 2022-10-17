@@ -27,7 +27,7 @@
             <name>monitorTaskGraceTime</name>
             <label>Scheduled task grace time</label>
             <label lang="de-DE">Geplante Karenzzeit der Aufgabe</label>
-            <helpText>After X minutes a scheudled task is considered stuck / faulty</helpText>
+            <helpText>After X minutes a scheduled task is considered stuck / faulty</helpText>
             <helpText lang="de-DE">Nach X Minuten gilt eine geplante Aufgabe als festgefahren / fehlerhaft</helpText>
             <defaultValue>10</defaultValue>
         </input-field>
