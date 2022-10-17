@@ -96,3 +96,7 @@
 * PHP 8.1 is now the recommended PHP version. PHP 8.0 will be a warning
 * MySQL 8 is now checked in performance checker
 * Optimized UI
+
+# 0.2.10
+
+* Fix labels of php checker and max execution time
