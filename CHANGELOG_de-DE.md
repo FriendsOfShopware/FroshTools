@@ -89,3 +89,10 @@
 
 # 0.2.8
 * Improve Elasticsearch usage
+
+# 0.2.9
+
+* Health checker / Performance Status results are now always in English to make it easier to integrate in external systems
+* PHP 8.1 is now the recommended PHP version. PHP 8.0 will be a warning
+* MySQL 8 is now checked in performance checker
+* Optimized UI
