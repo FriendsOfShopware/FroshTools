@@ -44,7 +44,7 @@ class PhpChecker implements CheckerInterface
             );
         } else {
             $collection->add(
-                SettingsResult::ok('PHP Version',
+                SettingsResult::ok('php-version', 'PHP Version',
                     $currentPhpVersion,
                     'min ' . $minPhpVersion
                 )
@@ -58,7 +58,7 @@ class PhpChecker implements CheckerInterface
         $currentMaxExecutionTime = (int) ini_get('max_execution_time');
         if ($currentMaxExecutionTime < $minMaxExecutionTime) {
             $collection->add(
-                SettingsResult::error('php-version', 'Max-Execution-Time is too low',
+                SettingsResult::error('php-max-execution', 'Max-Execution-Time is too low',
                     (string) $currentMaxExecutionTime,
                     'min ' . $minMaxExecutionTime
                 )
@@ -67,7 +67,7 @@ class PhpChecker implements CheckerInterface
             return;
         }
 
-        $collection->add(SettingsResult::ok('Max-Execution-Time',
+        $collection->add(SettingsResult::ok('php-max-execution', 'Max-Execution-Time',
             (string) $currentMaxExecutionTime,
             'min ' . $minMaxExecutionTime
         ));
@@ -79,7 +79,7 @@ class PhpChecker implements CheckerInterface
         $currentMemoryLimit = $this->decodePhpSize(ini_get('memory_limit'));
         if ($currentMemoryLimit < $minMemoryLimit) {
             $collection->add(
-                SettingsResult::error('php-version', 'Memory-Limit is too low',
+                SettingsResult::error('php-memory-limit', 'Memory-Limit is too low',
                     $this->formatSize($currentMemoryLimit),
                     'min ' . $this->formatSize($minMemoryLimit)
                 )
@@ -88,7 +88,7 @@ class PhpChecker implements CheckerInterface
             return;
         }
 
-        $collection->add(SettingsResult::ok('php-version', 'Memory-Limit',
+        $collection->add(SettingsResult::ok('php-memory-limit', 'Memory-Limit',
             $this->formatSize($currentMemoryLimit),
             'min ' . $this->formatSize($minMemoryLimit)
         ));
@@ -97,12 +97,12 @@ class PhpChecker implements CheckerInterface
     private function checkOpCacheActive(HealthCollection $collection): void
     {
         if (\extension_loaded('Zend OPcache') && ini_get('opcache.enable')) {
-            $collection->add(SettingsResult::ok('php-version', 'Zend Opcache is active'));
+            $collection->add(SettingsResult::ok('php-memory-limit', 'Zend Opcache is active', 'active', 'active'));
 
             return;
         }
 
-        $collection->add(SettingsResult::warning('php-version', 'Zend Opcache is not active'));
+        $collection->add(SettingsResult::warning('php-memory-limit', 'Zend Opcache is not active', 'not active', 'not active'));
     }
 
     private function decodePhpSize($val): float
