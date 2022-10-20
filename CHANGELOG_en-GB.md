@@ -103,4 +103,4 @@
 
 # 0.2.11
 
-* Added ACL
+* Added ACL for FroshTools. You need to maybe adjust your ACL roles
