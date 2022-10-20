@@ -103,5 +103,13 @@
     "order": "Order",
     "transaction": "Payment",
     "delivery": "Delivery"
-  }
+  },
+    "sw-privileges": {
+        "additional_permissions": {
+            "frosh_tools": {
+                "frosh_tools": "View monitoring",
+                "label": "Frosh tools"
+            }
+        }
+    }
 }
