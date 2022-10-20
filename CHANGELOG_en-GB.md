@@ -100,3 +100,7 @@
 # 0.2.10
 
 * Fix labels of php checker and max execution time
+
+# 0.2.11
+
+* Added ACL
