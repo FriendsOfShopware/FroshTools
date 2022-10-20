@@ -8,6 +8,7 @@ import './component/frosh-tools-tab-files';
 import './component/frosh-tools-tab-feature-flags';
 import './component/frosh-tools-tab-state-machines';
 import './page/index';
+import './acl'
 
 Shopware.Module.register('frosh-tools', {
     type: 'plugin',
@@ -27,63 +28,72 @@ Shopware.Module.register('frosh-tools', {
                     component: 'frosh-tools-tab-index',
                     path: 'index',
                     meta: {
-                        parentPath: 'frosh.tools.index'
+                        privilege: 'frosh_tools:read',
+                        parentPath: 'frosh.tools.index.index'
                     }
                 },
                 cache: {
                     component: 'frosh-tools-tab-cache',
                     path: 'cache',
                     meta: {
-                        parentPath: 'frosh.tools.index'
+                        privilege: 'frosh_tools:read',
+                        parentPath: 'frosh.tools.index.index'
                     }
                 },
                 queue: {
                     component: 'frosh-tools-tab-queue',
                     path: 'queue',
                     meta: {
-                        parentPath: 'frosh.tools.index'
+                        privilege: 'frosh_tools:read',
+                        parentPath: 'frosh.tools.index.index'
                     }
                 },
                 scheduled: {
                     component: 'frosh-tools-tab-scheduled',
                     path: 'scheduled',
                     meta: {
-                        parentPath: 'frosh.tools.index'
+                        privilege: 'frosh_tools:read',
+                        parentPath: 'frosh.tools.index.index'
                     }
                 },
                 elasticsearch: {
                     component: 'frosh-tools-tab-elasticsearch',
                     path: 'elasticsearch',
                     meta: {
-                        parentPath: 'frosh.tools.index'
+                        privilege: 'frosh_tools:read',
+                        parentPath: 'frosh.tools.index.index'
                     }
                 },
                 logs: {
                     component: 'frosh-tools-tab-logs',
                     path: 'logs',
                     meta: {
-                        parentPath: 'frosh.tools.index'
+                        privilege: 'frosh_tools:read',
+                        parentPath: 'frosh.tools.index.index'
                     }
                 },
                 files: {
                     component: 'frosh-tools-tab-files',
                     path: 'files',
                     meta: {
-                        parentPath: 'frosh.tools.index'
+                        privilege: 'frosh_tools:read',
+                        parentPath: 'frosh.tools.index.index'
                     }
                 },
                 featureflags: {
                     component: 'frosh-tools-tab-feature-flags',
                     path: 'feature-flags',
                     meta: {
-                        parentPath: 'frosh.tools.index'
+                        privilege: 'frosh_tools:read',
+                        parentPath: 'frosh.tools.index.index'
                     }
                 },
                 statemachines: {
                     component: 'frosh-tools-tab-state-machines',
                     path: 'state-machines',
                     meta: {
-                        parentPath: 'frosh.tools.index'
+                        privilege: 'frosh_tools:read',
+                        parentPath: 'frosh.tools.index.index'
                     }
                 },
             }

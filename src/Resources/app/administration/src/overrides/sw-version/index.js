@@ -4,15 +4,17 @@ const { Component } = Shopware;
 
 Component.override('sw-version', {
     template,
-    inject: ['froshToolsService'],
+    inject: ['froshToolsService', 'acl'],
 
     async created() {
+        this.checkPermission();
         await this.checkHealth();
     },
 
     data() {
         return {
-            health: null
+            health: null,
+            hasPermission: false
         }
     },
 
@@ -63,6 +65,10 @@ Component.override('sw-version', {
             setInterval(async() => {
                 this.health = await this.froshToolsService.healthStatus();
             }, 30000);
+        },
+
+         checkPermission() {
+            this.hasPermission = this.acl.can('frosh_tools:read');
         }
     }
 })

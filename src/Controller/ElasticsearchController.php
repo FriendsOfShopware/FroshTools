@@ -9,7 +9,7 @@ use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 
 /**
- * @Route(path="/api/_action/frosh-tools/elasticsearch", defaults={"_routeScope"={"api"}})
+ * @Route(path="/api/_action/frosh-tools/elasticsearch", defaults={"_routeScope"={"api"}, "_acl"={"frosh_tools:read"}})
  */
 class ElasticsearchController
 {
