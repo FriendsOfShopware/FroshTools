@@ -25,7 +25,7 @@ class FeatureFlagController
     }
 
     /**
-     * @Route(path="/feature-flag/list", methods={"GET"}, name="api.frosh.tools.feature-flag.list", defaults={"_acl"={"frosh_tools:read"}})
+     * @Route(path="/feature-flag/list", methods={"GET"}, name="api.frosh.tools.feature-flag.list")
      */
     public function list(): JsonResponse
     {
@@ -46,7 +46,7 @@ class FeatureFlagController
     }
 
     /**
-     * @Route(path="/feature-flag/toggle", methods={"POST"}, name="api.frosh.tools.feature-flag.toggle", defaults={"_acl"={"frosh_tools:read"}})
+     * @Route(path="/feature-flag/toggle", methods={"POST"}, name="api.frosh.tools.feature-flag.toggle")
      */
     public function toggle(Request $request): Response
     {

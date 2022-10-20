@@ -26,7 +26,7 @@ class HealthController
     }
 
     /**
-     * @Route(path="/health/status", methods={"GET"}, name="api.frosh.tools.health.status", defaults={"_acl"={"frosh_tools:read"}})
+     * @Route(path="/health/status", methods={"GET"}, name="api.frosh.tools.health.status")
      */
     public function status(): JsonResponse
     {
@@ -39,7 +39,7 @@ class HealthController
     }
 
     /**
-     * @Route(path="/performance/status", methods={"GET"}, name="api.frosh.tools.performance.status", defaults={"_acl"={"frosh_tools:read"}})
+     * @Route(path="/performance/status", methods={"GET"}, name="api.frosh.tools.performance.status")
      */
     public function performanceStatus(): JsonResponse
     {

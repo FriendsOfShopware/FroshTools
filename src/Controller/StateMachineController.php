@@ -27,7 +27,7 @@ final class StateMachineController
     }
 
     /**
-     * @Route(path="/state-machines/load", methods={"GET"}, name="api.frosh.tools.state-machines.load", defaults={"_acl"={"frosh_tools:read"}})
+     * @Route(path="/state-machines/load", methods={"GET"}, name="api.frosh.tools.state-machines.load")
      */
     public function load(Request $request): JsonResponse
     {

@@ -21,7 +21,7 @@ class ElasticsearchController
     }
 
     /**
-     * @Route(path="/status", methods={"GET"}, name="api.frosh.tools.elasticsearch.status", defaults={"_acl"={"frosh_tools:read"}})
+     * @Route(path="/status", methods={"GET"}, name="api.frosh.tools.elasticsearch.status")
      */
     public function status(): Response
     {
@@ -33,7 +33,7 @@ class ElasticsearchController
     }
 
     /**
-     * @Route(path="/indices", methods={"GET"}, name="api.frosh.tools.elasticsearch.indices", defaults={"_acl"={"frosh_tools:read"}})
+     * @Route(path="/indices", methods={"GET"}, name="api.frosh.tools.elasticsearch.indices")
      */
     public function indices(): Response
     {
@@ -45,7 +45,7 @@ class ElasticsearchController
     }
 
     /**
-     * @Route(path="/index/{indexName}", methods={"DELETE"}, name="api.frosh.tools.elasticsearch.delete_index", defaults={"_acl"={"frosh_tools:read"}})
+     * @Route(path="/index/{indexName}", methods={"DELETE"}, name="api.frosh.tools.elasticsearch.delete_index")
      */
     public function deleteIndex(string $indexName): Response
     {
@@ -57,7 +57,7 @@ class ElasticsearchController
     }
 
     /**
-     * @Route(path="/console/{path}", name="api.frosh.tools.elasticsearch.proxy", requirements={"path" = ".*"}, defaults={"_acl"={"frosh_tools:read"}})
+     * @Route(path="/console/{path}", name="api.frosh.tools.elasticsearch.proxy", requirements={"path" = ".*"})
      */
     public function console(Request $request, string $path): Response
     {
@@ -71,7 +71,7 @@ class ElasticsearchController
     }
 
     /**
-     * @Route(path="/flush_all", methods={"POST"}, name="api.frosh.tools.elasticsearch.flush", defaults={"_acl"={"frosh_tools:read"}})
+     * @Route(path="/flush_all", methods={"POST"}, name="api.frosh.tools.elasticsearch.flush")
      */
     public function flushAll(): Response
     {
@@ -81,7 +81,7 @@ class ElasticsearchController
     }
 
     /**
-     * @Route(path="/reindex", methods={"POST"}, name="api.frosh.tools.elasticsearch.reindex", defaults={"_acl"={"frosh_tools:read"}})
+     * @Route(path="/reindex", methods={"POST"}, name="api.frosh.tools.elasticsearch.reindex")
      */
     public function reindex(): Response
     {
@@ -91,7 +91,7 @@ class ElasticsearchController
     }
 
     /**
-     * @Route(path="/switch_alias", methods={"POST"}, name="api.frosh.tools.elasticsearch.switch_alias", defaults={"_acl"={"frosh_tools:read"}})
+     * @Route(path="/switch_alias", methods={"POST"}, name="api.frosh.tools.elasticsearch.switch_alias")
      */
     public function switchAlias(): Response
     {
@@ -101,7 +101,7 @@ class ElasticsearchController
     }
 
     /**
-     * @Route(path="/cleanup", methods={"POST"}, name="api.frosh.tools.elasticsearch.cleanup", defaults={"_acl"={"frosh_tools:read"}})
+     * @Route(path="/cleanup", methods={"POST"}, name="api.frosh.tools.elasticsearch.cleanup")
      */
     public function deleteUnusedIndices(): Response
     {
@@ -111,7 +111,7 @@ class ElasticsearchController
     }
 
     /**
-     * @Route(path="/reset", methods={"POST"}, name="api.frosh.tools.elasticsearch.reset", defaults={"_acl"={"frosh_tools:read"}})
+     * @Route(path="/reset", methods={"POST"}, name="api.frosh.tools.elasticsearch.reset")
      */
     public function reset(): Response
     {

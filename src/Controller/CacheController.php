@@ -23,7 +23,7 @@ class CacheController
     }
 
     /**
-     * @Route(path="/cache", methods={"GET"}, name="api.frosh.tools.cache.get", defaults={"_acl"={"frosh_tools:read"}})
+     * @Route(path="/cache", methods={"GET"}, name="api.frosh.tools.cache.get")
      */
     public function cacheStatistics(): JsonResponse
     {
@@ -70,7 +70,7 @@ class CacheController
     }
 
     /**
-     * @Route(path="/cache/{folder}", methods={"DELETE"}, name="api.frosh.tools.cache.clear", defaults={"_acl"={"frosh_tools:read"}})
+     * @Route(path="/cache/{folder}", methods={"DELETE"}, name="api.frosh.tools.cache.clear")
      */
     public function clearCache(string $folder): JsonResponse
     {

@@ -37,7 +37,7 @@ class ScheduledTaskController
     }
 
     /**
-     * @Route(path="/scheduled-task/{id}", methods={"POST"}, name="api.frosh.tools.scheduled.task.run", defaults={"_acl"={"frosh_tools:read"}})
+     * @Route(path="/scheduled-task/{id}", methods={"POST"}, name="api.frosh.tools.scheduled.task.run")
      */
     public function runTask(string $id, Context $context): JsonResponse
     {
@@ -76,7 +76,7 @@ class ScheduledTaskController
     }
 
     /**
-     * @Route(path="/scheduled-tasks/register", methods={"POST"}, name="api.frosh.tools.scheduled.tasks.register", defaults={"_acl"={"frosh_tools:read"}})
+     * @Route(path="/scheduled-tasks/register", methods={"POST"}, name="api.frosh.tools.scheduled.tasks.register")
      */
     public function registerTasks(): JsonResponse
     {

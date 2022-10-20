@@ -22,7 +22,7 @@ class QueueController
     }
 
     /**
-     * @Route(path="/queue/list", methods={"GET"}, name="api.frosh.tools.queue.list", defaults={"_acl"={"frosh_tools:read"}})
+     * @Route(path="/queue/list", methods={"GET"}, name="api.frosh.tools.queue.list")
      */
     public function list(): JsonResponse
     {
@@ -39,7 +39,7 @@ class QueueController
     }
 
     /**
-     * @Route(path="/queue", methods={"DELETE"}, name="api.frosh.tools.queue.clear", defaults={"_acl"={"frosh_tools:read"}})
+     * @Route(path="/queue", methods={"DELETE"}, name="api.frosh.tools.queue.clear")
      */
     public function resetQueue(): JsonResponse
     {

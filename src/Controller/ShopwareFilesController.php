@@ -30,7 +30,7 @@ class ShopwareFilesController
     }
 
     /**
-     * @Route(path="/shopware-files", methods={"GET"}, name="api.frosh.tools.shopware-files", defaults={"_acl"={"frosh_tools:read"}})
+     * @Route(path="/shopware-files", methods={"GET"}, name="api.frosh.tools.shopware-files")
      */
     public function listShopwareFiles(): JsonResponse
     {
@@ -89,7 +89,7 @@ class ShopwareFilesController
     }
 
     /**
-     * @Route(path="/file-contents", methods={"GET"}, name="api.frosh.tools.file-contents", defaults={"_acl"={"frosh_tools:read"}})
+     * @Route(path="/file-contents", methods={"GET"}, name="api.frosh.tools.file-contents")
      */
     public function getFileContents(Request $request): JsonResponse
     {
@@ -120,7 +120,7 @@ class ShopwareFilesController
     }
 
     /**
-     * @Route(path="/shopware-file/restore", methods={"GET"}, name="api.frosh.tools.shopware-file.restore", defaults={"_acl"={"frosh_tools:read"}})
+     * @Route(path="/shopware-file/restore", methods={"GET"}, name="api.frosh.tools.shopware-file.restore")
      */
     public function restoreShopwareFile(Request $request): JsonResponse
     {

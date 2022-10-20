@@ -27,7 +27,7 @@ class LogController
     }
 
     /**
-     * @Route(path="/logs/files", methods={"GET"}, name="api.frosh.tools.logs.files", defaults={"_acl"={"frosh_tools:read"}})
+     * @Route(path="/logs/files", methods={"GET"}, name="api.frosh.tools.logs.files")
      */
     public function getLogFiles(): JsonResponse
     {
@@ -35,7 +35,7 @@ class LogController
     }
 
     /**
-     * @Route(path="/logs/file", methods={"GET"}, name="api.frosh.tools.logs.file-listing", defaults={"_acl"={"frosh_tools:read"}})
+     * @Route(path="/logs/file", methods={"GET"}, name="api.frosh.tools.logs.file-listing")
      */
     public function getLog(Request $request): Response
     {
