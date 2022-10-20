@@ -13,7 +13,7 @@ use Symfony\Component\HttpKernel\Exception\HttpException;
 use Symfony\Component\Routing\Annotation\Route;
 
 /**
- * @Route(path="/api/_action/frosh-tools", defaults={"_routeScope"={"api"}})
+ * @Route(path="/api/_action/frosh-tools", defaults={"_routeScope"={"api"}, "_acl"={"frosh_tools:read"}})
  */
 class FeatureFlagController
 {
@@ -25,7 +25,7 @@ class FeatureFlagController
     }
 
     /**
-     * @Route(path="/feature-flag/list", methods={"GET"}, name="api.frosh.tools.feature-flag.list")
+     * @Route(path="/feature-flag/list", methods={"GET"}, name="api.frosh.tools.feature-flag.list", defaults={"_acl"={"frosh_tools:read"}})
      */
     public function list(): JsonResponse
     {
@@ -46,7 +46,7 @@ class FeatureFlagController
     }
 
     /**
-     * @Route(path="/feature-flag/toggle", methods={"POST"}, name="api.frosh.tools.feature-flag.toggle")
+     * @Route(path="/feature-flag/toggle", methods={"POST"}, name="api.frosh.tools.feature-flag.toggle", defaults={"_acl"={"frosh_tools:read"}})
      */
     public function toggle(Request $request): Response
     {

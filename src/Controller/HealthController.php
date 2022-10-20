@@ -9,7 +9,7 @@ use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\Routing\Annotation\Route;
 
 /**
- * @Route(path="/api/_action/frosh-tools", defaults={"_routeScope"={"api"}})
+ * @Route(path="/api/_action/frosh-tools", defaults={"_routeScope"={"api"}, "_acl"={"frosh_tools:read"}})
  */
 class HealthController
 {
@@ -26,7 +26,7 @@ class HealthController
     }
 
     /**
-     * @Route(path="/health/status", methods={"GET"}, name="api.frosh.tools.health.status")
+     * @Route(path="/health/status", methods={"GET"}, name="api.frosh.tools.health.status", defaults={"_acl"={"frosh_tools:read"}})
      */
     public function status(): JsonResponse
     {
@@ -39,7 +39,7 @@ class HealthController
     }
 
     /**
-     * @Route(path="/performance/status", methods={"GET"}, name="api.frosh.tools.performance.status")
+     * @Route(path="/performance/status", methods={"GET"}, name="api.frosh.tools.performance.status", defaults={"_acl"={"frosh_tools:read"}})
      */
     public function performanceStatus(): JsonResponse
     {

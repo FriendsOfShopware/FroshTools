@@ -8,7 +8,7 @@ use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\Routing\Annotation\Route;
 
 /**
- * @Route(path="/api/_action/frosh-tools", defaults={"_routeScope"={"api"}})
+ * @Route(path="/api/_action/frosh-tools", defaults={"_routeScope"={"api"}, "_acl"={"frosh_tools:read"}})
  */
 class QueueController
 {
@@ -22,7 +22,7 @@ class QueueController
     }
 
     /**
-     * @Route(path="/queue/list", methods={"GET"}, name="api.frosh.tools.queue.list")
+     * @Route(path="/queue/list", methods={"GET"}, name="api.frosh.tools.queue.list", defaults={"_acl"={"frosh_tools:read"}})
      */
     public function list(): JsonResponse
     {
@@ -39,7 +39,7 @@ class QueueController
     }
 
     /**
-     * @Route(path="/queue", methods={"DELETE"}, name="api.frosh.tools.queue.clear")
+     * @Route(path="/queue", methods={"DELETE"}, name="api.frosh.tools.queue.clear", defaults={"_acl"={"frosh_tools:read"}})
      */
     public function resetQueue(): JsonResponse
     {

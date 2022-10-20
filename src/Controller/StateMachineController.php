@@ -15,7 +15,7 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Routing\Annotation\Route;
 
 /**
- * @Route(path="/api/_action/frosh-tools", defaults={"_routeScope"={"api"}})
+ * @Route(path="/api/_action/frosh-tools", defaults={"_routeScope"={"api"}, "_acl"={"frosh_tools:read"}})
  */
 final class StateMachineController
 {
@@ -27,7 +27,7 @@ final class StateMachineController
     }
 
     /**
-     * @Route(path="/state-machines/load", methods={"GET"}, name="api.frosh.tools.state-machines.load")
+     * @Route(path="/state-machines/load", methods={"GET"}, name="api.frosh.tools.state-machines.load", defaults={"_acl"={"frosh_tools:read"}})
      */
     public function load(Request $request): JsonResponse
     {

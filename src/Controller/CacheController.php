@@ -8,7 +8,7 @@ use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\Routing\Annotation\Route;
 
 /**
- * @Route(path="/api/_action/frosh-tools", defaults={"_routeScope"={"api"}})
+ * @Route(path="/api/_action/frosh-tools", defaults={"_routeScope"={"api"}, "_acl"={"frosh_tools:read"}})
  */
 class CacheController
 {
@@ -23,7 +23,7 @@ class CacheController
     }
 
     /**
-     * @Route(path="/cache", methods={"GET"}, name="api.frosh.tools.cache.get")
+     * @Route(path="/cache", methods={"GET"}, name="api.frosh.tools.cache.get", defaults={"_acl"={"frosh_tools:read"}})
      */
     public function cacheStatistics(): JsonResponse
     {
@@ -70,7 +70,7 @@ class CacheController
     }
 
     /**
-     * @Route(path="/cache/{folder}", methods={"DELETE"}, name="api.frosh.tools.cache.clear")
+     * @Route(path="/cache/{folder}", methods={"DELETE"}, name="api.frosh.tools.cache.clear", defaults={"_acl"={"frosh_tools:read"}})
      */
     public function clearCache(string $folder): JsonResponse
     {

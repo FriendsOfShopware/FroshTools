@@ -13,7 +13,7 @@ use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\Routing\Annotation\Route;
 
 /**
- * @Route(path="/api/_action/frosh-tools", defaults={"_routeScope"={"api"}})
+ * @Route(path="/api/_action/frosh-tools", defaults={"_routeScope"={"api"}, "_acl"={"frosh_tools:read"}})
  */
 class ScheduledTaskController
 {
@@ -37,7 +37,7 @@ class ScheduledTaskController
     }
 
     /**
-     * @Route(path="/scheduled-task/{id}", methods={"POST"}, name="api.frosh.tools.scheduled.task.run")
+     * @Route(path="/scheduled-task/{id}", methods={"POST"}, name="api.frosh.tools.scheduled.task.run", defaults={"_acl"={"frosh_tools:read"}})
      */
     public function runTask(string $id, Context $context): JsonResponse
     {
@@ -76,7 +76,7 @@ class ScheduledTaskController
     }
 
     /**
-     * @Route(path="/scheduled-tasks/register", methods={"POST"}, name="api.frosh.tools.scheduled.tasks.register")
+     * @Route(path="/scheduled-tasks/register", methods={"POST"}, name="api.frosh.tools.scheduled.tasks.register", defaults={"_acl"={"frosh_tools:read"}})
      */
     public function registerTasks(): JsonResponse
     {

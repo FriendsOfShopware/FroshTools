@@ -12,7 +12,7 @@ use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 
 /**
- * @Route(path="/api/_action/frosh-tools", defaults={"_routeScope"={"api"}})
+ * @Route(path="/api/_action/frosh-tools", defaults={"_routeScope"={"api"}, "_acl"={"frosh_tools:read"}})
  */
 class LogController
 {
@@ -27,7 +27,7 @@ class LogController
     }
 
     /**
-     * @Route(path="/logs/files", methods={"GET"}, name="api.frosh.tools.logs.files")
+     * @Route(path="/logs/files", methods={"GET"}, name="api.frosh.tools.logs.files", defaults={"_acl"={"frosh_tools:read"}})
      */
     public function getLogFiles(): JsonResponse
     {
@@ -35,7 +35,7 @@ class LogController
     }
 
     /**
-     * @Route(path="/logs/file", methods={"GET"}, name="api.frosh.tools.logs.file-listing")
+     * @Route(path="/logs/file", methods={"GET"}, name="api.frosh.tools.logs.file-listing", defaults={"_acl"={"frosh_tools:read"}})
      */
     public function getLog(Request $request): Response
     {
