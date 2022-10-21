@@ -83,12 +83,11 @@ ports:
     description: "Use Forward Proxy to localhost to access this service"
 
 jetbrains:
+  plugins:
+    - de.espend.idea.php.annotation
+    - fr.adrienbrault.idea.symfony2plugin
+    - de.shyim.shopware6
   phpstorm:
-    plugins:
-      - de.espend.idea.php.annotation
-      - fr.adrienbrault.idea.symfony2plugin
-      - de.shyim.shopware6
-      - de.shyim.ideaphpstantoolbox
     vmoptions: "-Xmx4g"
     prebuilds:
       version: stable
