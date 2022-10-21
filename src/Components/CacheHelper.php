@@ -2,9 +2,11 @@
 
 namespace Frosh\Tools\Components;
 
+use Frosh\Tools\Components\Exception\CannotClearCacheException;
 use RecursiveDirectoryIterator;
 use RecursiveIteratorIterator;
 use SplFileInfo;
+use Symfony\Component\Process\Process;
 
 class CacheHelper
 {
@@ -19,14 +21,14 @@ class CacheHelper
 
     private static function getSizeFast(string $dir): ?int
     {
-        $output = null;
-        exec('du -s "' . $dir . '"', $output);
+        $process = new Process(['du', '-s', $dir]);
+        $process->run();
 
-        if (!isset($output[0])) {
+        if (!$process->isSuccessful()) {
             return null;
         }
 
-        if (preg_match('/\d+/', $output[0], $match)) {
+        if (preg_match('/\d+/', $process->getOutput(), $match)) {
             return $match[0] * 1024;
         }
 
@@ -59,27 +61,44 @@ class CacheHelper
         return $size;
     }
 
-    public static function removeDir(string $dir): void
+    public static function removeDir(string $path): void
     {
+        // If the given path is a file
+        if (is_file($path)) {
+            unlink($path);
+            return;
+        }
+
         if (self::rsyncAvailable()) {
-            $blankDir = sys_get_temp_dir() . '/' . md5($dir . time()) . '/';
+            $blankDir = sys_get_temp_dir() . '/' . md5($path . time()) . '/';
 
             if (!mkdir($blankDir, 0777, true) && !is_dir($blankDir)) {
                 throw new \RuntimeException(sprintf('Directory "%s" was not created', $blankDir));
             }
 
-            exec('rsync -a --delete ' . $blankDir . ' ' . $dir . '/');
+            $process = new Process(['rsync', '-qa', '--delete', $blankDir, $path . '/']);
+            $process->run();
+
+            if (!$process->isSuccessful()) {
+                throw new CannotClearCacheException($process->getErrorOutput());
+            }
+
             rmdir($blankDir);
         } else {
-            exec('find ' . $dir . '/ -delete');
+            $process = new Process(['find', $path . '/', '-delete']);
+            $process->run();
+
+            if (!$process->isSuccessful()) {
+                throw new CannotClearCacheException($process->getErrorOutput());
+            }
         }
     }
 
     private static function rsyncAvailable(): bool
     {
-        $output = null;
-        exec('command -v rsync', $output);
+        $process = new Process(['rsync', '--version']);
+        $process->run();
 
-        return isset($output[0]) && count($output) > 0;
+        return $process->isSuccessful();
     }
 }
