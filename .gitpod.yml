@@ -43,6 +43,14 @@ tasks:
       
       shopware-cli extension prepare "custom/plugins/$EXTENSION_NAME"
       shopware-cli extension build "custom/plugins/$EXTENSION_NAME"
+      
+      # Test
+      mkdir -p /workspace/.config/JetBrains/RemoteDev-PS/_workspace_FroshTools/options/
+      echo '<application>' > /workspace/.config/JetBrains/RemoteDev-PS/_workspace_FroshTools/options/updates.xml
+      echo '<component name="UpdatesConfigurable">' >> /workspace/.config/JetBrains/RemoteDev-PS/_workspace_FroshTools/options/updates.xml
+      echo '<option name="THIRD_PARTY_PLUGINS_ALLOWED" value="true" />' >> /workspace/.config/JetBrains/RemoteDev-PS/_workspace_FroshTools/options/updates.xml
+      echo '</component>' >> /workspace/.config/JetBrains/RemoteDev-PS/_workspace_FroshTools/options/updates.xml
+      echo '</application>' >> /workspace/.config/JetBrains/RemoteDev-PS/_workspace_FroshTools/options/updates.xml
     command: |
       # Gitpod registers the ports on first docker command
       docker ps
