@@ -73,7 +73,7 @@ Component.register('frosh-tools-tab-cache', {
         },
 
         formatSize(bytes) {
-            const formatted = bytes / 1024 * 1024;
+            const formatted = bytes / (1024 * 1024);
 
             return this.numberFormater.format(formatted) + ' MiB';
         },
