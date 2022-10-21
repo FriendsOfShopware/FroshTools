@@ -98,6 +98,7 @@ jetbrains:
     - com.intellij.php.psalm
     - org.jetbrains.plugins.yaml
     - com.jetbrains.twig
+    - de.espend.idea.php.annotation
     - fr.adrienbrault.idea.symfony2plugin
     - de.shyim.shopware6
     - de.shyim.ideaphpstantoolbox
