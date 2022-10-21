@@ -19,7 +19,7 @@ Component.register('frosh-tools-tab-feature-flags', {
         }
     },
 
-    async created() {
+    created() {
         this.createdComponent();
     },
 
