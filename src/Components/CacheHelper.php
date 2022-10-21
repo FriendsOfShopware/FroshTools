@@ -73,7 +73,7 @@ class CacheHelper
         if (self::rsyncAvailable()) {
             $blankDir = sys_get_temp_dir() . '/' . md5($path . time()) . '/';
 
-            if (!mkdir($blankDir, 0777, true) && !is_dir($blankDir)) {
+            if (!mkdir($blankDir, 0755, true) && !is_dir($blankDir)) {
                 throw new \RuntimeException(sprintf('Directory "%s" was not created', $blankDir));
             }
 
