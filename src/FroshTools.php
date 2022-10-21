@@ -11,6 +11,8 @@ use Frosh\Tools\DependencyInjection\SymfonyConfigCompilerPass;
 use Shopware\Core\Framework\Plugin;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
 
+
+
 if (file_exists($vendorPath = __DIR__ . '/../vendor/autoload.php')) {
     require_once $vendorPath;
 }
