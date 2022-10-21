@@ -104,3 +104,7 @@
 # 0.2.11
 
 * Added ACL for FroshTools. You need to maybe adjust your ACL roles
+
+# 0.2.12
+
+* Fixed formatting of file size in the cache tab
