@@ -66,6 +66,7 @@ class CacheHelper
         // If the given path is a file
         if (is_file($path)) {
             unlink($path);
+
             return;
         }
 
