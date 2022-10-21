@@ -39,6 +39,7 @@ tasks:
       
       # Move actual repository
       mv "$TMP_DIR" "custom/plugins/$EXTENSION_NAME"
+      cp "custom/plugins/$EXTENSION_NAME/.gitpod.yml" .
       
       shopware-cli extension prepare "custom/plugins/$EXTENSION_NAME"
       shopware-cli extension build "custom/plugins/$EXTENSION_NAME"
