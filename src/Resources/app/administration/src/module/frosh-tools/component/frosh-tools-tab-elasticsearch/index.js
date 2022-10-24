@@ -46,7 +46,7 @@ Component.register('frosh-tools-tab-elasticsearch', {
         }
     },
 
-    async created() {
+    created() {
         this.createdComponent();
     },
 

@@ -20,7 +20,7 @@ Component.register('frosh-tools-tab-cache', {
         }
     },
 
-    async created() {
+    created() {
         const language = Shopware.Application.getContainer('factory').locale.getLastKnownLocale();
         this.numberFormater = new Intl.NumberFormat(
             language,
@@ -73,7 +73,7 @@ Component.register('frosh-tools-tab-cache', {
         },
 
         formatSize(bytes) {
-            const formatted = bytes / 1024 * 1024;
+            const formatted = bytes / (1024 * 1024);
 
             return this.numberFormater.format(formatted) + ' MiB';
         },

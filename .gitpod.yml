@@ -39,6 +39,7 @@ tasks:
       
       # Move actual repository
       mv "$TMP_DIR" "custom/plugins/$EXTENSION_NAME"
+      cp "custom/plugins/$EXTENSION_NAME/.gitpod.yml" .
       
       shopware-cli extension prepare "custom/plugins/$EXTENSION_NAME"
       shopware-cli extension build "custom/plugins/$EXTENSION_NAME"
@@ -83,12 +84,17 @@ ports:
     description: "Use Forward Proxy to localhost to access this service"
 
 jetbrains:
+  plugins:
+    - com.jetbrains.php
+    - com.intellij.php.tools.quality.phpstan
+    - com.intellij.php.psalm
+    - org.jetbrains.plugins.yaml
+    - com.jetbrains.twig
+    - fr.adrienbrault.idea.symfony2plugin
+    - de.shyim.shopware6
+    - de.shyim.ideaphpstantoolbox
+    - de.espend.idea.php.annotation
   phpstorm:
-    plugins:
-      - de.espend.idea.php.annotation
-      - fr.adrienbrault.idea.symfony2plugin
-      - de.shyim.shopware6
-      - de.shyim.ideaphpstantoolbox
     vmoptions: "-Xmx4g"
     prebuilds:
       version: stable
