@@ -9,6 +9,8 @@ use Symfony\Component\DependencyInjection\ParameterBag\ParameterBagInterface;
 
 class DisabledMailUpdatesChecker implements CheckerInterface
 {
+    public const DISABLE_MAIL_UPDATES_NAME = "Mail updates";
+
     private ParameterBagInterface $params;
 
     public function __construct(ParameterBagInterface $params)
@@ -22,11 +24,11 @@ class DisabledMailUpdatesChecker implements CheckerInterface
             return;
         }
 
-        $result = SettingsResult::ok('mail_variables', 'MailVariables are not updated frequently', 'disabled');
+        $result = SettingsResult::ok('mail_variables', self::DISABLE_MAIL_UPDATES_NAME, 'MailVariables are not updated frequently', 'disabled');
         $setting = $this->params->get('shopware.mail.update_mail_variables_on_send');
 
         if ($setting) {
-            $result = SettingsResult::warning('mail_variables', 'MailVariables should not be updated frequently');
+            $result = SettingsResult::warning('mail_variables', self::DISABLE_MAIL_UPDATES_NAME, 'MailVariables should not be updated frequently');
             $result->current = 'enabled';
         }
 

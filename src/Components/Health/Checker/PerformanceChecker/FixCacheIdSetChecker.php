@@ -11,6 +11,8 @@ use function version_compare;
 
 class FixCacheIdSetChecker implements CheckerInterface
 {
+    public const FIX_CACHE_ID_NAME = 'Fixed cache id';
+
     protected string $shopwareVersion;
 
     public function __construct(string $shopwareVersion)
@@ -28,7 +30,7 @@ class FixCacheIdSetChecker implements CheckerInterface
 
         if ($cacheId === '') {
             $collection->add(
-                SettingsResult::warning('cache-id', 'A fixed cache id should be set',
+                SettingsResult::warning('cache-id', self::FIX_CACHE_ID_NAME,'A fixed cache id should be set',
                     'not set',
                     'set',
                     'https://developer.shopware.com/docs/guides/hosting/performance/performance-tweaks#cache-id'
@@ -39,7 +41,7 @@ class FixCacheIdSetChecker implements CheckerInterface
         }
 
         $collection->add(
-            SettingsResult::ok('cache-id', 'A fixed cache id is set',
+            SettingsResult::ok('cache-id', self::FIX_CACHE_ID_NAME, 'A fixed cache id is set',
                 sprintf('set (%s)', $cacheId),
                 'set',
             )

@@ -11,6 +11,8 @@ use function str_starts_with;
 
 class QueueConnectionChecker implements CheckerInterface
 {
+    public const QUEUE_CONNECTION_NAME = 'Queue storage';
+
     protected string $connection;
 
     public function __construct(string $connection)
@@ -22,7 +24,7 @@ class QueueConnectionChecker implements CheckerInterface
     {
         if (str_starts_with($this->connection, 'enqueue://default')) {
             $collection->add(
-                SettingsResult::warning('queue.adapter', 'The default queue storage in database does not scale well with multiple workers',
+                SettingsResult::warning('queue.adapter', self::QUEUE_CONNECTION_NAME,  'The default queue storage in database does not scale well with multiple workers',
                     'default',
                     'redis or rabbitmq',
                     'https://developer.shopware.com/docs/guides/hosting/infrastructure/message-queue#transport-rabbitmq-example'
@@ -33,7 +35,7 @@ class QueueConnectionChecker implements CheckerInterface
         }
 
         $collection->add(
-            SettingsResult::ok('queue.adapter', 'Configured queue storage is ok for multiple workers',
+            SettingsResult::ok('queue.adapter', self::QUEUE_CONNECTION_NAME, 'Configured queue storage is ok for multiple workers',
                 parse_url($this->connection, PHP_URL_SCHEME),
                 'redis or rabbitmq',
             )

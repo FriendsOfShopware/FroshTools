@@ -8,6 +8,8 @@ use Frosh\Tools\Components\Health\SettingsResult;
 
 class PublicFilesystemChecker implements CheckerInterface
 {
+    public const PUBLIC_FILE_SYSTEM_NAME = 'Public File System';
+
     private string $fileSystemType;
 
     public function __construct(string $fileSystemType)
@@ -20,7 +22,7 @@ class PublicFilesystemChecker implements CheckerInterface
         $url = 'https://developer.shopware.com/docs/guides/hosting/infrastructure/filesystem#integrated-adapter-configurations';
         if ($this->fileSystemType !== 'local') {
             $collection->add(
-                SettingsResult::ok('filesystem', 'PublicFilesystem is not local',
+                SettingsResult::ok('filesystem', self::PUBLIC_FILE_SYSTEM_NAME, 'PublicFilesystem is not local',
                     $this->fileSystemType,
                     'not local',
                     $url
@@ -31,7 +33,7 @@ class PublicFilesystemChecker implements CheckerInterface
         }
 
         $collection->add(
-            SettingsResult::info('filesystem', 'PublicFilesystem should not be local',
+            SettingsResult::info('filesystem', self::PUBLIC_FILE_SYSTEM_NAME, 'PublicFilesystem should not be local',
                 $this->fileSystemType,
                 'not local',
                 $url

@@ -17,6 +17,8 @@ use Symfony\Component\DependencyInjection\ParameterBag\ParameterBagInterface;
 
 class TaskChecker implements CheckerInterface
 {
+    public const TASK_CHECKER_NAME = 'Scheduled tasks';
+
     private EntityRepositoryInterface $scheduledTaskRepository;
 
     private ParameterBagInterface $parameterBag;
@@ -64,11 +66,11 @@ class TaskChecker implements CheckerInterface
         });
 
         if ($oldTasks->count() === 0) {
-            $collection->add(SettingsResult::ok('scheduled_task', 'Scheduled tasks working scheduled'));
+            $collection->add(SettingsResult::ok('scheduled_task', self::TASK_CHECKER_NAME,'Scheduled tasks working scheduled'));
 
             return;
         }
 
-        $collection->add(SettingsResult::warning('scheduled_task', 'The scheduled tasks are waiting for executing for more than 10 minutes'));
+        $collection->add(SettingsResult::warning('scheduled_task', self::TASK_CHECKER_NAME,'The scheduled tasks are waiting for executing for more than 10 minutes'));
     }
 }

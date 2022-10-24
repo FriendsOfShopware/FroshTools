@@ -8,6 +8,8 @@ use Frosh\Tools\Components\Health\SettingsResult;
 
 class AdminWorkerChecker implements CheckerInterface
 {
+    public const ADMIN_WORKER_CHECKER_NAME = 'Admin-Worker';
+
     private bool $adminWorkerEnabled;
 
     public function __construct(bool $adminWorkerEnabled)
@@ -19,7 +21,7 @@ class AdminWorkerChecker implements CheckerInterface
     {
         if ($this->adminWorkerEnabled) {
             $collection->add(
-                SettingsResult::warning('admin-watcher', 'Admin-Worker should be disabled',
+                SettingsResult::warning('admin-watcher', self::ADMIN_WORKER_CHECKER_NAME, 'Admin-Worker should be disabled',
                     'enabled',
                     'disabled',
                     'https://developer.shopware.com/docs/guides/plugins/plugins/framework/message-queue/add-message-handler#the-admin-worker'
@@ -30,7 +32,7 @@ class AdminWorkerChecker implements CheckerInterface
         }
 
         $collection->add(
-            SettingsResult::ok('admin-watcher', 'Admin-Worker is disabled',
+            SettingsResult::ok('admin-watcher', self::ADMIN_WORKER_CHECKER_NAME, 'Admin-Worker is disabled',
                 'disabled',
                 'disabled'
             )

@@ -9,6 +9,7 @@ use Frosh\Tools\Components\Health\SettingsResult;
 
 class EsChecker implements CheckerInterface
 {
+    public const ES_CHECKER_NAME = "Elasticsearcn";
     protected bool $esEnabled = false;
 
     public function __construct(ElasticsearchManager $elasticsearchManager)
@@ -20,7 +21,7 @@ class EsChecker implements CheckerInterface
     {
         if (!$this->esEnabled) {
             $collection->add(
-                SettingsResult::info('elasticsearch', 'Elasticsearch is disabled',
+                SettingsResult::info('elasticsearch', self::ES_CHECKER_NAME, 'Elasticsearch is disabled',
                     'disabled',
                     'enabled',
                     'https://developer.shopware.com/docs/guides/hosting/infrastructure/infrastructure/elasticsearch-setup'
@@ -31,7 +32,7 @@ class EsChecker implements CheckerInterface
         }
 
         $collection->add(
-            SettingsResult::ok('elasticsearch', 'Elasticsearch is enabled',
+            SettingsResult::ok('elasticsearch', self::ES_CHECKER_NAME, 'Elasticsearch is enabled',
                 'enabled',
                 'enabled'
             )

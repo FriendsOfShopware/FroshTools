@@ -9,6 +9,8 @@ use Frosh\Tools\Components\Health\SettingsResult;
 
 class MySQL8Checker implements CheckerInterface
 {
+    public const MYSQL_8_NAME = 'MySQL 8';
+
     private Connection $connection;
 
     public function __construct(Connection $connection)
@@ -23,7 +25,7 @@ class MySQL8Checker implements CheckerInterface
 
         if (isset($extractedVersion['mariadb'])) {
             $collection->add(
-                SettingsResult::error('mysql8', 'MySQL 8 performs better than MariaDB', $version, 'MySQL 8.0', 'https://developer.shopware.com/docs/guides/hosting/performance/performance-tweaks#mysql-instead-of-mariadb')
+                SettingsResult::error('mysql8', self::MYSQL_8_NAME, 'MySQL 8 performs better than MariaDB', $version, 'MySQL 8.0', 'https://developer.shopware.com/docs/guides/hosting/performance/performance-tweaks#mysql-instead-of-mariadb')
             );
 
             return;
@@ -31,14 +33,14 @@ class MySQL8Checker implements CheckerInterface
 
         if (version_compare($extractedVersion['mysql'], '8.0.0', '>=')) {
             $collection->add(
-                SettingsResult::ok('mysql8', 'MySQL 8 performs much better', $version, 'MySQL 8.0', 'https://developer.shopware.com/docs/guides/hosting/performance/performance-tweaks#mysql-instead-of-mariadb')
+                SettingsResult::ok('mysql8', self::MYSQL_8_NAME, 'MySQL 8 performs much better', $version, 'MySQL 8.0', 'https://developer.shopware.com/docs/guides/hosting/performance/performance-tweaks#mysql-instead-of-mariadb')
             );
 
             return;
         }
 
         $collection->add(
-            SettingsResult::error('mysql8', 'MySQL 8 performs much better', $version, 'MySQL 8.0', 'https://developer.shopware.com/docs/guides/hosting/performance/performance-tweaks#mysql-instead-of-mariadb')
+            SettingsResult::error('mysql8', self::MYSQL_8_NAME, 'MySQL 8 performs much better', $version, 'MySQL 8.0', 'https://developer.shopware.com/docs/guides/hosting/performance/performance-tweaks#mysql-instead-of-mariadb')
         );
     }
 
