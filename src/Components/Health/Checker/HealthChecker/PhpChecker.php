@@ -14,6 +14,7 @@ class PhpChecker implements CheckerInterface
         $this->checkMaxExecutionTime($collection);
         $this->checkMemoryLimit($collection);
         $this->checkOpCacheActive($collection);
+        $this->checkPcreJitActive($collection);
     }
 
     private function formatSize($size): string
@@ -103,6 +104,17 @@ class PhpChecker implements CheckerInterface
         }
 
         $collection->add(SettingsResult::warning('php-memory-limit', 'Zend Opcache is not active', 'not active', 'not active'));
+    }
+
+    private function checkPcreJitActive(HealthCollection $collection): void
+    {
+        if (ini_get('pcre.jit')) {
+            $collection->add(SettingsResult::ok('pcre-jit', 'PCRE-Jit is active', 'active', 'active'));
+
+            return;
+        }
+
+        $collection->add(SettingsResult::warning('pcre-jit', 'PCRE-Jit is not active', 'not active', 'active'));
     }
 
     private function decodePhpSize($val): float
