@@ -98,12 +98,12 @@ class PhpChecker implements CheckerInterface
     private function checkOpCacheActive(HealthCollection $collection): void
     {
         if (\extension_loaded('Zend OPcache') && ini_get('opcache.enable')) {
-            $collection->add(SettingsResult::ok('php-memory-limit', 'Zend Opcache is active', 'active', 'active'));
+            $collection->add(SettingsResult::ok('zend-opcache', 'Zend Opcache is active', 'active', 'active'));
 
             return;
         }
 
-        $collection->add(SettingsResult::warning('php-memory-limit', 'Zend Opcache is not active', 'not active', 'not active'));
+        $collection->add(SettingsResult::warning('zend-opcache', 'Zend Opcache is not active', 'not active', 'active'));
     }
 
     private function checkPcreJitActive(HealthCollection $collection): void
