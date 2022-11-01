@@ -1,11 +1,11 @@
 FROM gitpod/workspace-base:latest
 
 COPY --from=composer:2 /usr/bin/composer /usr/bin/composer
+COPY --from=ghcr.io/friendsofshopware/shopware-cli /usr/local/bin/shopware-cli /usr/bin/shopware-cli
 
 RUN sudo add-apt-repository ppa:ondrej/php -y && \
     curl -fsSL https://deb.nodesource.com/setup_16.x | sudo bash - && \
-    curl -1sLf 'https://dl.cloudsmith.io/public/symfony/stable/setup.deb.sh' | sudo -E bash && \
-    curl -1sLf 'https://dl.cloudsmith.io/public/friendsofshopware/stable/setup.deb.sh'  | sudo -E bash && \
+    wget https://get.symfony.com/cli/installer -O - | sudo bash -s -- --install-dir=/usr/bin && \
     sudo apt-get install -y \
     php8.1-fpm php8.1-mysql php8.1-curl php8.1-gd php8.1-xml php8.1-zip php8.1-opcache php8.1-mbstring php8.1-intl php8.1-cli \
     rsync \
