@@ -1,6 +1,6 @@
 FROM gitpod/workspace-base:latest
 
-COPY --from=composer:2 /usr/bin/composer /usr/bin/composer
+COPY --from=composer/composer:2-bin /composer /usr/bin/composer
 COPY --from=ghcr.io/friendsofshopware/shopware-cli /usr/local/bin/shopware-cli /usr/bin/shopware-cli
 
 RUN sudo add-apt-repository ppa:ondrej/php -y && \
@@ -9,10 +9,11 @@ RUN sudo add-apt-repository ppa:ondrej/php -y && \
     sudo apt-get install -y \
     php8.1-fpm php8.1-mysql php8.1-curl php8.1-gd php8.1-xml php8.1-zip php8.1-opcache php8.1-mbstring php8.1-intl php8.1-cli \
     rsync \
-    symfony-cli \
-    shopware-cli \
     mysql-client-8.0 \
     nodejs && \
+    shopware-cli completion bash | sudo tee /etc/bash_completion.d/shopware-cli && \
+    shopware-cli completion zsh | sudo tee /usr/local/share/zsh/site-functions/_shopware-cli && \
+    shopware-cli completion fish | sudo tee /usr/share/fish/completions/shopware-cli.fish && \
     sudo apt-get upgrade -y && \
     echo "memory_limit=512M" > php.ini && \
     echo "assert.active=0" >> php.ini && \
