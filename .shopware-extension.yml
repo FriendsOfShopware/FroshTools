@@ -100,8 +100,3 @@ store:
             de: false
             en: false
           priority: 0
-build:
-    zip:
-        assets:
-            enable_es_build_for_admin: true
-            enable_es_build_for_storefront: true
