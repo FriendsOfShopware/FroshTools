@@ -108,3 +108,8 @@
 # 0.2.12
 
 * Fixed formatting of file size in the cache tab
+
+# 0.2.13
+
+* Added check for active pcre-jit
+* Fixed health-check with no permission
