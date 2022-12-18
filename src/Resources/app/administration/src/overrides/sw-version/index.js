@@ -7,7 +7,10 @@ Component.override('sw-version', {
     inject: ['froshToolsService', 'acl'],
 
     async created() {
-        this.checkPermission();
+        if(!this.checkPermission()) {
+            return;
+        }
+        
         await this.checkHealth();
     },
 
@@ -68,7 +71,7 @@ Component.override('sw-version', {
         },
 
          checkPermission() {
-            this.hasPermission = this.acl.can('frosh_tools:read');
+            return this.hasPermission = this.acl.can('frosh_tools:read');
         }
     }
 })
