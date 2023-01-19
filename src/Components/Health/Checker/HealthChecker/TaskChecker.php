@@ -2,11 +2,12 @@
 
 namespace Frosh\Tools\Components\Health\Checker\HealthChecker;
 
+use Shopware\Core\Framework\DataAbstractionLayer\EntityRepository;
+use DateTime;
 use Frosh\Tools\Components\Health\Checker\CheckerInterface;
 use Frosh\Tools\Components\Health\HealthCollection;
 use Frosh\Tools\Components\Health\SettingsResult;
 use Shopware\Core\Framework\Context;
-use Shopware\Core\Framework\DataAbstractionLayer\EntityRepositoryInterface;
 use Shopware\Core\Framework\DataAbstractionLayer\Search\Criteria;
 use Shopware\Core\Framework\DataAbstractionLayer\Search\Filter\EqualsFilter;
 use Shopware\Core\Framework\DataAbstractionLayer\Search\Filter\NotFilter;
@@ -17,21 +18,15 @@ use Symfony\Component\DependencyInjection\ParameterBag\ParameterBagInterface;
 
 class TaskChecker implements CheckerInterface
 {
-    private EntityRepositoryInterface $scheduledTaskRepository;
-
-    private ParameterBagInterface $parameterBag;
-
-    public function __construct(EntityRepositoryInterface $scheduledTaskRepository, ParameterBagInterface $parameterBag)
+    public function __construct(private readonly EntityRepository $scheduledTaskRepository, private readonly ParameterBagInterface $parameterBag)
     {
-        $this->scheduledTaskRepository = $scheduledTaskRepository;
-        $this->parameterBag = $parameterBag;
     }
 
     public function collect(HealthCollection $collection): void
     {
         $minutes = 10;
 
-        $date = new \DateTime();
+        $date = new DateTime();
         $date->modify(sprintf('-%d minutes', $minutes));
 
         $criteria = new Criteria();

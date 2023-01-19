@@ -2,8 +2,9 @@
 
 namespace Frosh\Tools\Controller;
 
+use Shopware\Core\Framework\DataAbstractionLayer\EntityRepository;
+use DateTime;
 use Shopware\Core\Framework\Context;
-use Shopware\Core\Framework\DataAbstractionLayer\EntityRepositoryInterface;
 use Shopware\Core\Framework\DataAbstractionLayer\Search\Criteria;
 use Shopware\Core\Framework\MessageQueue\Handler\AbstractMessageHandler;
 use Shopware\Core\Framework\MessageQueue\ScheduledTask\Registry\TaskRegistry;
@@ -12,33 +13,17 @@ use Shopware\Core\Framework\MessageQueue\ScheduledTask\ScheduledTaskEntity;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\Routing\Annotation\Route;
 
-/**
- * @Route(path="/api/_action/frosh-tools", defaults={"_routeScope"={"api"}, "_acl"={"frosh_tools:read"}})
- */
+#[Route(path: '/api/_action/frosh-tools', defaults: ['_routeScope' => ['api'], '_acl' => ['frosh_tools:read']])]
 class ScheduledTaskController
 {
     /**
-     * @var AbstractMessageHandler[]
+     * @param \Shopware\Core\Framework\MessageQueue\Handler\AbstractMessageHandler[] $taskHandler
      */
-    private $taskHandler;
-
-    private EntityRepositoryInterface $scheduledTaskRepository;
-
-    private TaskRegistry $taskRegistry;
-
-    public function __construct(
-        iterable $taskHandler,
-        EntityRepositoryInterface $scheduledTaskRepository,
-        TaskRegistry $taskRegistry
-    ) {
-        $this->taskHandler = $taskHandler;
-        $this->scheduledTaskRepository = $scheduledTaskRepository;
-        $this->taskRegistry = $taskRegistry;
+    public function __construct(private readonly iterable $taskHandler, private readonly EntityRepository $scheduledTaskRepository, private readonly TaskRegistry $taskRegistry)
+    {
     }
 
-    /**
-     * @Route(path="/scheduled-task/{id}", methods={"POST"}, name="api.frosh.tools.scheduled.task.run")
-     */
+    #[Route(path: '/scheduled-task/{id}', methods: ['POST'], name: 'api.frosh.tools.scheduled.task.run')]
     public function runTask(string $id, Context $context): JsonResponse
     {
         $scheduledTask = $this->fetchTask($id, $context);
@@ -48,7 +33,7 @@ class ScheduledTaskController
             [
                 'id' => $id,
                 'status' => ScheduledTaskDefinition::STATUS_QUEUED,
-                'nextExecutionTime' => new \DateTime(),
+                'nextExecutionTime' => new DateTime(),
             ],
         ], $context);
 
@@ -75,9 +60,7 @@ class ScheduledTaskController
         return new JsonResponse(null, JsonResponse::HTTP_NO_CONTENT);
     }
 
-    /**
-     * @Route(path="/scheduled-tasks/register", methods={"POST"}, name="api.frosh.tools.scheduled.tasks.register")
-     */
+    #[Route(path: '/scheduled-tasks/register', methods: ['POST'], name: 'api.frosh.tools.scheduled.tasks.register')]
     public function registerTasks(): JsonResponse
     {
         $this->taskRegistry->registerTasks();

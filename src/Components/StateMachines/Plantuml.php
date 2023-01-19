@@ -9,7 +9,7 @@ use Twig\Loader\FilesystemLoader;
 
 final class Plantuml implements ExportInterface
 {
-    private Environment $twig;
+    private readonly Environment $twig;
 
     private const DEFAULT_PATH = __DIR__ . '/../../Resources/views/administration/plantuml';
 

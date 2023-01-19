@@ -11,11 +11,8 @@ use function str_starts_with;
 
 class QueueConnectionChecker implements CheckerInterface
 {
-    protected string $connection;
-
-    public function __construct(string $connection)
+    public function __construct(protected string $connection)
     {
-        $this->connection = $connection;
     }
 
     public function collect(HealthCollection $collection): void

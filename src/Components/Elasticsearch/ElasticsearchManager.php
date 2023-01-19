@@ -14,33 +14,19 @@ use Symfony\Component\Messenger\MessageBusInterface;
 
 class ElasticsearchManager
 {
-    protected ElasticsearchIndexer $indexer;
-    protected MessageBusInterface $messageBus;
-    protected CreateAliasTaskHandler $createAliasTaskHandler;
-    protected ElasticsearchOutdatedIndexDetector $outdatedIndexDetector;
-    protected Connection $connection;
-    protected IncrementGatewayRegistry $gatewayRegistry;
-    private Client $client;
-    private bool $enabled;
+    private readonly Client $client;
 
     public function __construct(
         Client $client,
-        bool $enabled,
-        ElasticsearchIndexer $indexer,
-        MessageBusInterface $messageBus,
-        CreateAliasTaskHandler $createAliasTaskHandler,
-        ElasticsearchOutdatedIndexDetector $outdatedIndexDetector,
-        Connection $connection,
-        IncrementGatewayRegistry $gatewayRegistry
+        private readonly bool $enabled,
+        protected ElasticsearchIndexer $indexer,
+        protected MessageBusInterface $messageBus,
+        protected CreateAliasTaskHandler $createAliasTaskHandler,
+        protected ElasticsearchOutdatedIndexDetector $outdatedIndexDetector,
+        protected Connection $connection,
+        protected IncrementGatewayRegistry $gatewayRegistry
     ) {
         $this->client = $client;
-        $this->enabled = $enabled;
-        $this->indexer = $indexer;
-        $this->messageBus = $messageBus;
-        $this->createAliasTaskHandler = $createAliasTaskHandler;
-        $this->outdatedIndexDetector = $outdatedIndexDetector;
-        $this->connection = $connection;
-        $this->gatewayRegistry = $gatewayRegistry;
     }
 
     public function isEnabled(): bool
@@ -134,7 +120,7 @@ class ElasticsearchManager
         try {
             $gateway = $this->gatewayRegistry->get(IncrementGatewayRegistry::MESSAGE_QUEUE_POOL);
             $gateway->reset('message_queue_stats', ElasticsearchIndexingMessage::class);
-        } catch (IncrementGatewayNotFoundException $exception) {
+        } catch (IncrementGatewayNotFoundException) {
             // In case message_queue pool is disabled
         }
 

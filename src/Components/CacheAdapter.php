@@ -2,6 +2,9 @@
 
 namespace Frosh\Tools\Components;
 
+use Exception;
+use Closure;
+use Redis;
 use APCUIterator;
 use Shopware\Storefront\Framework\Cache\CacheDecorator;
 use Symfony\Component\Cache\Adapter\AdapterInterface;
@@ -16,7 +19,7 @@ use Symfony\Component\Cache\Adapter\TraceableAdapter;
 
 class CacheAdapter
 {
-    private AdapterInterface $adapter;
+    private readonly AdapterInterface $adapter;
 
     public function __construct(AdapterInterface $adapter)
     {
@@ -76,7 +79,7 @@ class CacheAdapter
             case $this->adapter instanceof RedisTagAwareAdapter:
                 try {
                     $this->getRedis($this->adapter)->flushDB();
-                } catch (\Exception $e) {
+                } catch (Exception) {
                     $this->adapter->clear();
                 }
                 break;
@@ -88,39 +91,28 @@ class CacheAdapter
 
     public function getType(): string
     {
-        switch (true) {
-            case $this->adapter instanceof RedisAdapter:
-            case $this->adapter instanceof RedisTagAwareAdapter:
-                return 'Redis ' . $this->getRedis($this->adapter)->info()['redis_version'];
-            case $this->adapter instanceof FilesystemAdapter:
-                return 'Filesystem';
-            case $this->adapter instanceof ArrayAdapter:
-                return 'Array';
-            case $this->adapter instanceof PhpFilesAdapter:
-                return 'PHP files';
-            case $this->adapter instanceof ApcuAdapter:
-                return 'APCu';
-        }
-
-        return '';
+        return match (true) {
+            $this->adapter instanceof RedisAdapter, $this->adapter instanceof RedisTagAwareAdapter => 'Redis ' . $this->getRedis($this->adapter)->info()['redis_version'],
+            $this->adapter instanceof FilesystemAdapter => 'Filesystem',
+            $this->adapter instanceof ArrayAdapter => 'Array',
+            $this->adapter instanceof PhpFilesAdapter => 'PHP files',
+            $this->adapter instanceof ApcuAdapter => 'APCu',
+            default => '',
+        };
     }
 
     private function getCacheAdapter(AdapterInterface $adapter): AdapterInterface
     {
         if ($adapter instanceof CacheDecorator || $adapter instanceof \Shopware\Core\Framework\Adapter\Cache\CacheDecorator) {
             // Do not declare function as static
-            $func = \Closure::bind(function () use ($adapter) {
-                return $adapter->decorated;
-            }, $adapter, \get_class($adapter));
+            $func = Closure::bind(fn() => $adapter->decorated, $adapter, $adapter::class);
 
             return $this->getCacheAdapter($func());
         }
 
         if ($adapter instanceof TagAwareAdapter || $adapter instanceof TraceableAdapter) {
             // Do not declare function as static
-            $func = \Closure::bind(function () use ($adapter) {
-                return $adapter->pool;
-            }, $adapter, \get_class($adapter));
+            $func = Closure::bind(fn() => $adapter->pool, $adapter, $adapter::class);
 
             return $this->getCacheAdapter($func());
         }
@@ -128,41 +120,31 @@ class CacheAdapter
         return $adapter;
     }
 
-    private function getRedis(AdapterInterface $adapter): ?\Redis
+    private function getRedis(AdapterInterface $adapter): ?Redis
     {
         if ($adapter instanceof RedisTagAwareAdapter) {
-            $redisProxyGetter = \Closure::bind(function () use ($adapter) {
-                return $adapter->redis;
-            }, $adapter, RedisTagAwareAdapter::class);
+            $redisProxyGetter = Closure::bind(fn() => $adapter->redis, $adapter, RedisTagAwareAdapter::class);
         } else {
-            $redisProxyGetter = \Closure::bind(function () use ($adapter) {
-                return $adapter->redis;
-            }, $adapter, RedisAdapter::class);
+            $redisProxyGetter = Closure::bind(fn() => $adapter->redis, $adapter, RedisAdapter::class);
         }
 
         $redisProxy = $redisProxyGetter($adapter);
 
-        $redisGetter = \Closure::bind(function () use ($redisProxy) {
-            return $redisProxy->redis;
-        }, $redisProxy, \get_class($redisProxy));
+        $redisGetter = Closure::bind(fn() => $redisProxy->redis, $redisProxy, $redisProxy::class);
 
         return $redisGetter($adapter);
     }
 
     private function getPathFromFilesystemAdapter(FilesystemAdapter $adapter): string
     {
-        $getter = \Closure::bind(function () use ($adapter) {
-            return $adapter->directory;
-        }, $adapter, \get_class($adapter));
+        $getter = Closure::bind(fn() => $adapter->directory, $adapter, $adapter::class);
 
         return $getter($adapter);
     }
 
     private function getPathOfFilesAdapter(PhpFilesAdapter $adapter): string
     {
-        $getter = \Closure::bind(function () use ($adapter) {
-            return $adapter->directory;
-        }, $adapter, \get_class($adapter));
+        $getter = Closure::bind(fn() => $adapter->directory, $adapter, $adapter::class);
 
         return $getter($adapter);
     }

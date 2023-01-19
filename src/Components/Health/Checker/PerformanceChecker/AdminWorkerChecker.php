@@ -8,11 +8,8 @@ use Frosh\Tools\Components\Health\SettingsResult;
 
 class AdminWorkerChecker implements CheckerInterface
 {
-    private bool $adminWorkerEnabled;
-
-    public function __construct(bool $adminWorkerEnabled)
+    public function __construct(private readonly bool $adminWorkerEnabled)
     {
-        $this->adminWorkerEnabled = $adminWorkerEnabled;
     }
 
     public function collect(HealthCollection $collection): void

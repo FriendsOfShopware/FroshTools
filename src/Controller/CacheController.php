@@ -7,24 +7,14 @@ use Frosh\Tools\Components\CacheRegistry;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\Routing\Annotation\Route;
 
-/**
- * @Route(path="/api/_action/frosh-tools", defaults={"_routeScope"={"api"}, "_acl"={"frosh_tools:read"}})
- */
+#[Route(path: '/api/_action/frosh-tools', defaults: ['_routeScope' => ['api'], '_acl' => ['frosh_tools:read']])]
 class CacheController
 {
-    private string $cacheDir;
-
-    private CacheRegistry $cacheRegistry;
-
-    public function __construct(string $cacheDir, CacheRegistry $cacheRegistry)
+    public function __construct(private readonly string $cacheDir, private readonly CacheRegistry $cacheRegistry)
     {
-        $this->cacheDir = $cacheDir;
-        $this->cacheRegistry = $cacheRegistry;
     }
 
-    /**
-     * @Route(path="/cache", methods={"GET"}, name="api.frosh.tools.cache.get")
-     */
+    #[Route(path: '/cache', methods: ['GET'], name: 'api.frosh.tools.cache.get')]
     public function cacheStatistics(): JsonResponse
     {
         $cacheFolder = dirname($this->cacheDir);
@@ -69,9 +59,7 @@ class CacheController
         return new JsonResponse($result);
     }
 
-    /**
-     * @Route(path="/cache/{folder}", methods={"DELETE"}, name="api.frosh.tools.cache.clear")
-     */
+    #[Route(path: '/cache/{folder}', methods: ['DELETE'], name: 'api.frosh.tools.cache.clear')]
     public function clearCache(string $folder): JsonResponse
     {
         if ($this->cacheRegistry->has($folder)) {

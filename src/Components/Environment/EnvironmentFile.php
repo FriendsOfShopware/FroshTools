@@ -2,16 +2,14 @@
 
 namespace Frosh\Tools\Components\Environment;
 
-class EnvironmentFile
+use Stringable;
+class EnvironmentFile implements Stringable
 {
     /**
-     * @var array<string, EnvironmentLine>
+     * @param array<string, EnvironmentLine> $items
      */
-    private array $items;
-
-    public function __construct(array $items)
+    public function __construct(private array $items)
     {
-        $this->items = $items;
     }
 
     public function has(string $key): bool

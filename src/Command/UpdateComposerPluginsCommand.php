@@ -2,6 +2,7 @@
 
 namespace Frosh\Tools\Command;
 
+use Symfony\Component\Console\Attribute\AsCommand;
 use Composer\Console\Application;
 use Shopware\Core\Framework\Plugin\KernelPluginLoader\KernelPluginLoader;
 use Symfony\Component\Console\Command\Command;
@@ -11,23 +12,16 @@ use Symfony\Component\Console\Output\BufferedOutput;
 use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Console\Style\SymfonyStyle;
 
+#[AsCommand('frosh:composer-plugin:update', 'Check for available plugin updates and install them')]
 class UpdateComposerPluginsCommand extends Command
 {
-    public static $defaultName = 'frosh:composer-plugin:update';
-    public static $defaultDescription = 'Check for available plugin updates and install them';
-    private Application $application;
+    private readonly Application $application;
 
-    private string $projectDir;
-    private KernelPluginLoader $pluginLoader;
-
-    public function __construct(string $projectDir, KernelPluginLoader $pluginLoader)
+    public function __construct(private readonly string $projectDir, private readonly KernelPluginLoader $pluginLoader)
     {
         parent::__construct();
         $this->application = new Application();
         $this->application->setAutoExit(false);
-
-        $this->projectDir = $projectDir;
-        $this->pluginLoader = $pluginLoader;
     }
 
     protected function execute(InputInterface $input, OutputInterface $output): int
@@ -89,7 +83,7 @@ class UpdateComposerPluginsCommand extends Command
 
         $updateOutput = $composerOutput->fetch();
         foreach ($updates as $update) {
-            if (!str_contains($updateOutput, $update)) {
+            if (!str_contains($updateOutput, (string) $update)) {
                 $missedUpdates[] = $update;
             }
         }

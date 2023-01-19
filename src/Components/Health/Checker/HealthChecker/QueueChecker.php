@@ -9,11 +9,8 @@ use Frosh\Tools\Components\Health\SettingsResult;
 
 class QueueChecker implements CheckerInterface
 {
-    private Connection $connection;
-
-    public function __construct(Connection $connection)
+    public function __construct(private readonly Connection $connection)
     {
-        $this->connection = $connection;
     }
 
     public function collect(HealthCollection $collection): void

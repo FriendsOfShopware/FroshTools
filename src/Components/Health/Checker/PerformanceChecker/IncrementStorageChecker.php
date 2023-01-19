@@ -8,13 +8,8 @@ use Frosh\Tools\Components\Health\SettingsResult;
 
 class IncrementStorageChecker implements CheckerInterface
 {
-    protected string $userActivity;
-    protected string $queueActivity;
-
-    public function __construct(string $userActivity, string $queueActivity)
+    public function __construct(protected string $userActivity, protected string $queueActivity)
     {
-        $this->userActivity = $userActivity;
-        $this->queueActivity = $queueActivity;
     }
 
     public function collect(HealthCollection $collection): void

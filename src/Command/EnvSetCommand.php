@@ -2,6 +2,7 @@
 
 namespace Frosh\Tools\Command;
 
+use Symfony\Component\Console\Attribute\AsCommand;
 use Frosh\Tools\Components\Environment\EnvironmentManager;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputArgument;
@@ -9,16 +10,12 @@ use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Console\Style\SymfonyStyle;
 
+#[AsCommand('frosh:env:set', 'Set an environment variable')]
 class EnvSetCommand extends Command
 {
-    public static $defaultName = 'frosh:env:set';
-    public static $defaultDescription = 'Set an environment variable';
-    private string $envPath;
-
-    public function __construct(string $envPath)
+    public function __construct(private readonly string $envPath)
     {
         parent::__construct();
-        $this->envPath = $envPath;
     }
 
     public function configure(): void

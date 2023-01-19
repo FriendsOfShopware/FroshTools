@@ -7,40 +7,27 @@ use Shopware\Core\Framework\Increment\IncrementGatewayRegistry;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\Routing\Annotation\Route;
 
-/**
- * @Route(path="/api/_action/frosh-tools", defaults={"_routeScope"={"api"}, "_acl"={"frosh_tools:read"}})
- */
+#[Route(path: '/api/_action/frosh-tools', defaults: ['_routeScope' => ['api'], '_acl' => ['frosh_tools:read']])]
 class QueueController
 {
-    private Connection $connection;
-    private IncrementGatewayRegistry $incrementer;
-
-    public function __construct(Connection $connection, IncrementGatewayRegistry $incrementer)
+    public function __construct(private readonly Connection $connection, private readonly IncrementGatewayRegistry $incrementer)
     {
-        $this->connection = $connection;
-        $this->incrementer = $incrementer;
     }
 
-    /**
-     * @Route(path="/queue/list", methods={"GET"}, name="api.frosh.tools.queue.list")
-     */
+    #[Route(path: '/queue/list', methods: ['GET'], name: 'api.frosh.tools.queue.list')]
     public function list(): JsonResponse
     {
         $incrementer = $this->incrementer->get(IncrementGatewayRegistry::MESSAGE_QUEUE_POOL);
 
         $list = $incrementer->list('message_queue_stats', -1);
 
-        return new JsonResponse(array_map(static function (array $entry) {
-            return [
-                'name' => $entry['key'],
-                'size' => (int) $entry['count'],
-            ];
-        }, array_values($list)));
+        return new JsonResponse(array_map(static fn(array $entry) => [
+            'name' => $entry['key'],
+            'size' => (int) $entry['count'],
+        ], array_values($list)));
     }
 
-    /**
-     * @Route(path="/queue", methods={"DELETE"}, name="api.frosh.tools.queue.clear")
-     */
+    #[Route(path: '/queue', methods: ['DELETE'], name: 'api.frosh.tools.queue.clear')]
     public function resetQueue(): JsonResponse
     {
         $incrementer = $this->incrementer->get(IncrementGatewayRegistry::MESSAGE_QUEUE_POOL);

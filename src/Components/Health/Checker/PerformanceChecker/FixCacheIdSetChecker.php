@@ -11,11 +11,8 @@ use function version_compare;
 
 class FixCacheIdSetChecker implements CheckerInterface
 {
-    protected string $shopwareVersion;
-
-    public function __construct(string $shopwareVersion)
+    public function __construct(protected string $shopwareVersion)
     {
-        $this->shopwareVersion = $shopwareVersion;
     }
 
     public function collect(HealthCollection $collection): void

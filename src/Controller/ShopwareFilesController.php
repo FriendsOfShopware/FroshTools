@@ -7,31 +7,18 @@ use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Routing\Annotation\Route;
 
-/**
- * @Route(path="/api/_action/frosh-tools", defaults={"_routeScope"={"api"}, "_acl"={"frosh_tools:read"}})
- */
+#[Route(path: '/api/_action/frosh-tools', defaults: ['_routeScope' => ['api'], '_acl' => ['frosh_tools:read']])]
 class ShopwareFilesController
 {
     private const STATUS_OK = 0;
     private const STATUS_IGNORED_ALL = 1;
     private const STATUS_IGNORED_IN_PROJECT = 2;
 
-    private string $shopwareVersion;
-
-    private string $projectDir;
-
-    private array $projectIgnoredFiles;
-
-    public function __construct(string $shopwareVersion, string $projectDir, array $projectIgnoredFiles)
+    public function __construct(private readonly string $shopwareVersion, private readonly string $projectDir, private readonly array $projectIgnoredFiles)
     {
-        $this->shopwareVersion = $shopwareVersion;
-        $this->projectDir = $projectDir;
-        $this->projectIgnoredFiles = $projectIgnoredFiles;
     }
 
-    /**
-     * @Route(path="/shopware-files", methods={"GET"}, name="api.frosh.tools.shopware-files")
-     */
+    #[Route(path: '/shopware-files', methods: ['GET'], name: 'api.frosh.tools.shopware-files')]
     public function listShopwareFiles(): JsonResponse
     {
         if ($this->shopwareVersion === Kernel::SHOPWARE_FALLBACK_VERSION) {
@@ -88,9 +75,7 @@ class ShopwareFilesController
         return new JsonResponse(['ok' => false, 'files' => $invalidFiles]);
     }
 
-    /**
-     * @Route(path="/file-contents", methods={"GET"}, name="api.frosh.tools.file-contents")
-     */
+    #[Route(path: '/file-contents', methods: ['GET'], name: 'api.frosh.tools.file-contents')]
     public function getFileContents(Request $request): JsonResponse
     {
         if ($this->shopwareVersion === Kernel::SHOPWARE_FALLBACK_VERSION) {
@@ -119,9 +104,7 @@ class ShopwareFilesController
         ]);
     }
 
-    /**
-     * @Route(path="/shopware-file/restore", methods={"GET"}, name="api.frosh.tools.shopware-file.restore")
-     */
+    #[Route(path: '/shopware-file/restore', methods: ['GET'], name: 'api.frosh.tools.shopware-file.restore')]
     public function restoreShopwareFile(Request $request): JsonResponse
     {
         if ($this->shopwareVersion === Kernel::SHOPWARE_FALLBACK_VERSION) {

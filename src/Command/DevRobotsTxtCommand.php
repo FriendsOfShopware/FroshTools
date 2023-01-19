@@ -10,12 +10,9 @@ use Symfony\Component\Console\Style\SymfonyStyle;
 
 class DevRobotsTxtCommand extends Command
 {
-    private string $envPath;
-
-    public function __construct(string $envPath)
+    public function __construct(private readonly string $envPath)
     {
         parent::__construct();
-        $this->envPath = $envPath;
     }
 
     protected function configure(): void

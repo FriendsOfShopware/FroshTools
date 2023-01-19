@@ -2,10 +2,12 @@
 
 namespace Frosh\Tools\Command;
 
+use Symfony\Component\Console\Attribute\AsCommand;
+use Shopware\Core\Framework\DataAbstractionLayer\EntityRepository;
+use DateTime;
 use Doctrine\DBAL\Connection;
 use Shopware\Core\Content\Mail\Service\AbstractMailService;
 use Shopware\Core\Framework\Context;
-use Shopware\Core\Framework\DataAbstractionLayer\EntityRepositoryInterface;
 use Shopware\Core\Framework\DataAbstractionLayer\Search\Criteria;
 use Shopware\Core\Framework\DataAbstractionLayer\Search\Filter\EqualsFilter;
 use Shopware\Core\Framework\DataAbstractionLayer\Search\Filter\NotFilter;
@@ -19,25 +21,15 @@ use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\HttpFoundation\ParameterBag;
 
+#[AsCommand('frosh:monitor', 'Monitor your scheduled task and queue with this command and get notified via email.')]
 class MonitorCommand extends Command
 {
     private const MONITOR_EMAIL_OPTION = 'email';
     private const MONITOR_SALESCHANNEL_ARG = 'sales-channel';
-    public static $defaultName = 'frosh:monitor';
-    public static $defaultDescription = 'Monitor your scheduled task and queue with this command and get notified via email.';
 
-    private AbstractMailService       $mailService;
-    private SystemConfigService       $configService;
-    private Connection                $connection;
-    private EntityRepositoryInterface $scheduledTaskRepository;
-
-    public function __construct(AbstractMailService $mailService, SystemConfigService $configService, Connection $connection, EntityRepositoryInterface $scheduledTaskRepository)
+    public function __construct(private readonly AbstractMailService $mailService, private readonly SystemConfigService $configService, private readonly Connection $connection, private readonly EntityRepository $scheduledTaskRepository)
     {
         parent::__construct();
-        $this->mailService = $mailService;
-        $this->configService = $configService;
-        $this->connection = $connection;
-        $this->scheduledTaskRepository = $scheduledTaskRepository;
     }
 
     protected function configure(): void
@@ -119,7 +111,7 @@ class MonitorCommand extends Command
         $minutes = $this->configService->getInt(
             'FroshTools.config.monitorTaskGraceTime');
 
-        $date = new \DateTime();
+        $date = new DateTime();
         $date->modify(sprintf('-%d minutes', $minutes));
 
         $criteria = new Criteria();

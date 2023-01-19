@@ -2,6 +2,8 @@
 
 namespace Frosh\Tools\Command;
 
+use Symfony\Component\Console\Attribute\AsCommand;
+use RuntimeException;
 use Frosh\Tools\Components\Environment\EnvironmentManager;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputArgument;
@@ -9,16 +11,12 @@ use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
 
+#[AsCommand('frosh:env:get', 'Get an environment variable')]
 class EnvGetCommand extends Command
 {
-    public static $defaultName = 'frosh:env:get';
-    public static $defaultDescription = 'Get an environment variable';
-    private string $envPath;
-
-    public function __construct(string $envPath)
+    public function __construct(private readonly string $envPath)
     {
         parent::__construct();
-        $this->envPath = $envPath;
     }
 
     public function configure(): void
@@ -31,7 +29,7 @@ class EnvGetCommand extends Command
     public function execute(InputInterface $input, OutputInterface $output): int
     {
         if (!is_file($this->envPath)) {
-            throw new \RuntimeException(\sprintf('Cannot use this command as env file is missing at %s', $this->envPath));
+            throw new RuntimeException(\sprintf('Cannot use this command as env file is missing at %s', $this->envPath));
         }
 
         $manager = new EnvironmentManager();
@@ -51,7 +49,7 @@ class EnvGetCommand extends Command
         $var = $file->get($input->getArgument('variable'));
 
         if ($var === null) {
-            throw new \RuntimeException(sprintf('Cannot find variable with name: %s', $input->getArgument('variable')));
+            throw new RuntimeException(sprintf('Cannot find variable with name: %s', $input->getArgument('variable')));
         }
 
         if ($mode === 'json') {

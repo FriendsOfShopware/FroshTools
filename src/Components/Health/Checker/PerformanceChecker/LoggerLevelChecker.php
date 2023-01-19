@@ -10,7 +10,7 @@ use Monolog\Logger;
 
 class LoggerLevelChecker implements CheckerInterface
 {
-    private int $businessEventHandlerLevel;
+    private readonly int $businessEventHandlerLevel;
 
     private string $url = 'https://developer.shopware.com/docs/guides/hosting/performance/performance-tweaks#logging';
 

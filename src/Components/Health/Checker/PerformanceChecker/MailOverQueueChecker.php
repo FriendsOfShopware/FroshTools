@@ -8,11 +8,8 @@ use Frosh\Tools\Components\Health\SettingsResult;
 
 class MailOverQueueChecker implements CheckerInterface
 {
-    protected bool $mailerIsOverQueue;
-
-    public function __construct(bool $mailerIsOverQueue)
+    public function __construct(protected bool $mailerIsOverQueue)
     {
-        $this->mailerIsOverQueue = $mailerIsOverQueue;
     }
 
     public function collect(HealthCollection $collection): void

@@ -21,11 +21,8 @@ use Symfony\Component\Messenger\Middleware\StackInterface;
  */
 class TaskLoggingMiddleware implements MiddlewareInterface
 {
-    private LoggerInterface $logger;
-
-    public function __construct(LoggerInterface $logger)
+    public function __construct(private readonly LoggerInterface $logger)
     {
-        $this->logger = $logger;
     }
 
     public function handle(Envelope $envelope, StackInterface $stack): Envelope
@@ -57,7 +54,7 @@ class TaskLoggingMiddleware implements MiddlewareInterface
             return $message->getTaskName();
         }
 
-        $classParts = explode('\\', get_class($message));
+        $classParts = explode('\\', $message::class);
         $taskName = end($classParts);
 
         if (str_ends_with($taskName, 'Message')) {
@@ -85,7 +82,7 @@ class TaskLoggingMiddleware implements MiddlewareInterface
         }
 
         if ($message instanceof DeleteImportExportFile || $message instanceof DeleteFileMessage) {
-            return ['files' => implode(',', array_map(static function ($f) { return basename($f); }, $message->getFiles()))];
+            return ['files' => implode(',', array_map(static fn($f) => basename((string) $f), $message->getFiles()))];
         }
 
         if ($message instanceof GenerateThumbnailsMessage) {
@@ -122,7 +119,7 @@ class TaskLoggingMiddleware implements MiddlewareInterface
     private function addExceptionToArgs($e, array $args): array
     {
         $exceptions = $e->getNestedExceptions();
-        $args['exception'] = get_class($exceptions[0]);
+        $args['exception'] = $exceptions[0]::class;
         $args['exception.msg'] = $exceptions[0]->getMessage();
 
         return $args;

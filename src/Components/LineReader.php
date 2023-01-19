@@ -2,6 +2,8 @@
 
 namespace Frosh\Tools\Components;
 
+use InvalidArgumentException;
+use Generator;
 /**
  * Taken from https://github.com/bcremer/LineReader/blob/main/src/LineReader.php
  * Thanks bcremer for building it. It's easier to copy one class then require a dependency in Shopware
@@ -16,24 +18,24 @@ final class LineReader
     }
 
     /**
-     * @throws \InvalidArgumentException if $filePath is not readable
+     * @throws InvalidArgumentException if $filePath is not readable
      */
-    public static function readLines(string $filePath): \Generator
+    public static function readLines(string $filePath): Generator
     {
         if (!$fh = @fopen($filePath, 'r')) {
-            throw new \InvalidArgumentException('Cannot open file for reading: ' . $filePath);
+            throw new InvalidArgumentException('Cannot open file for reading: ' . $filePath);
         }
 
         return self::read($fh);
     }
 
     /**
-     * @throws \InvalidArgumentException if $filePath is not readable
+     * @throws InvalidArgumentException if $filePath is not readable
      */
-    public static function readLinesBackwards(string $filePath): \Generator
+    public static function readLinesBackwards(string $filePath): Generator
     {
         if (!$fh = @fopen($filePath, 'r')) {
-            throw new \InvalidArgumentException('Cannot open file for reading: ' . $filePath);
+            throw new InvalidArgumentException('Cannot open file for reading: ' . $filePath);
         }
 
         $size = filesize($filePath);
@@ -44,7 +46,7 @@ final class LineReader
     /**
      * @param resource $fh
      */
-    private static function read($fh): \Generator
+    private static function read($fh): Generator
     {
         while (false !== $line = fgets($fh)) {
             yield rtrim($line, "\n");
@@ -64,7 +66,7 @@ final class LineReader
      *
      * @param resource $fh
      */
-    private static function readBackwards($fh, int $pos): \Generator
+    private static function readBackwards($fh, int $pos): Generator
     {
         $buffer = null;
         $bufferSize = 4096;

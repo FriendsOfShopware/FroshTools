@@ -2,6 +2,7 @@
 
 namespace Frosh\Tools\Components;
 
+use RuntimeException;
 use Frosh\Tools\Components\Exception\CannotClearCacheException;
 use RecursiveDirectoryIterator;
 use RecursiveIteratorIterator;
@@ -74,7 +75,7 @@ class CacheHelper
             $blankDir = sys_get_temp_dir() . '/' . uniqid() . '/';
 
             if (!mkdir($blankDir, 0755, true) && !is_dir($blankDir)) {
-                throw new \RuntimeException(sprintf('Directory "%s" was not created', $blankDir));
+                throw new RuntimeException(sprintf('Directory "%s" was not created', $blankDir));
             }
 
             $process = new Process(['rsync', '-qa', '--delete', $blankDir, $path . '/']);

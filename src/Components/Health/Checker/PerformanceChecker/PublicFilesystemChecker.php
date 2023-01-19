@@ -8,11 +8,8 @@ use Frosh\Tools\Components\Health\SettingsResult;
 
 class PublicFilesystemChecker implements CheckerInterface
 {
-    private string $fileSystemType;
-
-    public function __construct(string $fileSystemType)
+    public function __construct(private readonly string $fileSystemType)
     {
-        $this->fileSystemType = $fileSystemType;
     }
 
     public function collect(HealthCollection $collection): void

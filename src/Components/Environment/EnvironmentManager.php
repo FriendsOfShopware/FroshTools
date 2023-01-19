@@ -2,20 +2,21 @@
 
 namespace Frosh\Tools\Components\Environment;
 
+use RuntimeException;
 class EnvironmentManager
 {
     public function read(string $path): EnvironmentFile
     {
         $content = file_get_contents($path);
         if ($content === false) {
-            throw new \RuntimeException(sprintf('Cannot read file %s', $path));
+            throw new RuntimeException(sprintf('Cannot read file %s', $path));
         }
 
         $lines = preg_split('/\r\n|\r|\n/', $content);
         $parsedLines = [];
         $lineCount = count($lines) - 1;
         foreach ($lines as $i => $line) {
-            $line = trim($line);
+            $line = trim((string) $line);
 
             if ($line === '' || $line[0] === '#') {
                 $parsedLines[] = EnvironmentCommentLine::parse($line);

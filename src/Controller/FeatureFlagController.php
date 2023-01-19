@@ -12,21 +12,17 @@ use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpKernel\Exception\HttpException;
 use Symfony\Component\Routing\Annotation\Route;
 
-/**
- * @Route(path="/api/_action/frosh-tools", defaults={"_routeScope"={"api"}, "_acl"={"frosh_tools:read"}})
- */
+#[Route(path: '/api/_action/frosh-tools', defaults: ['_routeScope' => ['api'], '_acl' => ['frosh_tools:read']])]
 class FeatureFlagController
 {
-    private string $envPath;
+    private readonly string $envPath;
 
     public function __construct(string $projectDir)
     {
         $this->envPath = $projectDir . '/.env';
     }
 
-    /**
-     * @Route(path="/feature-flag/list", methods={"GET"}, name="api.frosh.tools.feature-flag.list")
-     */
+    #[Route(path: '/feature-flag/list', methods: ['GET'], name: 'api.frosh.tools.feature-flag.list')]
     public function list(): JsonResponse
     {
         $featureFlags = Feature::getRegisteredFeatures();
@@ -45,9 +41,7 @@ class FeatureFlagController
         return new JsonResponse(array_values($featureFlags));
     }
 
-    /**
-     * @Route(path="/feature-flag/toggle", methods={"POST"}, name="api.frosh.tools.feature-flag.toggle")
-     */
+    #[Route(path: '/feature-flag/toggle', methods: ['POST'], name: 'api.frosh.tools.feature-flag.toggle')]
     public function toggle(Request $request): Response
     {
         $featureFlag = $request->get('flag');

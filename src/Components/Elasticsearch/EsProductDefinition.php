@@ -2,6 +2,7 @@
 
 namespace Frosh\Tools\Components\Elasticsearch;
 
+use RuntimeException;
 use function array_keys;
 use function array_map;
 use function array_merge;
@@ -42,21 +43,8 @@ use function str_replace;
 
 class EsProductDefinition extends AbstractElasticsearchDefinition
 {
-    protected AbstractElasticsearchDefinition $inner;
-    protected Connection $connection;
-    protected array $fields;
-    protected int $minimumShouldMatch;
-
-    public function __construct(
-        AbstractElasticsearchDefinition $elasticsearchDefinition,
-        Connection $connection,
-        array $fields,
-        int $minimumShouldMatch
-    ) {
-        $this->inner = $elasticsearchDefinition;
-        $this->connection = $connection;
-        $this->fields = $fields;
-        $this->minimumShouldMatch = $minimumShouldMatch;
+    public function __construct(protected AbstractElasticsearchDefinition $inner, protected Connection $connection, protected array $fields, protected int $minimumShouldMatch)
+    {
     }
 
     public function getEntityDefinition(): EntityDefinition
@@ -165,13 +153,13 @@ class EsProductDefinition extends AbstractElasticsearchDefinition
                     return [];
                 }
 
-                return array_values(json_decode($value, true, 512, JSON_THROW_ON_ERROR));
+                return array_values(json_decode((string) $value, true, 512, JSON_THROW_ON_ERROR));
             case $field instanceof JsonField:
                 if ($value === null) {
                     return null;
                 }
 
-                return json_decode($value, true, 512, JSON_THROW_ON_ERROR);
+                return json_decode((string) $value, true, 512, JSON_THROW_ON_ERROR);
             case $field instanceof BoolField:
                 return (bool) $value;
             case $field instanceof IntField:
@@ -303,7 +291,7 @@ class EsProductDefinition extends AbstractElasticsearchDefinition
         $obj = $definition->getField($field['name']);
 
         if ($obj instanceof AssociationField) {
-            throw new \RuntimeException(sprintf('Association field %s is not supported to index', $obj->getPropertyName()));
+            throw new RuntimeException(sprintf('Association field %s is not supported to index', $obj->getPropertyName()));
         }
 
         if ($obj instanceof TranslatedField) {
@@ -318,22 +306,18 @@ class EsProductDefinition extends AbstractElasticsearchDefinition
 
     private function getFields(): array
     {
-        return array_map([$this, 'getField'], $this->fields);
+        return array_map($this->getField(...), $this->fields);
     }
 
     private function buildQuery(string $field, array $queryItem, string $term): BuilderInterface
     {
         $field = $queryItem['field'] ?? $field;
 
-        switch ($queryItem['type']) {
-            case 'match':
-                return new MatchQuery($field, $term, $queryItem['options']);
-            case 'match_phrase_prefix':
-                return new MatchPhrasePrefixQuery($field, $term, $queryItem['options']);
-            case 'wildcard':
-                return new WildcardQuery($field, '*' . mb_strtolower($term) . '*', $queryItem['options']);
-            default:
-                throw new \RuntimeException(sprintf('Type %s is not supported', $queryItem['type']));
-        }
+        return match ($queryItem['type']) {
+            'match' => new MatchQuery($field, $term, $queryItem['options']),
+            'match_phrase_prefix' => new MatchPhrasePrefixQuery($field, $term, $queryItem['options']),
+            'wildcard' => new WildcardQuery($field, '*' . mb_strtolower($term) . '*', $queryItem['options']),
+            default => throw new RuntimeException(sprintf('Type %s is not supported', $queryItem['type'])),
+        };
     }
 }

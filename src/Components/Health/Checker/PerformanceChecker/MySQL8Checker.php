@@ -2,6 +2,7 @@
 
 namespace Frosh\Tools\Components\Health\Checker\PerformanceChecker;
 
+use RuntimeException;
 use Doctrine\DBAL\Connection;
 use Frosh\Tools\Components\Health\Checker\CheckerInterface;
 use Frosh\Tools\Components\Health\HealthCollection;
@@ -9,11 +10,8 @@ use Frosh\Tools\Components\Health\SettingsResult;
 
 class MySQL8Checker implements CheckerInterface
 {
-    private Connection $connection;
-
-    public function __construct(Connection $connection)
+    public function __construct(private readonly Connection $connection)
     {
-        $this->connection = $connection;
     }
 
     public function collect(HealthCollection $collection): void
@@ -62,7 +60,7 @@ class MySQL8Checker implements CheckerInterface
             $versionString,
             $versionParts
         )) {
-            throw new \RuntimeException(sprintf('Invalid version string: %s', $versionString));
+            throw new RuntimeException(sprintf('Invalid version string: %s', $versionString));
         }
 
         return $versionParts['major'] . '.' . $versionParts['minor'] . '.' . $versionParts['patch'];

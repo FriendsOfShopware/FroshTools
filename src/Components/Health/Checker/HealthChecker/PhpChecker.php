@@ -119,7 +119,7 @@ class PhpChecker implements CheckerInterface
 
     private function decodePhpSize($val): float
     {
-        $val = mb_strtolower(trim($val));
+        $val = mb_strtolower(trim((string) $val));
         $last = mb_substr($val, -1);
 
         $val = (float) $val;
