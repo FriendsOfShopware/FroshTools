@@ -2,8 +2,7 @@
 
 namespace Frosh\Tools\Components\Environment;
 
-use Stringable;
-class EnvironmentFile implements Stringable
+class EnvironmentFile implements \Stringable
 {
     /**
      * @param array<string, EnvironmentLine> $items

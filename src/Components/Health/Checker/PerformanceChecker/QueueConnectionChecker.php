@@ -5,9 +5,6 @@ namespace Frosh\Tools\Components\Health\Checker\PerformanceChecker;
 use Frosh\Tools\Components\Health\Checker\CheckerInterface;
 use Frosh\Tools\Components\Health\HealthCollection;
 use Frosh\Tools\Components\Health\SettingsResult;
-use function parse_url;
-use const PHP_URL_SCHEME;
-use function str_starts_with;
 
 class QueueConnectionChecker implements CheckerInterface
 {
@@ -17,7 +14,7 @@ class QueueConnectionChecker implements CheckerInterface
 
     public function collect(HealthCollection $collection): void
     {
-        if (str_starts_with($this->connection, 'enqueue://default')) {
+        if (\str_starts_with($this->connection, 'enqueue://default')) {
             $collection->add(
                 SettingsResult::warning('queue.adapter', 'The default queue storage in database does not scale well with multiple workers',
                     'default',
@@ -31,7 +28,7 @@ class QueueConnectionChecker implements CheckerInterface
 
         $collection->add(
             SettingsResult::ok('queue.adapter', 'Configured queue storage is ok for multiple workers',
-                parse_url($this->connection, PHP_URL_SCHEME),
+                \parse_url($this->connection, \PHP_URL_SCHEME),
                 'redis or rabbitmq',
             )
         );

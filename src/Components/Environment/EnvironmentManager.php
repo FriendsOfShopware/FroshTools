@@ -2,14 +2,13 @@
 
 namespace Frosh\Tools\Components\Environment;
 
-use RuntimeException;
 class EnvironmentManager
 {
     public function read(string $path): EnvironmentFile
     {
         $content = file_get_contents($path);
         if ($content === false) {
-            throw new RuntimeException(sprintf('Cannot read file %s', $path));
+            throw new \RuntimeException(sprintf('Cannot read file %s', $path));
         }
 
         $lines = preg_split('/\r\n|\r|\n/', $content);

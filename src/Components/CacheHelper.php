@@ -2,11 +2,7 @@
 
 namespace Frosh\Tools\Components;
 
-use RuntimeException;
 use Frosh\Tools\Components\Exception\CannotClearCacheException;
-use RecursiveDirectoryIterator;
-use RecursiveIteratorIterator;
-use SplFileInfo;
 use Symfony\Component\Process\Process;
 
 class CacheHelper
@@ -38,15 +34,15 @@ class CacheHelper
 
     private static function getSizeFallback(string $path): int
     {
-        $dirIterator = new RecursiveDirectoryIterator($path, RecursiveDirectoryIterator::SKIP_DOTS);
-        $iterator = new RecursiveIteratorIterator(
+        $dirIterator = new \RecursiveDirectoryIterator($path, \RecursiveDirectoryIterator::SKIP_DOTS);
+        $iterator = new \RecursiveIteratorIterator(
             $dirIterator,
-            RecursiveIteratorIterator::LEAVES_ONLY
+            \RecursiveIteratorIterator::LEAVES_ONLY
         );
 
         $size = 0;
 
-        /** @var SplFileInfo $entry */
+        /** @var \SplFileInfo $entry */
         foreach ($iterator as $entry) {
             if ($entry->getFilename() === '.gitkeep') {
                 continue;
@@ -75,7 +71,7 @@ class CacheHelper
             $blankDir = sys_get_temp_dir() . '/' . uniqid() . '/';
 
             if (!mkdir($blankDir, 0755, true) && !is_dir($blankDir)) {
-                throw new RuntimeException(sprintf('Directory "%s" was not created', $blankDir));
+                throw new \RuntimeException(sprintf('Directory "%s" was not created', $blankDir));
             }
 
             $process = new Process(['rsync', '-qa', '--delete', $blankDir, $path . '/']);

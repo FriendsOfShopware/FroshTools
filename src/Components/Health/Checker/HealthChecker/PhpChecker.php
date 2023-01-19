@@ -127,11 +127,11 @@ class PhpChecker implements CheckerInterface
             /* @noinspection PhpMissingBreakStatementInspection */
             case 'g':
                 $val *= 1024;
-            /* @noinspection PhpMissingBreakStatementInspection */
-            // no break
+                /* @noinspection PhpMissingBreakStatementInspection */
+                // no break
             case 'm':
                 $val *= 1024;
-            // no break
+                // no break
             case 'k':
                 $val *= 1024;
         }

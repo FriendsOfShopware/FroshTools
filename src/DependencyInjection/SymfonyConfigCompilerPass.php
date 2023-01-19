@@ -2,7 +2,6 @@
 
 namespace Frosh\Tools\DependencyInjection;
 
-use function is_string;
 use Symfony\Component\DependencyInjection\Compiler\CompilerPassInterface;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
 
@@ -17,7 +16,7 @@ class SymfonyConfigCompilerPass implements CompilerPassInterface
         $defaultTransport = $container->getDefinition('messenger.transport.default');
         $defaultHandler = $defaultTransport->getArgument(0);
 
-        if (is_string($defaultHandler)) {
+        if (\is_string($defaultHandler)) {
             $container->setParameter('frosh_tools.queue_connection', $defaultHandler);
         } else {
             $container->setParameter('frosh_tools.queue_connection', 'unknown://default');
