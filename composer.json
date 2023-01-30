@@ -35,8 +35,7 @@
     }
   },
   "require": {
-    "shopware/core": "~6.4.11",
-    "jawira/plantuml-encoding": "~1.1.0"
+    "shopware/core": "~6.4.11"
   },
   "require-dev": {
     "friendsofphp/php-cs-fixer": "~3.0"

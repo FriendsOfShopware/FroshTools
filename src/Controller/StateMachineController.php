@@ -3,9 +3,9 @@ declare(strict_types=1);
 
 namespace Frosh\Tools\Controller;
 
+use Frosh\Tools\Components\Planuml;
 use Frosh\Tools\Components\StateMachines\Plantuml;
 use Frosh\Tools\FroshTools;
-use function Jawira\PlantUml\encodep;
 use Shopware\Core\Framework\Context;
 use Shopware\Core\Framework\DataAbstractionLayer\EntityRepository;
 use Shopware\Core\Framework\DataAbstractionLayer\Search\Criteria;
@@ -55,7 +55,7 @@ final class StateMachineController
         FroshTools::classLoader();
 
         $response = new JsonResponse();
-        $encode = encodep($generatedPlantuml);
+        $encode = Planuml::encodep($generatedPlantuml);
         $response->setData(['svg' => '//www.plantuml.com/plantuml/svg/' . $encode]);
 
         return $response;
