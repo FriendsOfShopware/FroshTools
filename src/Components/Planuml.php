@@ -4,7 +4,7 @@ namespace Frosh\Tools\Components;
 
 class Planuml
 {
-    static public function encodep(string $puml): string
+    public static function encodep(string $puml): string
     {
         $compressed = gzdeflate($puml, 9);
 
@@ -15,7 +15,7 @@ class Planuml
         return self::encode64($compressed);
     }
 
-    static public function encode64(string $compressed): string
+    public static function encode64(string $compressed): string
     {
         $encoded = '';
         $length = mb_strlen($compressed, '8bit');
@@ -36,7 +36,7 @@ class Planuml
         return $encoded;
     }
 
-    static public function append3bytes(int $b1, int $b2, int $b3): string
+    public static function append3bytes(int $b1, int $b2, int $b3): string
     {
         $c1 = $b1 >> 2;
         $c2 = (($b1 & 0x3) << 4) | ($b2 >> 4);
@@ -50,8 +50,7 @@ class Planuml
         return $r;
     }
 
-
-    static public function encode6bit(int $b): string
+    public static function encode6bit(int $b): string
     {
         if ($b < 10) {
             return chr(48 + $b);
