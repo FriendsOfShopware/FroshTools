@@ -6,8 +6,6 @@ use Frosh\Tools\Components\Health\Checker\CheckerInterface;
 use Frosh\Tools\Components\Health\HealthCollection;
 use Frosh\Tools\Components\Health\SettingsResult;
 use Shopware\Core\DevOps\Environment\EnvironmentHelper;
-use function sprintf;
-use function version_compare;
 
 class FixCacheIdSetChecker implements CheckerInterface
 {
@@ -20,7 +18,7 @@ class FixCacheIdSetChecker implements CheckerInterface
 
     public function collect(HealthCollection $collection): void
     {
-        if (version_compare('6.4.11.0', $this->shopwareVersion, '>')) {
+        if (\version_compare('6.4.11.0', $this->shopwareVersion, '>')) {
             return;
         }
 
@@ -40,7 +38,7 @@ class FixCacheIdSetChecker implements CheckerInterface
 
         $collection->add(
             SettingsResult::ok('cache-id', 'A fixed cache id is set',
-                sprintf('set (%s)', $cacheId),
+                \sprintf('set (%s)', $cacheId),
                 'set',
             )
         );

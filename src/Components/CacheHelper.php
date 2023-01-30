@@ -3,9 +3,6 @@
 namespace Frosh\Tools\Components;
 
 use Frosh\Tools\Components\Exception\CannotClearCacheException;
-use RecursiveDirectoryIterator;
-use RecursiveIteratorIterator;
-use SplFileInfo;
 use Symfony\Component\Process\Process;
 
 class CacheHelper
@@ -37,15 +34,15 @@ class CacheHelper
 
     private static function getSizeFallback(string $path): int
     {
-        $dirIterator = new RecursiveDirectoryIterator($path, RecursiveDirectoryIterator::SKIP_DOTS);
-        $iterator = new RecursiveIteratorIterator(
+        $dirIterator = new \RecursiveDirectoryIterator($path, \RecursiveDirectoryIterator::SKIP_DOTS);
+        $iterator = new \RecursiveIteratorIterator(
             $dirIterator,
-            RecursiveIteratorIterator::LEAVES_ONLY
+            \RecursiveIteratorIterator::LEAVES_ONLY
         );
 
         $size = 0;
 
-        /** @var SplFileInfo $entry */
+        /** @var \SplFileInfo $entry */
         foreach ($iterator as $entry) {
             if ($entry->getFilename() === '.gitkeep') {
                 continue;

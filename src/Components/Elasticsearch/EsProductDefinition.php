@@ -2,17 +2,7 @@
 
 namespace Frosh\Tools\Components\Elasticsearch;
 
-use function array_keys;
-use function array_map;
-use function array_merge;
-use function array_splice;
-use function array_values;
 use Doctrine\DBAL\Connection;
-use function implode;
-use function is_array;
-use function json_decode;
-use const JSON_THROW_ON_ERROR;
-use function mb_strtolower;
 use ONGR\ElasticsearchDSL\BuilderInterface;
 use ONGR\ElasticsearchDSL\Query\Compound\BoolQuery;
 use ONGR\ElasticsearchDSL\Query\FullText\MatchPhrasePrefixQuery;
@@ -37,8 +27,6 @@ use Shopware\Core\Framework\DataAbstractionLayer\Field\TranslatedField;
 use Shopware\Core\Framework\DataAbstractionLayer\Search\Criteria;
 use Shopware\Core\Framework\Uuid\Uuid;
 use Shopware\Elasticsearch\Framework\AbstractElasticsearchDefinition;
-use function sprintf;
-use function str_replace;
 
 class EsProductDefinition extends AbstractElasticsearchDefinition
 {
@@ -105,7 +93,7 @@ class EsProductDefinition extends AbstractElasticsearchDefinition
 
                 $query->addSelect($transSelect . ' as ' . $field->getPropertyName());
             } else {
-                $query->addSelect(sprintf('IFNULL(p.%s, pp.%s) AS %s', $field->getStorageName(), $field->getStorageName(), $field->getPropertyName()));
+                $query->addSelect(\sprintf('IFNULL(p.%s, pp.%s) AS %s', $field->getStorageName(), $field->getStorageName(), $field->getPropertyName()));
             }
         }
 
@@ -116,8 +104,8 @@ class EsProductDefinition extends AbstractElasticsearchDefinition
         ];
 
         $additionalData = $this->connection->fetchAll(
-            str_replace(array_keys($replacements), $replacements, $query->getSQL()),
-            array_merge([
+            \str_replace(\array_keys($replacements), $replacements, $query->getSQL()),
+            \array_merge([
                 'ids' => $ids,
                 'liveVersionId' => Uuid::fromHexToBytes($context->getVersionId()),
             ], $translationQuery->getParameters()),
@@ -134,8 +122,8 @@ class EsProductDefinition extends AbstractElasticsearchDefinition
                 $data[$key][$field->getPropertyName()] = $value;
 
                 if ($options['include_in_fulltext']) {
-                    if (is_array($value)) {
-                        $value = implode(' ', $value);
+                    if (\is_array($value)) {
+                        $value = \implode(' ', $value);
                     }
 
                     $data[$key]['fullText'] .= $value;
@@ -165,13 +153,13 @@ class EsProductDefinition extends AbstractElasticsearchDefinition
                     return [];
                 }
 
-                return array_values(json_decode($value, true, 512, JSON_THROW_ON_ERROR));
+                return \array_values(\json_decode($value, true, 512, \JSON_THROW_ON_ERROR));
             case $field instanceof JsonField:
                 if ($value === null) {
                     return null;
                 }
 
-                return json_decode($value, true, 512, JSON_THROW_ON_ERROR);
+                return \json_decode($value, true, 512, \JSON_THROW_ON_ERROR);
             case $field instanceof BoolField:
                 return (bool) $value;
             case $field instanceof IntField:
@@ -228,13 +216,13 @@ class EsProductDefinition extends AbstractElasticsearchDefinition
 
     private function buildCoalesce(array $fields, Context $context): string
     {
-        $fields = array_splice($fields, 0, \count($context->getLanguageIdChain()));
+        $fields = \array_splice($fields, 0, \count($context->getLanguageIdChain()));
 
         $coalesce = 'COALESCE(';
 
         foreach ($fields as $field) {
             foreach (['product_translation_main', 'product_translation_parent'] as $join) {
-                $coalesce .= sprintf('%s.`%s`', $join, $field) . ',';
+                $coalesce .= \sprintf('%s.`%s`', $join, $field) . ',';
             }
         }
 
@@ -303,7 +291,7 @@ class EsProductDefinition extends AbstractElasticsearchDefinition
         $obj = $definition->getField($field['name']);
 
         if ($obj instanceof AssociationField) {
-            throw new \RuntimeException(sprintf('Association field %s is not supported to index', $obj->getPropertyName()));
+            throw new \RuntimeException(\sprintf('Association field %s is not supported to index', $obj->getPropertyName()));
         }
 
         if ($obj instanceof TranslatedField) {
@@ -318,7 +306,7 @@ class EsProductDefinition extends AbstractElasticsearchDefinition
 
     private function getFields(): array
     {
-        return array_map([$this, 'getField'], $this->fields);
+        return \array_map([$this, 'getField'], $this->fields);
     }
 
     private function buildQuery(string $field, array $queryItem, string $term): BuilderInterface
@@ -331,9 +319,9 @@ class EsProductDefinition extends AbstractElasticsearchDefinition
             case 'match_phrase_prefix':
                 return new MatchPhrasePrefixQuery($field, $term, $queryItem['options']);
             case 'wildcard':
-                return new WildcardQuery($field, '*' . mb_strtolower($term) . '*', $queryItem['options']);
+                return new WildcardQuery($field, '*' . \mb_strtolower($term) . '*', $queryItem['options']);
             default:
-                throw new \RuntimeException(sprintf('Type %s is not supported', $queryItem['type']));
+                throw new \RuntimeException(\sprintf('Type %s is not supported', $queryItem['type']));
         }
     }
 }
