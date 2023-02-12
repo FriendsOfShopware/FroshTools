@@ -11,32 +11,26 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 
-/**
- * @Route(path="/api/_action/frosh-tools", defaults={"_routeScope"={"api"}, "_acl"={"frosh_tools:read"}})
- */
+#[Route(path: '/api/_action/frosh-tools', defaults: ['_routeScope' => ['api'], '_acl' => ['frosh_tools:read']])]
 class LogController
 {
     // https://regex101.com/r/bp4YYL/1
     private const LINE_MATCH = '/\[(?<date>.*)] (?<channel>.*)\.(?<level>(DEBUG|INFO|NOTICE|WARNING|ERROR|CRITICAL|ALERT|EMERGENCY)):(?<message>.*)/m';
 
-    private string $logDir;
+    private readonly string $logDir;
 
     public function __construct(string $logDir)
     {
         $this->logDir = rtrim($logDir, '/') . '/';
     }
 
-    /**
-     * @Route(path="/logs/files", methods={"GET"}, name="api.frosh.tools.logs.files")
-     */
+    #[Route(path: '/logs/files', name: 'api.frosh.tools.logs.files', methods: ['GET'])]
     public function getLogFiles(): JsonResponse
     {
         return new JsonResponse($this->getFiles());
     }
 
-    /**
-     * @Route(path="/logs/file", methods={"GET"}, name="api.frosh.tools.logs.file-listing")
-     */
+    #[Route(path: '/logs/file', name: 'api.frosh.tools.logs.file-listing', methods: ['GET'])]
     public function getLog(Request $request): Response
     {
         $filePath = $this->getFilePathByBag($request);
@@ -52,7 +46,7 @@ class LogController
         $result = [];
 
         foreach ($reader as $item) {
-            if (preg_match(self::LINE_MATCH, $item, $matches) === false) {
+            if (preg_match(self::LINE_MATCH, (string) $item, $matches) === false) {
                 $result[] = [
                     'message' => $item,
                     'channel' => 'unknown',
@@ -84,7 +78,7 @@ class LogController
 
         // prevent path travel
         $files = array_column($this->getFiles(), 'name');
-        if (!in_array($fileName, $files, true)) {
+        if (!\in_array($fileName, $files, true)) {
             throw new InvalidRequestParameterException('file');
         }
 

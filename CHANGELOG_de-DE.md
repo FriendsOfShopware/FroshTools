@@ -113,3 +113,7 @@
 
 * Added check for active pcre-jit
 * Fixed health-check with no permission
+
+# 1.0.0
+
+* Shopware 6.5 Kompatibilität

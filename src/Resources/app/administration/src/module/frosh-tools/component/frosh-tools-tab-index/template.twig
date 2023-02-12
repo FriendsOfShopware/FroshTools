@@ -1,14 +1,24 @@
 <sw-card-view>
-    <sw-card class="frosh-tools-tab-index__health-card" :isLoading="isLoading" :large="true">
+    <sw-card
+            class="frosh-tools-tab-index__health-card"
+            :isLoading="isLoading"
+            :large="true"
+            positionIdentifier="frosh-tools-tab-index"
+    >
 
         <template #toolbar>
             <!-- @todo: Make the refresh button fancy -->
             <sw-button variant="ghost" @click="refresh">
-                <sw-icon :small="true" name="default-arrow-360-left"></sw-icon>
+                <sw-icon :small="true" name="regular-undo"></sw-icon>
             </sw-button>
         </template>
 
-        <sw-card class="frosh-tools-tab-index__health-card" :title="$tc('frosh-tools.tabs.index.title')" :large="true">
+        <sw-card
+                class="frosh-tools-tab-index__health-card"
+                :title="$tc('frosh-tools.tabs.index.title')"
+                :large="true"
+                positionIdentifier="frosh-tools-tab-index-health"
+        >
             <sw-data-grid
                 v-if="health"
                 :showSelection="false"
@@ -44,7 +54,12 @@
             </sw-data-grid>
         </sw-card>
 
-        <sw-card class="frosh-tools-tab-index__health-card" :title="$tc('frosh-tools.tabs.index.performance')" :large="true">
+        <sw-card
+                class="frosh-tools-tab-index__performance-card"
+                :title="$tc('frosh-tools.tabs.index.performance')"
+                :large="true"
+                positionIdentifier="frosh-tools-tab-index-performance"
+        >
             <sw-data-grid
                 v-if="performanceStatus"
                 :showSelection="false"

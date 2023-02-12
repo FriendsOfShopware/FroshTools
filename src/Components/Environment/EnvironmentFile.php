@@ -2,16 +2,24 @@
 
 namespace Frosh\Tools\Components\Environment;
 
-class EnvironmentFile
+class EnvironmentFile implements \Stringable
 {
     /**
-     * @var array<string, EnvironmentLine>
+     * @param array<string, EnvironmentLine> $items
      */
-    private array $items;
-
-    public function __construct(array $items)
+    public function __construct(private array $items)
     {
-        $this->items = $items;
+    }
+
+    public function __toString(): string
+    {
+        $content = '';
+
+        foreach ($this->items as $item) {
+            $content .= $item->getLine() . \PHP_EOL;
+        }
+
+        return $content;
     }
 
     public function has(string $key): bool
@@ -34,7 +42,7 @@ class EnvironmentFile
     {
         $v = $this->get($key);
 
-        if ($v) {
+        if ($v !== null) {
             $v->setValue($value);
 
             return;
@@ -76,16 +84,5 @@ class EnvironmentFile
         }
 
         return $values;
-    }
-
-    public function __toString(): string
-    {
-        $content = '';
-
-        foreach ($this->items as $item) {
-            $content .= $item->getLine() . \PHP_EOL;
-        }
-
-        return $content;
     }
 }

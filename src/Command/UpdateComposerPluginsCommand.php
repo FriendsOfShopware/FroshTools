@@ -4,6 +4,7 @@ namespace Frosh\Tools\Command;
 
 use Composer\Console\Application;
 use Shopware\Core\Framework\Plugin\KernelPluginLoader\KernelPluginLoader;
+use Symfony\Component\Console\Attribute\AsCommand;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\ArrayInput;
 use Symfony\Component\Console\Input\InputInterface;
@@ -11,33 +12,30 @@ use Symfony\Component\Console\Output\BufferedOutput;
 use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Console\Style\SymfonyStyle;
 
+#[AsCommand('frosh:composer-plugin:update', 'Check for available plugin updates and install them')]
 class UpdateComposerPluginsCommand extends Command
 {
-    public static $defaultName = 'frosh:composer-plugin:update';
-    public static $defaultDescription = 'Check for available plugin updates and install them';
-    private Application $application;
+    private readonly Application $application;
 
-    private string $projectDir;
-    private KernelPluginLoader $pluginLoader;
-
-    public function __construct(string $projectDir, KernelPluginLoader $pluginLoader)
-    {
+    public function __construct(
+        private readonly string $projectDir,
+        private readonly KernelPluginLoader $pluginLoader
+    ) {
         parent::__construct();
         $this->application = new Application();
         $this->application->setAutoExit(false);
-
-        $this->projectDir = $projectDir;
-        $this->pluginLoader = $pluginLoader;
     }
 
     protected function execute(InputInterface $input, OutputInterface $output): int
     {
         $io = new SymfonyStyle($input, $output);
+
+        /** @var array<string, array{managedByComposer: bool, composerName: string}> $plugins */
         $plugins = $this->pluginLoader->getPluginInfos();
 
         $composerNames = [];
         foreach ($plugins as $plugin) {
-            if ($plugin['managedByComposer'] === true) {
+            if ($plugin['managedByComposer']) {
                 $composerNames[] = $plugin['composerName'];
             }
         }
@@ -55,7 +53,9 @@ class UpdateComposerPluginsCommand extends Command
         $this->application->run($composerinput, $composerOutput);
 
         $updates = [];
-        $packages = \json_decode($composerOutput->fetch(), true);
+
+        /** @var array<string, array{installed: array{name: string}}> $packages */
+        $packages = \json_decode($composerOutput->fetch(), true, 512, \JSON_THROW_ON_ERROR);
 
         if (!isset($packages['installed'])) {
             $io->error('No installed composer packages found!');
@@ -72,7 +72,7 @@ class UpdateComposerPluginsCommand extends Command
         }
 
         $missedUpdates = [];
-        if (count($updates) === 0) {
+        if ($updates === []) {
             $io->success('No updates available');
 
             return self::SUCCESS;
@@ -96,11 +96,11 @@ class UpdateComposerPluginsCommand extends Command
 
         $updates = \array_diff($updates, $missedUpdates);
 
-        if (\count($updates) > 0) {
+        if ($updates !== []) {
             $io->comment('Plugins updated: ' . \implode(', ', $updates));
         }
 
-        if (\count($missedUpdates) > 0) {
+        if ($missedUpdates !== []) {
             $io->warning('These packages have not been updated. You should check the version constraint in composer.json: ' . \implode(', ', $missedUpdates));
         }
 

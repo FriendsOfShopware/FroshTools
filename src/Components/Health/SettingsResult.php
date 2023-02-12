@@ -11,17 +11,17 @@ class SettingsResult extends Struct
     private const ERROR = 'STATE_ERROR';
     private const INFO = 'STATE_INFO';
 
-    protected string $id;
-
-    protected string $state;
-
-    protected string $snippet;
-
     public string $current;
 
     public string $recommended;
 
     public ?string $url = null;
+
+    protected string $id;
+
+    protected string $state;
+
+    protected string $snippet;
 
     public static function ok(string $id, string $snippet, string $current = '', string $recommended = '', ?string $url = null): self
     {

@@ -2,23 +2,21 @@
 
 namespace Frosh\Tools\Command;
 
+use Frosh\Tools\Components\Environment\EnvironmentKeyValue;
 use Frosh\Tools\Components\Environment\EnvironmentManager;
+use Symfony\Component\Console\Attribute\AsCommand;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
 
+#[AsCommand('frosh:env:get', 'Get an environment variable')]
 class EnvGetCommand extends Command
 {
-    public static $defaultName = 'frosh:env:get';
-    public static $defaultDescription = 'Get an environment variable';
-    private string $envPath;
-
-    public function __construct(string $envPath)
+    public function __construct(private readonly string $envPath)
     {
         parent::__construct();
-        $this->envPath = $envPath;
     }
 
     public function configure(): void
@@ -38,24 +36,30 @@ class EnvGetCommand extends Command
         $file = $manager->read($this->envPath);
         $mode = $input->getOption('json') ? 'json' : ($input->getOption('key-value') ? 'kv' : '');
 
-        if ($input->getArgument('variable') === null) {
+        $variable = $input->getArgument('variable');
+
+        if ($variable === null) {
             if ($mode === 'json') {
-                $output->writeln(json_encode($file->values(), \JSON_PRETTY_PRINT));
-            } elseif ($mode) {
+                $output->writeln(json_encode($file->values(), \JSON_THROW_ON_ERROR | \JSON_PRETTY_PRINT));
+            } elseif ($mode !== '' && $mode !== '0') {
                 $output->writeln($file->__toString());
             }
 
             return self::SUCCESS;
         }
 
-        $var = $file->get($input->getArgument('variable'));
+        if (!\is_string($variable)) {
+            throw new \RuntimeException('Variable name must be a string');
+        }
 
-        if ($var === null) {
-            throw new \RuntimeException(sprintf('Cannot find variable with name: %s', $input->getArgument('variable')));
+        $var = $file->get($variable);
+
+        if (!$var instanceof EnvironmentKeyValue) {
+            throw new \RuntimeException(sprintf('Cannot find variable with name: %s', $variable));
         }
 
         if ($mode === 'json') {
-            $output->writeln(json_encode([$var->getKey() => $var->getValue()], \JSON_PRETTY_PRINT));
+            $output->writeln(json_encode([$var->getKey() => $var->getValue()], \JSON_THROW_ON_ERROR | \JSON_PRETTY_PRINT));
         } elseif ($mode === 'kv') {
             $output->writeln($var->getLine());
         } else {

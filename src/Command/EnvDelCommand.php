@@ -3,22 +3,19 @@
 namespace Frosh\Tools\Command;
 
 use Frosh\Tools\Components\Environment\EnvironmentManager;
+use Symfony\Component\Console\Attribute\AsCommand;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Console\Style\SymfonyStyle;
 
+#[AsCommand('frosh:env:Del', 'Delete environment variable')]
 class EnvDelCommand extends Command
 {
-    public static $defaultName = 'frosh:env:Del';
-    public static $defaultDescription = 'Delete environment variable';
-    private string $envPath;
-
-    public function __construct(string $envPath)
+    public function __construct(private readonly string $envPath)
     {
         parent::__construct();
-        $this->envPath = $envPath;
     }
 
     public function configure(): void
@@ -31,7 +28,12 @@ class EnvDelCommand extends Command
         $manager = new EnvironmentManager();
         $file = $manager->read($this->envPath);
 
-        $file->delete($input->getArgument('variable'));
+        $variable = $input->getArgument('variable');
+        if (!\is_string($variable)) {
+            throw new \RuntimeException('Variable name must be a string');
+        }
+
+        $file->delete($variable);
         $manager->save($this->envPath, $file);
 
         $io = new SymfonyStyle($input, $output);

@@ -5,6 +5,7 @@ namespace Frosh\Tools\Components\Environment;
 class EnvironmentKeyValue implements EnvironmentLine
 {
     private string $key;
+
     private string $value;
 
     public function getKey(): string

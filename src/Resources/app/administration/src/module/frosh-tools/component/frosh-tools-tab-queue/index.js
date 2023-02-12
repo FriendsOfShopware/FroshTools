@@ -12,7 +12,7 @@ Component.register('frosh-tools-tab-queue', {
 
     data() {
         return {
-            queueEntries: null,
+            queueEntries: [],
             showResetModal: false,
             isLoading: true
         };
@@ -47,8 +47,8 @@ Component.register('frosh-tools-tab-queue', {
         async createdComponent() {
             this.queueEntries = await this.froshToolsService.getQueue();
 
-            for (let queue of this.queueEntries) {
-                let nameSplit = queue.name.split('\\')
+            for (const queue of this.queueEntries) {
+                const nameSplit = queue.name.split('\\')
                 queue.name = nameSplit[nameSplit.length - 1];
             }
             this.isLoading = false;
@@ -57,7 +57,7 @@ Component.register('frosh-tools-tab-queue', {
             this.isLoading = true;
             await this.froshToolsService.resetQueue();
             this.showResetModal = false;
-            this.createdComponent();
+            await this.createdComponent();
             this.createNotificationSuccess({
                 message: this.$tc('frosh-tools.tabs.queue.reset.success')
             })

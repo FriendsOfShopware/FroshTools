@@ -17,7 +17,6 @@ Component.register('frosh-tools-tab-state-machines', {
     data() {
         return {
             image: null,
-            featureFlags: null,
             isLoading: true,
         }
     },
@@ -26,45 +25,13 @@ Component.register('frosh-tools-tab-state-machines', {
         this.createdComponent();
     },
 
-    computed: {
-        columns() {
-            return [
-                {
-                    property: 'flag',
-                    label: 'frosh-tools.tabs.feature-flags.flag',
-                    rawData: true,
-                },
-                {
-                    property: 'active',
-                    label: 'frosh-tools.active',
-                    rawData: true,
-                },
-                {
-                    property: 'description',
-                    label: 'frosh-tools.tabs.feature-flags.description',
-                    rawData: true,
-                },
-                {
-                    property: 'major',
-                    label: 'frosh-tools.tabs.feature-flags.major',
-                    rawData: true,
-                },
-                {
-                    property: 'default',
-                    label: 'frosh-tools.tabs.feature-flags.default',
-                    rawData: true,
-                },
-            ];
-        },
-    },
-
     methods: {
         createdComponent() {
             this.isLoading = false;
         },
 
-        async onStateMachineChange(event) {
-            const response = (await this.froshToolsService.stateMachines(event.srcElement.value));
+        async onStateMachineChange(value) {
+            const response = (await this.froshToolsService.stateMachines(value));
             const elem = document.getElementById('state_machine'); 
             if ("svg" in response) {
                 this.image = response.svg;

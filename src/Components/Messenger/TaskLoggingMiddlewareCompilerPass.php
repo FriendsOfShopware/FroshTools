@@ -12,7 +12,7 @@ class TaskLoggingMiddlewareCompilerPass implements CompilerPassInterface
     public function process(ContainerBuilder $container): void
     {
         /** @var IteratorArgument $middlewares */
-        $middlewares = $container->getDefinition('messenger.bus.shopware')->getArgument(0);
+        $middlewares = $container->getDefinition('messenger.bus.default')->getArgument(0);
         $vals = $middlewares->getValues();
 
         $vals[] = new Reference(TaskLoggingMiddleware::class);

@@ -13,12 +13,13 @@ class EnvironmentManager
 
         $lines = preg_split('/\r\n|\r|\n/', $content);
         $parsedLines = [];
-        $lineCount = count($lines) - 1;
-        foreach ($lines as $i => $line) {
-            $line = trim($line);
+        $lineCount = (is_countable($lines) ? \count($lines) : 0) - 1;
+        foreach ($lines as $line) {
+            $line = trim((string) $line);
 
             if ($line === '' || $line[0] === '#') {
                 $parsedLines[] = EnvironmentCommentLine::parse($line);
+
                 continue;
             }
 

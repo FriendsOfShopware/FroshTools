@@ -13,7 +13,7 @@ class SymfonyConfigCompilerPass implements CompilerPassInterface
 
         $container->setParameter('frosh_tools.mail_over_queue', $mailer->getArgument(1) !== null);
 
-        $defaultTransport = $container->getDefinition('messenger.transport.default');
+        $defaultTransport = $container->getDefinition('messenger.transport.async');
         $defaultHandler = $defaultTransport->getArgument(0);
 
         if (\is_string($defaultHandler)) {

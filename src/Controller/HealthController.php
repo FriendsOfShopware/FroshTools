@@ -8,26 +8,20 @@ use Frosh\Tools\Components\Health\PerformanceCollection;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\Routing\Annotation\Route;
 
-/**
- * @Route(path="/api/_action/frosh-tools", defaults={"_routeScope"={"api"}, "_acl"={"frosh_tools:read"}})
- */
+#[Route(path: '/api/_action/frosh-tools', defaults: ['_routeScope' => ['api'], '_acl' => ['frosh_tools:read']])]
 class HealthController
 {
-    /** @var CheckerInterface[] */
-    private iterable $healthCheckers;
-
-    /** @var CheckerInterface[] */
-    private iterable $performanceCheckers;
-
-    public function __construct(iterable $healthCheckers, iterable $performanceCheckers)
-    {
-        $this->healthCheckers = $healthCheckers;
-        $this->performanceCheckers = $performanceCheckers;
+    /**
+     * @param CheckerInterface[] $healthCheckers
+     * @param CheckerInterface[] $performanceCheckers
+     */
+    public function __construct(
+        private readonly iterable $healthCheckers,
+        private readonly iterable $performanceCheckers
+    ) {
     }
 
-    /**
-     * @Route(path="/health/status", methods={"GET"}, name="api.frosh.tools.health.status")
-     */
+    #[Route(path: '/health/status', name: 'api.frosh.tools.health.status', methods: ['GET'])]
     public function status(): JsonResponse
     {
         $collection = new HealthCollection();
@@ -38,9 +32,7 @@ class HealthController
         return new JsonResponse($collection);
     }
 
-    /**
-     * @Route(path="/performance/status", methods={"GET"}, name="api.frosh.tools.performance.status")
-     */
+    #[Route(path: '/performance/status', name: 'api.frosh.tools.performance.status', methods: ['GET'])]
     public function performanceStatus(): JsonResponse
     {
         $collection = new PerformanceCollection();

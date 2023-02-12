@@ -17,7 +17,7 @@ class PhpChecker implements CheckerInterface
         $this->checkPcreJitActive($collection);
     }
 
-    private function formatSize($size): string
+    private function formatSize(float $size): string
     {
         $base = log($size) / log(1024);
         $suffix = ['', 'k', 'M', 'G', 'T'][floor($base)];
@@ -31,21 +31,27 @@ class PhpChecker implements CheckerInterface
         $currentPhpVersion = \PHP_VERSION;
         if (version_compare('8.0.0', $currentPhpVersion, '>')) {
             $collection->add(
-                SettingsResult::error('php-version', 'PHP Version is outdated',
+                SettingsResult::error(
+                    'php-version',
+                    'PHP Version is outdated',
                     $currentPhpVersion,
                     'min ' . $minPhpVersion
                 )
             );
         } elseif (version_compare('8.1.0', $currentPhpVersion, '>')) {
             $collection->add(
-                SettingsResult::warning('php-version', 'PHP Version is outdated',
+                SettingsResult::warning(
+                    'php-version',
+                    'PHP Version is outdated',
                     $currentPhpVersion,
                     'min ' . $minPhpVersion
                 )
             );
         } else {
             $collection->add(
-                SettingsResult::ok('php-version', 'PHP Version',
+                SettingsResult::ok(
+                    'php-version',
+                    'PHP Version',
                     $currentPhpVersion,
                     'min ' . $minPhpVersion
                 )
@@ -56,10 +62,12 @@ class PhpChecker implements CheckerInterface
     private function checkMaxExecutionTime(HealthCollection $collection): void
     {
         $minMaxExecutionTime = 30;
-        $currentMaxExecutionTime = (int) ini_get('max_execution_time');
+        $currentMaxExecutionTime = (int) \ini_get('max_execution_time');
         if ($currentMaxExecutionTime < $minMaxExecutionTime) {
             $collection->add(
-                SettingsResult::error('php-max-execution', 'Max-Execution-Time is too low',
+                SettingsResult::error(
+                    'php-max-execution',
+                    'Max-Execution-Time is too low',
                     (string) $currentMaxExecutionTime,
                     'min ' . $minMaxExecutionTime
                 )
@@ -68,7 +76,9 @@ class PhpChecker implements CheckerInterface
             return;
         }
 
-        $collection->add(SettingsResult::ok('php-max-execution', 'Max-Execution-Time',
+        $collection->add(SettingsResult::ok(
+            'php-max-execution',
+            'Max-Execution-Time',
             (string) $currentMaxExecutionTime,
             'min ' . $minMaxExecutionTime
         ));
@@ -77,10 +87,26 @@ class PhpChecker implements CheckerInterface
     private function checkMemoryLimit(HealthCollection $collection): void
     {
         $minMemoryLimit = $this->decodePhpSize('512m');
-        $currentMemoryLimit = $this->decodePhpSize(ini_get('memory_limit'));
+        $currentMemoryLimit = \ini_get('memory_limit');
+        if ($currentMemoryLimit === false) {
+            $collection->add(
+                SettingsResult::error(
+                    'php-memory-limit',
+                    'Can not read Memory-Limit',
+                    'unknown',
+                    'min ' . $this->formatSize($minMemoryLimit)
+                )
+            );
+
+            return;
+        }
+
+        $currentMemoryLimit = $this->decodePhpSize($currentMemoryLimit);
         if ($currentMemoryLimit < $minMemoryLimit) {
             $collection->add(
-                SettingsResult::error('php-memory-limit', 'Memory-Limit is too low',
+                SettingsResult::error(
+                    'php-memory-limit',
+                    'Memory-Limit is too low',
                     $this->formatSize($currentMemoryLimit),
                     'min ' . $this->formatSize($minMemoryLimit)
                 )
@@ -89,7 +115,9 @@ class PhpChecker implements CheckerInterface
             return;
         }
 
-        $collection->add(SettingsResult::ok('php-memory-limit', 'Memory-Limit',
+        $collection->add(SettingsResult::ok(
+            'php-memory-limit',
+            'Memory-Limit',
             $this->formatSize($currentMemoryLimit),
             'min ' . $this->formatSize($minMemoryLimit)
         ));
@@ -97,7 +125,7 @@ class PhpChecker implements CheckerInterface
 
     private function checkOpCacheActive(HealthCollection $collection): void
     {
-        if (\extension_loaded('Zend OPcache') && ini_get('opcache.enable')) {
+        if (\extension_loaded('Zend OPcache') && \ini_get('opcache.enable')) {
             $collection->add(SettingsResult::ok('zend-opcache', 'Zend Opcache is active', 'active', 'active'));
 
             return;
@@ -108,7 +136,7 @@ class PhpChecker implements CheckerInterface
 
     private function checkPcreJitActive(HealthCollection $collection): void
     {
-        if (ini_get('pcre.jit')) {
+        if (\ini_get('pcre.jit')) {
             $collection->add(SettingsResult::ok('pcre-jit', 'PCRE-Jit is active', 'active', 'active'));
 
             return;
@@ -117,7 +145,7 @@ class PhpChecker implements CheckerInterface
         $collection->add(SettingsResult::warning('pcre-jit', 'PCRE-Jit is not active', 'not active', 'active'));
     }
 
-    private function decodePhpSize($val): float
+    private function decodePhpSize(string $val): float
     {
         $val = mb_strtolower(trim($val));
         $last = mb_substr($val, -1);

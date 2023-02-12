@@ -5,7 +5,7 @@
            xsi:schemaLocation="http://symfony.com/schema/dic/services http://symfony.com/schema/dic/services/services-1.0.xsd">
     <services>
         <service id="Frosh\Tools\Components\Elasticsearch\ElasticsearchManager">
-            <argument type="service" id="Elasticsearch\Client"/>
+            <argument type="service" id="OpenSearch\Client"/>
             <argument>%elasticsearch.enabled%</argument>
             <argument type="service" id="Shopware\Elasticsearch\Framework\Indexing\ElasticsearchIndexer"/>
             <argument type="service" id="messenger.bus.shopware"/>

@@ -9,16 +9,19 @@ use Frosh\Tools\Components\Health\SettingsResult;
 
 class MysqlChecker implements CheckerInterface
 {
-    private Connection $connection;
-
-    public function __construct(Connection $connection)
+    public function __construct(private readonly Connection $connection)
     {
-        $this->connection = $connection;
     }
 
     public function collect(HealthCollection $collection): void
     {
         $version = $this->connection->fetchOne('SELECT VERSION()');
+        if (!\is_string($version)) {
+            $collection->add(SettingsResult::error('mysql', 'MySQL Version cannot be checked'));
+
+            return;
+        }
+
         $extractedVersion = $this->extract($version);
 
         if (isset($extractedVersion['mariadb'])) {
@@ -36,19 +39,21 @@ class MysqlChecker implements CheckerInterface
         $collection->add(SettingsResult::error('mysql', 'MySQL Version cannot be checked'));
     }
 
-    private function checkMariadbVersion($collection, $version): void
+    private function checkMariadbVersion(HealthCollection $collection, string $version): void
     {
         $minVersion = '10.3';
 
         if (version_compare($version, $minVersion, '>=')) {
-            $collection->add(SettingsResult::ok('mysql', 'MariaDB Version',
+            $collection->add(SettingsResult::ok(
+                'mysql',
+                'MariaDB Version',
                 $version,
                 'min ' . $minVersion
             ));
         }
     }
 
-    private function checkMysqlVersion($collection, $version): void
+    private function checkMysqlVersion(HealthCollection $collection, string $version): void
     {
         $minVersion = '5.7.21';
         $brokenVersions = [
@@ -58,8 +63,10 @@ class MysqlChecker implements CheckerInterface
 
         $recommended = 'min ' . $minVersion . ', but not ' . \implode(' or ', $brokenVersions);
 
-        if (in_array($version, $brokenVersions, true)) {
-            $collection->add(SettingsResult::error('mysql', 'MySQL Version has technical problems',
+        if (\in_array($version, $brokenVersions, true)) {
+            $collection->add(SettingsResult::error(
+                'mysql',
+                'MySQL Version has technical problems',
                 $version,
                 $recommended
             ));
@@ -68,7 +75,9 @@ class MysqlChecker implements CheckerInterface
         }
 
         if (version_compare($version, $minVersion, '>=')) {
-            $collection->add(SettingsResult::ok('mysql', 'MySQL version',
+            $collection->add(SettingsResult::ok(
+                'mysql',
+                'MySQL version',
                 $version,
                 $recommended
             ));
@@ -76,7 +85,9 @@ class MysqlChecker implements CheckerInterface
             return;
         }
 
-        $collection->add(SettingsResult::error('mysql', 'MySQL Version is outdated',
+        $collection->add(SettingsResult::error(
+            'mysql',
+            'MySQL Version is outdated',
             $version,
             'min ' . $minVersion
         ));

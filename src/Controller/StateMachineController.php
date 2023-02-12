@@ -1,5 +1,4 @@
-<?php
-declare(strict_types=1);
+<?php declare(strict_types=1);
 
 namespace Frosh\Tools\Controller;
 
@@ -14,21 +13,13 @@ use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Routing\Annotation\Route;
 
-/**
- * @Route(path="/api/_action/frosh-tools", defaults={"_routeScope"={"api"}, "_acl"={"frosh_tools:read"}})
- */
-final class StateMachineController
+#[Route(path: '/api/_action/frosh-tools', defaults: ['_routeScope' => ['api'], '_acl' => ['frosh_tools:read']])]final class StateMachineController
 {
-    private EntityRepository $stateMachineRepository;
-
-    public function __construct(EntityRepository $stateMachineRepository)
+    public function __construct(private EntityRepository $stateMachineRepository)
     {
-        $this->stateMachineRepository = $stateMachineRepository;
     }
 
-    /**
-     * @Route(path="/state-machines/load", methods={"GET"}, name="api.frosh.tools.state-machines.load")
-     */
+    #[Route(path: '/state-machines/load', name: 'api.frosh.tools.state-machines.load', methods: ['GET'])]
     public function load(Request $request): JsonResponse
     {
         $stateMachineType = $request->query->get('stateMachine');

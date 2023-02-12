@@ -15,7 +15,9 @@ Component.register('frosh-tools-tab-scheduled', {
         return {
             items: null,
             showResetModal: false,
-            isLoading: true
+            isLoading: true,
+            page: 1,
+            limit: 25,
         };
     },
 
@@ -69,7 +71,7 @@ Component.register('frosh-tools-tab-scheduled', {
         },
 
         async createdComponent() {
-            const criteria = new Criteria;
+            const criteria = new Criteria(this.page, this.limit);
             criteria.addSorting(Criteria.sort('nextExecutionTime', 'ASC'));
             this.items = await this.scheduledRepository.search(criteria, Shopware.Context.api);
             this.isLoading = false;

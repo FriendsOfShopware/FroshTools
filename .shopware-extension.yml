@@ -47,7 +47,6 @@ store:
             - Geplanter Task-Manager
             - Warteschlangen-Manager
             - Log-Viewer
-            - Feature Flags Manager
         en:
             - System Status
             - Cache manager
@@ -55,7 +54,6 @@ store:
             - Queue Manager
             - Task Logging
             - Log viewer
-            - Feature Flags Manager
     faq:
         de: []
         en: []

@@ -2,17 +2,17 @@
 
 namespace Frosh\Tools\Components\Elasticsearch;
 
+use Doctrine\DBAL\ArrayParameterType;
 use Doctrine\DBAL\Connection;
-use ONGR\ElasticsearchDSL\BuilderInterface;
-use ONGR\ElasticsearchDSL\Query\Compound\BoolQuery;
-use ONGR\ElasticsearchDSL\Query\FullText\MatchPhrasePrefixQuery;
-use ONGR\ElasticsearchDSL\Query\FullText\MatchQuery;
-use ONGR\ElasticsearchDSL\Query\TermLevel\WildcardQuery;
+use OpenSearchDSL\BuilderInterface;
+use OpenSearchDSL\Query\Compound\BoolQuery;
+use OpenSearchDSL\Query\FullText\MatchPhrasePrefixQuery;
+use OpenSearchDSL\Query\FullText\MatchQuery;
+use OpenSearchDSL\Query\TermLevel\WildcardQuery;
 use Shopware\Core\Framework\Context;
 use Shopware\Core\Framework\DataAbstractionLayer\Dbal\EntityDefinitionQueryHelper;
 use Shopware\Core\Framework\DataAbstractionLayer\Dbal\QueryBuilder;
 use Shopware\Core\Framework\DataAbstractionLayer\Doctrine\FetchModeHelper;
-use Shopware\Core\Framework\DataAbstractionLayer\EntityCollection;
 use Shopware\Core\Framework\DataAbstractionLayer\EntityDefinition;
 use Shopware\Core\Framework\DataAbstractionLayer\Field\AssociationField;
 use Shopware\Core\Framework\DataAbstractionLayer\Field\BoolField;
@@ -31,30 +31,19 @@ use Shopware\Elasticsearch\Framework\AbstractElasticsearchDefinition;
 class EsProductDefinition extends AbstractElasticsearchDefinition
 {
     protected AbstractElasticsearchDefinition $inner;
-    protected Connection $connection;
-    protected array $fields;
-    protected int $minimumShouldMatch;
 
     public function __construct(
         AbstractElasticsearchDefinition $elasticsearchDefinition,
-        Connection $connection,
-        array $fields,
-        int $minimumShouldMatch
+        protected Connection $connection,
+        protected array $fields,
+        protected int $minimumShouldMatch
     ) {
         $this->inner = $elasticsearchDefinition;
-        $this->connection = $connection;
-        $this->fields = $fields;
-        $this->minimumShouldMatch = $minimumShouldMatch;
     }
 
     public function getEntityDefinition(): EntityDefinition
     {
         return $this->inner->getEntityDefinition();
-    }
-
-    public function extendEntities(EntityCollection $entityCollection): EntityCollection
-    {
-        return $entityCollection;
     }
 
     public function fetch(array $ids, Context $context): array
@@ -103,14 +92,14 @@ class EsProductDefinition extends AbstractElasticsearchDefinition
             ':productTranslationQuery:' => $translationQuery->getSQL(),
         ];
 
-        $additionalData = $this->connection->fetchAll(
+        $additionalData = $this->connection->fetchAllAssociative(
             \str_replace(\array_keys($replacements), $replacements, $query->getSQL()),
             \array_merge([
                 'ids' => $ids,
                 'liveVersionId' => Uuid::fromHexToBytes($context->getVersionId()),
             ], $translationQuery->getParameters()),
             [
-                'ids' => Connection::PARAM_STR_ARRAY,
+                'ids' => ArrayParameterType::STRING,
             ]
         );
 
@@ -145,39 +134,6 @@ class EsProductDefinition extends AbstractElasticsearchDefinition
         return $data;
     }
 
-    private function convertValue(Field $field, $value)
-    {
-        switch (true) {
-            case $field instanceof ListField:
-                if ($value === null) {
-                    return [];
-                }
-
-                return \array_values(\json_decode($value, true, 512, \JSON_THROW_ON_ERROR));
-            case $field instanceof JsonField:
-                if ($value === null) {
-                    return null;
-                }
-
-                return \json_decode($value, true, 512, \JSON_THROW_ON_ERROR);
-            case $field instanceof BoolField:
-                return (bool) $value;
-            case $field instanceof IntField:
-                return (int) $value;
-            case $field instanceof FloatField:
-                return (float) $value;
-            case $field instanceof IdField:
-            case $field instanceof FkField:
-                if ($value === null) {
-                    return null;
-                }
-
-                return Uuid::fromBytesToHex($value);
-            default:
-                return $value;
-        }
-    }
-
     public function getMapping(Context $context): array
     {
         $mapping = $this->inner->getMapping($context);
@@ -201,17 +157,48 @@ class EsProductDefinition extends AbstractElasticsearchDefinition
         $query->addParameter('minimum_should_match', $this->minimumShouldMatch);
 
         foreach ($this->fields as $field) {
-            if ($field['query'] !== []) {
-                foreach ($field['query'] as $queryItem) {
-                    $query->add(
-                        $this->buildQuery($field['name'], $queryItem, $term),
-                        $queryItem['bool_type']
-                    );
-                }
+            foreach ($field['query'] as $queryItem) {
+                $query->add(
+                    $this->buildQuery($field['name'], $queryItem, $term),
+                    $queryItem['bool_type']
+                );
             }
         }
 
         return $query;
+    }
+
+    private function convertValue(Field $field, $value)
+    {
+        switch (true) {
+            case $field instanceof ListField:
+                if ($value === null) {
+                    return [];
+                }
+
+                return \array_values(\json_decode((string) $value, true, 512, \JSON_THROW_ON_ERROR));
+            case $field instanceof JsonField:
+                if ($value === null) {
+                    return null;
+                }
+
+                return \json_decode((string) $value, true, 512, \JSON_THROW_ON_ERROR);
+            case $field instanceof BoolField:
+                return (bool) $value;
+            case $field instanceof IntField:
+                return (int) $value;
+            case $field instanceof FloatField:
+                return (float) $value;
+            case $field instanceof IdField:
+            case $field instanceof FkField:
+                if ($value === null) {
+                    return null;
+                }
+
+                return Uuid::fromBytesToHex($value);
+            default:
+                return $value;
+        }
     }
 
     private function buildCoalesce(array $fields, Context $context): string
@@ -296,7 +283,7 @@ class EsProductDefinition extends AbstractElasticsearchDefinition
 
         if ($obj instanceof TranslatedField) {
             $field['translateable'] = true;
-            $obj = $definition->getTranslationDefinition()->getField($field['name']);
+            $obj = $definition->getTranslationDefinition()?->getField($field['name']);
 
             return [$obj, $field];
         }
@@ -306,22 +293,18 @@ class EsProductDefinition extends AbstractElasticsearchDefinition
 
     private function getFields(): array
     {
-        return \array_map([$this, 'getField'], $this->fields);
+        return \array_map(fn (array $field): array => $this->getField($field), $this->fields);
     }
 
     private function buildQuery(string $field, array $queryItem, string $term): BuilderInterface
     {
         $field = $queryItem['field'] ?? $field;
 
-        switch ($queryItem['type']) {
-            case 'match':
-                return new MatchQuery($field, $term, $queryItem['options']);
-            case 'match_phrase_prefix':
-                return new MatchPhrasePrefixQuery($field, $term, $queryItem['options']);
-            case 'wildcard':
-                return new WildcardQuery($field, '*' . \mb_strtolower($term) . '*', $queryItem['options']);
-            default:
-                throw new \RuntimeException(\sprintf('Type %s is not supported', $queryItem['type']));
-        }
+        return match ($queryItem['type']) {
+            'match' => new MatchQuery($field, $term, $queryItem['options']),
+            'match_phrase_prefix' => new MatchPhrasePrefixQuery($field, $term, $queryItem['options']),
+            'wildcard' => new WildcardQuery($field, '*' . \mb_strtolower($term) . '*', $queryItem['options']),
+            default => throw new \RuntimeException(\sprintf('Type %s is not supported', $queryItem['type'])),
+        };
     }
 }

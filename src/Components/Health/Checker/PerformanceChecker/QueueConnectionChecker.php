@@ -8,18 +8,17 @@ use Frosh\Tools\Components\Health\SettingsResult;
 
 class QueueConnectionChecker implements CheckerInterface
 {
-    protected string $connection;
-
-    public function __construct(string $connection)
+    public function __construct(protected string $connection)
     {
-        $this->connection = $connection;
     }
 
     public function collect(HealthCollection $collection): void
     {
-        if (\str_starts_with($this->connection, 'enqueue://default')) {
+        if (\str_starts_with($this->connection, 'doctrine://default')) {
             $collection->add(
-                SettingsResult::warning('queue.adapter', 'The default queue storage in database does not scale well with multiple workers',
+                SettingsResult::warning(
+                    'queue.adapter',
+                    'The default queue storage in database does not scale well with multiple workers',
                     'default',
                     'redis or rabbitmq',
                     'https://developer.shopware.com/docs/guides/hosting/infrastructure/message-queue#transport-rabbitmq-example'
@@ -30,8 +29,10 @@ class QueueConnectionChecker implements CheckerInterface
         }
 
         $collection->add(
-            SettingsResult::ok('queue.adapter', 'Configured queue storage is ok for multiple workers',
-                \parse_url($this->connection, \PHP_URL_SCHEME),
+            SettingsResult::ok(
+                'queue.adapter',
+                'Configured queue storage is ok for multiple workers',
+                (string) \parse_url($this->connection, \PHP_URL_SCHEME),
                 'redis or rabbitmq',
             )
         );
