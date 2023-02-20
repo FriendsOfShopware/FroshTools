@@ -44,8 +44,6 @@ final class StateMachineController
         $exporter = new Plantuml();
         $generatedPlantuml = $exporter->export($stateMachine, $title);
 
-        FroshTools::classLoader();
-
         $response = new JsonResponse();
         $encode = Planuml::encodep($generatedPlantuml);
         $response->setData(['svg' => '//www.plantuml.com/plantuml/svg/' . $encode]);

@@ -26,22 +26,4 @@ class FroshTools extends Plugin
     {
         return new FroshToolsExtension();
     }
-
-    public static function classLoader(): void
-    {
-        $file = __DIR__ . '/../vendor/autoload.php';
-        if (!is_file($file)) {
-            return;
-        }
-
-        /** @noinspection UsingInclusionOnceReturnValueInspection */
-        $classLoader = require_once $file;
-
-        if (!$classLoader instanceof ClassLoader) {
-            return;
-        }
-
-        $classLoader->unregister();
-        $classLoader->register(false);
-    }
 }
