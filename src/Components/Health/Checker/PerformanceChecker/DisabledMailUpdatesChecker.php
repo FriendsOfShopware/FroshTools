@@ -9,15 +9,13 @@ use Symfony\Component\DependencyInjection\ParameterBag\ParameterBagInterface;
 
 class DisabledMailUpdatesChecker implements CheckerInterface
 {
-    private ParameterBagInterface $params;
-
-    public function __construct(ParameterBagInterface $params)
+    public function __construct(private readonly ParameterBagInterface $params)
     {
-        $this->params = $params;
     }
 
     public function collect(HealthCollection $collection): void
     {
+        /** @phpstan-ignore-next-line  */
         if (!$this->params->has('shopware.mail.update_mail_variables_on_send')) {
             return;
         }

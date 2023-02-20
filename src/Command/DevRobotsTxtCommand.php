@@ -2,25 +2,23 @@
 
 namespace Frosh\Tools\Command;
 
+use Symfony\Component\Console\Attribute\AsCommand;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Console\Style\SymfonyStyle;
 
+#[AsCommand('frosh:dev:robots-txt')]
 class DevRobotsTxtCommand extends Command
 {
-    private string $envPath;
-
-    public function __construct(string $envPath)
+    public function __construct(private readonly string $envPath)
     {
         parent::__construct();
-        $this->envPath = $envPath;
     }
 
     protected function configure(): void
     {
-        $this->setName('frosh:dev:robots-txt');
         $this->addOption('remove', 'r', InputOption::VALUE_NONE, 'Return to original file - delete input from this command');
         $this->setDescription('For testshops - add/change robots.txt to stop crawers');
     }
@@ -48,7 +46,7 @@ class DevRobotsTxtCommand extends Command
             return self::SUCCESS;
         }
 
-        $robotsFile = fopen($robotsPath, 'w');
+        $robotsFile = fopen($robotsPath, 'wb');
         $robotsContent = "#soc\nUser-agent: *\nDisallow: /\n#eoc";
         fwrite($robotsFile, $robotsContent);
         fclose($robotsFile);

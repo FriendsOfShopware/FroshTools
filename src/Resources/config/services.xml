@@ -63,11 +63,6 @@
             <argument type="service" id="cache.http"/>
         </service>
 
-        <service id="Frosh\Tools\Controller\CacheController" public="true">
-            <argument>%kernel.cache_dir%</argument>
-            <argument type="service" id="Frosh\Tools\Components\CacheRegistry"/>
-        </service>
-
         <service id="Frosh\Tools\Controller\QueueController" public="true">
             <argument type="service" id="Doctrine\DBAL\Connection"/>
             <argument type="service" id="shopware.increment.gateway.registry"/>
@@ -127,11 +122,6 @@
             <tag name="frosh_tools.performance_checker"/>
         </service>
 
-        <service id="Frosh\Tools\Components\Health\Checker\PerformanceChecker\PublicFilesystemChecker">
-            <argument>%shopware.filesystem.public.type%</argument>
-            <tag name="frosh_tools.performance_checker"/>
-        </service>
-
         <service id="Frosh\Tools\Components\Health\Checker\PerformanceChecker\MailOverQueueChecker">
             <argument>%frosh_tools.mail_over_queue%</argument>
             <tag name="frosh_tools.performance_checker"/>
@@ -181,16 +171,6 @@
             <factory service="Shopware\Core\Framework\Log\LoggerFactory" method="createRotating"/>
             <argument>task_logging</argument>
             <argument>14</argument>
-        </service>
-
-        <service id="Frosh\Tools\Controller\ShopwareFilesController" public="true">
-            <argument>%kernel.shopware_version%</argument>
-            <argument>%kernel.project_dir%</argument>
-            <argument>%frosh_tools.file_checker.exclude_files%</argument>
-        </service>
-
-        <service id="Frosh\Tools\Controller\FeatureFlagController" public="true">
-            <argument>%kernel.project_dir%</argument>
         </service>
     </services>
 </container>

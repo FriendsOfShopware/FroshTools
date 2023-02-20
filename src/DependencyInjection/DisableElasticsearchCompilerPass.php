@@ -2,9 +2,9 @@
 
 namespace Frosh\Tools\DependencyInjection;
 
-use Elasticsearch\Client;
 use Frosh\Tools\Components\Elasticsearch\DisabledElasticsearchManager;
 use Frosh\Tools\Components\Elasticsearch\ElasticsearchManager;
+use OpenSearch\Client;
 use Symfony\Component\DependencyInjection\Compiler\CompilerPassInterface;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
 

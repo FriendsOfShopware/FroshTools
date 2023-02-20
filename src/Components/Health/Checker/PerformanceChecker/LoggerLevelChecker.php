@@ -6,11 +6,12 @@ use Frosh\Tools\Components\Health\Checker\CheckerInterface;
 use Frosh\Tools\Components\Health\HealthCollection;
 use Frosh\Tools\Components\Health\SettingsResult;
 use Monolog\Handler\AbstractHandler;
+use Monolog\Level;
 use Monolog\Logger;
 
 class LoggerLevelChecker implements CheckerInterface
 {
-    private int $businessEventHandlerLevel;
+    private readonly Level $businessEventHandlerLevel;
 
     private string $url = 'https://developer.shopware.com/docs/guides/hosting/performance/performance-tweaks#logging';
 
@@ -28,16 +29,20 @@ class LoggerLevelChecker implements CheckerInterface
 
     private function checkBusinessEventHandlerLevel(): SettingsResult
     {
-        if ($this->businessEventHandlerLevel >= Logger::WARNING) {
-            return SettingsResult::ok('business_logger', 'BusinessEventHandler does not log infos',
-                Logger::getLevelName($this->businessEventHandlerLevel),
+        if ($this->businessEventHandlerLevel->isHigherThan(Level::Warning)) {
+            return SettingsResult::ok(
+                'business_logger',
+                'BusinessEventHandler does not log infos',
+                Logger::toMonologLevel($this->businessEventHandlerLevel)->getName(),
                 'min WARNING',
                 $this->url
             );
         }
 
-        return SettingsResult::warning('business_logger', 'BusinessEventHandler is logging infos',
-            Logger::getLevelName($this->businessEventHandlerLevel),
+        return SettingsResult::warning(
+            'business_logger',
+            'BusinessEventHandler is logging infos',
+            Logger::toMonologLevel($this->businessEventHandlerLevel)->getName(),
             'min WARNING',
             $this->url
         );

@@ -8,7 +8,7 @@ class Planuml
     {
         $compressed = gzdeflate($puml, 9);
 
-        if (false === $compressed) {
+        if ($compressed === false) {
             throw new \RuntimeException('Error while compressing PlantUml diagram.');
         }
 
@@ -22,13 +22,16 @@ class Planuml
         for ($i = 0; $i < $length; $i += 3) {
             switch ($length) {
                 case $i + 1:
-                    $encoded .= self::append3bytes(ord($compressed[$i]), 0, 0);
+                    $encoded .= self::append3bytes(\ord($compressed[$i]), 0, 0);
+
                     break;
                 case $i + 2:
-                    $encoded .= self::append3bytes(ord($compressed[$i]), ord($compressed[$i + 1]), 0);
+                    $encoded .= self::append3bytes(\ord($compressed[$i]), \ord($compressed[$i + 1]), 0);
+
                     break;
                 default:
-                    $encoded .= self::append3bytes(ord($compressed[$i]), ord($compressed[$i + 1]), ord($compressed[$i + 2]));
+                    $encoded .= self::append3bytes(\ord($compressed[$i]), \ord($compressed[$i + 1]), \ord($compressed[$i + 2]));
+
                     break;
             }
         }
@@ -45,23 +48,22 @@ class Planuml
         $r = self::encode6bit($c1 & 0x3F);
         $r .= self::encode6bit($c2 & 0x3F);
         $r .= self::encode6bit($c3 & 0x3F);
-        $r .= self::encode6bit($c4 & 0x3F);
 
-        return $r;
+        return $r . self::encode6bit($c4 & 0x3F);
     }
 
     public static function encode6bit(int $b): string
     {
         if ($b < 10) {
-            return chr(48 + $b);
+            return \chr(48 + $b);
         }
         $b -= 10;
         if ($b < 26) {
-            return chr(65 + $b);
+            return \chr(65 + $b);
         }
         $b -= 26;
         if ($b < 26) {
-            return chr(97 + $b);
+            return \chr(97 + $b);
         }
         $b -= 26;
         if ($b === 0) {

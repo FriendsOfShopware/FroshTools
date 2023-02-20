@@ -8,11 +8,8 @@ use Frosh\Tools\Components\Health\SettingsResult;
 
 class ProductionChecker implements CheckerInterface
 {
-    private string $environment;
-
-    public function __construct(string $environment)
+    public function __construct(private readonly string $environment)
     {
-        $this->environment = $environment;
     }
 
     public function collect(HealthCollection $collection): void

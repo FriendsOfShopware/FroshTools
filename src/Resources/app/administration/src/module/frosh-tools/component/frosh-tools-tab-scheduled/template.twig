@@ -1,8 +1,14 @@
 <sw-card-view>
-    <sw-card class="frosh-tools-tab-scheduled__tasks-card" :title="$tc('frosh-tools.tabs.scheduledTaskOverview.title')" :isLoading="isLoading" :large="true">
+    <sw-card
+            class="frosh-tools-tab-scheduled__tasks-card"
+            :title="$tc('frosh-tools.tabs.scheduledTaskOverview.title')"
+            :isLoading="isLoading"
+            :large="true"
+            positionIdentifier="frosh-tools-tab-scheduled"
+    >
 
         <template #toolbar>
-            <sw-button variant="ghost" @click="refresh"><sw-icon :small="true" name="default-arrow-360-left"></sw-icon></sw-button>
+            <sw-button variant="ghost" @click="refresh"><sw-icon :small="true" name="regular-undo"></sw-icon></sw-button>
             <sw-button variant="primary" @click="registerScheduledTasks">{{ $tc('frosh-tools.scheduledTasksRegisterStarted') }}</sw-button>
         </template>
 

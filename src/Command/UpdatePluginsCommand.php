@@ -3,6 +3,7 @@
 namespace Frosh\Tools\Command;
 
 use Symfony\Bundle\FrameworkBundle\Console\Application;
+use Symfony\Component\Console\Attribute\AsCommand;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\ArrayInput;
 use Symfony\Component\Console\Input\InputInterface;
@@ -12,16 +13,12 @@ use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Console\Style\SymfonyStyle;
 use Symfony\Component\HttpKernel\KernelInterface;
 
+#[AsCommand('frosh:plugin:update', 'Check for available plugin updates and install them')]
 class UpdatePluginsCommand extends Command
 {
-    public static $defaultName = 'frosh:plugin:update';
-    public static $defaultDescription = 'Check for available plugin updates and install them';
-    private KernelInterface $kernel;
-
-    public function __construct(KernelInterface $kernel)
+    public function __construct(private readonly KernelInterface $kernel)
     {
         parent::__construct();
-        $this->kernel = $kernel;
     }
 
     protected function execute(InputInterface $input, OutputInterface $output): int
@@ -42,7 +39,8 @@ class UpdatePluginsCommand extends Command
         $application->run($pluginRefresh, new NullOutput());
         $application->run($pluginList, $runnerOutput);
 
-        $plugins = \json_decode($runnerOutput->fetch(), true);
+        /** @var array<string, array{name: string, upgradeVersion: string|null}> $plugins */
+        $plugins = \json_decode($runnerOutput->fetch(), true, 512, \JSON_THROW_ON_ERROR);
 
         $upgradablePlugins = [];
 
@@ -54,7 +52,7 @@ class UpdatePluginsCommand extends Command
 
         $io = new SymfonyStyle($input, $output);
 
-        if (count($upgradablePlugins) === 0) {
+        if ($upgradablePlugins === []) {
             $io->success('No updates available');
 
             return self::SUCCESS;

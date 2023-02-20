@@ -1,5 +1,10 @@
 <sw-card-view>
-    <sw-card :title="$tc('frosh-tools.tabs.elasticsearch.title')" :large="true" :isLoading="isLoading">
+    <sw-card
+            :title="$tc('frosh-tools.tabs.elasticsearch.title')"
+            :large="true"
+            :isLoading="isLoading"
+            positionIdentifier="frosh-tools-tab-elasticsearch"
+    >
         <sw-alert variant="error" v-if="!isLoading && !isActive">Elasticsearch is not enabled</sw-alert>
 
         <div v-if="!isLoading && isActive">
@@ -9,10 +14,15 @@
         </div>
     </sw-card>
 
-    <sw-card title="Indices" v-if="!isLoading && isActive" :large="true">
+    <sw-card
+            title="Indices"
+            v-if="!isLoading && isActive"
+            :large="true"
+            positionIdentifier="frosh-tools-tab-elasticsearch-indices"
+    >
         <template #toolbar>
             <!-- @todo: Make the refresh button fancy -->
-            <sw-button variant="ghost" @click="createdComponent"><sw-icon :small="true" name="default-arrow-360-left"></sw-icon></sw-button>
+            <sw-button variant="ghost" @click="createdComponent"><sw-icon :small="true" name="regular-undo"></sw-icon></sw-button>
         </template>
 
         <sw-data-grid
@@ -41,7 +51,12 @@
         </sw-data-grid>
     </sw-card>
 
-    <sw-card title="Actions" v-if="!isLoading && isActive" :large="true">
+    <sw-card
+            title="Actions"
+            v-if="!isLoading && isActive"
+            :large="true"
+            positionIdentifier="frosh-tools-tab-elasticsearch-health"
+    >
         <sw-button @click="reindex" variant="primary">Reindex</sw-button>
         <sw-button @click="switchAlias">Trigger alias switching</sw-button>
         <sw-button @click="flushAll">Flush all indices</sw-button>
@@ -50,7 +65,12 @@
         <sw-button @click="resetElasticsearch" variant="danger">Delete all indices</sw-button>
     </sw-card>
 
-    <sw-card title="Elasticsearch Console" v-if="!isLoading && isActive" :large="true">
+    <sw-card
+            title="Elasticsearch Console"
+            v-if="!isLoading && isActive"
+            :large="true"
+            positionIdentifier="frosh-tools-tab-elasticsearch-console"
+    >
         <sw-code-editor
             completionMode="text"
             mode="twig"

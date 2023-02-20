@@ -3,22 +3,19 @@
 namespace Frosh\Tools\Command;
 
 use Frosh\Tools\Components\Environment\EnvironmentManager;
+use Symfony\Component\Console\Attribute\AsCommand;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Console\Style\SymfonyStyle;
 
+#[AsCommand('frosh:env:set', 'Set an environment variable')]
 class EnvSetCommand extends Command
 {
-    public static $defaultName = 'frosh:env:set';
-    public static $defaultDescription = 'Set an environment variable';
-    private string $envPath;
-
-    public function __construct(string $envPath)
+    public function __construct(private readonly string $envPath)
     {
         parent::__construct();
-        $this->envPath = $envPath;
     }
 
     public function configure(): void
@@ -31,8 +28,17 @@ class EnvSetCommand extends Command
     {
         $manager = new EnvironmentManager();
         $file = $manager->read($this->envPath);
+        $variable = $input->getArgument('variable');
+        if (!\is_string($variable)) {
+            throw new \RuntimeException('Variable name must be a string');
+        }
 
-        $file->set($input->getArgument('variable'), $input->getArgument('value'));
+        $value = $input->getArgument('value');
+        if (!\is_string($value)) {
+            throw new \RuntimeException('Variable value must be a string');
+        }
+
+        $file->set($variable, $value);
         $manager->save($this->envPath, $file);
 
         $io = new SymfonyStyle($input, $output);

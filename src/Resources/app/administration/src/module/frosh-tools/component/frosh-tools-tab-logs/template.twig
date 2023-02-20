@@ -1,8 +1,14 @@
 <sw-card-view>
-    <sw-card class="frosh-tools-tab-logs__logs-card" :title="$tc('frosh-tools.tabs.logs.title')" :isLoading="isLoading" :large="true">
+    <sw-card
+            class="frosh-tools-tab-logs__logs-card"
+            :title="$tc('frosh-tools.tabs.logs.title')"
+            :isLoading="isLoading"
+            :large="true"
+            positionIdentifier="frosh-tools-tab-logs"
+    >
         <template #toolbar>
             <!-- @todo: Make the refresh button fancy -->
-            <sw-button variant="ghost" @click="refresh"><sw-icon :small="true" name="default-arrow-360-left"></sw-icon></sw-button>
+            <sw-button variant="ghost" @click="refresh"><sw-icon :small="true" name="regular-undo"></sw-icon></sw-button>
             <sw-single-select
                 :options="logFiles"
                 :isLoading="isLoading"
@@ -23,7 +29,7 @@
                 {{ item.date | date({hour: '2-digit', minute: '2-digit', second: '2-digit'}) }}
             </template>
             <template slot="column-message" slot-scope="{ item }">
-                <a @click="showInfoModal(item)">{{ item.message | raw }}</a>
+                <a @click="showInfoModal(item)">{{ item.message }}</a>
             </template>
         </sw-data-grid>
 

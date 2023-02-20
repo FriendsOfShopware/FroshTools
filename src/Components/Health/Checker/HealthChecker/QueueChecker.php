@@ -9,18 +9,15 @@ use Frosh\Tools\Components\Health\SettingsResult;
 
 class QueueChecker implements CheckerInterface
 {
-    private Connection $connection;
-
-    public function __construct(Connection $connection)
+    public function __construct(private readonly Connection $connection)
     {
-        $this->connection = $connection;
     }
 
     public function collect(HealthCollection $collection): void
     {
         $result = SettingsResult::ok('queue', 'Queues working good');
 
-        $oldestMessage = (int) $this->connection->fetchOne('SELECT IFNULL(MIN(published_at), 0) FROM enqueue');
+        $oldestMessage = (int) $this->connection->fetchOne('SELECT IFNULL(MIN(created_at), 0) FROM messenger_messages');
         $oldestMessage /= 10000;
         $minutes = 15;
 

@@ -6,11 +6,8 @@ use Symfony\Component\HttpKernel\Event\ResponseEvent;
 
 final class AdminInfoSubscriber
 {
-    private bool $elasticsearchEnabled;
-
-    public function __construct(bool $elasticsearchEnabled)
+    public function __construct(private bool $elasticsearchEnabled)
     {
-        $this->elasticsearchEnabled = $elasticsearchEnabled;
     }
 
     public function __invoke(ResponseEvent $event): void

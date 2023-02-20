@@ -20,7 +20,7 @@ final class LineReader
      */
     public static function readLines(string $filePath): \Generator
     {
-        if (!$fh = @fopen($filePath, 'r')) {
+        if (!$fh = @fopen($filePath, 'rb')) {
             throw new \InvalidArgumentException('Cannot open file for reading: ' . $filePath);
         }
 
@@ -32,11 +32,14 @@ final class LineReader
      */
     public static function readLinesBackwards(string $filePath): \Generator
     {
-        if (!$fh = @fopen($filePath, 'r')) {
+        if (!$fh = @fopen($filePath, 'rb')) {
             throw new \InvalidArgumentException('Cannot open file for reading: ' . $filePath);
         }
 
         $size = filesize($filePath);
+        if (!$size) {
+            throw new \InvalidArgumentException('Cannot read file size: ' . $filePath);
+        }
 
         return self::readBackwards($fh, $size);
     }
@@ -76,11 +79,13 @@ final class LineReader
         while (true) {
             if (isset($buffer[1])) { // faster than count($buffer) > 1
                 yield array_pop($buffer);
+
                 continue;
             }
 
             if ($pos === 0) {
                 yield array_pop($buffer);
+
                 break;
             }
 

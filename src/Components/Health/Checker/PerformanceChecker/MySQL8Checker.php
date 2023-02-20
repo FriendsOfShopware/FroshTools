@@ -9,16 +9,17 @@ use Frosh\Tools\Components\Health\SettingsResult;
 
 class MySQL8Checker implements CheckerInterface
 {
-    private Connection $connection;
-
-    public function __construct(Connection $connection)
+    public function __construct(private readonly Connection $connection)
     {
-        $this->connection = $connection;
     }
 
     public function collect(HealthCollection $collection): void
     {
         $version = $this->connection->fetchOne('SELECT VERSION()');
+        if (!\is_string($version)) {
+            return;
+        }
+
         $extractedVersion = $this->extract($version);
 
         if (isset($extractedVersion['mariadb'])) {
