@@ -2,7 +2,6 @@
 
 namespace Frosh\Tools;
 
-use Composer\Autoload\ClassLoader;
 use Frosh\Tools\Components\Messenger\TaskLoggingMiddlewareCompilerPass;
 use Frosh\Tools\DependencyInjection\CacheCompilerPass;
 use Frosh\Tools\DependencyInjection\DisableElasticsearchCompilerPass;
