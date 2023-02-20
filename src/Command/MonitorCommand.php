@@ -72,7 +72,7 @@ class MonitorCommand extends Command
             $data->set('senderName', 'Froshtools | Admin');
 
             $htmlMailContent = <<<'MAIL'
-                <div style="font-family:arial; font-size:12px;">
+                <div>
                     <p>
                         Dear Admin,<br/>
                         <br/>
