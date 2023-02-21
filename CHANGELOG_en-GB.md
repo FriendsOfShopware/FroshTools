@@ -117,3 +117,7 @@
 # 1.0.0
 
 * Shopware 6.5 compatibility
+
+# 1.0.1
+
+* Fixed cache controller
