@@ -121,3 +121,7 @@
 # 1.0.1
 
 * Fixed cache controller
+
+# 1.0.2
+
+* Fix icon in administration module
