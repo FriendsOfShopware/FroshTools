@@ -15,7 +15,7 @@ Shopware.Module.register('frosh-tools', {
     description: '',
     color: '#303A4F',
 
-    icon: 'regular-dashboard',
+    icon: 'regular-cog',
 
     routes: {
         index: {
@@ -86,7 +86,7 @@ Shopware.Module.register('frosh-tools', {
         {
             group: 'plugins',
             to: 'frosh.tools.index.cache',
-            icon: 'default-action-settings',
+            icon: 'regular-cog',
             name: 'frosh-tools.title'
         }
     ]
