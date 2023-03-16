@@ -63,7 +63,7 @@ class PhpChecker implements CheckerInterface
     {
         $minMaxExecutionTime = 30;
         $currentMaxExecutionTime = (int) \ini_get('max_execution_time');
-        if ($currentMaxExecutionTime < $minMaxExecutionTime && $currentMaxExecutionTime != 0) {
+        if ($currentMaxExecutionTime < $minMaxExecutionTime && $currentMaxExecutionTime !== 0) {
             $collection->add(
                 SettingsResult::error(
                     'php-max-execution',
