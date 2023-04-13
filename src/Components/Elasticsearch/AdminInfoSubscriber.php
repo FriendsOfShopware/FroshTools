@@ -6,7 +6,7 @@ use Symfony\Component\HttpKernel\Event\ResponseEvent;
 
 final class AdminInfoSubscriber
 {
-    public function __construct(private bool $elasticsearchEnabled)
+    public function __construct(private readonly bool $elasticsearchEnabled)
     {
     }
 

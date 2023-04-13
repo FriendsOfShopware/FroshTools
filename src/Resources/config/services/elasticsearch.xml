@@ -19,13 +19,6 @@
             <argument type="service" id="Frosh\Tools\Components\Elasticsearch\ElasticsearchManager"/>
         </service>
 
-        <service id="Frosh\Tools\Components\Elasticsearch\EsProductDefinition" decorates="Shopware\Elasticsearch\Product\ElasticsearchProductDefinition" decoration-on-invalid="ignore">
-            <argument type="service" id="Frosh\Tools\Components\Elasticsearch\EsProductDefinition.inner"/>
-            <argument type="service" id="Doctrine\DBAL\Connection"/>
-            <argument>%frosh_tools.elasticsearch.product_fields%</argument>
-            <argument>%frosh_tools.elasticsearch.product_minimum_should_match%</argument>
-        </service>
-
         <service id="Frosh\Tools\Components\Elasticsearch\AdminInfoSubscriber">
             <argument>%frosh_tools.elasticsearch.enabled%</argument>
             <tag name="kernel.event_listener"/>
