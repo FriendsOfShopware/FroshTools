@@ -1,0 +1,6 @@
+frosh_tools:
+    elasticsearch:
+        product_fields:
+    file_checker:
+    storefront:
+        lightningcss:
