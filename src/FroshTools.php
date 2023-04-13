@@ -59,6 +59,7 @@ class FroshTools extends Plugin
         if ($this->container->getParameter('frosh_tools.storefront.lightningcss.enabled')) {
             Compiler::setApiURL($this->container->getParameter('frosh_tools.storefront.lightningcss.api_url'));
             Compiler::setBrowserList($this->container->getParameter('frosh_tools.storefront.lightningcss.browserlist'));
+            Compiler::setLogger($this->container->get('logger'));
 
             if (!class_exists('\Padaliyajay\PHPAutoprefixer\Autoprefixer', false)) {
                 class_alias(Compiler::class, '\Padaliyajay\PHPAutoprefixer\Autoprefixer');

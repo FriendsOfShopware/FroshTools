@@ -2,10 +2,13 @@
 
 namespace Frosh\Tools\Components\Lightningcss;
 
+use Psr\Log\LoggerInterface;
+
 class Compiler
 {
     private static string $apiUrl = 'https://27uhytumuulrysydgmak3tlsgu0giwff.lambda-url.eu-central-1.on.aws';
     private static array $browserlist = [];
+    private static LoggerInterface $logger;
 
     private string $cssCode;
 
@@ -33,11 +36,13 @@ class Compiler
         curl_close($ch);
 
         if ($response === false) {
-            throw new \RuntimeException('Could not connect to lightningcss api');
+            self::$logger->critical('Could not connect to lightningcss api');
+            return $this->cssCode;
         }
 
         if (curl_getinfo($ch, CURLINFO_HTTP_CODE) !== 200) {
-            throw new \RuntimeException('CSS transform failed: ' . $response);
+            self::$logger->critical('CSS transform failed: ' . $response);
+            return $this->cssCode;
         }
 
         /** @var array{compiled: string} $data */
@@ -54,5 +59,10 @@ class Compiler
     public static function setBrowserList(array $browserlist): void
     {
         self::$browserlist = $browserlist;
+    }
+
+    public static function setLogger(LoggerInterface $logger)
+    {
+        self::$logger = $logger;
     }
 }

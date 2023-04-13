@@ -21,5 +21,7 @@ class SymfonyConfigCompilerPass implements CompilerPassInterface
         } else {
             $container->setParameter('frosh_tools.queue_connection', 'unknown://default');
         }
+
+        $container->getAlias('logger')->setPublic(true);
     }
 }
