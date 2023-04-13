@@ -15,7 +15,7 @@ The current feature set consists of:
   - Compile theme
 - **Scheduled Task Manager**
   - Shows all Scheduled Tasks and can execute one specific
-  - Edit intervall and next execution
+  - Edit interval and next execution
   - Register Scheduled Tasks
 - **Queue Manager**
   - Shows the amount of messages in the queue
@@ -37,17 +37,22 @@ The current feature set consists of:
 - Install composer dependencies `shopware-cli extension prepare custom/plugins/FroshTools`
 - Build the assets with `shopware-cli extension build custom/plugins/FroshTools`
 
+### Packagist
+    composer require frosh/tools
+
 ### Store (Bearer token required from packages.shopware.com)
     composer require store.shopware.com/froshtools
 
 ## Commands
 
 ### `frosh:env:list` - Listing of all environment variables
-
-`bin/console frosh:env:list`
-
-`bin/console frosh:env:list --json`
-Lists as json output
+```bash
+bin/console frosh:env:list
+```
+Lists as json output:
+```bash
+bin/console frosh:env:list --json
+```
 
 ### `frosh:env:get` - Get environment variables
 

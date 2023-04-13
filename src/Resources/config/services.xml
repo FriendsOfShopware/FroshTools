@@ -62,7 +62,7 @@
         <service id="frosh.tools.cache.http" class="Frosh\Tools\Components\CacheAdapter">
             <argument type="service" id="cache.http"/>
         </service>
-        
+
         <service id="Frosh\Tools\Components\CacheRegistry"/>
 
         <service id="Frosh\Tools\Controller\CacheController" public="true">
