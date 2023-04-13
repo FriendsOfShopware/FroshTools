@@ -113,3 +113,16 @@
 
 * Added check for active pcre-jit
 * Fixed health-check with no permission
+
+# 0.2.14
+
+* Added lightning css to improve theme compiling performance and reduce css size
+
+To enable to create a `config/packages/frosh_tools.yaml` with the following content:
+
+```yaml
+frosh_tools:
+    storefront:
+        lightningcss:
+            enabled: true
+```

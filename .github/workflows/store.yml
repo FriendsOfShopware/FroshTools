@@ -2,7 +2,7 @@ name: Build extension
 on:
     push:
         branches:
-            - main
+            - 0.2
 
 jobs:
     build:
