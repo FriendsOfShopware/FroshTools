@@ -52,7 +52,7 @@ class Configuration implements ConfigurationInterface
                                     ->children()
                                         ->booleanNode('enabled')->defaultFalse()->end()
                                         ->scalarNode('api_url')->defaultValue('https://27uhytumuulrysydgmak3tlsgu0giwff.lambda-url.eu-central-1.on.aws')->end()
-                                        ->arrayNode('browserlist')
+                                        ->arrayNode('browserlist')->defaultValue(['defaults'])
                                             ->scalarPrototype()
                                             ->end()
                                         ->end()

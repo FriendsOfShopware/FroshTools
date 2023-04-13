@@ -126,3 +126,7 @@ frosh_tools:
         lightningcss:
             enabled: true
 ```
+
+# 0.2.15
+
+* Adjusted default browserlist to `defaults`
