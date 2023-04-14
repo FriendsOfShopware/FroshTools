@@ -130,3 +130,7 @@ frosh_tools:
 # 0.2.15
 
 * Adjusted default browserlist to `defaults`
+
+# 0.2.16
+
+* Fixed a problem when the old Symfony Container was used with the newer plugin version

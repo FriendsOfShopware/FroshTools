@@ -56,7 +56,7 @@ class FroshTools extends Plugin
     {
         parent::boot();
 
-        if ($this->container->getParameter('frosh_tools.storefront.lightningcss.enabled')) {
+        if ($this->container->hasParameter('frosh_tools.storefront.lightningcss.enabled') && $this->container->getParameter('frosh_tools.storefront.lightningcss.enabled')) {
             Compiler::setApiURL($this->container->getParameter('frosh_tools.storefront.lightningcss.api_url'));
             Compiler::setBrowserList($this->container->getParameter('frosh_tools.storefront.lightningcss.browserlist'));
             Compiler::setLogger($this->container->get('logger'));
