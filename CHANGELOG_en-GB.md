@@ -134,3 +134,7 @@ frosh_tools:
 # 0.2.16
 
 * Fixed a problem when the old Symfony Container was used with the newer plugin version
+
+# 0.2.17
+
+* Improved Symfony Container creation to fix a bug when a container parameter is missing
