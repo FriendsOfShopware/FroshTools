@@ -25,7 +25,7 @@ class EsChecker implements CheckerInterface
                     'Elasticsearch is disabled',
                     'disabled',
                     'enabled',
-                    'https://developer.shopware.com/docs/guides/hosting/infrastructure/infrastructure/elasticsearch-setup'
+                    'https://developer.shopware.com/docs/guides/hosting/infrastructure/elasticsearch/elasticsearch-setup'
                 )
             );
 
