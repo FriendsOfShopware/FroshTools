@@ -9,7 +9,7 @@ use Twig\Loader\FilesystemLoader;
 
 final class Plantuml implements ExportInterface
 {
-    private const DEFAULT_PATH = __DIR__ . '/../../Resources/views/';
+    private const DEFAULT_PATH = __DIR__ . '/../../Resources/views/administration/plantuml';
 
     private Environment $twig;
 
@@ -25,7 +25,7 @@ final class Plantuml implements ExportInterface
 
     public function export(StateMachineEntity $stateMachine, string $title = ''): string
     {
-        return $this->twig->render('administration/plantuml/state-machine.puml.twig', [
+        return $this->twig->render('state-machine.puml.twig', [
             'title' => $title,
             'initialState' => $stateMachine->getInitialState(),
             'states' => $stateMachine->getStates()?->getElements(),
