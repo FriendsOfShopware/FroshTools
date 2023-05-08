@@ -48,6 +48,7 @@ class QueueController
 
         $this->connection->executeStatement('TRUNCATE `enqueue`');
         $this->connection->executeStatement('TRUNCATE `dead_message`');
+        $this->connection->executeStatement('UPDATE product_export SET is_running = 0');
 
         return new JsonResponse(null, JsonResponse::HTTP_NO_CONTENT);
     }
