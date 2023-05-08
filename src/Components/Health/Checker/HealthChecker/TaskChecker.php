@@ -26,6 +26,7 @@ class TaskChecker implements CheckerInterface
             ->from('scheduled_task', 's')
             ->where('s.status NOT IN(:status)')
             ->setParameter('status', ['inactive', 'skipped'], Connection::PARAM_STR_ARRAY)
+            ->executeQuery()
             ->fetchAllAssociative();
 
         $tasks = array_filter($data, function (array $task) {
