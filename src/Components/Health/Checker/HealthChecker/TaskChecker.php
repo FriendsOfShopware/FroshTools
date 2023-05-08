@@ -2,58 +2,34 @@
 
 namespace Frosh\Tools\Components\Health\Checker\HealthChecker;
 
+use Doctrine\DBAL\Connection;
 use Frosh\Tools\Components\Health\Checker\CheckerInterface;
 use Frosh\Tools\Components\Health\HealthCollection;
 use Frosh\Tools\Components\Health\SettingsResult;
-use Shopware\Core\Framework\Context;
-use Shopware\Core\Framework\DataAbstractionLayer\EntityRepositoryInterface;
-use Shopware\Core\Framework\DataAbstractionLayer\Search\Criteria;
-use Shopware\Core\Framework\DataAbstractionLayer\Search\Filter\EqualsFilter;
-use Shopware\Core\Framework\DataAbstractionLayer\Search\Filter\NotFilter;
-use Shopware\Core\Framework\DataAbstractionLayer\Search\Filter\RangeFilter;
-use Shopware\Core\Framework\MessageQueue\ScheduledTask\ScheduledTaskDefinition;
-use Shopware\Core\Framework\MessageQueue\ScheduledTask\ScheduledTaskEntity;
 use Symfony\Component\DependencyInjection\ParameterBag\ParameterBagInterface;
 
 class TaskChecker implements CheckerInterface
 {
-    private EntityRepositoryInterface $scheduledTaskRepository;
-
+    private Connection $connection;
     private ParameterBagInterface $parameterBag;
 
-    public function __construct(EntityRepositoryInterface $scheduledTaskRepository, ParameterBagInterface $parameterBag)
+    public function __construct(Connection $connection, ParameterBagInterface $parameterBag)
     {
-        $this->scheduledTaskRepository = $scheduledTaskRepository;
+        $this->connection = $connection;
         $this->parameterBag = $parameterBag;
     }
 
     public function collect(HealthCollection $collection): void
     {
-        $minutes = 10;
+        $data = $this->connection->createQueryBuilder()
+            ->select('s.scheduled_task_class', 's.next_execution_time')
+            ->from('scheduled_task', 's')
+            ->where('s.status NOT IN(:status)')
+            ->setParameter('status', ['inactive', 'skipped'], Connection::PARAM_STR_ARRAY)
+            ->fetchAllAssociative();
 
-        $date = new \DateTime();
-        $date->modify(sprintf('-%d minutes', $minutes));
-
-        $criteria = new Criteria();
-        $criteria->addFilter(
-            new RangeFilter(
-                'nextExecutionTime',
-                ['lte' => $date->format(\DATE_ATOM)]
-            )
-        );
-        $criteria->addFilter(new NotFilter(
-            NotFilter::CONNECTION_AND,
-            [
-                new EqualsFilter('status', ScheduledTaskDefinition::STATUS_INACTIVE),
-            ]
-        ));
-
-        $oldTasks = $this->scheduledTaskRepository
-            ->search($criteria, Context::createDefaultContext())
-        ;
-
-        $oldTasks = $oldTasks->filter(function (ScheduledTaskEntity $task) {
-            $taskClass = $task->getScheduledTaskClass();
+        $tasks = array_filter($data, function (array $task) {
+            $taskClass = $task['scheduled_task_class'];
 
             // Old Shopware version
             if (!method_exists($taskClass, 'shouldRun')) {
@@ -63,7 +39,15 @@ class TaskChecker implements CheckerInterface
             return $taskClass::shouldRun($this->parameterBag);
         });
 
-        if ($oldTasks->count() === 0) {
+        $now = new \DateTime();
+
+        $tasks = array_filter($tasks, function (array $task) use($now) {
+            $taskDate = new \DateTime($task['next_execution_time']);
+
+            return $taskDate->diff($now)->m > 10;
+        });
+
+        if ($tasks === []) {
             $collection->add(SettingsResult::ok('scheduled_task', 'Scheduled tasks working scheduled'));
 
             return;
