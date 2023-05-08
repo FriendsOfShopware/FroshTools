@@ -138,3 +138,8 @@ frosh_tools:
 # 0.2.17
 
 * Improved Symfony Container creation to fix a bug when a container parameter is missing
+
+# 0.2.18
+
+* Fix queue checker with timezones
+* Fix reset queue to clear up product_export
