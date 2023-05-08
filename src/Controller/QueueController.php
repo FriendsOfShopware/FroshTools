@@ -46,8 +46,8 @@ class QueueController
         $incrementer = $this->incrementer->get(IncrementGatewayRegistry::MESSAGE_QUEUE_POOL);
         $incrementer->reset('message_queue_stats');
 
-        $this->connection->executeStatement('TRUNCATE `enqueue`');
-        $this->connection->executeStatement('TRUNCATE `dead_message`');
+        $this->connection->executeStatement('TRUNCATE `messenger_messages`');
+        $this->connection->executeStatement('UPDATE product_export SET is_running = 0');
 
         return new JsonResponse(null, JsonResponse::HTTP_NO_CONTENT);
     }
