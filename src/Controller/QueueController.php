@@ -37,6 +37,7 @@ class QueueController
         $incrementer->reset('message_queue_stats');
 
         $this->connection->executeStatement('TRUNCATE `messenger_messages`');
+        $this->connection->executeStatement('UPDATE product_export SET is_running = 0');
 
         return new JsonResponse(null, Response::HTTP_NO_CONTENT);
     }
