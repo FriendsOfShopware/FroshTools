@@ -127,11 +127,7 @@ class CacheAdapter
             $redisProxyGetter = \Closure::bind(fn () => $adapter->redis, $adapter, RedisAdapter::class);
         }
 
-        $redisProxy = $redisProxyGetter();
-
-        $redisGetter = \Closure::bind(fn () => $redisProxy->redis, $redisProxy, $redisProxy::class);
-
-        return $redisGetter();
+        return $redisProxyGetter();
     }
 
     private function getPathFromFilesystemAdapter(FilesystemAdapter $adapter): string
