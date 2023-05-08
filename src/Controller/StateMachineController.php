@@ -5,7 +5,6 @@ namespace Frosh\Tools\Controller;
 
 use Frosh\Tools\Components\Planuml;
 use Frosh\Tools\Components\StateMachines\Plantuml;
-use Frosh\Tools\FroshTools;
 use Shopware\Core\Framework\Context;
 use Shopware\Core\Framework\DataAbstractionLayer\EntityRepository;
 use Shopware\Core\Framework\DataAbstractionLayer\Search\Criteria;

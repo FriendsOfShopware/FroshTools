@@ -1,4 +1,4 @@
-<?php
+<?php declare(strict_types=1);
 
 namespace Frosh\Tools\Components\Lightningcss;
 
@@ -29,7 +29,7 @@ class Compiler
             'stylesheet' => $this->cssCode,
             'browserlist' => implode("\n", self::$browserlist),
             'minify' => !$debug,
-        ], JSON_THROW_ON_ERROR));
+        ], \JSON_THROW_ON_ERROR));
 
         $response = curl_exec($ch);
 
@@ -37,11 +37,13 @@ class Compiler
 
         if ($response === false) {
             self::$logger->critical('Could not connect to lightningcss api');
+
             return $this->cssCode;
         }
 
         if (curl_getinfo($ch, CURLINFO_HTTP_CODE) !== 200) {
             self::$logger->critical('CSS transform failed: ' . $response);
+
             return $this->cssCode;
         }
 
@@ -61,7 +63,7 @@ class Compiler
         self::$browserlist = $browserlist;
     }
 
-    public static function setLogger(LoggerInterface $logger)
+    public static function setLogger(LoggerInterface $logger): void
     {
         self::$logger = $logger;
     }

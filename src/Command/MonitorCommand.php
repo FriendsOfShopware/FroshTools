@@ -137,7 +137,8 @@ class MonitorCommand extends Command
         ));
 
         $oldTasks = $this->scheduledTaskRepository
-            ->searchIds($criteria, Context::createDefaultContext())->getIds();
+            ->searchIds($criteria, Context::createDefaultContext())->getIds()
+        ;
 
         if (count($oldTasks) === 0) {
             return false;

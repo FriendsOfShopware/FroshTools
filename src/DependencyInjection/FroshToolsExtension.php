@@ -28,7 +28,7 @@ class FroshToolsExtension extends Extension
                 $this->addConfig($container, $alias . '.' . $key, $option);
             }
         }
-        
+
         if (!$container->hasParameter('frosh_tools.elasticsearch.product_fields')) {
             $container->setParameter('frosh_tools.elasticsearch.product_fields', []);
         }
