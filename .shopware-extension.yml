@@ -7,8 +7,8 @@ store:
         - de_DE
         - en_GB
     categories:
-        - BackendBearbeitung
-        - System
+        - Suche
+        - Administration
     type: extension
     icon: src/Resources/store/icon.png
     automatic_bugfix_version_compatibility: true
