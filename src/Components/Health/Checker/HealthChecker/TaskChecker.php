@@ -39,7 +39,7 @@ class TaskChecker implements CheckerInterface
         $tasks = array_filter($tasks, function (array $task) use($now) {
             $taskDate = new \DateTime($task['next_execution_time']);
 
-            return $taskDate->diff($now)->m > 10;
+            return $taskDate->diff($now)->i > 10;
         });
 
         if ($tasks === []) {
