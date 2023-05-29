@@ -1,3 +1,7 @@
+# 1.0.4
+
+* Fixed task checker to check for minutes instead of months
+
 # 1.0.3
 
 * Fix queue checker with timezones
