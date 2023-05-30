@@ -34,12 +34,10 @@ class TaskChecker implements CheckerInterface
             return $taskClass::shouldRun($this->parameterBag);
         });
 
-        $now = new \DateTime();
+        $taskDateLimit = (new \DateTimeImmutable())->modify('-10 minutes');
 
-        $tasks = array_filter($tasks, function (array $task) use($now) {
-            $taskDate = new \DateTime($task['next_execution_time']);
-
-            return $taskDate->diff($now)->i > 10;
+        $tasks = array_filter($tasks, function (array $task) use ($taskDateLimit) {
+            return new \DateTimeImmutable($task['next_execution_time']) < $taskDateLimit;
         });
 
         if ($tasks === []) {
