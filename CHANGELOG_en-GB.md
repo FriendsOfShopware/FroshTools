@@ -1,3 +1,7 @@
+# 1.0.5
+
+* Simplify task checker for overdue tasks
+
 # 1.0.4
 
 * Fixed task checker to check for minutes instead of months
