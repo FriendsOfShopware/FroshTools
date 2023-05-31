@@ -15,15 +15,15 @@ class QueueChecker implements CheckerInterface
 
     public function collect(HealthCollection $collection): void
     {
-        $result = SettingsResult::ok('queue', 'Queues working good');
+        $oldMessageLimit = (new \DateTimeImmutable())->modify('-15 minutes');
 
-        $oldestMessage = (int) $this->connection->fetchOne('SELECT IFNULL(MIN(created_at), 0) FROM messenger_messages');
-        $oldestMessage /= 10000;
-        $minutes = 15;
+        /** @var string|false $oldestMessageAt */
+        $oldestMessageAt = $this->connection->fetchOne('SELECT available_at FROM messenger_messages ORDER BY available_at ASC LIMIT 1');
 
-        // When the oldest message is older then $minutes minutes
-        if ($oldestMessage && ($oldestMessage + ($minutes * 60)) < time()) {
+        if (is_string($oldestMessageAt) && new \DateTimeImmutable($oldestMessageAt . ' UTC') < $oldMessageLimit) {
             $result = SettingsResult::warning('queue', 'Open Queues older than 15 minutes found');
+        } else {
+            $result = SettingsResult::ok('queue', 'Queues working good');
         }
 
         $result->url = 'https://developer.shopware.com/docs/guides/hosting/infrastructure/message-queue';
