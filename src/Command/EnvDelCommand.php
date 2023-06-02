@@ -10,7 +10,7 @@ use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Console\Style\SymfonyStyle;
 
-#[AsCommand('frosh:env:Del', 'Delete environment variable')]
+#[AsCommand('frosh:env:del', 'Delete environment variable')]
 class EnvDelCommand extends Command
 {
     public function __construct(private readonly string $envPath)
