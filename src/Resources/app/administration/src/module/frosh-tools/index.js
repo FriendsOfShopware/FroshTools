@@ -5,6 +5,7 @@ import './component/frosh-tools-tab-scheduled';
 import './component/frosh-tools-tab-elasticsearch';
 import './component/frosh-tools-tab-logs';
 import './component/frosh-tools-tab-state-machines';
+import './component/frosh-tools-tab-files';
 import './page/index';
 import './acl'
 
@@ -65,6 +66,14 @@ Shopware.Module.register('frosh-tools', {
                 logs: {
                     component: 'frosh-tools-tab-logs',
                     path: 'logs',
+                    meta: {
+                        privilege: 'frosh_tools:read',
+                        parentPath: 'frosh.tools.index.index'
+                    }
+                },
+                files: {
+                    component: 'frosh-tools-tab-files',
+                    path: 'files',
                     meta: {
                         privilege: 'frosh_tools:read',
                         parentPath: 'frosh.tools.index.index'

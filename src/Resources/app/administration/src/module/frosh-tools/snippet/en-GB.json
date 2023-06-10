@@ -35,6 +35,18 @@
           "placeholder": "Choose file"
         }
       },
+      "files": {
+        "title": "Shopware file checker",
+        "allFilesOk": "All files are not modified",
+        "notOk": "There are modified files",
+        "openOriginal": "Open original file on GitHub",
+        "restore": {
+          "diff": "Diff file with original",
+          "restoreFile": "Restore file"
+        },
+        "expectedAll": "File has been modified",
+        "expectedProject": "File has been modified, but will be ignored by project settings"
+      },
       "state-machines": {
         "title": "State Machine Viewer",
         "label": "State Machine",
