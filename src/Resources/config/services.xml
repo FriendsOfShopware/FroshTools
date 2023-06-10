@@ -73,6 +73,7 @@
         <service id="Frosh\Tools\Controller\QueueController" public="true">
             <argument type="service" id="Doctrine\DBAL\Connection"/>
             <argument type="service" id="shopware.increment.gateway.registry"/>
+            <argument type="service" id="messenger.receiver_locator"/>
         </service>
 
         <service id="Frosh\Tools\Controller\StateMachineController" public="true">
