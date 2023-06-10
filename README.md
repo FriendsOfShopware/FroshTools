@@ -25,8 +25,8 @@ The current feature set consists of:
 - **Task Logging**
   - Can be enabled with env `FROSH_TOOLS_TASK_LOGGING=1` in `.env`. This will create a log in `var/log/task_logging-xx.log`
     - Set `FROSH_TOOLS_TASK_LOGGING_INFO=1` in `.env` to log all tasks
-- **Feature Flag Manager**
-  - Provides the ability to enable or disable feature flags
+- **Shopware file checker**
+  - Checks if core files have been changed
 - **State Machine Visualisation**
   - basic view of order, transaction and delivery states
 
