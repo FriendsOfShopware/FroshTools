@@ -30,16 +30,6 @@ class FroshToolsExtension extends Extension
         }
 
         /** @phpstan-ignore-next-line */
-        if (!$container->hasParameter('frosh_tools.elasticsearch.product_fields')) {
-            $container->setParameter('frosh_tools.elasticsearch.product_fields', []);
-        }
-
-        /** @phpstan-ignore-next-line */
-        if (!$container->hasParameter('frosh_tools.elasticsearch.product_minimum_should_match')) {
-            $container->setParameter('frosh_tools.elasticsearch.product_minimum_should_match', 1);
-        }
-
-        /** @phpstan-ignore-next-line */
         if (!$container->hasParameter('frosh_tools.file_checker.exclude_files')) {
             $container->setParameter('frosh_tools.file_checker.exclude_files', []);
         }
