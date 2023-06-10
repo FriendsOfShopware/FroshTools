@@ -9,14 +9,20 @@ use Shopware\Core\Framework\MessageQueue\ScheduledTask\Registry\TaskRegistry;
 use Shopware\Core\Framework\MessageQueue\ScheduledTask\ScheduledTaskDefinition;
 use Shopware\Core\Framework\MessageQueue\ScheduledTask\ScheduledTaskEntity;
 use Shopware\Core\Framework\MessageQueue\ScheduledTask\ScheduledTaskHandler;
+use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Component\DependencyInjection\Attribute\TaggedIterator;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 
 #[Route(path: '/api/_action/frosh-tools', defaults: ['_routeScope' => ['api'], '_acl' => ['frosh_tools:read']])]
-class ScheduledTaskController
+class ScheduledTaskController extends AbstractController
 {
-    public function __construct(private readonly iterable $taskHandler, private readonly EntityRepository $scheduledTaskRepository, private readonly TaskRegistry $taskRegistry)
+    public function __construct(
+        #[TaggedIterator('messenger.message_handler')] private readonly iterable $taskHandler,
+        private readonly EntityRepository $scheduledTaskRepository,
+        private readonly TaskRegistry $taskRegistry
+    )
     {
     }
 

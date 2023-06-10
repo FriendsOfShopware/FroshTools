@@ -7,7 +7,7 @@ use Frosh\Tools\Components\Health\Checker\CheckerInterface;
 use Frosh\Tools\Components\Health\HealthCollection;
 use Frosh\Tools\Components\Health\SettingsResult;
 
-class EsChecker implements CheckerInterface
+class EsChecker implements PerformanceCheckerInterface,CheckerInterface
 {
     protected bool $esEnabled = false;
 

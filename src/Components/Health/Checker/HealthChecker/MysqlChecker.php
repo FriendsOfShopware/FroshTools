@@ -7,7 +7,7 @@ use Frosh\Tools\Components\Health\Checker\CheckerInterface;
 use Frosh\Tools\Components\Health\HealthCollection;
 use Frosh\Tools\Components\Health\SettingsResult;
 
-class MysqlChecker implements CheckerInterface
+class MysqlChecker implements HealthCheckerInterface, CheckerInterface
 {
     public function __construct(private readonly Connection $connection)
     {

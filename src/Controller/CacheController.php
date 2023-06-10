@@ -4,15 +4,17 @@ namespace Frosh\Tools\Controller;
 
 use Frosh\Tools\Components\CacheHelper;
 use Frosh\Tools\Components\CacheRegistry;
+use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Component\DependencyInjection\Attribute\Autowire;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 
 #[Route(path: '/api/_action/frosh-tools', defaults: ['_routeScope' => ['api'], '_acl' => ['frosh_tools:read']])]
-class CacheController
+class CacheController extends AbstractController
 {
     public function __construct(
-        private readonly string $cacheDir,
+        #[Autowire('%kernel.cache_dir%')] private readonly string $cacheDir,
         private readonly CacheRegistry $cacheRegistry
     ) {
     }

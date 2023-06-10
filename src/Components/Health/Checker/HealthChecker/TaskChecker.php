@@ -8,7 +8,7 @@ use Frosh\Tools\Components\Health\HealthCollection;
 use Frosh\Tools\Components\Health\SettingsResult;
 use Symfony\Component\DependencyInjection\ParameterBag\ParameterBagInterface;
 
-class TaskChecker implements CheckerInterface
+class TaskChecker implements HealthCheckerInterface, CheckerInterface
 {
     public function __construct(private readonly Connection $connection, private readonly ParameterBagInterface $parameterBag)
     {

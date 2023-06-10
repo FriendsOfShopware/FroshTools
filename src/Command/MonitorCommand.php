@@ -18,6 +18,7 @@ use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
+use Symfony\Component\DependencyInjection\Attribute\Autowire;
 use Symfony\Component\HttpFoundation\ParameterBag;
 
 #[AsCommand('frosh:monitor', 'Monitor your scheduled task and queue with this command and get notified via email.')]
@@ -27,7 +28,7 @@ class MonitorCommand extends Command
     private const MONITOR_SALESCHANNEL_ARG = 'sales-channel';
 
     public function __construct(
-        private readonly AbstractMailService $mailService,
+        #[Autowire(service: 'Shopware\Core\Content\Mail\Service\MailService')] private readonly AbstractMailService $mailService,
         private readonly SystemConfigService $configService,
         private readonly Connection $connection,
         private readonly EntityRepository $scheduledTaskRepository

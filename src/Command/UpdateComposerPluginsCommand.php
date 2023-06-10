@@ -11,6 +11,7 @@ use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\BufferedOutput;
 use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Console\Style\SymfonyStyle;
+use Symfony\Component\DependencyInjection\Attribute\Autowire;
 
 #[AsCommand('frosh:composer-plugin:update', 'Check for available plugin updates and install them')]
 class UpdateComposerPluginsCommand extends Command
@@ -18,7 +19,7 @@ class UpdateComposerPluginsCommand extends Command
     private readonly Application $application;
 
     public function __construct(
-        private readonly string $projectDir,
+        #[Autowire('%kernel.project_dir%')] private readonly string $projectDir,
         private readonly KernelPluginLoader $pluginLoader
     ) {
         parent::__construct();

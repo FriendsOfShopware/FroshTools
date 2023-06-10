@@ -8,14 +8,17 @@ use Frosh\Tools\Components\Health\SettingsResult;
 use Monolog\Handler\AbstractHandler;
 use Monolog\Level;
 use Monolog\Logger;
+use Symfony\Component\DependencyInjection\Attribute\Autowire;
 
-class LoggerLevelChecker implements CheckerInterface
+class LoggerLevelChecker implements PerformanceCheckerInterface,CheckerInterface
 {
     private readonly Level $businessEventHandlerLevel;
 
     private string $url = 'https://developer.shopware.com/docs/guides/hosting/performance/performance-tweaks#logging';
 
-    public function __construct(AbstractHandler $businessEventHandlerLevel)
+    public function __construct(
+        #[Autowire(service: 'monolog.handler.business_event_handler_buffer')] AbstractHandler $businessEventHandlerLevel
+    )
     {
         $this->businessEventHandlerLevel = $businessEventHandlerLevel->getLevel();
     }

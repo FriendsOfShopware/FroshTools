@@ -4,6 +4,7 @@ namespace Frosh\Tools\Controller;
 
 use Doctrine\DBAL\Connection;
 use Shopware\Core\Framework\Increment\IncrementGatewayRegistry;
+use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\DependencyInjection\Attribute\Autowire;
 use Symfony\Component\DependencyInjection\ServiceLocator;
 use Symfony\Component\HttpFoundation\JsonResponse;
@@ -12,12 +13,12 @@ use Symfony\Component\Messenger\Transport\Receiver\MessageCountAwareInterface;
 use Symfony\Component\Routing\Annotation\Route;
 
 #[Route(path: '/api/_action/frosh-tools', defaults: ['_routeScope' => ['api'], '_acl' => ['frosh_tools:read']])]
-class QueueController
+class QueueController extends AbstractController
 {
     public function __construct(
         private readonly Connection $connection,
-        private readonly IncrementGatewayRegistry $incrementer,
-        private readonly ServiceLocator $transportLocator
+        #[Autowire(service: 'shopware.increment.gateway.registry')] private readonly IncrementGatewayRegistry $incrementer,
+        #[Autowire(service: 'messenger.receiver_locator')] private readonly ServiceLocator $transportLocator
     ) {
     }
 

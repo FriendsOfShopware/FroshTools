@@ -2,11 +2,14 @@
 
 namespace Frosh\Tools\Components\Elasticsearch;
 
+use Symfony\Component\DependencyInjection\Attribute\Autowire;
 use Symfony\Component\HttpKernel\Event\ResponseEvent;
 
 final class AdminInfoSubscriber
 {
-    public function __construct(private readonly bool $elasticsearchEnabled)
+    public function __construct(
+        #[Autowire('%frosh_tools.elasticsearch.enabled%')] private readonly bool $elasticsearchEnabled
+    )
     {
     }
 

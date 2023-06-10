@@ -8,11 +8,14 @@ use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Console\Style\SymfonyStyle;
+use Symfony\Component\DependencyInjection\Attribute\Autowire;
 
 #[AsCommand('frosh:dev:robots-txt')]
 class DevRobotsTxtCommand extends Command
 {
-    public function __construct(private readonly string $envPath)
+    public function __construct(
+        #[Autowire('%kernel.project_dir%/public')] private readonly string $envPath
+    )
     {
         parent::__construct();
     }

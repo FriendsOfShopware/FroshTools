@@ -10,32 +10,21 @@ use Shopware\Elasticsearch\Framework\ElasticsearchOutdatedIndexDetector;
 use Shopware\Elasticsearch\Framework\Indexing\CreateAliasTaskHandler;
 use Shopware\Elasticsearch\Framework\Indexing\ElasticsearchIndexer;
 use Shopware\Elasticsearch\Framework\Indexing\ElasticsearchIndexingMessage;
+use Symfony\Component\DependencyInjection\Attribute\Autowire;
 use Symfony\Component\Messenger\MessageBusInterface;
 
 class ElasticsearchManager
 {
-    protected ElasticsearchIndexer $indexer;
-
-    protected CreateAliasTaskHandler $createAliasTaskHandler;
-
-    protected ElasticsearchOutdatedIndexDetector $outdatedIndexDetector;
-
-    private readonly Client $client;
-
     public function __construct(
-        Client $client,
-        private readonly bool $enabled,
-        ElasticsearchIndexer $indexer,
-        protected MessageBusInterface $messageBus,
-        CreateAliasTaskHandler $createAliasTaskHandler,
-        ElasticsearchOutdatedIndexDetector $outdatedIndexDetector,
-        protected Connection $connection,
-        protected IncrementGatewayRegistry $gatewayRegistry
+        private readonly Client $client,
+        #[Autowire('%elasticsearch.enabled%')] private readonly bool $enabled,
+        private readonly ElasticsearchIndexer $indexer,
+        private readonly  MessageBusInterface $messageBus,
+        private readonly CreateAliasTaskHandler $createAliasTaskHandler,
+        private readonly ElasticsearchOutdatedIndexDetector $outdatedIndexDetector,
+        private readonly Connection $connection,
+        #[Autowire(service: 'shopware.increment.gateway.registry')] private readonly IncrementGatewayRegistry $gatewayRegistry
     ) {
-        $this->client = $client;
-        $this->indexer = $indexer;
-        $this->createAliasTaskHandler = $createAliasTaskHandler;
-        $this->outdatedIndexDetector = $outdatedIndexDetector;
     }
 
     public function isEnabled(): bool

@@ -7,7 +7,7 @@ use Frosh\Tools\Components\Health\HealthCollection;
 use Frosh\Tools\Components\Health\SettingsResult;
 use Symfony\Component\DependencyInjection\ParameterBag\ParameterBagInterface;
 
-class DisabledMailUpdatesChecker implements CheckerInterface
+class DisabledMailUpdatesChecker implements PerformanceCheckerInterface,CheckerInterface
 {
     public function __construct(private readonly ParameterBagInterface $params)
     {

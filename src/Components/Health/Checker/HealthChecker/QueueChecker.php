@@ -7,7 +7,7 @@ use Frosh\Tools\Components\Health\Checker\CheckerInterface;
 use Frosh\Tools\Components\Health\HealthCollection;
 use Frosh\Tools\Components\Health\SettingsResult;
 
-class QueueChecker implements CheckerInterface
+class QueueChecker implements HealthCheckerInterface, CheckerInterface
 {
     public function __construct(private readonly Connection $connection)
     {

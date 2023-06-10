@@ -6,7 +6,7 @@ use Frosh\Tools\Components\Health\Checker\CheckerInterface;
 use Frosh\Tools\Components\Health\HealthCollection;
 use Frosh\Tools\Components\Health\SettingsResult;
 
-class PhpChecker implements CheckerInterface
+class PhpChecker implements HealthCheckerInterface, CheckerInterface
 {
     public function collect(HealthCollection $collection): void
     {

@@ -5,6 +5,8 @@ namespace Frosh\Tools\Controller;
 use Frosh\Tools\Components\LineReader;
 use Shopware\Core\Framework\Routing\Exception\InvalidRequestParameterException;
 use Shopware\Core\Framework\Routing\Exception\MissingRequestParameterException;
+use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Component\DependencyInjection\Attribute\Autowire;
 use Symfony\Component\Finder\Finder;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
@@ -12,14 +14,16 @@ use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 
 #[Route(path: '/api/_action/frosh-tools', defaults: ['_routeScope' => ['api'], '_acl' => ['frosh_tools:read']])]
-class LogController
+class LogController extends AbstractController
 {
     // https://regex101.com/r/bp4YYL/1
     private const LINE_MATCH = '/\[(?<date>.*)] (?<channel>.*)\.(?<level>(DEBUG|INFO|NOTICE|WARNING|ERROR|CRITICAL|ALERT|EMERGENCY)):(?<message>.*)/m';
 
     private readonly string $logDir;
 
-    public function __construct(string $logDir)
+    public function __construct(
+        #[Autowire('%kernel.logs_dir%')] string $logDir
+    )
     {
         $this->logDir = rtrim($logDir, '/') . '/';
     }

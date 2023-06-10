@@ -5,10 +5,13 @@ namespace Frosh\Tools\Components\Health\Checker\PerformanceChecker;
 use Frosh\Tools\Components\Health\Checker\CheckerInterface;
 use Frosh\Tools\Components\Health\HealthCollection;
 use Frosh\Tools\Components\Health\SettingsResult;
+use Symfony\Component\DependencyInjection\Attribute\Autowire;
 
-class AdminWorkerChecker implements CheckerInterface
+class AdminWorkerChecker implements PerformanceCheckerInterface, CheckerInterface
 {
-    public function __construct(private readonly bool $adminWorkerEnabled)
+    public function __construct(
+        #[Autowire('%shopware.admin_worker.enable_admin_worker%')] private readonly bool $adminWorkerEnabled
+    )
     {
     }
 
