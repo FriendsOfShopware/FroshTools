@@ -25,7 +25,7 @@ class EnvironmentFile implements \Stringable
 
     public function has(string $key): bool
     {
-        return $this->get($key) !== null;
+        return $this->get($key) instanceof EnvironmentKeyValue;
     }
 
     public function get(string $key): ?EnvironmentKeyValue
@@ -43,7 +43,7 @@ class EnvironmentFile implements \Stringable
     {
         $v = $this->get($key);
 
-        if ($v !== null) {
+        if ($v instanceof EnvironmentKeyValue) {
             $v->setValue($value);
 
             return;

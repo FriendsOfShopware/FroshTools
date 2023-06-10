@@ -3,6 +3,7 @@ declare(strict_types=1);
 
 namespace Frosh\Tools\Command;
 
+use Shopware\Core\Content\Mail\Service\MailService;
 use Doctrine\DBAL\Connection;
 use Shopware\Core\Content\Mail\Service\AbstractMailService;
 use Shopware\Core\Framework\Context;
@@ -29,7 +30,7 @@ class MonitorCommand extends Command
     private const MONITOR_SALESCHANNEL_ARG = 'sales-channel';
 
     public function __construct(
-        #[Autowire(service: 'Shopware\Core\Content\Mail\Service\MailService')] private readonly AbstractMailService $mailService,
+        #[Autowire(service: MailService::class)] private readonly AbstractMailService $mailService,
         private readonly SystemConfigService $configService,
         private readonly Connection $connection,
         private readonly EntityRepository $scheduledTaskRepository
