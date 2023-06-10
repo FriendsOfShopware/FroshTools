@@ -39,7 +39,7 @@
         "title": "Shopware file checker",
         "allFilesOk": "All files are not modified",
         "notOk": "There are modified files",
-        "openOriginal": "Open original file on github",
+        "openOriginal": "Open original file on GitHub",
         "restore": {
           "diff": "Diff file with original",
           "restoreFile": "Restore file"
