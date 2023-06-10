@@ -1,4 +1,5 @@
-<?php declare(strict_types=1);
+<?php
+declare(strict_types=1);
 
 namespace Frosh\Tools\Components\Elasticsearch;
 
@@ -19,7 +20,7 @@ class ElasticsearchManager
         private readonly Client $client,
         #[Autowire('%elasticsearch.enabled%')] private readonly bool $enabled,
         private readonly ElasticsearchIndexer $indexer,
-        private readonly  MessageBusInterface $messageBus,
+        private readonly MessageBusInterface $messageBus,
         private readonly CreateAliasTaskHandler $createAliasTaskHandler,
         private readonly ElasticsearchOutdatedIndexDetector $outdatedIndexDetector,
         private readonly Connection $connection,

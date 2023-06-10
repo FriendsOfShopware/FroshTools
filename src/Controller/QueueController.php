@@ -1,4 +1,5 @@
-<?php declare(strict_types=1);
+<?php
+declare(strict_types=1);
 
 namespace Frosh\Tools\Controller;
 
@@ -72,7 +73,6 @@ class QueueController extends AbstractController
                 'size' => $transport->getMessageCount(),
             ];
         }
-
 
         usort($queueData, static fn (array $a, array $b) => $b['size'] <=> $a['size']);
     }

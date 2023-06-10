@@ -1,4 +1,5 @@
-<?php declare(strict_types=1);
+<?php
+declare(strict_types=1);
 
 namespace Frosh\Tools\Components\Health\Checker\PerformanceChecker;
 
@@ -7,7 +8,7 @@ use Frosh\Tools\Components\Health\HealthCollection;
 use Frosh\Tools\Components\Health\SettingsResult;
 use Symfony\Component\DependencyInjection\Attribute\Autowire;
 
-class IncrementStorageChecker implements PerformanceCheckerInterface,CheckerInterface
+class IncrementStorageChecker implements PerformanceCheckerInterface, CheckerInterface
 {
     public function __construct(
         #[Autowire('%shopware.increment.user_activity.type%')] private readonly string $userActivity,

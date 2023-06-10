@@ -1,4 +1,5 @@
-<?php declare(strict_types=1);
+<?php
+declare(strict_types=1);
 
 namespace Frosh\Tools\Components\Health\Checker\PerformanceChecker;
 
@@ -7,7 +8,7 @@ use Frosh\Tools\Components\Health\Checker\CheckerInterface;
 use Frosh\Tools\Components\Health\HealthCollection;
 use Frosh\Tools\Components\Health\SettingsResult;
 
-class MySQL8Checker implements PerformanceCheckerInterface,CheckerInterface
+class MySQL8Checker implements PerformanceCheckerInterface, CheckerInterface
 {
     public function __construct(private readonly Connection $connection)
     {

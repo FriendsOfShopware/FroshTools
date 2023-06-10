@@ -1,4 +1,5 @@
-<?php declare(strict_types=1);
+<?php
+declare(strict_types=1);
 
 namespace Frosh\Tools\Components\Health\Checker\PerformanceChecker;
 
@@ -8,12 +9,11 @@ use Frosh\Tools\Components\Health\SettingsResult;
 use Shopware\Core\DevOps\Environment\EnvironmentHelper;
 use Symfony\Component\DependencyInjection\Attribute\Autowire;
 
-class FixCacheIdSetChecker implements PerformanceCheckerInterface,CheckerInterface
+class FixCacheIdSetChecker implements PerformanceCheckerInterface, CheckerInterface
 {
     public function __construct(
         #[Autowire('%kernel.shopware_version%')] protected string $shopwareVersion
-    )
-    {
+    ) {
     }
 
     public function collect(HealthCollection $collection): void

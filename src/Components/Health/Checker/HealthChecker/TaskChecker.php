@@ -1,4 +1,5 @@
-<?php declare(strict_types=1);
+<?php
+declare(strict_types=1);
 
 namespace Frosh\Tools\Components\Health\Checker\HealthChecker;
 
@@ -10,8 +11,10 @@ use Symfony\Component\DependencyInjection\ParameterBag\ParameterBagInterface;
 
 class TaskChecker implements HealthCheckerInterface, CheckerInterface
 {
-    public function __construct(private readonly Connection $connection, private readonly ParameterBagInterface $parameterBag)
-    {
+    public function __construct(
+        private readonly Connection $connection,
+        private readonly ParameterBagInterface $parameterBag
+    ) {
     }
 
     public function collect(HealthCollection $collection): void

@@ -9,5 +9,4 @@ use Symfony\Component\DependencyInjection\Attribute\AutoconfigureTag;
 #[AutoconfigureTag('frosh_tools.performance_checker')]
 interface PerformanceCheckerInterface
 {
-
 }

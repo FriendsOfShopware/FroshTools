@@ -1,4 +1,5 @@
-<?php declare(strict_types=1);
+<?php
+declare(strict_types=1);
 
 namespace Frosh\Tools\Components\Elasticsearch;
 
@@ -9,8 +10,7 @@ final class AdminInfoSubscriber
 {
     public function __construct(
         #[Autowire('%frosh_tools.elasticsearch.enabled%')] private readonly bool $elasticsearchEnabled
-    )
-    {
+    ) {
     }
 
     public function __invoke(ResponseEvent $event): void

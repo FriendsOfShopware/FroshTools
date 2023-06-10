@@ -1,4 +1,5 @@
-<?php declare(strict_types=1);
+<?php
+declare(strict_types=1);
 
 namespace Frosh\Tools\Command;
 
@@ -17,8 +18,7 @@ class EnvGetCommand extends Command
 {
     public function __construct(
         #[Autowire('%kernel.project_dir%/.env')] private readonly string $envPath
-    )
-    {
+    ) {
         parent::__construct();
     }
 

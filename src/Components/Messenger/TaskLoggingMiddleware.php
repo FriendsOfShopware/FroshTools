@@ -1,4 +1,5 @@
-<?php declare(strict_types=1);
+<?php
+declare(strict_types=1);
 
 namespace Frosh\Tools\Components\Messenger;
 
@@ -11,8 +12,6 @@ use Shopware\Core\Framework\DataAbstractionLayer\Indexing\EntityIndexingMessage;
 use Shopware\Core\Framework\DataAbstractionLayer\Indexing\MessageQueue\IterateEntityIndexerMessage;
 use Shopware\Core\Framework\MessageQueue\ScheduledTask\ScheduledTask;
 use Shopware\Storefront\Framework\Cache\CacheWarmer\WarmUpMessage;
-use Symfony\Component\DependencyInjection\Attribute\Autoconfigure;
-use Symfony\Component\DependencyInjection\Attribute\AutoconfigureTag;
 use Symfony\Component\Messenger\Envelope;
 use Symfony\Component\Messenger\Exception\HandlerFailedException;
 use Symfony\Component\Messenger\Middleware\MiddlewareInterface;
@@ -21,13 +20,11 @@ use Symfony\Component\Messenger\Middleware\StackInterface;
 /**
  * @see https://tideways.com/profiler/blog/log-all-tasks-the-shopware-6-queue-processes
  */
-
 class TaskLoggingMiddleware implements MiddlewareInterface
 {
     public function __construct(
         private readonly LoggerInterface $logger
-    )
-    {
+    ) {
     }
 
     public function handle(Envelope $envelope, StackInterface $stack): Envelope

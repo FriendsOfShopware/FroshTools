@@ -1,4 +1,5 @@
-<?php declare(strict_types=1);
+<?php
+declare(strict_types=1);
 
 namespace Frosh\Tools\Components\Health\Checker\PerformanceChecker;
 
@@ -11,8 +12,7 @@ class AdminWorkerChecker implements PerformanceCheckerInterface, CheckerInterfac
 {
     public function __construct(
         #[Autowire('%shopware.admin_worker.enable_admin_worker%')] private readonly bool $adminWorkerEnabled
-    )
-    {
+    ) {
     }
 
     public function collect(HealthCollection $collection): void
