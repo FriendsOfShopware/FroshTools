@@ -133,6 +133,10 @@ class ShopwareFilesController
 
         file_put_contents($path, $content);
 
+        if (\function_exists('opcache_reset')) {
+            opcache_reset();
+        }
+
         return new JsonResponse(['status' => sprintf('File at "%s" has been restored', $file)]);
     }
 
@@ -184,5 +188,14 @@ class ShopwareFilesController
         }
 
         return self::STATUS_OK;
+    }
+
+    private function assertNoGitVersion(): ?JsonResponse
+    {
+        if ($this->shopwareVersion === Kernel::SHOPWARE_FALLBACK_VERSION) {
+            return new JsonResponse(['error' => 'Git version is not supported']);
+        }
+
+        return null;
     }
 }
