@@ -16,6 +16,10 @@
             :dataSource="items.files"
             :columns="columns">
 
+            <template #column-name="{ item }">
+                <a @click="diff(item)" :title="$tc('frosh-tools.tabs.files.restore.diff')">{{ item.name }}</a>
+            </template>
+
             <template #column-expected="{ item }">
                 <span v-if="item.expected">{{ $tc('frosh-tools.tabs.files.expectedProject') }}</span>
                 <span v-else>{{ $tc('frosh-tools.tabs.files.expectedAll') }}</span>
@@ -35,12 +39,14 @@
     <sw-modal v-if="showModal"
               variant="large"
               @modal-close="closeModal"
-              :title="diffData.file">
+              :title="diffData.file.name">
 
         <span style="white-space: pre" v-html="diffData.html"></span>
 
         <template slot="modal-footer">
-            <sw-button variant="ghost-danger" @click="restoreFile(diffData.file.name)" :disabled="diffData.file.expected">
+            <sw-button variant="ghost-danger"
+                       @click="restoreFile(diffData.file.name)"
+                       :disabled="diffData.file.expected">
                 <sw-icon name="regular-exclamation-triangle"></sw-icon>
                 {{ $tc('frosh-tools.tabs.files.restore.restoreFile') }}
             </sw-button>

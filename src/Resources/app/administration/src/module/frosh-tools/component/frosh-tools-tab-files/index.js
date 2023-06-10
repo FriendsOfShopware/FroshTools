@@ -67,6 +67,7 @@ Component.register('frosh-tools-tab-files', {
         },
 
         async diff(file) {
+            this.isLoading = true;
             const fileContents = (await this.froshToolsService.getFileContents(file.name)).data;
 
             const dmp = new DiffMatchPatch();
@@ -78,6 +79,7 @@ Component.register('frosh-tools-tab-files', {
             this.diffData.file = file;
 
             this.openModal();
+            this.isLoading = false;
         },
 
         async restoreFile(name) {
