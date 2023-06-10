@@ -16,7 +16,6 @@ class DisabledMailUpdatesChecker implements PerformanceCheckerInterface, Checker
 
     public function collect(HealthCollection $collection): void
     {
-        /** @phpstan-ignore-next-line  */
         if (!$this->params->has('shopware.mail.update_mail_variables_on_send')) {
             return;
         }

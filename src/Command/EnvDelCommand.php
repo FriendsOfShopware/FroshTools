@@ -21,7 +21,7 @@ class EnvDelCommand extends Command
         parent::__construct();
     }
 
-    public function configure(): void
+    protected function configure(): void
     {
         $this->addArgument('variable', InputArgument::REQUIRED, 'Variable name');
     }

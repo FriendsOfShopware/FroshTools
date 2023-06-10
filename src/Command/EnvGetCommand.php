@@ -22,14 +22,14 @@ class EnvGetCommand extends Command
         parent::__construct();
     }
 
-    public function configure(): void
+    protected function configure(): void
     {
         $this->addArgument('variable', InputArgument::OPTIONAL, 'Get specific environment variable');
         $this->addOption('key-value', null, InputOption::VALUE_NONE, 'Get value as key value');
         $this->addOption('json', null, InputOption::VALUE_NONE, 'Get value as json');
     }
 
-    public function execute(InputInterface $input, OutputInterface $output): int
+    protected function execute(InputInterface $input, OutputInterface $output): int
     {
         if (!is_file($this->envPath)) {
             throw new \RuntimeException(\sprintf('Cannot use this command as env file is missing at %s', $this->envPath));
