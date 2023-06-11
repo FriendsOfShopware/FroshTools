@@ -34,18 +34,30 @@ class TaskChecker implements CheckerInterface
             return $taskClass::shouldRun($this->parameterBag);
         });
 
-        $taskDateLimit = (new \DateTimeImmutable())->modify('-10 minutes');
+        $maxDiff = 10;
+        $taskDateLimit = (new \DateTimeImmutable())->modify(\sprintf('-%d minutes', $maxDiff));
+        $recommended = \sprintf('max %d mins', $maxDiff);
 
         $tasks = array_filter($tasks, function (array $task) use ($taskDateLimit) {
             return new \DateTimeImmutable($task['next_execution_time']) < $taskDateLimit;
         });
 
         if ($tasks === []) {
-            $collection->add(SettingsResult::ok('scheduled_task', 'Scheduled tasks working scheduled'));
+            $collection->add(SettingsResult::ok('scheduled_task', 'Scheduled tasks', '0 mins', $recommended));
 
             return;
         }
 
-        $collection->add(SettingsResult::warning('scheduled_task', 'The scheduled tasks are waiting for executing for more than 10 minutes'));
+        $maxTaskNextExecTime = 0;
+
+        foreach ($tasks as $task) {
+            $maxTaskNextExecTime = max((new \DateTimeImmutable($task['next_execution_time']))->getTimestamp(), $maxTaskNextExecTime);
+        }
+
+        $diff = round(abs(
+            ($maxTaskNextExecTime - $taskDateLimit->getTimestamp()) / 60
+        ));
+
+        $collection->add(SettingsResult::warning('scheduled_task', 'Scheduled tasks', \sprintf('%d mins',$diff), $recommended));
     }
 }

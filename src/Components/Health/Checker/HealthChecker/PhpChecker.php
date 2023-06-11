@@ -27,36 +27,29 @@ class PhpChecker implements CheckerInterface
 
     private function checkPhp(HealthCollection $collection): void
     {
-        $minPhpVersion = '8.1.0';
+        $minPhpVersion = '8.2.0';
         $currentPhpVersion = \PHP_VERSION;
-        if (version_compare('8.0.0', $currentPhpVersion, '>')) {
-            $collection->add(
-                SettingsResult::error(
-                    'php-version',
-                    'PHP Version is outdated',
-                    $currentPhpVersion,
-                    'min ' . $minPhpVersion
-                )
-            );
-        } elseif (version_compare('8.1.0', $currentPhpVersion, '>')) {
+        if (version_compare($minPhpVersion, $currentPhpVersion, '>')) {
             $collection->add(
                 SettingsResult::warning(
-                    'php-version',
-                    'PHP Version is outdated',
-                    $currentPhpVersion,
-                    'min ' . $minPhpVersion
-                )
-            );
-        } else {
-            $collection->add(
-                SettingsResult::ok(
                     'php-version',
                     'PHP Version',
                     $currentPhpVersion,
                     'min ' . $minPhpVersion
                 )
             );
+
+            return;
         }
+
+        $collection->add(
+            SettingsResult::ok(
+                'php-version',
+                'PHP Version',
+                $currentPhpVersion,
+                'min ' . $minPhpVersion
+            )
+        );
     }
 
     private function checkMaxExecutionTime(HealthCollection $collection): void
@@ -67,7 +60,7 @@ class PhpChecker implements CheckerInterface
             $collection->add(
                 SettingsResult::error(
                     'php-max-execution',
-                    'Max-Execution-Time is too low',
+                    'Max-Execution-Time',
                     (string) $currentMaxExecutionTime,
                     'min ' . $minMaxExecutionTime
                 )
@@ -92,7 +85,7 @@ class PhpChecker implements CheckerInterface
             $collection->add(
                 SettingsResult::error(
                     'php-memory-limit',
-                    'Can not read Memory-Limit',
+                    'Memory-Limit',
                     'unknown',
                     'min ' . $this->formatSize($minMemoryLimit)
                 )
@@ -106,7 +99,7 @@ class PhpChecker implements CheckerInterface
             $collection->add(
                 SettingsResult::error(
                     'php-memory-limit',
-                    'Memory-Limit is too low',
+                    'Memory-Limit',
                     $this->formatSize($currentMemoryLimit),
                     'min ' . $this->formatSize($minMemoryLimit)
                 )
@@ -125,24 +118,28 @@ class PhpChecker implements CheckerInterface
 
     private function checkOpCacheActive(HealthCollection $collection): void
     {
+        $snippet = 'Zend Opcache';
+
         if (\extension_loaded('Zend OPcache') && \ini_get('opcache.enable')) {
-            $collection->add(SettingsResult::ok('zend-opcache', 'Zend Opcache is active', 'active', 'active'));
+            $collection->add(SettingsResult::ok('zend-opcache', $snippet, 'active', 'active'));
 
             return;
         }
 
-        $collection->add(SettingsResult::warning('zend-opcache', 'Zend Opcache is not active', 'not active', 'active'));
+        $collection->add(SettingsResult::warning('zend-opcache', $snippet, 'not active', 'active'));
     }
 
     private function checkPcreJitActive(HealthCollection $collection): void
     {
+        $snippet = 'PCRE-Jit';
+
         if (\ini_get('pcre.jit')) {
-            $collection->add(SettingsResult::ok('pcre-jit', 'PCRE-Jit is active', 'active', 'active'));
+            $collection->add(SettingsResult::ok('pcre-jit', $snippet, 'active', 'active'));
 
             return;
         }
 
-        $collection->add(SettingsResult::warning('pcre-jit', 'PCRE-Jit is not active', 'not active', 'active'));
+        $collection->add(SettingsResult::warning('pcre-jit', $snippet, 'not active', 'active'));
     }
 
     private function decodePhpSize(string $val): float

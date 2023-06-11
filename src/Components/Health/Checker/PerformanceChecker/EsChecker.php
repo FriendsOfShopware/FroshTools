@@ -22,23 +22,12 @@ class EsChecker implements CheckerInterface
             $collection->add(
                 SettingsResult::info(
                     'elasticsearch',
-                    'Elasticsearch is disabled',
+                    'Elasticsearch',
                     'disabled',
                     'enabled',
                     'https://developer.shopware.com/docs/guides/hosting/infrastructure/elasticsearch/elasticsearch-setup'
                 )
             );
-
-            return;
         }
-
-        $collection->add(
-            SettingsResult::ok(
-                'elasticsearch',
-                'Elasticsearch is enabled',
-                'enabled',
-                'enabled'
-            )
-        );
     }
 }

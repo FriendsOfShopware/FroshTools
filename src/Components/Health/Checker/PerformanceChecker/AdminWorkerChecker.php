@@ -18,23 +18,12 @@ class AdminWorkerChecker implements CheckerInterface
             $collection->add(
                 SettingsResult::warning(
                     'admin-watcher',
-                    'Admin-Worker should be disabled',
+                    'Admin-Worker',
                     'enabled',
                     'disabled',
                     'https://developer.shopware.com/docs/guides/plugins/plugins/framework/message-queue/add-message-handler#the-admin-worker'
                 )
             );
-
-            return;
         }
-
-        $collection->add(
-            SettingsResult::ok(
-                'admin-watcher',
-                'Admin-Worker is disabled',
-                'disabled',
-                'disabled'
-            )
-        );
     }
 }

@@ -24,22 +24,18 @@ class MySQL8Checker implements CheckerInterface
 
         if (isset($extractedVersion['mariadb'])) {
             $collection->add(
-                SettingsResult::error('mysql8', 'MySQL 8 performs better than MariaDB', $version, 'MySQL 8.0', 'https://developer.shopware.com/docs/guides/hosting/performance/performance-tweaks#mysql-instead-of-mariadb')
+                SettingsResult::error('mysql8', 'MySQL', $version, 'MySQL 8.0', 'https://developer.shopware.com/docs/guides/hosting/performance/performance-tweaks#mysql-instead-of-mariadb')
             );
 
             return;
         }
 
         if (version_compare($extractedVersion['mysql'], '8.0.0', '>=')) {
-            $collection->add(
-                SettingsResult::ok('mysql8', 'MySQL 8 performs much better', $version, 'MySQL 8.0', 'https://developer.shopware.com/docs/guides/hosting/performance/performance-tweaks#mysql-instead-of-mariadb')
-            );
-
             return;
         }
 
         $collection->add(
-            SettingsResult::error('mysql8', 'MySQL 8 performs much better', $version, 'MySQL 8.0', 'https://developer.shopware.com/docs/guides/hosting/performance/performance-tweaks#mysql-instead-of-mariadb')
+            SettingsResult::error('mysql8', 'MySQL', $version, 'MySQL 8.0', 'https://developer.shopware.com/docs/guides/hosting/performance/performance-tweaks#mysql-instead-of-mariadb')
         );
     }
 

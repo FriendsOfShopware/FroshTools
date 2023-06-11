@@ -17,7 +17,7 @@ class MysqlChecker implements CheckerInterface
     {
         $version = $this->connection->fetchOne('SELECT VERSION()');
         if (!\is_string($version)) {
-            $collection->add(SettingsResult::error('mysql', 'MySQL Version cannot be checked'));
+            $collection->add(SettingsResult::error('mysql',  'MySQL Version', 'unknown'));
 
             return;
         }
@@ -60,13 +60,14 @@ class MysqlChecker implements CheckerInterface
             '8.0.20',
             '8.0.21',
         ];
+        $snippet = 'MySQL Version';
 
         $recommended = 'min ' . $minVersion . ', but not ' . \implode(' or ', $brokenVersions);
 
         if (\in_array($version, $brokenVersions, true)) {
             $collection->add(SettingsResult::error(
                 'mysql',
-                'MySQL Version has technical problems',
+                $snippet,
                 $version,
                 $recommended
             ));
@@ -77,7 +78,7 @@ class MysqlChecker implements CheckerInterface
         if (version_compare($version, $minVersion, '>=')) {
             $collection->add(SettingsResult::ok(
                 'mysql',
-                'MySQL version',
+                $snippet,
                 $version,
                 $recommended
             ));
@@ -87,7 +88,7 @@ class MysqlChecker implements CheckerInterface
 
         $collection->add(SettingsResult::error(
             'mysql',
-            'MySQL Version is outdated',
+            $snippet,
             $version,
             'min ' . $minVersion
         ));

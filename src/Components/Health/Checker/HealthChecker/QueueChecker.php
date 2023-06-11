@@ -15,15 +15,27 @@ class QueueChecker implements CheckerInterface
 
     public function collect(HealthCollection $collection): void
     {
-        $oldMessageLimit = (new \DateTimeImmutable())->modify('-15 minutes');
+        $maxDiff = 15;
+        $oldMessageLimit = (new \DateTimeImmutable())->modify(\sprintf('-%d minutes', $maxDiff));
+
+        $snippet = 'Open Queues';
+        $recommended = \sprintf('max %d mins', $maxDiff);
 
         /** @var string|false $oldestMessageAt */
         $oldestMessageAt = $this->connection->fetchOne('SELECT available_at FROM messenger_messages ORDER BY available_at ASC LIMIT 1');
 
-        if (is_string($oldestMessageAt) && new \DateTimeImmutable($oldestMessageAt . ' UTC') < $oldMessageLimit) {
-            $result = SettingsResult::warning('queue', 'Open Queues older than 15 minutes found');
+        if (is_string($oldestMessageAt)) {
+            $diff = round(abs(
+                ((new \DateTime($oldestMessageAt . ' UTC'))->getTimestamp() - $oldMessageLimit->getTimestamp()) / 60
+            ));
+
+            if ($diff > $maxDiff) {
+                $result = SettingsResult::warning('queue', $snippet, $diff . ' mins', $recommended);
+            } else {
+                $result = SettingsResult::ok('queue', $snippet, $diff . ' mins', $recommended);
+            }
         } else {
-            $result = SettingsResult::ok('queue', 'Queues working good');
+            $result = SettingsResult::info('queue', $snippet, 'unknown', $recommended);
         }
 
         $result->url = 'https://developer.shopware.com/docs/guides/hosting/infrastructure/message-queue';

@@ -22,23 +22,12 @@ class IncrementStorageChecker implements CheckerInterface
             $collection->add(
                 SettingsResult::warning(
                     'increment-storage',
-                    'Increment storage is heavily using the Storage. This feature should be disabled or Redis should be used',
+                    'Increment storage',
                     'mysql',
                     $recommended,
                     'https://developer.shopware.com/docs/guides/hosting/performance/performance-tweaks#increment-storage'
                 )
             );
-
-            return;
         }
-
-        $collection->add(
-            SettingsResult::ok(
-                'increment-storage',
-                'Increment storage is correct configured',
-                $this->userActivity,
-                $recommended
-            )
-        );
     }
 }
