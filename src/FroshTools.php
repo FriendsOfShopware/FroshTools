@@ -3,7 +3,6 @@ declare(strict_types=1);
 
 namespace Frosh\Tools;
 
-use Frosh\Tools\Components\Messenger\TaskLoggingMiddlewareCompilerPass;
 use Frosh\Tools\DependencyInjection\CacheCompilerPass;
 use Frosh\Tools\DependencyInjection\DisableElasticsearchCompilerPass;
 use Frosh\Tools\DependencyInjection\SymfonyConfigCompilerPass;
@@ -17,7 +16,6 @@ class FroshTools extends Plugin
     {
         parent::build($container);
         $container->addCompilerPass(new CacheCompilerPass());
-        $container->addCompilerPass(new TaskLoggingMiddlewareCompilerPass());
         $container->addCompilerPass(new SymfonyConfigCompilerPass());
         $container->addCompilerPass(new DisableElasticsearchCompilerPass());
     }

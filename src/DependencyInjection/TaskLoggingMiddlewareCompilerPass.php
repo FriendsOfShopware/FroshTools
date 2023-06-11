@@ -1,8 +1,9 @@
 <?php
 declare(strict_types=1);
 
-namespace Frosh\Tools\Components\Messenger;
+namespace Frosh\Tools\DependencyInjection;
 
+use Frosh\Tools\Components\Messenger\TaskLoggingMiddleware;
 use Symfony\Component\DependencyInjection\Argument\IteratorArgument;
 use Symfony\Component\DependencyInjection\Compiler\CompilerPassInterface;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
