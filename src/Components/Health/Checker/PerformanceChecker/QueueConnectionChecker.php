@@ -24,17 +24,6 @@ class QueueConnectionChecker implements CheckerInterface
                     'https://developer.shopware.com/docs/guides/hosting/infrastructure/message-queue#transport-rabbitmq-example'
                 )
             );
-
-            return;
         }
-
-        $collection->add(
-            SettingsResult::ok(
-                'queue.adapter',
-                'Configured queue storage is ok for multiple workers',
-                (string) \parse_url($this->connection, \PHP_URL_SCHEME),
-                'redis or rabbitmq',
-            )
-        );
     }
 }

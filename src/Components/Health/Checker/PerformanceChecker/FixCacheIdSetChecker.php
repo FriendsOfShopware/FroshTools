@@ -25,23 +25,12 @@ class FixCacheIdSetChecker implements CheckerInterface
             $collection->add(
                 SettingsResult::warning(
                     'cache-id',
-                    'A fixed cache id should be set',
+                    'Fixed cache id',
                     'not set',
                     'set',
                     'https://developer.shopware.com/docs/guides/hosting/performance/performance-tweaks#cache-id'
                 )
             );
-
-            return;
         }
-
-        $collection->add(
-            SettingsResult::ok(
-                'cache-id',
-                'A fixed cache id is set',
-                \sprintf('set (%s)', $cacheId),
-                'set',
-            )
-        );
     }
 }

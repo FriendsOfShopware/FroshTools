@@ -22,29 +22,14 @@ class LoggerLevelChecker implements CheckerInterface
 
     public function collect(HealthCollection $collection): void
     {
-        $collection->add(
-            $this->checkBusinessEventHandlerLevel()
-        );
-    }
-
-    private function checkBusinessEventHandlerLevel(): SettingsResult
-    {
-        if ($this->businessEventHandlerLevel->isHigherThan(Level::Warning)) {
-            return SettingsResult::ok(
+        if (!$this->businessEventHandlerLevel->isHigherThan(Level::Warning)) {
+            $collection->add(SettingsResult::warning(
                 'business_logger',
-                'BusinessEventHandler does not log infos',
+                'BusinessEventHandler logging',
                 Logger::toMonologLevel($this->businessEventHandlerLevel)->getName(),
                 'min WARNING',
                 $this->url
-            );
+            ));
         }
-
-        return SettingsResult::warning(
-            'business_logger',
-            'BusinessEventHandler is logging infos',
-            Logger::toMonologLevel($this->businessEventHandlerLevel)->getName(),
-            'min WARNING',
-            $this->url
-        );
     }
 }

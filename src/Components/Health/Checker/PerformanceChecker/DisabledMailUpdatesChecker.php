@@ -20,15 +20,14 @@ class DisabledMailUpdatesChecker implements CheckerInterface
             return;
         }
 
-        $result = SettingsResult::ok('mail_variables', 'MailVariables are not updated frequently', 'disabled');
         $setting = $this->params->get('shopware.mail.update_mail_variables_on_send');
 
-        if ($setting) {
-            $result = SettingsResult::warning('mail_variables', 'MailVariables should not be updated frequently');
-            $result->current = 'enabled';
+        if (!$setting) {
+            return;
         }
 
-        $result->recommended = 'disabled';
+        $result = SettingsResult::warning('mail_variables', 'MailVariables updates', 'enabled', 'disabled');
+
         $result->url = 'https://developer.shopware.com/docs/guides/hosting/performance/performance-tweaks#prevent-mail-data-updates';
         $collection->add($result);
     }

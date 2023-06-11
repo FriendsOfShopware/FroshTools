@@ -25,25 +25,13 @@ class PhpSettingsChecker implements CheckerInterface
             $collection->add(
                 SettingsResult::warning(
                     'assert.active',
-                    'PHP value assert.active is not disabled',
+                    'PHP value assert.active',
                     $currentValue,
                     '0',
                     $url
                 )
             );
-
-            return;
         }
-
-        $collection->add(
-            SettingsResult::ok(
-                'assert.active',
-                'PHP value assert.active is disabled',
-                $currentValue,
-                '0',
-                $url
-            )
-        );
     }
 
     private function checkEnableFileOverride(HealthCollection $collection, string $url): void
@@ -53,25 +41,13 @@ class PhpSettingsChecker implements CheckerInterface
             $collection->add(
                 SettingsResult::warning(
                     'php.opcache.enable_file_override',
-                    'PHP value opcache.enable_file_override is not enabled',
+                    'PHP value opcache.enable_file_override',
                     $currentValue,
                     '1',
                     $url
                 )
             );
-
-            return;
         }
-
-        $collection->add(
-            SettingsResult::ok(
-                'php.opcache.enable_file_override',
-                'PHP value opcache.enable_file_override is enabled',
-                $currentValue,
-                '1',
-                $url
-            )
-        );
     }
 
     private function checkInternedStringsBuffer(HealthCollection $collection, string $url): void
@@ -81,25 +57,13 @@ class PhpSettingsChecker implements CheckerInterface
             $collection->add(
                 SettingsResult::warning(
                     'php.opcache.interned_strings_buffer',
-                    'PHP value opcache.interned_strings_buffer is too low',
+                    'PHP value opcache.interned_strings_buffer',
                     $currentValue,
                     'min 20',
                     $url
                 )
             );
-
-            return;
         }
-
-        $collection->add(
-            SettingsResult::ok(
-                'php.opcache.interned_strings_buffer',
-                'PHP value opcache.interned_strings_buffer has minimum value',
-                $currentValue,
-                'min 20',
-                $url
-            )
-        );
     }
 
     private function checkZendDetectUnicode(HealthCollection $collection, string $url): void
@@ -109,25 +73,13 @@ class PhpSettingsChecker implements CheckerInterface
             $collection->add(
                 SettingsResult::warning(
                     'php.zend.detect_unicode',
-                    'PHP value zend.detect_unicode is not disabled',
+                    'PHP value zend.detect_unicode',
                     $currentValue,
                     '0',
                     $url
                 )
             );
-
-            return;
         }
-
-        $collection->add(
-            SettingsResult::ok(
-                'php.zend.detect_unicode',
-                'PHP value zend.detect_unicode is disabled',
-                $currentValue,
-                '0',
-                $url
-            )
-        );
     }
 
     private function checkRealpathCacheTtl(HealthCollection $collection, string $url): void
@@ -137,25 +89,13 @@ class PhpSettingsChecker implements CheckerInterface
             $collection->add(
                 SettingsResult::warning(
                     'php.zend.realpath_cache_ttl',
-                    'PHP value realpath_cache_ttl is low',
+                    'PHP value realpath_cache_ttl',
                     $currentValue,
                     'min 3600',
                     $url
                 )
             );
-
-            return;
         }
-
-        $collection->add(
-            SettingsResult::ok(
-                'php.zend.realpath_cache_ttl',
-                'PHP value realpath_cache_ttl is good',
-                $currentValue,
-                'min 3600',
-                $url
-            )
-        );
     }
 
     private function iniGetFailover(string $option): string

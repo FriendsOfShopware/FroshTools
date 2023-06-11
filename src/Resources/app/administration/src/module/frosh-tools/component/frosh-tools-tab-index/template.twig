@@ -27,14 +27,7 @@
                 :columns="columns">
 
                 <template #column-current="{ item }">
-                    {{ item.current }}
-                </template>
-
-                <template #column-name="{ item }">
                     <template>
-                        <sw-label variant="success" appearance="pill" v-if="item.state === 'STATE_OK'">
-                            {{ $tc('frosh-tools.good') }}
-                        </sw-label>
                         <sw-label variant="warning" appearance="pill" v-if="item.state === 'STATE_WARNING'">
                             {{ $tc('frosh-tools.warning') }}
                         </sw-label>
@@ -46,10 +39,17 @@
                         </sw-label>
                     </template>
 
-                    <template v-if="item.url">
-                        <a :href="item.url" target="_blank">{{ item.snippet }}</a>
+                    <template>
+                        {{ item.current }}<template v-if="item.recommended && item.state !== 'STATE_OK'">, recommended: {{ item.recommended }}</template>
                     </template>
-                    <template v-else>{{ item.snippet }}</template>
+                </template>
+
+                <template #column-name="{ item }">
+                    {{ item.snippet }}
+
+                    <template v-if="item.url">
+                        &nbsp;<a :href="item.url" target="_blank">INFO</a>
+                    </template>
                 </template>
             </sw-data-grid>
         </sw-card>
@@ -68,14 +68,7 @@
                 :columns="columns">
 
                 <template #column-current="{ item }">
-                    {{ item.current }}
-                </template>
-
-                <template #column-name="{ item }">
                     <template>
-                        <sw-label variant="success" appearance="pill" v-if="item.state === 'STATE_OK'">
-                            {{ $tc('frosh-tools.good') }}
-                        </sw-label>
                         <sw-label variant="warning" appearance="pill" v-if="item.state === 'STATE_WARNING'">
                             {{ $tc('frosh-tools.warning') }}
                         </sw-label>
@@ -87,10 +80,17 @@
                         </sw-label>
                     </template>
 
-                    <template v-if="item.url">
-                        <a :href="item.url" target="_blank">{{ item.snippet }}</a>
+                    <template>
+                        {{ item.current }}<template v-if="item.recommended && item.state !== 'STATE_OK'">, recommended: {{ item.recommended }}</template>
                     </template>
-                    <template v-else>{{ item.snippet }}</template>
+                </template>
+
+                <template #column-name="{ item }">
+                    {{ item.snippet }}
+
+                    <template v-if="item.url">
+                        &nbsp;<a :href="item.url" target="_blank">INFO</a>
+                    </template>
                 </template>
             </sw-data-grid>
         </sw-card>
