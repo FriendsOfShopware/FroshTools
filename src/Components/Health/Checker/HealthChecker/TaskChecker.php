@@ -41,7 +41,7 @@ class TaskChecker implements HealthCheckerInterface, CheckerInterface
         $taskDateLimit = (new \DateTimeImmutable())->modify(\sprintf('-%d minutes', $maxDiff));
         $recommended = \sprintf('max %d mins', $maxDiff);
 
-        $tasks = array_filter($tasks, fn(array $task) => new \DateTimeImmutable($task['next_execution_time']) < $taskDateLimit);
+        $tasks = array_filter($tasks, fn (array $task) => new \DateTimeImmutable($task['next_execution_time']) < $taskDateLimit);
 
         if ($tasks === []) {
             $collection->add(SettingsResult::ok('scheduled_task', 'Scheduled tasks', '0 mins', $recommended));
