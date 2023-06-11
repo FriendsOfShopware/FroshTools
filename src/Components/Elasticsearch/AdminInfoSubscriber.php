@@ -3,9 +3,11 @@ declare(strict_types=1);
 
 namespace Frosh\Tools\Components\Elasticsearch;
 
+use Symfony\Component\DependencyInjection\Attribute\AutoconfigureTag;
 use Symfony\Component\DependencyInjection\Attribute\Autowire;
 use Symfony\Component\HttpKernel\Event\ResponseEvent;
 
+#[AutoconfigureTag('kernel.event_listener')]
 final class AdminInfoSubscriber
 {
     public function __construct(
