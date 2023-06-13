@@ -27,7 +27,6 @@ class MailOverQueueChecker implements PerformanceCheckerInterface, CheckerInterf
                     'https://developer.shopware.com/docs/guides/hosting/infrastructure/message-queue#sending-mails-over-the-message-queue'
                 )
             );
-
         }
     }
 }

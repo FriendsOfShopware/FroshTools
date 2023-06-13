@@ -25,7 +25,7 @@ class QueueChecker implements HealthCheckerInterface, CheckerInterface
         /** @var string|false $oldestMessageAt */
         $oldestMessageAt = $this->connection->fetchOne('SELECT available_at FROM messenger_messages ORDER BY available_at ASC LIMIT 1');
 
-        if (is_string($oldestMessageAt)) {
+        if (\is_string($oldestMessageAt)) {
             $diff = round(abs(
                 ((new \DateTime($oldestMessageAt . ' UTC'))->getTimestamp() - $oldMessageLimit->getTimestamp()) / 60
             ));

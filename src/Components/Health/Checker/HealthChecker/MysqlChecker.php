@@ -18,7 +18,7 @@ class MysqlChecker implements HealthCheckerInterface, CheckerInterface
     {
         $version = $this->connection->fetchOne('SELECT VERSION()');
         if (!\is_string($version)) {
-            $collection->add(SettingsResult::error('mysql',  'MySQL Version', 'unknown'));
+            $collection->add(SettingsResult::error('mysql', 'MySQL Version', 'unknown'));
 
             return;
         }

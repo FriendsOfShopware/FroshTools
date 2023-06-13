@@ -1,4 +1,5 @@
-<?php declare(strict_types=1);
+<?php
+declare(strict_types=1);
 
 namespace Frosh\Tools\Components\Health\Checker\HealthChecker;
 
@@ -30,7 +31,7 @@ class SystemInfoChecker implements CheckerInterface
         );
     }
 
-    private function getDatabaseInfo(HealthCollection $collection)
+    private function getDatabaseInfo(HealthCollection $collection): void
     {
         $databaseConnectionInfo = (new DatabaseConnectionInformation())->fromEnv();
 
@@ -38,7 +39,8 @@ class SystemInfoChecker implements CheckerInterface
             SettingsResult::ok(
                 'database-info',
                 'Database',
-                \sprintf('%s@%s:%s',
+                \sprintf(
+                    '%s@%s:%d',
                     $databaseConnectionInfo->getDatabaseName(),
                     $databaseConnectionInfo->getHostname(),
                     $databaseConnectionInfo->getPort()

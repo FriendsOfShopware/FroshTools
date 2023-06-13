@@ -8,7 +8,7 @@ use Symfony\Component\DependencyInjection\Attribute\Autowire;
 use Symfony\Component\HttpKernel\Event\ResponseEvent;
 
 #[AutoconfigureTag('kernel.event_listener')]
-final class AdminInfoSubscriber
+final class AdminInfoSubscriberEventListener
 {
     public function __construct(
         #[Autowire('%frosh_tools.elasticsearch.enabled%')] private readonly bool $elasticsearchEnabled

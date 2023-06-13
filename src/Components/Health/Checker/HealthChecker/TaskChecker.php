@@ -59,6 +59,6 @@ class TaskChecker implements HealthCheckerInterface, CheckerInterface
             ($maxTaskNextExecTime - $taskDateLimit->getTimestamp()) / 60
         ));
 
-        $collection->add(SettingsResult::warning('scheduled_task', 'Scheduled tasks', \sprintf('%d mins',$diff), $recommended));
+        $collection->add(SettingsResult::warning('scheduled_task', 'Scheduled tasks', \sprintf('%d mins', $diff), $recommended));
     }
 }
