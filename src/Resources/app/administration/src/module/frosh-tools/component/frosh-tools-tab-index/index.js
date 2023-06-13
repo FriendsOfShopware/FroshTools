@@ -31,6 +31,11 @@ Component.register('frosh-tools-tab-index', {
                     property: 'current',
                     label: 'frosh-tools.current',
                     rawData: true
+                },
+                {
+                    property: 'recommended',
+                    label: 'frosh-tools.recommended',
+                    rawData: true
                 }
             ];
         },

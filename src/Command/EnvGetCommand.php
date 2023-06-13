@@ -1,4 +1,5 @@
-<?php declare(strict_types=1);
+<?php
+declare(strict_types=1);
 
 namespace Frosh\Tools\Command;
 
@@ -10,23 +11,25 @@ use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
+use Symfony\Component\DependencyInjection\Attribute\Autowire;
 
 #[AsCommand('frosh:env:get', 'Get an environment variable')]
 class EnvGetCommand extends Command
 {
-    public function __construct(private readonly string $envPath)
-    {
+    public function __construct(
+        #[Autowire('%kernel.project_dir%/.env')] private readonly string $envPath
+    ) {
         parent::__construct();
     }
 
-    public function configure(): void
+    protected function configure(): void
     {
         $this->addArgument('variable', InputArgument::OPTIONAL, 'Get specific environment variable');
         $this->addOption('key-value', null, InputOption::VALUE_NONE, 'Get value as key value');
         $this->addOption('json', null, InputOption::VALUE_NONE, 'Get value as json');
     }
 
-    public function execute(InputInterface $input, OutputInterface $output): int
+    protected function execute(InputInterface $input, OutputInterface $output): int
     {
         if (!is_file($this->envPath)) {
             throw new \RuntimeException(\sprintf('Cannot use this command as env file is missing at %s', $this->envPath));

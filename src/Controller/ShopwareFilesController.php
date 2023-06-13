@@ -1,26 +1,29 @@
-<?php declare(strict_types=1);
+<?php
+declare(strict_types=1);
 
 namespace Frosh\Tools\Controller;
 
 use Shopware\Core\Kernel;
+use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Component\DependencyInjection\Attribute\Autowire;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Routing\Annotation\Route;
 
 #[Route(path: '/api/_action/frosh-tools', defaults: ['_routeScope' => ['api'], '_acl' => ['frosh_tools:read']])]
-class ShopwareFilesController
+class ShopwareFilesController extends AbstractController
 {
     private const STATUS_OK = 0;
     private const STATUS_IGNORED_ALL = 1;
     private const STATUS_IGNORED_IN_PROJECT = 2;
-    private bool $isPlatform;
+
+    private readonly bool $isPlatform;
 
     public function __construct(
-        private readonly string $shopwareVersion,
-        private readonly string $projectDir,
-        private readonly array $projectIgnoredFiles
-    )
-    {
+        #[Autowire('%kernel.shopware_version%')] private readonly string $shopwareVersion,
+        #[Autowire('%kernel.project_dir%')] private readonly string $projectDir,
+        #[Autowire('%frosh_tools.file_checker.exclude_files%')] private readonly array $projectExcludeFiles
+    ) {
         $this->isPlatform = !is_dir($this->projectDir . '/vendor/shopware/core') && is_dir($this->projectDir . '/src/Core');
     }
 
@@ -44,9 +47,7 @@ class ShopwareFilesController
 
         foreach (explode("\n", $data) as $row) {
             if ($this->isPlatform) {
-                $row = preg_replace_callback('/vendor\/shopware\/(.)/', function ($matches) {
-                    return 'src/' . strtoupper($matches[1]);
-                }, $row);
+                $row = preg_replace_callback('/vendor\/shopware\/(.)/', fn ($matches): string => 'src/' . strtoupper($matches[1]), $row);
             }
 
             [$expectedMd5Sum, $file] = explode('  ', trim($row));
@@ -76,8 +77,8 @@ class ShopwareFilesController
                 ];
             }
 
-            //WE SHOULD STOP HERE, WHILE THERE MIGHT BE ANY BIG PROBLEM!
-            if (count($invalidFiles) > 100) {
+            // WE SHOULD STOP HERE, WHILE THERE MIGHT BE ANY BIG PROBLEM!
+            if (\count($invalidFiles) > 100) {
                 break;
             }
         }
@@ -147,22 +148,18 @@ class ShopwareFilesController
 
     private function getShopwareUrl(string $name): ?string
     {
-        if ($this->isPlatform) {
-            $name = preg_replace('/^src\//', '', $name);
-        } else {
-            $name = preg_replace('/^vendor\/shopware\//', '', $name);
-        }
+        $name = $this->isPlatform ? preg_replace('/^src\//', '', $name) : preg_replace('/^vendor\/shopware\//', '', $name);
 
         $pathParts = \explode('/', $name);
         $repo = $pathParts[0];
         array_shift($pathParts);
 
-        return 'https://github.com/shopware/' .
-            $repo .
-            '/blob/v' .
-            $this->shopwareVersion .
-            '/' .
-            \implode('/', $pathParts);
+        return 'https://github.com/shopware/'
+            . $repo
+            . '/blob/v'
+            . $this->shopwareVersion
+            . '/'
+            . \implode('/', $pathParts);
     }
 
     private function getOriginalFileContent(string $name): ?string
@@ -172,19 +169,10 @@ class ShopwareFilesController
 
     private function isIgnoredFileHash(string $file): int
     {
-        if (in_array($file, $this->projectIgnoredFiles, true)) {
+        if (\in_array($file, $this->projectExcludeFiles, true)) {
             return self::STATUS_IGNORED_IN_PROJECT;
         }
 
         return self::STATUS_OK;
-    }
-
-    private function assertNoGitVersion(): ?JsonResponse
-    {
-        if ($this->shopwareVersion === Kernel::SHOPWARE_FALLBACK_VERSION) {
-            return new JsonResponse(['error' => 'Git version is not supported']);
-        }
-
-        return null;
     }
 }

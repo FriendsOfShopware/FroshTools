@@ -11,7 +11,7 @@ final class Plantuml implements ExportInterface
 {
     private const DEFAULT_PATH = __DIR__ . '/../../Resources/views/administration/plantuml';
 
-    private Environment $twig;
+    private readonly Environment $twig;
 
     public function __construct()
     {

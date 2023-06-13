@@ -1,4 +1,5 @@
-<?php declare(strict_types=1);
+<?php
+declare(strict_types=1);
 
 namespace Frosh\Tools\Components\Health\Checker\HealthChecker;
 
@@ -8,10 +9,12 @@ use Frosh\Tools\Components\Health\HealthCollection;
 use Frosh\Tools\Components\Health\SettingsResult;
 use Symfony\Component\DependencyInjection\ParameterBag\ParameterBagInterface;
 
-class TaskChecker implements CheckerInterface
+class TaskChecker implements HealthCheckerInterface, CheckerInterface
 {
-    public function __construct(private readonly Connection $connection, private readonly ParameterBagInterface $parameterBag)
-    {
+    public function __construct(
+        private readonly Connection $connection,
+        private readonly ParameterBagInterface $parameterBag
+    ) {
     }
 
     public function collect(HealthCollection $collection): void
@@ -38,12 +41,10 @@ class TaskChecker implements CheckerInterface
         $taskDateLimit = (new \DateTimeImmutable())->modify(\sprintf('-%d minutes', $maxDiff));
         $recommended = \sprintf('max %d mins', $maxDiff);
 
-        $tasks = array_filter($tasks, function (array $task) use ($taskDateLimit) {
-            return new \DateTimeImmutable($task['next_execution_time']) < $taskDateLimit;
-        });
+        $tasks = array_filter($tasks, fn (array $task) => new \DateTimeImmutable($task['next_execution_time']) < $taskDateLimit);
 
         if ($tasks === []) {
-            $collection->add(SettingsResult::ok('scheduled_task', 'Scheduled tasks', '0 mins', $recommended));
+            $collection->add(SettingsResult::ok('scheduled_task', 'Scheduled tasks overdue', '0 mins', $recommended));
 
             return;
         }
@@ -58,6 +59,6 @@ class TaskChecker implements CheckerInterface
             ($maxTaskNextExecTime - $taskDateLimit->getTimestamp()) / 60
         ));
 
-        $collection->add(SettingsResult::warning('scheduled_task', 'Scheduled tasks', \sprintf('%d mins',$diff), $recommended));
+        $collection->add(SettingsResult::warning('scheduled_task', 'Scheduled tasks overdue', \sprintf('%d mins', $diff), $recommended));
     }
 }

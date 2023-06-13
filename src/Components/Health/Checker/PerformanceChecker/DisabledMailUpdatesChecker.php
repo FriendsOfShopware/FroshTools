@@ -1,4 +1,5 @@
-<?php declare(strict_types=1);
+<?php
+declare(strict_types=1);
 
 namespace Frosh\Tools\Components\Health\Checker\PerformanceChecker;
 
@@ -7,7 +8,7 @@ use Frosh\Tools\Components\Health\HealthCollection;
 use Frosh\Tools\Components\Health\SettingsResult;
 use Symfony\Component\DependencyInjection\ParameterBag\ParameterBagInterface;
 
-class DisabledMailUpdatesChecker implements CheckerInterface
+class DisabledMailUpdatesChecker implements PerformanceCheckerInterface, CheckerInterface
 {
     public function __construct(private readonly ParameterBagInterface $params)
     {
@@ -15,7 +16,6 @@ class DisabledMailUpdatesChecker implements CheckerInterface
 
     public function collect(HealthCollection $collection): void
     {
-        /** @phpstan-ignore-next-line  */
         if (!$this->params->has('shopware.mail.update_mail_variables_on_send')) {
             return;
         }

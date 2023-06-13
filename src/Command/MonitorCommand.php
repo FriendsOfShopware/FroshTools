@@ -1,9 +1,11 @@
-<?php declare(strict_types=1);
+<?php
+declare(strict_types=1);
 
 namespace Frosh\Tools\Command;
 
 use Doctrine\DBAL\Connection;
 use Shopware\Core\Content\Mail\Service\AbstractMailService;
+use Shopware\Core\Content\Mail\Service\MailService;
 use Shopware\Core\Framework\Context;
 use Shopware\Core\Framework\DataAbstractionLayer\EntityRepository;
 use Shopware\Core\Framework\DataAbstractionLayer\Search\Criteria;
@@ -18,6 +20,7 @@ use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
+use Symfony\Component\DependencyInjection\Attribute\Autowire;
 use Symfony\Component\HttpFoundation\ParameterBag;
 
 #[AsCommand('frosh:monitor', 'Monitor your scheduled task and queue with this command and get notified via email.')]
@@ -27,7 +30,7 @@ class MonitorCommand extends Command
     private const MONITOR_SALESCHANNEL_ARG = 'sales-channel';
 
     public function __construct(
-        private readonly AbstractMailService $mailService,
+        #[Autowire(service: MailService::class)] private readonly AbstractMailService $mailService,
         private readonly SystemConfigService $configService,
         private readonly Connection $connection,
         private readonly EntityRepository $scheduledTaskRepository

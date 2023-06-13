@@ -1,4 +1,5 @@
-<?php declare(strict_types=1);
+<?php
+declare(strict_types=1);
 
 namespace Frosh\Tools\Components\Health\Checker\HealthChecker;
 
@@ -7,7 +8,7 @@ use Frosh\Tools\Components\Health\Checker\CheckerInterface;
 use Frosh\Tools\Components\Health\HealthCollection;
 use Frosh\Tools\Components\Health\SettingsResult;
 
-class QueueChecker implements CheckerInterface
+class QueueChecker implements HealthCheckerInterface, CheckerInterface
 {
     public function __construct(private readonly Connection $connection)
     {
@@ -24,7 +25,7 @@ class QueueChecker implements CheckerInterface
         /** @var string|false $oldestMessageAt */
         $oldestMessageAt = $this->connection->fetchOne('SELECT available_at FROM messenger_messages ORDER BY available_at ASC LIMIT 1');
 
-        if (is_string($oldestMessageAt)) {
+        if (\is_string($oldestMessageAt)) {
             $diff = round(abs(
                 ((new \DateTime($oldestMessageAt . ' UTC'))->getTimestamp() - $oldMessageLimit->getTimestamp()) / 60
             ));

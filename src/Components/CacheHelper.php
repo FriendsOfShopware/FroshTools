@@ -1,4 +1,5 @@
-<?php declare(strict_types=1);
+<?php
+declare(strict_types=1);
 
 namespace Frosh\Tools\Components;
 
@@ -28,7 +29,7 @@ class CacheHelper
         if (self::rsyncAvailable()) {
             $blankDir = sys_get_temp_dir() . '/' . uniqid() . '/';
 
-            if (!mkdir($blankDir, 0755, true) && !is_dir($blankDir)) {
+            if (!mkdir($blankDir, 0o755, true) && !is_dir($blankDir)) {
                 throw new \RuntimeException(sprintf('Directory "%s" was not created', $blankDir));
             }
 

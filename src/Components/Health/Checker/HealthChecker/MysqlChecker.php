@@ -1,4 +1,5 @@
-<?php declare(strict_types=1);
+<?php
+declare(strict_types=1);
 
 namespace Frosh\Tools\Components\Health\Checker\HealthChecker;
 
@@ -7,7 +8,7 @@ use Frosh\Tools\Components\Health\Checker\CheckerInterface;
 use Frosh\Tools\Components\Health\HealthCollection;
 use Frosh\Tools\Components\Health\SettingsResult;
 
-class MysqlChecker implements CheckerInterface
+class MysqlChecker implements HealthCheckerInterface, CheckerInterface
 {
     public function __construct(private readonly Connection $connection)
     {
@@ -17,7 +18,7 @@ class MysqlChecker implements CheckerInterface
     {
         $version = $this->connection->fetchOne('SELECT VERSION()');
         if (!\is_string($version)) {
-            $collection->add(SettingsResult::error('mysql',  'MySQL Version', 'unknown'));
+            $collection->add(SettingsResult::error('mysql', 'MySQL Version', 'unknown'));
 
             return;
         }

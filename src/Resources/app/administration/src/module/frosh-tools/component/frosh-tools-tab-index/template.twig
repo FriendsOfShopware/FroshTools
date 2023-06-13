@@ -40,7 +40,7 @@
                     </template>
 
                     <template>
-                        {{ item.current }}<template v-if="item.recommended && item.state !== 'STATE_OK'">, recommended: {{ item.recommended }}</template>
+                        {{ item.current }}
                     </template>
                 </template>
 
@@ -48,7 +48,7 @@
                     {{ item.snippet }}
 
                     <template v-if="item.url">
-                        &nbsp;<a :href="item.url" target="_blank">INFO</a>
+                        &nbsp;<a :href="item.url" target="_blank">Info</a>
                     </template>
                 </template>
             </sw-data-grid>
@@ -81,7 +81,7 @@
                     </template>
 
                     <template>
-                        {{ item.current }}<template v-if="item.recommended && item.state !== 'STATE_OK'">, recommended: {{ item.recommended }}</template>
+                        {{ item.current }}
                     </template>
                 </template>
 
@@ -89,7 +89,7 @@
                     {{ item.snippet }}
 
                     <template v-if="item.url">
-                        &nbsp;<a :href="item.url" target="_blank">INFO</a>
+                        &nbsp;<a :href="item.url" target="_blank">Info</a>
                     </template>
                 </template>
             </sw-data-grid>

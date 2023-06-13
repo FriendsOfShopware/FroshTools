@@ -1,4 +1,5 @@
-<?php declare(strict_types=1);
+<?php
+declare(strict_types=1);
 
 namespace Frosh\Tools\Components\Health\Checker\HealthChecker;
 
@@ -6,7 +7,7 @@ use Frosh\Tools\Components\Health\Checker\CheckerInterface;
 use Frosh\Tools\Components\Health\HealthCollection;
 use Frosh\Tools\Components\Health\SettingsResult;
 
-class PhpChecker implements CheckerInterface
+class PhpChecker implements HealthCheckerInterface, CheckerInterface
 {
     public function collect(HealthCollection $collection): void
     {

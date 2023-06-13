@@ -1,4 +1,5 @@
-<?php declare(strict_types=1);
+<?php
+declare(strict_types=1);
 
 namespace Frosh\Tools\Components\Health\Checker\PerformanceChecker;
 
@@ -7,7 +8,7 @@ use Frosh\Tools\Components\Health\Checker\CheckerInterface;
 use Frosh\Tools\Components\Health\HealthCollection;
 use Frosh\Tools\Components\Health\SettingsResult;
 
-class EsChecker implements CheckerInterface
+class EsChecker implements PerformanceCheckerInterface, CheckerInterface
 {
     protected bool $esEnabled = false;
 

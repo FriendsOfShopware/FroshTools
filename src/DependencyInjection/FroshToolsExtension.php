@@ -1,4 +1,5 @@
-<?php declare(strict_types=1);
+<?php
+declare(strict_types=1);
 
 namespace Frosh\Tools\DependencyInjection;
 
@@ -29,7 +30,6 @@ class FroshToolsExtension extends Extension
             }
         }
 
-        /** @phpstan-ignore-next-line */
         if (!$container->hasParameter('frosh_tools.file_checker.exclude_files')) {
             $container->setParameter('frosh_tools.file_checker.exclude_files', []);
         }
