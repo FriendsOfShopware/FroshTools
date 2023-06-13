@@ -1,3 +1,9 @@
+# 1.1.0
+
+- Use symfony autowire
+- Also read accumulated messages stats from transports 
+- Removed task logging middleware
+
 # 1.0.6
 
 - Simplify enviromment delete command name

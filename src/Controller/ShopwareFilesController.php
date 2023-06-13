@@ -3,6 +3,7 @@
 namespace Frosh\Tools\Controller;
 
 use Shopware\Core\Kernel;
+use Symfony\Component\DependencyInjection\Attribute\Autowire;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Routing\Annotation\Route;
@@ -16,9 +17,9 @@ class ShopwareFilesController
     private bool $isPlatform;
 
     public function __construct(
-        private readonly string $shopwareVersion,
-        private readonly string $projectDir,
-        private readonly array $projectIgnoredFiles
+        #[Autowire('%kernel.shopware_version%')] private readonly string $shopwareVersion,
+        #[Autowire('%kernel.project_dir%<')] private readonly string $projectDir,
+        #[Autowire('%frosh_tools.file_checker.exclude_files%')] private readonly array $projectIgnoredFiles
     )
     {
         $this->isPlatform = !is_dir($this->projectDir . '/vendor/shopware/core') && is_dir($this->projectDir . '/src/Core');
