@@ -44,7 +44,7 @@ class TaskChecker implements HealthCheckerInterface, CheckerInterface
         $tasks = array_filter($tasks, fn (array $task) => new \DateTimeImmutable($task['next_execution_time']) < $taskDateLimit);
 
         if ($tasks === []) {
-            $collection->add(SettingsResult::ok('scheduled_task', 'Scheduled tasks', '0 mins', $recommended));
+            $collection->add(SettingsResult::ok('scheduled_task', 'Scheduled tasks overdue', '0 mins', $recommended));
 
             return;
         }
@@ -59,6 +59,6 @@ class TaskChecker implements HealthCheckerInterface, CheckerInterface
             ($maxTaskNextExecTime - $taskDateLimit->getTimestamp()) / 60
         ));
 
-        $collection->add(SettingsResult::warning('scheduled_task', 'Scheduled tasks', \sprintf('%d mins', $diff), $recommended));
+        $collection->add(SettingsResult::warning('scheduled_task', 'Scheduled tasks overdue', \sprintf('%d mins', $diff), $recommended));
     }
 }

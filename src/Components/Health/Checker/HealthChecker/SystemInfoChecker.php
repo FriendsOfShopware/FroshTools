@@ -7,10 +7,13 @@ use Frosh\Tools\Components\Health\Checker\CheckerInterface;
 use Frosh\Tools\Components\Health\HealthCollection;
 use Frosh\Tools\Components\Health\SettingsResult;
 use Shopware\Core\Maintenance\System\Struct\DatabaseConnectionInformation;
+use Symfony\Component\DependencyInjection\Attribute\Autowire;
 
-class SystemInfoChecker implements CheckerInterface
+class SystemInfoChecker implements HealthCheckerInterface, CheckerInterface
 {
-    public function __construct(private readonly string $kernelProjectDir)
+    public function __construct(
+        #[Autowire('%kernel.project_dir%')] private readonly string $projectDir
+    )
     {
     }
 
@@ -26,7 +29,7 @@ class SystemInfoChecker implements CheckerInterface
             SettingsResult::ok(
                 'installation-path',
                 'Installation Path',
-                $this->kernelProjectDir
+                $this->projectDir
             )
         );
     }
@@ -40,10 +43,11 @@ class SystemInfoChecker implements CheckerInterface
                 'database-info',
                 'Database',
                 \sprintf(
-                    '%s@%s:%d',
-                    $databaseConnectionInfo->getDatabaseName(),
+                    '%s@%s:%d/%s',
+                    $databaseConnectionInfo->getUsername(),
                     $databaseConnectionInfo->getHostname(),
-                    $databaseConnectionInfo->getPort()
+                    $databaseConnectionInfo->getPort(),
+                    $databaseConnectionInfo->getDatabaseName()
                 )
             )
         );
