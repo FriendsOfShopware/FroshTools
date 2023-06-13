@@ -36,11 +36,5 @@
   },
   "require": {
     "shopware/core": "~6.5.2"
-  },
-  "require-dev": {
-    "friendsofphp/php-cs-fixer": "~3.0"
-  },
-  "scripts": {
-    "cs-fixer": "php-cs-fixer fix"
   }
 }
