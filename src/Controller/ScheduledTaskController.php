@@ -41,6 +41,9 @@ class ScheduledTaskController extends AbstractController
         ], $context);
 
         $className = $scheduledTask->getScheduledTaskClass();
+        $task = new $className();
+        $task->setTaskId($id);
+
         foreach ($this->taskHandler as $handler) {
             if (!$handler instanceof ScheduledTaskHandler) {
                 continue;
@@ -54,7 +57,8 @@ class ScheduledTaskController extends AbstractController
                 continue;
             }
 
-            $handler->run();
+            // calls the __invoke() method of the abstract ScheduledTaskHandler
+            $handler($task);
         }
 
         return new JsonResponse(null, Response::HTTP_NO_CONTENT);

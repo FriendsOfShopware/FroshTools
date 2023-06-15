@@ -16,7 +16,7 @@
 
         <input-field type="int">
             <name>monitorQueueGraceTime</name>
-            <label>Scheduled task grace time</label>
+            <label>Scheduled queue grace time</label>
             <label lang="de-DE">Geplante Karenzzeit der Queue</label>
             <helpText>After X minutes a queue is considered stuck / faulty</helpText>
             <helpText lang="de-DE">Nach X Minuten gilt eine Queue als festgefahren / fehlerhaft</helpText>
