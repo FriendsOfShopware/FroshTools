@@ -1,3 +1,6 @@
+# 1.2.0
+- [Allow overriding any system config value with config files](https://github.com/FriendsOfShopware/FroshTools#override-system_config-with-config-files)
+
 # 1.1.1
 - Fixes problems with manual execution of Scheduled Tasks
 - label for monitorQueueGraceTime modified

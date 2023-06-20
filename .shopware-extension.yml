@@ -7,7 +7,6 @@ store:
         - de_DE
         - en_GB
     categories:
-        - Suche
         - Administration
     type: extension
     icon: src/Resources/store/icon.png

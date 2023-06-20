@@ -29,6 +29,8 @@ The current feature set consists of:
   - Checks if core files have been changed
 - **State Machine Visualisation**
   - basic view of order, transaction and delivery states
+- **Override system config by config files**
+  - Overwrite any system config value with static or environment values
 
 ## Installation
 
@@ -111,6 +113,44 @@ bin/console frosh:composer-plugin:update
 ### `frosh:user:change:password` - updates user password
 ```bash
 bin/console frosh:user:change:password <username> [<password>]
+```
+
+## Override system_config with config files
+
+```yaml
+# config/packages/frosh_tools.yaml
+frosh_tools:
+    system_config:
+        default:
+            core.listing.allowBuyInListing: true
+```
+
+The key `default` is the sales channel scope, default is `null` which is the global scope. You can specify a specific salesChannelId to overwrite the value
+
+```yaml
+# config/packages/frosh_tools.yaml
+frosh_tools:
+    system_config:
+        default:
+            core.listing.allowBuyInListing: true
+        # Disable it for the specific sales channel
+        0188da12724970b9b4a708298259b171:
+            core.listing.allowBuyInListing: false
+```
+
+As it is a normal Symfony config, you can of course use also environment variables
+
+```yaml
+# config/packages/frosh_tools.yaml
+frosh_tools:
+    system_config:
+        default:
+            core.listing.allowBuyInListing: '%env(bool:ALLOW_BUY_IN_LISTING)%'
+```
+
+```
+# .env.local
+ALLOW_BUY_IN_LISTING=true
 ```
 
 ## Screenshots

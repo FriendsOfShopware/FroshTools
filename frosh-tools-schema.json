@@ -1,0 +1,33 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "Configuration for FroshTools",
+  "$ref": "#/definitions/root",
+  "definitions": {
+    "root": {
+      "type": "object",
+      "properties": {
+        "frosh_tools": {
+          "$ref": "#/definitions/frosh_tools"
+        }
+      },
+      "additionalProperties": false,
+    },
+    "frosh_tools": {
+      "type": "object",
+      "properties": {
+        "file_checker": {
+          "title": "File checker allow-list",
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "system_config": {
+          "type": "object",
+          "additionalProperties": true
+        }
+      },
+      "additionalProperties": false
+    }
+  }
+}
