@@ -1,3 +1,7 @@
+# 1.1.1
+- Fixes problems with manual execution of Scheduled Tasks
+- label for monitorQueueGraceTime modified
+
 # 1.1.0
 
 - Use symfony autowire
