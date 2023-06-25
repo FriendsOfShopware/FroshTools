@@ -3,7 +3,13 @@ declare(strict_types=1);
 
 namespace Frosh\Tools\Controller;
 
+use Psr\Log\LoggerInterface;
+use Shopware\Core\Framework\Api\Context\AdminApiSource;
+use Shopware\Core\Framework\Context;
+use Shopware\Core\Framework\DataAbstractionLayer\EntityRepository;
+use Shopware\Core\Framework\DataAbstractionLayer\Search\Criteria;
 use Shopware\Core\Kernel;
+use Shopware\Core\System\User\UserEntity;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\DependencyInjection\Attribute\Autowire;
 use Symfony\Component\HttpFoundation\JsonResponse;
@@ -22,7 +28,9 @@ class ShopwareFilesController extends AbstractController
     public function __construct(
         #[Autowire('%kernel.shopware_version%')] private readonly string $shopwareVersion,
         #[Autowire('%kernel.project_dir%')] private readonly string $projectDir,
-        #[Autowire('%frosh_tools.file_checker.exclude_files%')] private readonly array $projectExcludeFiles
+        #[Autowire('%frosh_tools.file_checker.exclude_files%')] private readonly array $projectExcludeFiles,
+        #[Autowire(service: 'frosh_tools.logger')] private readonly LoggerInterface $froshToolsLogger,
+        private readonly EntityRepository $userRepository
     ) {
         $this->isPlatform = !is_dir($this->projectDir . '/vendor/shopware/core') && is_dir($this->projectDir . '/src/Core');
     }
@@ -116,7 +124,7 @@ class ShopwareFilesController extends AbstractController
     }
 
     #[Route(path: '/shopware-file/restore', name: 'api.frosh.tools.shopware-file.restore', methods: ['GET'])]
-    public function restoreShopwareFile(Request $request): JsonResponse
+    public function restoreShopwareFile(Request $request, Context $context): JsonResponse
     {
         if ($this->shopwareVersion === Kernel::SHOPWARE_FALLBACK_VERSION) {
             return new JsonResponse(['error' => 'Git version is not supported']);
@@ -143,7 +151,13 @@ class ShopwareFilesController extends AbstractController
             opcache_reset();
         }
 
-        return new JsonResponse(['status' => sprintf('File at "%s" has been restored', $file)]);
+        $userName = $this->getUserName($context) ?? 'unknown';
+
+        $message = sprintf('File at "%s" has been restored by %s', $file, $userName);
+
+        $this->froshToolsLogger->info($message);
+
+        return new JsonResponse(['status' => $message]);
     }
 
     private function getShopwareUrl(string $name): ?string
@@ -174,5 +188,23 @@ class ShopwareFilesController extends AbstractController
         }
 
         return self::STATUS_OK;
+    }
+
+    private function getUserName(Context $context): ?string
+    {
+        $contextSource = $context->getSource();
+
+        if (!$contextSource instanceof AdminApiSource) {
+            return null;
+        }
+
+        /** @var null|UserEntity $userEntity */
+        $userEntity = $this->userRepository->search(new Criteria([$contextSource->getUserId()]), Context::createDefaultContext())->first();
+
+        if (!$userEntity instanceof UserEntity) {
+            return null;
+        }
+
+        return $userEntity->getUsername();
     }
 }
