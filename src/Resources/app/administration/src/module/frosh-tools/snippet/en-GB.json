@@ -90,6 +90,7 @@
     "message": "Message",
     "current": "current",
     "recommended": "recommended",
+    "noRecommendations": "No recommendations",
     "chooseStateMachine": "Choose a State Machine...",
     "order": "Order",
     "transaction": "Payment",
