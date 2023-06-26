@@ -60,8 +60,13 @@
                 :large="true"
                 positionIdentifier="frosh-tools-tab-index-performance"
         >
+            <sw-alert v-if="performanceStatus && performanceStatus.length === 0"
+                      variant="success">
+                {{ $tc('frosh-tools.noRecommendations') }}
+            </sw-alert>
+
             <sw-data-grid
-                v-if="performanceStatus"
+                v-if="performanceStatus && performanceStatus.length > 0"
                 :showSelection="false"
                 :showActions="false"
                 :dataSource="performanceStatus"

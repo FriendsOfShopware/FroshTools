@@ -115,6 +115,17 @@ bin/console frosh:composer-plugin:update
 bin/console frosh:user:change:password <username> [<password>]
 ```
 
+## Suppress files from being restorable in FileChecker
+
+```yaml
+# config/packages/frosh_tools.yaml
+frosh_tools:
+    file_checker:
+        exclude_files:
+            - vendor/shopware/core/FirstFile.php
+            - vendor/shopware/core/SecondFile.php
+```
+
 ## Override system_config with config files
 
 ```yaml
