@@ -9,6 +9,7 @@ use Shopware\Core\Framework\Context;
 use Shopware\Core\Framework\DataAbstractionLayer\EntityRepository;
 use Shopware\Core\Framework\DataAbstractionLayer\Search\Criteria;
 use Shopware\Core\Kernel;
+use Shopware\Core\System\Integration\IntegrationEntity;
 use Shopware\Core\System\User\UserEntity;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\DependencyInjection\Attribute\Autowire;
@@ -30,7 +31,8 @@ class ShopwareFilesController extends AbstractController
         #[Autowire('%kernel.project_dir%')] private readonly string $projectDir,
         #[Autowire('%frosh_tools.file_checker.exclude_files%')] private readonly array $projectExcludeFiles,
         #[Autowire(service: 'frosh_tools.logger')] private readonly LoggerInterface $froshToolsLogger,
-        private readonly EntityRepository $userRepository
+        private readonly EntityRepository $userRepository,
+        private readonly EntityRepository $integrationRepository
     ) {
         $this->isPlatform = !is_dir($this->projectDir . '/vendor/shopware/core') && is_dir($this->projectDir . '/src/Core');
     }
@@ -198,13 +200,48 @@ class ShopwareFilesController extends AbstractController
             return null;
         }
 
+        $userId = $contextSource->getUserId();
+
+        if ($userId !== null) {
+            return 'user ' . $this->getUserNameByUserId($userId);
+        }
+
+        $integrationId = $contextSource->getIntegrationId();
+
+        if ($integrationId !== null) {
+            return 'integration ' . $this->getNameByIntegrationId($integrationId);
+        }
+
+        return null;
+    }
+
+    private function getUserNameByUserId(string $userId): ?string
+    {
         /** @var null|UserEntity $userEntity */
-        $userEntity = $this->userRepository->search(new Criteria([$contextSource->getUserId()]), Context::createDefaultContext())->first();
+        $userEntity = $this->userRepository->search(
+            new Criteria([$userId]),
+            Context::createDefaultContext()
+        )->first();
 
         if (!$userEntity instanceof UserEntity) {
             return null;
         }
 
-        return $userEntity->getUsername();
+        return 'user ' . $userEntity->getUsername();
+    }
+
+    private function getNameByIntegrationId(string $integrationId): ?string
+    {
+        /** @var null|IntegrationEntity $integrationEntity */
+        $integrationEntity = $this->integrationRepository->search(
+            new Criteria([$integrationId]),
+            Context::createDefaultContext()
+        )->first();
+
+        if (!$integrationEntity instanceof IntegrationEntity) {
+            return null;
+        }
+
+        return 'integration ' . $integrationEntity->getLabel();
     }
 }
