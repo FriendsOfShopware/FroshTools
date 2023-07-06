@@ -23,7 +23,7 @@ use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\DependencyInjection\Attribute\Autowire;
 use Symfony\Component\HttpFoundation\ParameterBag;
 
-#[AsCommand('frosh:monitor', 'Monitor your scheduled task and queue with this command and get notified via email.')]
+#[AsCommand('frosh:monitor', 'Monitor your scheduled tasks and queue with this command and get notified via email.')]
 class MonitorCommand extends Command
 {
     private const MONITOR_EMAIL_OPTION = 'email';

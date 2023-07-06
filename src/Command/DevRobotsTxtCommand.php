@@ -11,7 +11,7 @@ use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Console\Style\SymfonyStyle;
 use Symfony\Component\DependencyInjection\Attribute\Autowire;
 
-#[AsCommand('frosh:dev:robots-txt')]
+#[AsCommand('frosh:dev:robots-txt', 'For testshops - add/change robots.txt to stop crawlers')]
 class DevRobotsTxtCommand extends Command
 {
     public function __construct(
@@ -23,7 +23,6 @@ class DevRobotsTxtCommand extends Command
     protected function configure(): void
     {
         $this->addOption('remove', 'r', InputOption::VALUE_NONE, 'Return to original file - delete input from this command');
-        $this->setDescription('For testshops - add/change robots.txt to stop crawers');
     }
 
     protected function execute(InputInterface $input, OutputInterface $output): int

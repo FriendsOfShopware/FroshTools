@@ -22,6 +22,6 @@ Link to repository: [https://github.com/FriendsOfShopware/FroshTools](https://g
 
 This plugin is part of [@FriendsOfShopware](https://store.shopware.com/en/friends-of-shopware.html).  
 
-Maintainer from the plugin is: [Soner Sayakci](https://github.com/shyim)
+Maintainer for the plugin is: [Soner Sayakci](https://github.com/shyim)
 
 For questions or bugs please create a [Github Issue](https://github.com/FriendsOfShopware/FroshTools/issues/new)

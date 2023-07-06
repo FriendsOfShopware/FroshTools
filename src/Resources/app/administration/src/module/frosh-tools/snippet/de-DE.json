@@ -4,7 +4,7 @@
     "tabs": {
       "index": {
         "title": "System-Status",
-        "performance": "Performance recommendations"
+        "performance": "Performance Empfehlungen"
       },
       "systemInfo": {
         "title": "System-Info"
@@ -96,12 +96,12 @@
     "transaction": "Bezahlung",
     "delivery": "Versand"
   },
-    "sw-privileges": {
-        "additional_permissions": {
-            "frosh_tools": {
-                "frosh_tools": "Überwachung anzeigen",
-                "label": "Frosh tools"
-            }
-        }
+  "sw-privileges": {
+    "additional_permissions": {
+      "frosh_tools": {
+        "frosh_tools": "Überwachung anzeigen",
+        "label": "Frosh tools"
+      }
     }
+  }
 }

@@ -13,7 +13,7 @@
 
 # 1.0.6
 
-- Simplify enviromment delete command name
+- Simplify environment delete command name
 - Simplify queue checker
 
 # 1.0.5
