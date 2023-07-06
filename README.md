@@ -87,7 +87,7 @@ bin/console frosh:env:set VARIABLE VALUE
 bin/console frosh:env:del VARIABLE
 ```
 
-### `frosh:dev:robots-txt` - For testshops - add/change robots.txt to stop crawers
+### `frosh:dev:robots-txt` - For testshops - add/change robots.txt to stop crawlers
 
 ```bash
 bin/console frosh:dev:robots-txt
@@ -113,6 +113,11 @@ bin/console frosh:composer-plugin:update
 ### `frosh:user:change:password` - updates user password
 ```bash
 bin/console frosh:user:change:password <username> [<password>]
+```
+
+### `frosh:monitor` - Monitor your scheduled tasks and queue with this command and get notified via email.
+```bash
+bin/console frosh:monitor <sales-channel-id>
 ```
 
 ## Suppress files from being restorable in FileChecker
