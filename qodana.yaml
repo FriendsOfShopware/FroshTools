@@ -1,0 +1,11 @@
+bootstrap: composer req shopware/elasticsearch:*
+php:
+  version: "8.1"
+include:
+  - name: VulnerableLibrariesGlobal
+plugins:
+  - id: de.espend.idea.php.annotation
+  - id: fr.adrienbrault.idea.symfony2plugin
+  - id: com.kalessil.phpStorm.phpInspectionsEA
+  - id: de.shyim.shopware6
+
