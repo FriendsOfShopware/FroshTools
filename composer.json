@@ -36,5 +36,10 @@
   },
   "require": {
     "shopware/core": "~6.5.2"
+  },
+  "config": {
+    "allow-plugins": {
+      "symfony/runtime": true
+    }
   }
 }
