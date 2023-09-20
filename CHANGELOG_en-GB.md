@@ -1,47 +1,11 @@
-# 1.2.0
-- [Allow overriding any system config value with config files](https://github.com/FriendsOfShopware/FroshTools#override-system_config-with-config-files)
-
-# 1.1.1
-- Fixes problems with manual execution of Scheduled Tasks
-- label for monitorQueueGraceTime modified
-
-# 1.1.0
-
-- Use symfony autowire
-- Also read accumulated messages stats from transports 
-- Removed task logging middleware
-
-# 1.0.6
-
-- Simplify environment delete command name
-- Simplify queue checker
-
-# 1.0.5
-
-* Simplify task checker for overdue tasks
-
-# 1.0.4
-
-* Fixed task checker to check for minutes instead of months
-
-# 1.0.3
-
-* Fix queue checker with timezones
-* Fix redis implementation for cache module
-* Fix reset queue to clear up product_export
-* Cleanup code
-* Fix error with unlimited `max_execution_time`
-
-# 1.0.2
-
-* Fix icon in administration module
-
-# 1.0.1
-
-* Fixed cache controller
-
-# 1.0.0
-
-* Shopware 6.5 compatibility
-
-
+# 1.2.1
+- [chore: increase version](https://github.com/FriendsOfShopware/FroshTools/commit/19ce6ec)
+- [Add route, template and export (#218)](https://github.com/FriendsOfShopware/FroshTools/commit/2618975)
+- [Update .shopware-extension.yml](https://github.com/FriendsOfShopware/FroshTools/commit/6d3fc82)
+- [ci: enable qodana cache](https://github.com/FriendsOfShopware/FroshTools/commit/ad6f51e)
+- [Create qodana.yml](https://github.com/FriendsOfShopware/FroshTools/commit/5dc1f6e)
+- [fix: add qodana linter](https://github.com/FriendsOfShopware/FroshTools/commit/ebc5e08)
+- [feat: add qodana config](https://github.com/FriendsOfShopware/FroshTools/commit/e8d16e0)
+- [fix name/label in admin index.js module registration (#216)](https://github.com/FriendsOfShopware/FroshTools/commit/83299c1)
+- [Fix spelling, formatting, add command to README.md (#212)](https://github.com/FriendsOfShopware/FroshTools/commit/cee02f7)
+- [feat: add info when there is no performance recommendation and log restoring file](https://github.com/FriendsOfShopware/FroshTools/commit/4bbcc7e)
