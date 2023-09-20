@@ -1,0 +1,18 @@
+flowchart TD
+{{ 'START_STATE[Start state] -->' }} {{ initialState.getId() }}
+
+{% for state in states %}
+{{ state.getId() }}({{ state.getName()|replace({'(': "", ')': ""})  }})
+{% set temp %}{% apply spaceless %}
+{% for transition in transitions %}
+    {% if transition.getFromStateId() == state.getId() and transition.getActionName() != 'reopen' %}yes{% else %}{% endif %}
+{% endfor %}{% endapply %}
+{% endset %}
+{% if temp|trim is empty %}
+{{ state.getId() }} {{ '--> FINAL_STATE[Final state]' }}
+{% endif %}
+{% endfor %}
+
+{% for transition in transitions %}
+{{ transition.getFromStateId() }} {{ '--' }} {{ transition.getActionName() }} {{ '-->' }} {{ transition.getToStateId() }}
+{% endfor %}
