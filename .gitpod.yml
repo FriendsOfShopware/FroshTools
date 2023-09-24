@@ -17,8 +17,8 @@ tasks:
       
       composer config --global github-oauth.github.com $(printf '%s\n' host=github.com | gp credential-helper get | sort | head -2 | tail -1 | sed 's;password=;;')
       
-      composer create-project shopware/production:dev-flex . -n
-      composer req --dev profiler fakerphp/faker mbezhanov/faker-provider-collection maltyxx/images-generator
+      composer create-project shopware/production: . -n
+      composer req --dev shopware/dev-tools
 
       # Configure Shopware
       sed -i -e 's;DATABASE_URL=.*$;DATABASE_URL=mysql://root:root@127.0.0.1:3306/shopware;' .env
