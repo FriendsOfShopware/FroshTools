@@ -21,7 +21,7 @@ class MailOverQueueChecker implements PerformanceCheckerInterface, CheckerInterf
             $collection->add(
                 SettingsResult::warning(
                     'mail',
-                    'Mail sending',
+                    'Sending mails over queue',
                     'disabled',
                     'enabled',
                     'https://developer.shopware.com/docs/guides/hosting/infrastructure/message-queue#sending-mails-over-the-message-queue'
