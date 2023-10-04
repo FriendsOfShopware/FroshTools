@@ -80,7 +80,7 @@ class PhpChecker implements HealthCheckerInterface, CheckerInterface
 
     private function checkMemoryLimit(HealthCollection $collection): void
     {
-        $minMemoryLimit = $this->decodePhpSize('512m');
+        $minMemoryLimit = $this->parseQuantity('512m');
         $currentMemoryLimit = \ini_get('memory_limit');
         if ($currentMemoryLimit === false) {
             $collection->add(
@@ -95,7 +95,7 @@ class PhpChecker implements HealthCheckerInterface, CheckerInterface
             return;
         }
 
-        $currentMemoryLimit = $this->decodePhpSize($currentMemoryLimit);
+        $currentMemoryLimit = $this->parseQuantity($currentMemoryLimit);
         if ($currentMemoryLimit < $minMemoryLimit) {
             $collection->add(
                 SettingsResult::error(
@@ -143,8 +143,13 @@ class PhpChecker implements HealthCheckerInterface, CheckerInterface
         $collection->add(SettingsResult::warning('pcre-jit', $snippet, 'not active', 'active'));
     }
 
-    private function decodePhpSize(string $val): float
+    private function parseQuantity(string $val): float
     {
+        //TODO: remove condition and own calculation when min php version is 8.2
+        if (\function_exists('ini_parse_quantity')) {
+            return (float) \ini_parse_quantity($val);
+        }
+
         $val = mb_strtolower(trim($val));
         $last = mb_substr($val, -1);
 
