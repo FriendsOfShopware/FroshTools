@@ -18,6 +18,7 @@ Component.register('frosh-tools-tab-scheduled', {
             isLoading: true,
             page: 1,
             limit: 25,
+            taskError: null
         };
     },
 
@@ -92,6 +93,8 @@ Component.register('frosh-tools-tab-scheduled', {
                 this.createNotificationError({
                     message: this.$tc('frosh-tools.scheduledTaskFailed', 0, {'name': item.name})
                 })
+
+                this.taskError = e.response.data;
             }
 
             this.createdComponent();

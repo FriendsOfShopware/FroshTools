@@ -8,31 +8,34 @@
     >
 
         <template #toolbar>
-            <sw-button variant="ghost" @click="refresh"><sw-icon :small="true" name="regular-undo"></sw-icon></sw-button>
-            <sw-button variant="primary" @click="registerScheduledTasks">{{ $tc('frosh-tools.scheduledTasksRegisterStarted') }}</sw-button>
+            <sw-button variant="ghost" @click="refresh">
+                <sw-icon :small="true" name="regular-undo"></sw-icon>
+            </sw-button>
+            <sw-button variant="primary"
+                       @click="registerScheduledTasks">{{ $tc('frosh-tools.scheduledTasksRegisterStarted') }}</sw-button>
         </template>
 
         <sw-entity-listing
-            :showSelection="false"
-            :fullPage="false"
-            :allowInlineEdit="true"
-            :allowEdit="false"
-            :allowDelete="false"
-            :showActions="true"
-            :repository="scheduledRepository"
-            :items="items"
-            :columns="columns">
+                :showSelection="false"
+                :fullPage="false"
+                :allowInlineEdit="true"
+                :allowEdit="false"
+                :allowDelete="false"
+                :showActions="true"
+                :repository="scheduledRepository"
+                :items="items"
+                :columns="columns">
 
             <template #column-lastExecutionTime="{ item }">
                 {{ item.lastExecutionTime | date({hour: '2-digit', minute: '2-digit'}) }}
             </template>
             <template #column-nextExecutionTime="{ item, column, compact, isInlineEdit }">
                 <sw-data-grid-inline-edit
-                    v-if="isInlineEdit"
-                    :column="column"
-                    :compact="compact"
-                    :value="item[column.property]"
-                    @input="item[column.property] = $event">
+                        v-if="isInlineEdit"
+                        :column="column"
+                        :compact="compact"
+                        :value="item[column.property]"
+                        @input="item[column.property] = $event">
                 </sw-data-grid-inline-edit>
 
                 <span v-else>
@@ -47,4 +50,18 @@
             </template>
         </sw-entity-listing>
     </sw-card>
+
+    <sw-modal
+            v-if="taskError"
+            :title="$tc('global.default.error')"
+            @modal-close="taskError = null"
+    >
+        <pre v-if="typeof taskError === 'object'" v-text="taskError"/>
+        <div v-else v-html="taskError"/>
+        <template #modal-footer>
+            <sw-button size="small" @click="taskError = null">
+                {{ $tc('global.default.close') }}
+            </sw-button>
+        </template>
+    </sw-modal>
 </sw-card-view>
