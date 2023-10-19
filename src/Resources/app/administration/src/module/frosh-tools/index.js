@@ -97,7 +97,8 @@ Shopware.Module.register('frosh-tools', {
             to: 'frosh.tools.index.cache',
             icon: 'regular-cog',
             name: 'frosh-tools',
-            label: 'frosh-tools.title'
+            label: 'frosh-tools.title',
+            privilege: 'frosh_tools:read'
         }
     ]
 });
