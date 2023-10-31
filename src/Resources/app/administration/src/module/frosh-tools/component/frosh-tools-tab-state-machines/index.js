@@ -16,6 +16,7 @@ Component.register('frosh-tools-tab-state-machines', {
 
     data() {
         return {
+            selectedStateMachine: null,
             image: null,
             isLoading: true,
         }
@@ -30,9 +31,14 @@ Component.register('frosh-tools-tab-state-machines', {
             this.isLoading = false;
         },
 
-        async onStateMachineChange(value) {
-            const response = (await this.froshToolsService.stateMachines(value));
-            const elem = document.getElementById('state_machine'); 
+        async onStateMachineChange(stateMachineChangeId) {
+            if (!stateMachineChangeId) {
+                return;
+            }
+
+            const response = await this.froshToolsService.stateMachines(stateMachineChangeId);
+
+            const elem = document.getElementById('state_machine');
             if ("svg" in response) {
                 this.image = response.svg;
                 elem.src = this.image;

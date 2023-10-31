@@ -1,10 +1,10 @@
 <sw-card-view>
     <sw-card
-            class="frosh-tools-tab-state-machines__state-machines-card"
-            :title="$tc('frosh-tools.tabs.state-machines.title')"
-            :isLoading="isLoading"
-            :large="true"
-            positionIdentifier="frosh-tools-tab-state-machines"
+        class="frosh-tools-tab-state-machines__state-machines-card"
+        :title="$tc('frosh-tools.tabs.state-machines.title')"
+        :isLoading="isLoading"
+        :large="true"
+        positionIdentifier="frosh-tools-tab-state-machines"
     >
 
         <div class="frosh-tools-tab-state-machines__state-machines-card-image-wrapper">
@@ -20,19 +20,15 @@
         </div>
 
         <template #toolbar>
-            <sw-select-field
-                    size="small"
-                    :aside="true"
-                    @change="onStateMachineChange"
-                    :label=" $tc('frosh-tools.tabs.state-machines.label')"
-                    :helpText="$tc('frosh-tools.tabs.state-machines.helpText')"
-            >
-                <option selected="selected" value="">{{ $tc('frosh-tools.chooseStateMachine') }}</option>
-                <option value="order.state">{{ $tc('frosh-tools.order') }}</option>
-                <option value="order_transaction.state">{{ $tc('frosh-tools.transaction') }}</option>
-                <option value="order_delivery.state">{{ $tc('frosh-tools.delivery') }}</option>
-            </sw-select-field>
+            <sw-entity-single-select
+                v-model="selectedStateMachine"
+                entity="state_machine"
+                :aside="true"
+                @change="onStateMachineChange"
+                :label="$tc('frosh-tools.tabs.state-machines.label')"
+                :placeholder="$tc('frosh-tools.chooseStateMachine')"
+                :helpText="$tc('frosh-tools.tabs.state-machines.helpText')"
+            />
         </template>
-
     </sw-card>
 </sw-card-view>

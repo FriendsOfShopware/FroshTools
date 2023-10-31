@@ -178,14 +178,11 @@ class FroshTools extends ApiService {
         });
     }
 
-    stateMachines(stateMachine) {
-        const apiRoute = `${this.getApiBasePath()}/state-machines/load`;
+    stateMachines(id) {
+        const apiRoute = `${this.getApiBasePath()}/state-machines/load/${id}`;
         return this.httpClient.get(
             apiRoute,
             {
-                params: {
-                    stateMachine,
-                },
                 headers: this.getBasicHeaders()
             }
         ).then((response) => {
