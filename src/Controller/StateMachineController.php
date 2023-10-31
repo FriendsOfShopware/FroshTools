@@ -14,6 +14,8 @@ use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Routing\Annotation\Route;
+use Shopware\Core\Framework\Uuid\Uuid;
+use Shopware\Core\System\StateMachine\StateMachineEntity;
 
 #[Route(path: '/api/_action/frosh-tools', defaults: ['_routeScope' => ['api'], '_acl' => ['frosh_tools:read']])]
 final class StateMachineController extends AbstractController
@@ -22,26 +24,26 @@ final class StateMachineController extends AbstractController
     {
     }
 
-    #[Route(path: '/state-machines/load', name: 'api.frosh.tools.state-machines.load', methods: ['GET'])]
-    public function load(Request $request): JsonResponse
+    #[Route(path: '/state-machines/load/{stateMachineId}', name: 'api.frosh.tools.state-machines.load', methods: ['GET'])]
+    public function load(string $stateMachineId, Request $request): JsonResponse
     {
-        $stateMachineType = $request->query->get('stateMachine');
-
-        if (empty($stateMachineType)) {
+        if (!Uuid::isValid($stateMachineId)) {
             return new JsonResponse();
         }
 
-        $tmp = explode('.', $stateMachineType);
-        $title = ucwords(str_replace('_', ' ', $tmp[0]));
-
-        $criteria = new Criteria();
-        $criteria->addFilter(new EqualsFilter('technicalName', $stateMachineType));
+        $criteria = new Criteria([$stateMachineId]);
         $criteria->addAssociations([
             'states',
             'transitions',
         ]);
 
         $stateMachine = $this->stateMachineRepository->search($criteria, Context::createDefaultContext())->first();
+        if (!$stateMachine instanceof StateMachineEntity) {
+            return new JsonResponse();
+        }
+
+        $tmp = explode('.', $stateMachine->getTechnicalName());
+        $title = ucwords(str_replace('_', ' ', $tmp[0]));
 
         $exporter = new Plantuml();
         $generatedPlantuml = $exporter->export($stateMachine, $title);
