@@ -1,0 +1,10 @@
+name: Code Style
+on:
+    pull_request:
+    push:
+        branches:
+            - main
+
+jobs:
+    php-cs-fixer:
+        uses: FriendsOfShopware/actions/.github/workflows/php-cs-fixer.yml@main

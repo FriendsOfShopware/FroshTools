@@ -1,4 +1,5 @@
 <?php
+
 declare(strict_types=1);
 
 namespace Frosh\Tools\Command;
@@ -30,7 +31,8 @@ class MonitorCommand extends Command
     private const MONITOR_SALESCHANNEL_ARG = 'sales-channel';
 
     public function __construct(
-        #[Autowire(service: MailService::class)] private readonly AbstractMailService $mailService,
+        #[Autowire(service: MailService::class)]
+        private readonly AbstractMailService $mailService,
         private readonly SystemConfigService $configService,
         private readonly Connection $connection,
         private readonly EntityRepository $scheduledTaskRepository

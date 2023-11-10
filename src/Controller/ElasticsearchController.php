@@ -1,4 +1,5 @@
 <?php
+
 declare(strict_types=1);
 
 namespace Frosh\Tools\Controller;
@@ -13,9 +14,7 @@ use Symfony\Component\Routing\Annotation\Route;
 #[Route(path: '/api/_action/frosh-tools/elasticsearch', defaults: ['_routeScope' => ['api'], '_acl' => ['frosh_tools:read']])]
 class ElasticsearchController extends AbstractController
 {
-    public function __construct(private readonly ElasticsearchManager $manager)
-    {
-    }
+    public function __construct(private readonly ElasticsearchManager $manager) {}
 
     #[Route(path: '/status', name: 'api.frosh.tools.elasticsearch.status', methods: ['GET'])]
     public function status(): Response

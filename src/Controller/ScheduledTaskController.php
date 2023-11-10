@@ -1,4 +1,5 @@
 <?php
+
 declare(strict_types=1);
 
 namespace Frosh\Tools\Controller;
@@ -20,11 +21,11 @@ use Symfony\Component\Routing\Annotation\Route;
 class ScheduledTaskController extends AbstractController
 {
     public function __construct(
-        #[TaggedIterator('messenger.message_handler')] private readonly iterable $taskHandler,
+        #[TaggedIterator('messenger.message_handler')]
+        private readonly iterable $taskHandler,
         private readonly EntityRepository $scheduledTaskRepository,
         private readonly TaskRegistry $taskRegistry
-    ) {
-    }
+    ) {}
 
     #[Route(path: '/scheduled-task/{id}', name: 'api.frosh.tools.scheduled.task.run', methods: ['POST'])]
     public function runTask(string $id, Context $context): JsonResponse

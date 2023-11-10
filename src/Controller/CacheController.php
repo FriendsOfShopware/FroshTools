@@ -1,4 +1,5 @@
 <?php
+
 declare(strict_types=1);
 
 namespace Frosh\Tools\Controller;
@@ -15,10 +16,10 @@ use Symfony\Component\Routing\Annotation\Route;
 class CacheController extends AbstractController
 {
     public function __construct(
-        #[Autowire('%kernel.cache_dir%')] private readonly string $cacheDir,
+        #[Autowire('%kernel.cache_dir%')]
+        private readonly string $cacheDir,
         private readonly CacheRegistry $cacheRegistry
-    ) {
-    }
+    ) {}
 
     #[Route(path: '/cache', name: 'api.frosh.tools.cache.get', methods: ['GET'])]
     public function cacheStatistics(): JsonResponse

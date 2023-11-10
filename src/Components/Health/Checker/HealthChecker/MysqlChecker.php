@@ -1,4 +1,5 @@
 <?php
+
 declare(strict_types=1);
 
 namespace Frosh\Tools\Components\Health\Checker\HealthChecker;
@@ -10,9 +11,7 @@ use Frosh\Tools\Components\Health\SettingsResult;
 
 class MysqlChecker implements HealthCheckerInterface, CheckerInterface
 {
-    public function __construct(private readonly Connection $connection)
-    {
-    }
+    public function __construct(private readonly Connection $connection) {}
 
     public function collect(HealthCollection $collection): void
     {

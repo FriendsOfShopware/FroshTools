@@ -1,4 +1,5 @@
 <?php
+
 declare(strict_types=1);
 
 namespace Frosh\Tools\Controller;
@@ -23,7 +24,8 @@ class LogController extends AbstractController
     private readonly string $logDir;
 
     public function __construct(
-        #[Autowire('%kernel.logs_dir%')] string $logDir
+        #[Autowire('%kernel.logs_dir%')]
+        string $logDir
     ) {
         $this->logDir = rtrim($logDir, '/') . '/';
     }

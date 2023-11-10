@@ -1,4 +1,5 @@
 <?php
+
 declare(strict_types=1);
 
 namespace Frosh\Tools\Command;
@@ -20,7 +21,8 @@ class UpdateComposerPluginsCommand extends Command
     private readonly Application $application;
 
     public function __construct(
-        #[Autowire('%kernel.project_dir%')] private readonly string $projectDir,
+        #[Autowire('%kernel.project_dir%')]
+        private readonly string $projectDir,
         private readonly KernelPluginLoader $pluginLoader
     ) {
         parent::__construct();

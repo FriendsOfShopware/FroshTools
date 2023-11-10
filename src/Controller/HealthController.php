@@ -1,4 +1,5 @@
 <?php
+
 declare(strict_types=1);
 
 namespace Frosh\Tools\Controller;
@@ -19,10 +20,11 @@ class HealthController extends AbstractController
      * @param CheckerInterface[] $performanceCheckers
      */
     public function __construct(
-        #[TaggedIterator('frosh_tools.health_checker')] private readonly iterable $healthCheckers,
-        #[TaggedIterator('frosh_tools.performance_checker')] private readonly iterable $performanceCheckers
-    ) {
-    }
+        #[TaggedIterator('frosh_tools.health_checker')]
+        private readonly iterable $healthCheckers,
+        #[TaggedIterator('frosh_tools.performance_checker')]
+        private readonly iterable $performanceCheckers
+    ) {}
 
     #[Route(path: '/health/status', name: 'api.frosh.tools.health.status', methods: ['GET'])]
     public function status(): JsonResponse

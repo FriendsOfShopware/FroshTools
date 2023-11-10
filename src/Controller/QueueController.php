@@ -1,4 +1,5 @@
 <?php
+
 declare(strict_types=1);
 
 namespace Frosh\Tools\Controller;
@@ -18,10 +19,11 @@ class QueueController extends AbstractController
 {
     public function __construct(
         private readonly Connection $connection,
-        #[Autowire(service: 'shopware.increment.gateway.registry')] private readonly IncrementGatewayRegistry $incrementer,
-        #[Autowire(service: 'messenger.receiver_locator')] private readonly ServiceLocator $transportLocator
-    ) {
-    }
+        #[Autowire(service: 'shopware.increment.gateway.registry')]
+        private readonly IncrementGatewayRegistry $incrementer,
+        #[Autowire(service: 'messenger.receiver_locator')]
+        private readonly ServiceLocator $transportLocator
+    ) {}
 
     #[Route(path: '/queue/list', name: 'api.frosh.tools.queue.list', methods: ['GET'])]
     public function list(): JsonResponse
@@ -29,7 +31,7 @@ class QueueController extends AbstractController
         $incrementer = $this->incrementer->get(IncrementGatewayRegistry::MESSAGE_QUEUE_POOL);
 
         $list = $incrementer->list('message_queue_stats', -1);
-        $queueData = array_map(static fn (array $entry) => [
+        $queueData = array_map(static fn(array $entry) => [
             'name' => $entry['key'],
             'size' => (int) $entry['count'],
         ], array_values($list));
@@ -74,13 +76,13 @@ class QueueController extends AbstractController
             ];
         }
 
-        usort($queueData, static fn (array $a, array $b) => $b['size'] <=> $a['size']);
+        usort($queueData, static fn(array $a, array $b) => $b['size'] <=> $a['size']);
     }
 
     private function getTransportNames(): array
     {
         $transportNames = array_keys($this->transportLocator->getProvidedServices());
 
-        return array_filter($transportNames, static fn (string $transportName) => str_starts_with($transportName, 'messenger.transport'));
+        return array_filter($transportNames, static fn(string $transportName) => str_starts_with($transportName, 'messenger.transport'));
     }
 }

@@ -1,4 +1,5 @@
 <?php
+
 declare(strict_types=1);
 
 namespace Frosh\Tools\Controller;
@@ -27,10 +28,14 @@ class ShopwareFilesController extends AbstractController
     private readonly bool $isPlatform;
 
     public function __construct(
-        #[Autowire('%kernel.shopware_version%')] private readonly string $shopwareVersion,
-        #[Autowire('%kernel.project_dir%')] private readonly string $projectDir,
-        #[Autowire('%frosh_tools.file_checker.exclude_files%')] private readonly array $projectExcludeFiles,
-        #[Autowire(service: 'frosh_tools.logger')] private readonly LoggerInterface $froshToolsLogger,
+        #[Autowire('%kernel.shopware_version%')]
+        private readonly string $shopwareVersion,
+        #[Autowire('%kernel.project_dir%')]
+        private readonly string $projectDir,
+        #[Autowire('%frosh_tools.file_checker.exclude_files%')]
+        private readonly array $projectExcludeFiles,
+        #[Autowire(service: 'frosh_tools.logger')]
+        private readonly LoggerInterface $froshToolsLogger,
         private readonly EntityRepository $userRepository,
         private readonly EntityRepository $integrationRepository
     ) {
@@ -57,7 +62,7 @@ class ShopwareFilesController extends AbstractController
 
         foreach (explode("\n", $data) as $row) {
             if ($this->isPlatform) {
-                $row = preg_replace_callback('/vendor\/shopware\/(.)/', fn ($matches): string => 'src/' . strtoupper($matches[1]), $row);
+                $row = preg_replace_callback('/vendor\/shopware\/(.)/', fn($matches): string => 'src/' . strtoupper($matches[1]), $row);
             }
 
             [$expectedMd5Sum, $file] = explode('  ', trim($row));

@@ -41,5 +41,8 @@
     "allow-plugins": {
       "symfony/runtime": true
     }
+  },
+  "scripts": {
+    "cs-fix": "docker run --rm -v $(pwd):$(pwd) -w $(pwd) oskarstark/php-cs-fixer-ga --rules @PER-CS2.0,@PER-CS2.0:risky --allow-risky=yes ."
   }
 }
