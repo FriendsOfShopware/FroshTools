@@ -12,9 +12,7 @@ use Symfony\Component\DependencyInjection\Attribute\Autowire;
 )]
 class ConfigSystemConfigLoader extends AbstractSystemConfigLoader
 {
-    public function __construct(private readonly AbstractSystemConfigLoader $decorated, #[Autowire('%frosh_tools.system_config%')] private readonly array $config)
-    {
-    }
+    public function __construct(private readonly AbstractSystemConfigLoader $decorated, #[Autowire('%frosh_tools.system_config%')] private readonly array $config) {}
 
     public function getDecorated(): AbstractSystemConfigLoader
     {

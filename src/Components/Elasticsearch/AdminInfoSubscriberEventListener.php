@@ -1,4 +1,5 @@
 <?php
+
 declare(strict_types=1);
 
 namespace Frosh\Tools\Components\Elasticsearch;
@@ -11,9 +12,9 @@ use Symfony\Component\HttpKernel\Event\ResponseEvent;
 final class AdminInfoSubscriberEventListener
 {
     public function __construct(
-        #[Autowire('%frosh_tools.elasticsearch.enabled%')] private readonly bool $elasticsearchEnabled
-    ) {
-    }
+        #[Autowire('%frosh_tools.elasticsearch.enabled%')]
+        private readonly bool $elasticsearchEnabled
+    ) {}
 
     public function __invoke(ResponseEvent $event): void
     {

@@ -1,4 +1,5 @@
 <?php
+
 declare(strict_types=1);
 
 namespace Frosh\Tools\Components\Environment;
@@ -8,9 +9,7 @@ class EnvironmentFile implements \Stringable
     /**
      * @param array<string, EnvironmentLine> $items
      */
-    public function __construct(private array $items)
-    {
-    }
+    public function __construct(private array $items) {}
 
     public function __toString(): string
     {

@@ -1,4 +1,5 @@
 <?php
+
 declare(strict_types=1);
 
 namespace Frosh\Tools\Components\Health\Checker\HealthChecker;
@@ -14,8 +15,7 @@ class TaskChecker implements HealthCheckerInterface, CheckerInterface
     public function __construct(
         private readonly Connection $connection,
         private readonly ParameterBagInterface $parameterBag
-    ) {
-    }
+    ) {}
 
     public function collect(HealthCollection $collection): void
     {
@@ -41,7 +41,7 @@ class TaskChecker implements HealthCheckerInterface, CheckerInterface
         $taskDateLimit = (new \DateTimeImmutable())->modify(\sprintf('-%d minutes', $maxDiff));
         $recommended = \sprintf('max %d mins', $maxDiff);
 
-        $tasks = array_filter($tasks, fn (array $task) => new \DateTimeImmutable($task['next_execution_time']) < $taskDateLimit);
+        $tasks = array_filter($tasks, fn(array $task) => new \DateTimeImmutable($task['next_execution_time']) < $taskDateLimit);
 
         if ($tasks === []) {
             $collection->add(SettingsResult::ok('scheduled_task', 'Scheduled tasks overdue', '0 mins', $recommended));

@@ -1,4 +1,5 @@
 <?php
+
 declare(strict_types=1);
 
 namespace Frosh\Tools\Command;
@@ -16,7 +17,8 @@ use Symfony\Component\DependencyInjection\Attribute\Autowire;
 class EnvSetCommand extends Command
 {
     public function __construct(
-        #[Autowire('%kernel.project_dir%/.env')] private readonly string $envPath
+        #[Autowire('%kernel.project_dir%/.env')]
+        private readonly string $envPath
     ) {
         parent::__construct();
     }

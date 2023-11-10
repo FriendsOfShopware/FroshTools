@@ -1,4 +1,5 @@
 <?php
+
 declare(strict_types=1);
 
 namespace Frosh\Tools\Components\Health\Checker\PerformanceChecker;
@@ -11,9 +12,9 @@ use Symfony\Component\DependencyInjection\Attribute\Autowire;
 class MailOverQueueChecker implements PerformanceCheckerInterface, CheckerInterface
 {
     public function __construct(
-        #[Autowire('%frosh_tools.mail_over_queue%')] protected bool $mailerIsOverQueue
-    ) {
-    }
+        #[Autowire('%frosh_tools.mail_over_queue%')]
+        protected bool $mailerIsOverQueue
+    ) {}
 
     public function collect(HealthCollection $collection): void
     {

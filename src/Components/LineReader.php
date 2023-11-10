@@ -1,4 +1,5 @@
 <?php
+
 declare(strict_types=1);
 
 namespace Frosh\Tools\Components;
@@ -12,9 +13,7 @@ final class LineReader
     /**
      * Prevent instantiation
      */
-    private function __construct()
-    {
-    }
+    private function __construct() {}
 
     /**
      * @throws \InvalidArgumentException if $filePath is not readable

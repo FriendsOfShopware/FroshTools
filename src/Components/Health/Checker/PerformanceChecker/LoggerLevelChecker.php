@@ -1,4 +1,5 @@
 <?php
+
 declare(strict_types=1);
 
 namespace Frosh\Tools\Components\Health\Checker\PerformanceChecker;
@@ -18,7 +19,8 @@ class LoggerLevelChecker implements PerformanceCheckerInterface, CheckerInterfac
     private string $url = 'https://developer.shopware.com/docs/guides/hosting/performance/performance-tweaks#logging';
 
     public function __construct(
-        #[Autowire(service: 'monolog.handler.business_event_handler_buffer')] AbstractHandler $businessEventHandlerLevel
+        #[Autowire(service: 'monolog.handler.business_event_handler_buffer')]
+        AbstractHandler $businessEventHandlerLevel
     ) {
         $this->businessEventHandlerLevel = $businessEventHandlerLevel->getLevel();
     }

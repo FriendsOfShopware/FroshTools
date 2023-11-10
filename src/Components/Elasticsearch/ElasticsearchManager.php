@@ -1,4 +1,5 @@
 <?php
+
 declare(strict_types=1);
 
 namespace Frosh\Tools\Components\Elasticsearch;
@@ -18,15 +19,16 @@ class ElasticsearchManager
 {
     public function __construct(
         private readonly Client $client,
-        #[Autowire('%frosh_tools.elasticsearch.enabled%')] private readonly bool $enabled,
+        #[Autowire('%frosh_tools.elasticsearch.enabled%')]
+        private readonly bool $enabled,
         private readonly ElasticsearchIndexer $indexer,
         private readonly MessageBusInterface $messageBus,
         private readonly CreateAliasTaskHandler $createAliasTaskHandler,
         private readonly ElasticsearchOutdatedIndexDetector $outdatedIndexDetector,
         private readonly Connection $connection,
-        #[Autowire(service: 'shopware.increment.gateway.registry')] private readonly IncrementGatewayRegistry $gatewayRegistry
-    ) {
-    }
+        #[Autowire(service: 'shopware.increment.gateway.registry')]
+        private readonly IncrementGatewayRegistry $gatewayRegistry
+    ) {}
 
     public function isEnabled(): bool
     {
