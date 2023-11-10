@@ -19,6 +19,7 @@ class TaskChecker implements HealthCheckerInterface, CheckerInterface
 
     public function collect(HealthCollection $collection): void
     {
+        /** @var array{scheduled_task_class: class-string, next_execution_time: string}[] $data */
         $data = $this->connection->createQueryBuilder()
             ->select('s.scheduled_task_class', 's.next_execution_time')
             ->from('scheduled_task', 's')

@@ -16,6 +16,9 @@ class CacheRegistry
         $this->adapters[$name] = $adapter;
     }
 
+    /**
+     * @return CacheAdapter[]
+     */
     public function all(): array
     {
         return $this->adapters;

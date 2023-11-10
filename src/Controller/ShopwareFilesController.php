@@ -10,7 +10,9 @@ use Shopware\Core\Framework\Context;
 use Shopware\Core\Framework\DataAbstractionLayer\EntityRepository;
 use Shopware\Core\Framework\DataAbstractionLayer\Search\Criteria;
 use Shopware\Core\Kernel;
+use Shopware\Core\System\Integration\IntegrationCollection;
 use Shopware\Core\System\Integration\IntegrationEntity;
+use Shopware\Core\System\User\UserCollection;
 use Shopware\Core\System\User\UserEntity;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\DependencyInjection\Attribute\Autowire;
@@ -27,6 +29,11 @@ class ShopwareFilesController extends AbstractController
 
     private readonly bool $isPlatform;
 
+    /**
+     * @param array<string> $projectExcludeFiles
+     * @param EntityRepository<UserCollection> $userRepository
+     * @param EntityRepository<IntegrationCollection> $integrationRepository
+     */
     public function __construct(
         #[Autowire('%kernel.shopware_version%')]
         private readonly string $shopwareVersion,
@@ -51,7 +58,7 @@ class ShopwareFilesController extends AbstractController
 
         $url = sprintf('https://swagger.docs.fos.gg/version/%s/Files.xxhsums', $this->shopwareVersion);
 
-        $data = trim(@file_get_contents($url));
+        $data = trim((string) @file_get_contents($url));
 
         if (empty($data)) {
             return new JsonResponse(['error' => 'No file information for this Shopware version']);
@@ -65,7 +72,7 @@ class ShopwareFilesController extends AbstractController
                 $row = preg_replace_callback('/vendor\/shopware\/(.)/', fn($matches): string => 'src/' . strtoupper($matches[1]), $row);
             }
 
-            [$expectedMd5Sum, $file] = explode('  ', trim($row));
+            [$expectedMd5Sum, $file] = explode('  ', trim((string) $row));
 
             $path = $this->projectDir . '/' . $file;
 
@@ -112,7 +119,7 @@ class ShopwareFilesController extends AbstractController
             return new JsonResponse(['error' => 'Git version is not supported']);
         }
 
-        $file = $request->query->get('file');
+        $file = $request->query->getString('file');
         if (!$file) {
             return new JsonResponse(['error' => 'no file provided']);
         }
@@ -137,7 +144,7 @@ class ShopwareFilesController extends AbstractController
             return new JsonResponse(['error' => 'Git version is not supported']);
         }
 
-        $file = $request->query->get('file');
+        $file = $request->query->getString('file');
         if (!$file) {
             return new JsonResponse(['error' => 'no file provided']);
         }
@@ -167,9 +174,10 @@ class ShopwareFilesController extends AbstractController
         return new JsonResponse(['status' => $message]);
     }
 
-    private function getShopwareUrl(string $name): ?string
+    private function getShopwareUrl(string $name): string
     {
         $name = $this->isPlatform ? preg_replace('/^src\//', '', $name) : preg_replace('/^vendor\/shopware\//', '', $name);
+        \assert($name !== null);
 
         $pathParts = \explode('/', $name);
         $repo = $pathParts[0];

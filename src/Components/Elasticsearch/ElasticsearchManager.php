@@ -35,6 +35,9 @@ class ElasticsearchManager
         return $this->enabled;
     }
 
+    /**
+     * @return array<mixed>
+     */
     public function info(): array
     {
         return [
@@ -43,6 +46,9 @@ class ElasticsearchManager
         ];
     }
 
+    /**
+     * @return array<mixed>
+     */
     public function indices(): array
     {
         $indices = $this->client->indices()->get(['index' => '*']);
@@ -64,12 +70,21 @@ class ElasticsearchManager
         return $list;
     }
 
+    /**
+     * @return array<mixed>
+     */
     public function deleteIndex(string $name): array
     {
         return $this->client->indices()->delete(['index' => $name]);
     }
 
-    public function proxy(string $method, string $path, array $params, array $body): array
+    /**
+     * @param array<mixed> $body
+     * @param array<mixed> $params
+     *
+     * @return array<mixed>|callable
+     */
+    public function proxy(string $method, string $path, array $params, array $body): array|callable
     {
         if ($body === []) {
             $body = null;
@@ -101,7 +116,7 @@ class ElasticsearchManager
 
     public function deleteUnusedIndices(): void
     {
-        $indices = $this->outdatedIndexDetector->get();
+        $indices = $this->outdatedIndexDetector->get() ?? [];
 
         foreach ($indices as $index) {
             $this->client->indices()->delete(['index' => $index]);

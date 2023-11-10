@@ -30,7 +30,7 @@ class MySQL8Checker implements PerformanceCheckerInterface, CheckerInterface
             return;
         }
 
-        if (version_compare($extractedVersion['mysql'], '8.0.0', '>=')) {
+        if (version_compare($extractedVersion['mysql'] ?? '', '8.0.0', '>=')) {
             return;
         }
 
@@ -39,6 +39,9 @@ class MySQL8Checker implements PerformanceCheckerInterface, CheckerInterface
         );
     }
 
+    /**
+     * @return array{mysql?: string, mariadb?: string}
+     */
     private function extract(string $versionString): array
     {
         if (mb_stripos($versionString, 'mariadb') === false) {

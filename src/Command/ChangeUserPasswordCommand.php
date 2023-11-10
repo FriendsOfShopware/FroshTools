@@ -8,6 +8,7 @@ use Shopware\Core\Framework\Context;
 use Shopware\Core\Framework\DataAbstractionLayer\EntityRepository;
 use Shopware\Core\Framework\DataAbstractionLayer\Search\Criteria;
 use Shopware\Core\Framework\DataAbstractionLayer\Search\Filter\EqualsFilter;
+use Shopware\Core\System\User\UserCollection;
 use Symfony\Component\Console\Attribute\AsCommand;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputArgument;
@@ -18,6 +19,9 @@ use Symfony\Component\Console\Style\SymfonyStyle;
 #[AsCommand('frosh:user:change:password', 'Change user password')]
 class ChangeUserPasswordCommand extends Command
 {
+    /**
+     * @param EntityRepository<UserCollection> $userRepository
+     */
     public function __construct(private readonly EntityRepository $userRepository)
     {
         parent::__construct();
