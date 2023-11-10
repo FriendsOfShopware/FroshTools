@@ -11,6 +11,8 @@ use Shopware\Core\Framework\Context;
 use Shopware\Core\Framework\DataAbstractionLayer\EntityRepository;
 use Shopware\Core\Framework\DataAbstractionLayer\Search\Criteria;
 use Shopware\Core\Framework\DataAbstractionLayer\Search\Filter\EqualsFilter;
+use Shopware\Core\System\StateMachine\StateMachineCollection;
+use Shopware\Core\System\StateMachine\StateMachineDefinition;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
@@ -21,10 +23,13 @@ use Shopware\Core\System\StateMachine\StateMachineEntity;
 #[Route(path: '/api/_action/frosh-tools', defaults: ['_routeScope' => ['api'], '_acl' => ['frosh_tools:read']])]
 final class StateMachineController extends AbstractController
 {
+    /**
+     * @param EntityRepository<StateMachineCollection> $stateMachineRepository
+     */
     public function __construct(private readonly EntityRepository $stateMachineRepository) {}
 
     #[Route(path: '/state-machines/load/{stateMachineId}', name: 'api.frosh.tools.state-machines.load', methods: ['GET'])]
-    public function load(string $stateMachineId, Request $request): JsonResponse
+    public function load(string $stateMachineId, Context $context): JsonResponse
     {
         if (!Uuid::isValid($stateMachineId)) {
             return new JsonResponse();
@@ -36,7 +41,7 @@ final class StateMachineController extends AbstractController
             'transitions',
         ]);
 
-        $stateMachine = $this->stateMachineRepository->search($criteria, Context::createDefaultContext())->first();
+        $stateMachine = $this->stateMachineRepository->search($criteria, $context)->first();
         if (!$stateMachine instanceof StateMachineEntity) {
             return new JsonResponse();
         }
@@ -47,17 +52,15 @@ final class StateMachineController extends AbstractController
         $exporter = new Plantuml();
         $generatedPlantuml = $exporter->export($stateMachine, $title);
 
-        $response = new JsonResponse();
         $encode = Planuml::encodep($generatedPlantuml);
-        $response->setData(['svg' => '//www.plantuml.com/plantuml/svg/' . $encode]);
 
-        return $response;
+        return new JsonResponse(['svg' => '//www.plantuml.com/plantuml/svg/' . $encode]);
     }
 
     #[Route(path: '/state-machines/load-mermaid', name: 'api.frosh.tools.state-machines.load-mermaid', methods: ['GET'])]
-    public function loadMermaid(Request $request): JsonResponse
+    public function loadMermaid(Request $request, Context $context): JsonResponse
     {
-        $stateMachineType = $request->query->get('stateMachine');
+        $stateMachineType = $request->query->getString('stateMachine');
 
         if (empty($stateMachineType)) {
             return new JsonResponse();
@@ -73,14 +76,13 @@ final class StateMachineController extends AbstractController
             'transitions',
         ]);
 
-        $stateMachine = $this->stateMachineRepository->search($criteria, Context::createDefaultContext())->first();
+        $stateMachine = $this->stateMachineRepository->search($criteria, $context)->getEntities()->first();
+
+        \assert($stateMachine instanceof StateMachineEntity);
 
         $exporter = new Mermaid();
         $generatedMermaid = $exporter->export($stateMachine, $title);
 
-        $response = new JsonResponse($generatedMermaid);
-        $response->setData(['data' => $generatedMermaid]);
-
-        return $response;
+        return new JsonResponse(['data' => $generatedMermaid]);
     }
 }

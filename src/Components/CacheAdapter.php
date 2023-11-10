@@ -121,11 +121,12 @@ class CacheAdapter
         return $adapter;
     }
 
-    private function getRedis(AdapterInterface $adapter): ?\Redis
+    private function getRedis(AdapterInterface $adapter): \Redis
     {
         if ($adapter instanceof RedisTagAwareAdapter) {
             $redisProxyGetter = \Closure::bind(fn() => $adapter->redis, $adapter, RedisTagAwareAdapter::class);
         } else {
+            // @phpstan-ignore-next-line
             $redisProxyGetter = \Closure::bind(fn() => $adapter->redis, $adapter, RedisAdapter::class);
         }
 

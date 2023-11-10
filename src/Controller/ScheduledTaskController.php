@@ -8,6 +8,8 @@ use Shopware\Core\Framework\Context;
 use Shopware\Core\Framework\DataAbstractionLayer\EntityRepository;
 use Shopware\Core\Framework\DataAbstractionLayer\Search\Criteria;
 use Shopware\Core\Framework\MessageQueue\ScheduledTask\Registry\TaskRegistry;
+use Shopware\Core\Framework\MessageQueue\ScheduledTask\ScheduledTask;
+use Shopware\Core\Framework\MessageQueue\ScheduledTask\ScheduledTaskCollection;
 use Shopware\Core\Framework\MessageQueue\ScheduledTask\ScheduledTaskDefinition;
 use Shopware\Core\Framework\MessageQueue\ScheduledTask\ScheduledTaskEntity;
 use Shopware\Core\Framework\MessageQueue\ScheduledTask\ScheduledTaskHandler;
@@ -20,6 +22,10 @@ use Symfony\Component\Routing\Annotation\Route;
 #[Route(path: '/api/_action/frosh-tools', defaults: ['_routeScope' => ['api'], '_acl' => ['frosh_tools:read']])]
 class ScheduledTaskController extends AbstractController
 {
+    /**
+     * @param iterable<ScheduledTaskHandler> $taskHandler
+     * @param EntityRepository<ScheduledTaskCollection> $scheduledTaskRepository
+     */
     public function __construct(
         #[TaggedIterator('messenger.message_handler')]
         private readonly iterable $taskHandler,
@@ -32,6 +38,10 @@ class ScheduledTaskController extends AbstractController
     {
         $scheduledTask = $this->fetchTask($id, $context);
 
+        if (!$scheduledTask instanceof ScheduledTaskEntity) {
+            return new JsonResponse(null, Response::HTTP_NOT_FOUND);
+        }
+
         // Set status to allow running it
         $this->scheduledTaskRepository->update([
             [
@@ -42,6 +52,7 @@ class ScheduledTaskController extends AbstractController
         ], $context);
 
         $className = $scheduledTask->getScheduledTaskClass();
+        /** @var ScheduledTask $task */
         $task = new $className();
         $task->setTaskId($id);
 
@@ -73,10 +84,10 @@ class ScheduledTaskController extends AbstractController
         return new JsonResponse(null, Response::HTTP_NO_CONTENT);
     }
 
-    private function fetchTask(string $id, Context $context): ScheduledTaskEntity
+    private function fetchTask(string $id, Context $context): ?ScheduledTaskEntity
     {
         $criteria = new Criteria([$id]);
 
-        return $this->scheduledTaskRepository->search($criteria, $context)->first();
+        return $this->scheduledTaskRepository->search($criteria, $context)->getEntities()->first();
     }
 }

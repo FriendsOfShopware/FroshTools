@@ -12,6 +12,9 @@ use Symfony\Component\DependencyInjection\Attribute\Autowire;
 )]
 class ConfigSystemConfigLoader extends AbstractSystemConfigLoader
 {
+    /**
+     * @param array<string, array<array<mixed>|bool|float|int|string|null>> $config
+     */
     public function __construct(private readonly AbstractSystemConfigLoader $decorated, #[Autowire('%frosh_tools.system_config%')] private readonly array $config) {}
 
     public function getDecorated(): AbstractSystemConfigLoader
@@ -19,6 +22,9 @@ class ConfigSystemConfigLoader extends AbstractSystemConfigLoader
         return $this->decorated;
     }
 
+    /**
+     * @return array<string, mixed>
+     */
     public function load(?string $salesChannelId): array
     {
         $config = $this->decorated->load($salesChannelId);
@@ -40,10 +46,15 @@ class ConfigSystemConfigLoader extends AbstractSystemConfigLoader
     }
 
     /**
-     * @param array|bool|float|int|string|null $value
+     * @param array<mixed> $configValues
+     * @param array<string> $keys
+     * @param array<mixed>|bool|float|int|string|null $value
+     *
+     * @return array<mixed>
      */
     private function getSubArray(array $configValues, array $keys, mixed $value): array
     {
+        /** @var string $key */
         $key = \array_shift($keys);
 
         if (empty($keys)) {
@@ -61,6 +72,7 @@ class ConfigSystemConfigLoader extends AbstractSystemConfigLoader
                 $configValues[$key] = [];
             }
 
+            // @phpstan-ignore-next-line
             $configValues[$key] = $this->getSubArray($configValues[$key], $keys, $value);
         }
 

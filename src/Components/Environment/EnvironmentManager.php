@@ -13,11 +13,12 @@ class EnvironmentManager
             throw new \RuntimeException(sprintf('Cannot read file %s', $path));
         }
 
+        /** @var array<string> $lines */
         $lines = preg_split('/\r\n|\r|\n/', $content);
         $parsedLines = [];
-        $lineCount = (is_countable($lines) ? \count($lines) : 0) - 1;
+        $lineCount = \count($lines) - 1;
         foreach ($lines as $line) {
-            $line = trim((string) $line);
+            $line = trim($line);
 
             if ($line === '' || $line[0] === '#') {
                 $parsedLines[] = EnvironmentCommentLine::parse($line);

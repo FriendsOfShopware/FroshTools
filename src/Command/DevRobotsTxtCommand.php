@@ -51,6 +51,8 @@ class DevRobotsTxtCommand extends Command
         }
 
         $robotsFile = fopen($robotsPath, 'wb');
+        \assert($robotsFile !== false);
+
         $robotsContent = "#soc\nUser-agent: *\nDisallow: /\n#eoc";
         fwrite($robotsFile, $robotsContent);
         fclose($robotsFile);
@@ -60,11 +62,12 @@ class DevRobotsTxtCommand extends Command
         return self::SUCCESS;
     }
 
-    private function revertToOriginal($input, $output, $robotsPath): int
+    private function revertToOriginal(InputInterface $input, OutputInterface $output, string $robotsPath): int
     {
         // returns robots.txt to original state
         $io = new SymfonyStyle($input, $output);
-        $file = file_get_contents($robotsPath);
+
+        $file = (string) file_get_contents($robotsPath);
         $createdString = "#soc\nUser-agent: *\nDisallow: /\n#eoc";
 
         // If only input from command is present
@@ -89,7 +92,7 @@ class DevRobotsTxtCommand extends Command
         // change robots.txt to disable crawlers
         $io = new SymfonyStyle($input, $output);
 
-        $file = file_get_contents($robotsPath);
+        $file = (string) file_get_contents($robotsPath);
         $commandString = "#soc\nUser-agent: *\nDisallow: /\n#eoc";
 
         // If command is called multiple times

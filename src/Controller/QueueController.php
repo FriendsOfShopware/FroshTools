@@ -12,11 +12,15 @@ use Symfony\Component\DependencyInjection\ServiceLocator;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Messenger\Transport\Receiver\MessageCountAwareInterface;
+use Symfony\Component\Messenger\Transport\Receiver\ReceiverInterface;
 use Symfony\Component\Routing\Annotation\Route;
 
 #[Route(path: '/api/_action/frosh-tools', defaults: ['_routeScope' => ['api'], '_acl' => ['frosh_tools:read']])]
 class QueueController extends AbstractController
 {
+    /**
+     * @param ServiceLocator<ReceiverInterface> $transportLocator
+     */
     public function __construct(
         private readonly Connection $connection,
         #[Autowire(service: 'shopware.increment.gateway.registry')]
@@ -53,6 +57,9 @@ class QueueController extends AbstractController
         return new JsonResponse(null, Response::HTTP_NO_CONTENT);
     }
 
+    /**
+     * @param array<mixed> $queueData
+     */
     private function getMessengerStats(array &$queueData): void
     {
         foreach ($this->getTransportNames() as $transportName) {
@@ -79,6 +86,9 @@ class QueueController extends AbstractController
         usort($queueData, static fn(array $a, array $b) => $b['size'] <=> $a['size']);
     }
 
+    /**
+     * @return array<string>
+     */
     private function getTransportNames(): array
     {
         $transportNames = array_keys($this->transportLocator->getProvidedServices());

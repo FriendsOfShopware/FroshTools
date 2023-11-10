@@ -8,3 +8,5 @@ on:
 jobs:
     php-cs-fixer:
         uses: FriendsOfShopware/actions/.github/workflows/php-cs-fixer.yml@main
+    phpstan:
+        uses: FriendsOfShopware/actions/.github/workflows/phpstan.yml@main

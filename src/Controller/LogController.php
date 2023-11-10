@@ -51,8 +51,9 @@ class LogController extends AbstractController
 
         $result = [];
 
+        /** @var string $item */
         foreach ($reader as $item) {
-            if (preg_match(self::LINE_MATCH, (string) $item, $matches) === false) {
+            if (preg_match(self::LINE_MATCH, $item, $matches) === false) {
                 $result[] = [
                     'message' => $item,
                     'channel' => 'unknown',
@@ -91,6 +92,9 @@ class LogController extends AbstractController
         return $this->logDir . $fileName;
     }
 
+    /**
+     * @return array{name: string}[]
+     */
     private function getFiles(): array
     {
         $finder = new Finder();

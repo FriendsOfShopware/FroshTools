@@ -94,6 +94,9 @@ class MysqlChecker implements HealthCheckerInterface, CheckerInterface
         ));
     }
 
+    /**
+     * @return array{mysql?: string, mariadb?: string}
+     */
     private function extract(string $versionString): array
     {
         if (mb_stripos($versionString, 'mariadb') === false) {

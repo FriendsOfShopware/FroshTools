@@ -13,6 +13,7 @@ use Shopware\Core\Framework\DataAbstractionLayer\Search\Criteria;
 use Shopware\Core\Framework\DataAbstractionLayer\Search\Filter\EqualsFilter;
 use Shopware\Core\Framework\DataAbstractionLayer\Search\Filter\NotFilter;
 use Shopware\Core\Framework\DataAbstractionLayer\Search\Filter\RangeFilter;
+use Shopware\Core\Framework\MessageQueue\ScheduledTask\ScheduledTaskCollection;
 use Shopware\Core\Framework\MessageQueue\ScheduledTask\ScheduledTaskDefinition;
 use Shopware\Core\System\SystemConfig\SystemConfigService;
 use Symfony\Component\Console\Attribute\AsCommand;
@@ -30,6 +31,9 @@ class MonitorCommand extends Command
     private const MONITOR_EMAIL_OPTION = 'email';
     private const MONITOR_SALESCHANNEL_ARG = 'sales-channel';
 
+    /**
+     * @param EntityRepository<ScheduledTaskCollection> $scheduledTaskRepository
+     */
     public function __construct(
         #[Autowire(service: MailService::class)]
         private readonly AbstractMailService $mailService,
@@ -103,7 +107,9 @@ class MonitorCommand extends Command
 
     private function queueFailed(): bool
     {
-        $oldestMessage = (int) $this->connection->fetchOne('SELECT IFNULL(MIN(created_at), 0) FROM messenger_messages');
+        /** @var string $createdAt */
+        $createdAt = $this->connection->fetchOne('SELECT IFNULL(MIN(created_at), 0) FROM messenger_messages');
+        $oldestMessage = (int)$createdAt;
         $oldestMessage /= 10000;
         $minutes = $this->configService->getInt(
             'FroshTools.config.monitorQueueGraceTime'

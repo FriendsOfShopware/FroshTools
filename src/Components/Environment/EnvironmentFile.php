@@ -7,7 +7,7 @@ namespace Frosh\Tools\Components\Environment;
 class EnvironmentFile implements \Stringable
 {
     /**
-     * @param array<string, EnvironmentLine> $items
+     * @param list<EnvironmentLine> $items
      */
     public function __construct(private array $items) {}
 
@@ -60,6 +60,9 @@ class EnvironmentFile implements \Stringable
         }
     }
 
+    /**
+     * @return array<string>
+     */
     public function keys(): array
     {
         $keys = [];
@@ -73,6 +76,9 @@ class EnvironmentFile implements \Stringable
         return $keys;
     }
 
+    /**
+     * @return array<string, string>
+     */
     public function values(): array
     {
         $values = [];
