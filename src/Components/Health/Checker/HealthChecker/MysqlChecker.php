@@ -55,7 +55,7 @@ class MysqlChecker implements HealthCheckerInterface, CheckerInterface
 
     private function checkMysqlVersion(HealthCollection $collection, string $version): void
     {
-        $minVersion = '5.7.21';
+        $minVersion = '8.0';
         $brokenVersions = [
             '8.0.20',
             '8.0.21',
