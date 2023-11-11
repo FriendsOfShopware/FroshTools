@@ -4,13 +4,13 @@ const { Component } = Shopware;
 
 Component.override('sw-version', {
     template,
-    inject: ['froshToolsService', 'acl'],
+    inject: ['froshToolsService', 'acl', 'loginService'],
 
     async created() {
         if(!this.checkPermission()) {
             return;
         }
-        
+
         await this.checkHealth();
     },
 
@@ -65,9 +65,16 @@ Component.override('sw-version', {
         async checkHealth() {
             this.health = await this.froshToolsService.healthStatus();
 
-            setInterval(async() => {
-                this.health = await this.froshToolsService.healthStatus();
+            this.checkInterval = setInterval(async() => {
+                try {
+                    this.health = await this.froshToolsService.healthStatus();
+                } catch (e) {
+                    console.error(e);
+                    clearInterval(this.checkInterval);
+                }
             }, 30000);
+
+            this.loginService.addOnLogoutListener(() => clearInterval(this.checkInterval));
         },
 
          checkPermission() {
