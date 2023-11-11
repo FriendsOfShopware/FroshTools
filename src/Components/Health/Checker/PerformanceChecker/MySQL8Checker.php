@@ -35,7 +35,7 @@ class MySQL8Checker implements PerformanceCheckerInterface, CheckerInterface
         }
 
         $collection->add(
-            SettingsResult::error('mysql8', 'MySQL', $version, 'MySQL 8.0', 'https://developer.shopware.com/docs/guides/hosting/performance/performance-tweaks#mysql-instead-of-mariadb')
+            SettingsResult::warning('mysql8', 'MySQL', $version, 'MySQL 8.0', 'https://developer.shopware.com/docs/guides/hosting/performance/performance-tweaks#mysql-instead-of-mariadb')
         );
     }
 
