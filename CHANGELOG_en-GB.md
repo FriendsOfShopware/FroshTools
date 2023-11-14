@@ -1,47 +1,8 @@
-# 1.2.0
-- [Allow overriding any system config value with config files](https://github.com/FriendsOfShopware/FroshTools#override-system_config-with-config-files)
-
-# 1.1.1
-- Fixes problems with manual execution of Scheduled Tasks
-- label for monitorQueueGraceTime modified
-
-# 1.1.0
-
-- Use symfony autowire
-- Also read accumulated messages stats from transports 
-- Removed task logging middleware
-
-# 1.0.6
-
-- Simplify environment delete command name
-- Simplify queue checker
-
-# 1.0.5
-
-* Simplify task checker for overdue tasks
-
-# 1.0.4
-
-* Fixed task checker to check for minutes instead of months
-
-# 1.0.3
-
-* Fix queue checker with timezones
-* Fix redis implementation for cache module
-* Fix reset queue to clear up product_export
-* Cleanup code
-* Fix error with unlimited `max_execution_time`
-
-# 1.0.2
-
-* Fix icon in administration module
-
-# 1.0.1
-
-* Fixed cache controller
-
-# 1.0.0
-
-* Shopware 6.5 compatibility
-
-
+# 1.2.4
+- [Update composer.json](/081f029)
+- [fix: increase min mysql version to 8.0](/c4c7f5b)
+- [fix: change mysql8 recommendation to warning, instead of error, fixes #224](/e6282cf)
+- [fix: stop health check poll when user logouts, fixes #229](/be83592)
+- [feat: add phpstan (#231)](/0aef4a9)
+- [feat: add cs-fixer (#230)](/628f8bb)
+- [Refactor the StateMachineViewer component (#228)](/cc69fcd)
