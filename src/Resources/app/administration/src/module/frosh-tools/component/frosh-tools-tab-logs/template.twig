@@ -15,8 +15,13 @@
                 :placeholder="$tc('frosh-tools.tabs.logs.logFileSelect.placeholder')"
                 labelProperty="name"
                 valueProperty="name"
-                v-model="selectedLogFile"
-                @change="onFileSelected"
+                {% if VUE3 %}
+                    v-model:value="selectedLogFile"
+                    @update:value="onFileSelected"
+                {% else %}
+                    v-model="selectedLogFile"
+                    @change="onFileSelected"
+                {% endif %}
             ></sw-single-select>
         </template>
 
@@ -25,10 +30,10 @@
             :showActions="false"
             :dataSource="logEntries"
             :columns="columns">
-            <template slot="column-date" slot-scope="{ item }">
+            <template #column-date="{ item }">
                 {{ item.date | date({hour: '2-digit', minute: '2-digit', second: '2-digit'}) }}
             </template>
-            <template slot="column-message" slot-scope="{ item }">
+            <template #column-message="{ item }">
                 <a @click="showInfoModal(item)">{{ item.message }}</a>
             </template>
         </sw-data-grid>
@@ -44,7 +49,7 @@
     <sw-modal v-if="displayedLog"
               variant="large">
 
-        <template slot="modal-header">
+        <template #modal-header>
             <div class="sw-modal__titles">
                 <h4 class="sw-modal__title">
                     {{ displayedLog.channel }} - {{ displayedLog.level }}
