@@ -35,7 +35,7 @@ class ConfigSystemConfigLoader extends AbstractSystemConfigLoader
         );
 
         foreach ($specific as $key => $value) {
-            $keys = \explode('.', (string)$key);
+            $keys = \explode('.', (string) $key);
 
             $specific = $this->getSubArray($specific, $keys, $value);
 
