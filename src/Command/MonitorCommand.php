@@ -109,7 +109,7 @@ class MonitorCommand extends Command
     {
         /** @var string $createdAt */
         $createdAt = $this->connection->fetchOne('SELECT IFNULL(MIN(created_at), 0) FROM messenger_messages');
-        $oldestMessage = (int)$createdAt;
+        $oldestMessage = (int) $createdAt;
         $oldestMessage /= 10000;
         $minutes = $this->configService->getInt(
             'FroshTools.config.monitorQueueGraceTime'

@@ -22,14 +22,14 @@ class PhpSettingsChecker implements PerformanceCheckerInterface, CheckerInterfac
 
     private function checkAssertActive(HealthCollection $collection, string $url): void
     {
-        $currentValue = $this->iniGetFailover('assert.active');
-        if ($currentValue !== '0') {
+        $currentValue = $this->iniGetFailover('zend.assertions');
+        if ($currentValue !== '-1') {
             $collection->add(
                 SettingsResult::warning(
-                    'assert.active',
-                    'PHP value assert.active',
+                    'zend.assertions',
+                    'PHP value zend.assertions',
                     $currentValue,
-                    '0',
+                    '-1',
                     $url
                 )
             );

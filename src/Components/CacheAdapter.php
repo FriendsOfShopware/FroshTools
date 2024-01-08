@@ -17,6 +17,13 @@ use Symfony\Component\Cache\Adapter\TraceableAdapter;
 
 class CacheAdapter
 {
+    public const TYPE_REDIS = 'Redis';
+    public const TYPE_REDIS_TAG_AWARE = 'Redis (TagAware)';
+    public const TYPE_FILESYSTEM = 'Filesystem';
+    public const TYPE_ARRAY = 'Array';
+    public const TYPE_PHP_FILES = 'PHP files';
+    public const TYPE_APCU = 'APCu';
+
     private readonly AdapterInterface $adapter;
 
     public function __construct(AdapterInterface $adapter)
@@ -93,11 +100,12 @@ class CacheAdapter
     public function getType(): string
     {
         return match (true) {
-            $this->adapter instanceof RedisAdapter, $this->adapter instanceof RedisTagAwareAdapter => 'Redis ' . $this->getRedis($this->adapter)->info()['redis_version'],
-            $this->adapter instanceof FilesystemAdapter => 'Filesystem',
-            $this->adapter instanceof ArrayAdapter => 'Array',
-            $this->adapter instanceof PhpFilesAdapter => 'PHP files',
-            $this->adapter instanceof ApcuAdapter => 'APCu',
+            $this->adapter instanceof RedisAdapter, => self::TYPE_REDIS . ' ' . $this->getRedis($this->adapter)->info()['redis_version'],
+            $this->adapter instanceof RedisTagAwareAdapter => self::TYPE_REDIS_TAG_AWARE . ' ' . $this->getRedis($this->adapter)->info()['redis_version'],
+            $this->adapter instanceof FilesystemAdapter => self::TYPE_FILESYSTEM,
+            $this->adapter instanceof ArrayAdapter => self::TYPE_ARRAY,
+            $this->adapter instanceof PhpFilesAdapter => self::TYPE_PHP_FILES,
+            $this->adapter instanceof ApcuAdapter => self::TYPE_APCU,
             default => '',
         };
     }

@@ -16,7 +16,7 @@ RUN sudo add-apt-repository ppa:ondrej/php -y && \
     shopware-cli completion fish | sudo tee /usr/share/fish/completions/shopware-cli.fish && \
     sudo apt-get upgrade -y && \
     echo "memory_limit=512M" > php.ini && \
-    echo "assert.active=0" >> php.ini && \
+    echo "zend.assertions=-1" >> php.ini && \
     echo "opcache.interned_strings_buffer=20" >> php.ini && \
     echo "zend.detect_unicode=0" >> php.ini && \
     echo "realpath_cache_ttl=3600" >> php.ini && \
