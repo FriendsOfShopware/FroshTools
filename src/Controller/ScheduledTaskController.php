@@ -26,7 +26,7 @@ class ScheduledTaskController extends AbstractController
      * @param iterable<ScheduledTaskHandler> $taskHandler
      * @param EntityRepository<ScheduledTaskCollection> $scheduledTaskRepository
      */
-    public function __construct( # @phpstan-ignore-line
+    public function __construct(# @phpstan-ignore-line
         #[TaggedIterator('messenger.message_handler')]
         private readonly iterable $taskHandler,
         private readonly EntityRepository $scheduledTaskRepository,
