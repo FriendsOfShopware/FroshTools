@@ -102,6 +102,7 @@ build:
         assets:
             enable_es_build_for_admin: true
             enable_es_build_for_storefront: true
+            npm_strict: true
 
 changelog:
     enabled: true

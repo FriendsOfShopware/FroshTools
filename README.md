@@ -1,7 +1,5 @@
 # Frosh Tools
 
-[![Open in Gitpod](https://gitpod.io/button/open-in-gitpod.svg)](https://gitpod.io/#https://github.com/FriendsOfShopware/FroshTools)
-
 This plugin contains some utility functions for managing a Shopware 6 shop.
 
 The current feature set consists of:
