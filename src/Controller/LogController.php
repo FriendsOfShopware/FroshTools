@@ -7,6 +7,7 @@ namespace Frosh\Tools\Controller;
 use Frosh\Tools\Components\LineReader;
 use Shopware\Core\Framework\Routing\Exception\InvalidRequestParameterException;
 use Shopware\Core\Framework\Routing\Exception\MissingRequestParameterException;
+use Shopware\Core\Framework\Routing\RoutingException;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\DependencyInjection\Attribute\Autowire;
 use Symfony\Component\Finder\Finder;
@@ -78,7 +79,7 @@ class LogController extends AbstractController
     private function getFilePathByBag(Request $request): string
     {
         if (!$request->query->has('file')) {
-            throw new MissingRequestParameterException('file');
+            throw RoutingException::missingRequestParameter('file');
         }
 
         $fileName = $request->query->get('file');
@@ -86,7 +87,7 @@ class LogController extends AbstractController
         // prevent path travel
         $files = array_column($this->getFiles(), 'name');
         if (!\in_array($fileName, $files, true)) {
-            throw new InvalidRequestParameterException('file');
+            throw RoutingException::missingRequestParameter('file');
         }
 
         return $this->logDir . $fileName;

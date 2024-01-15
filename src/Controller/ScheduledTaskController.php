@@ -26,7 +26,7 @@ class ScheduledTaskController extends AbstractController
      * @param iterable<ScheduledTaskHandler> $taskHandler
      * @param EntityRepository<ScheduledTaskCollection> $scheduledTaskRepository
      */
-    public function __construct(
+    public function __construct( # @phpstan-ignore-line
         #[TaggedIterator('messenger.message_handler')]
         private readonly iterable $taskHandler,
         private readonly EntityRepository $scheduledTaskRepository,
@@ -61,6 +61,7 @@ class ScheduledTaskController extends AbstractController
                 continue;
             }
 
+            // @phpstan-ignore-next-line
             $handledMessages = $handler::getHandledMessages();
             if (!\is_array($handledMessages)) {
                 $handledMessages = iterator_to_array($handledMessages);

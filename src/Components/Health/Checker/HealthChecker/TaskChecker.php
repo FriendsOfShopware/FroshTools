@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Frosh\Tools\Components\Health\Checker\HealthChecker;
 
+use Doctrine\DBAL\ArrayParameterType;
 use Doctrine\DBAL\Connection;
 use Frosh\Tools\Components\Health\Checker\CheckerInterface;
 use Frosh\Tools\Components\Health\HealthCollection;
@@ -24,7 +25,7 @@ class TaskChecker implements HealthCheckerInterface, CheckerInterface
             ->select('s.scheduled_task_class', 's.next_execution_time')
             ->from('scheduled_task', 's')
             ->where('s.status NOT IN(:status)')
-            ->setParameter('status', ['inactive', 'skipped'], Connection::PARAM_STR_ARRAY)
+            ->setParameter('status', ['inactive', 'skipped'], ArrayParameterType::STRING)
             ->fetchAllAssociative();
 
         $tasks = array_filter($data, function (array $task) {

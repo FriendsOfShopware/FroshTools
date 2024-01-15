@@ -72,7 +72,6 @@ class ConfigSystemConfigLoader extends AbstractSystemConfigLoader
                 $configValues[$key] = [];
             }
 
-            // @phpstan-ignore-next-line
             $configValues[$key] = $this->getSubArray($configValues[$key], $keys, $value);
         }
 

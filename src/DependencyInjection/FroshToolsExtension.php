@@ -33,7 +33,6 @@ class FroshToolsExtension extends Extension
     private function addConfig(ContainerBuilder $container, string $alias, array $options): void
     {
         foreach ($options as $key => $option) {
-            // @phpstan-ignore-next-line
             $container->setParameter($alias . '.' . $key, $option);
 
             if (\is_array($option)) {

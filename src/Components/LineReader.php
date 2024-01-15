@@ -16,7 +16,7 @@ final class LineReader
     private function __construct() {}
 
     /**
-     * @return \Generator<int, string, void, void>
+     * @return \Generator<int, string>
      *
      * @throws \InvalidArgumentException if $filePath is not readable
      */
@@ -30,7 +30,7 @@ final class LineReader
     }
 
     /**
-     * @return \Generator<int, string, void, void>
+     * @return \Generator<int, string>
      *
      * @throws \InvalidArgumentException if $filePath is not readable
      */
@@ -71,7 +71,7 @@ final class LineReader
      *
      * @param resource $fh
      *
-     * @return \Generator<int, string, void, void>
+     * @return \Generator<int, string>
      */
     private static function readBackwards($fh, int $pos): \Generator
     {
@@ -109,7 +109,7 @@ final class LineReader
             }
             if ($buffer === null) {
                 // remove single trailing newline, rtrim cannot be used here
-                if (substr($chunk, -1) === "\n") {
+                if (str_ends_with($chunk, "\n")) {
                     $chunk = substr($chunk, 0, -1);
                 }
                 $buffer = explode("\n", $chunk);

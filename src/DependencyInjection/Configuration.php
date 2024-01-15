@@ -14,7 +14,6 @@ class Configuration implements ConfigurationInterface
         $treeBuilder = new TreeBuilder('frosh_tools');
 
         $rootNode = $treeBuilder->getRootNode();
-        // @phpstan-ignore-next-line
         $rootNode
             ->children()
                 ->arrayNode('file_checker')
