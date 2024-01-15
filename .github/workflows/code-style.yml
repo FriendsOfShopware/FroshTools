@@ -7,7 +7,11 @@ on:
             - main
 
 jobs:
-    php-cs-fixer:
-        uses: FriendsOfShopware/actions/.github/workflows/php-cs-fixer.yml@main
+    cs:
+        if: github.event_name != 'schedule'
+        uses: shopware/github-actions/.github/workflows/cs-fixer.yml@main
     phpstan:
-        uses: FriendsOfShopware/actions/.github/workflows/phpstan.yml@main
+        uses: shopware/github-actions/.github/workflows/phpstan.yml@main
+        with:
+          extensionName: FroshTools
+          shopwareVersion: 6.5.x
