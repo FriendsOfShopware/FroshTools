@@ -1,0 +1,10 @@
+# 2.0.0
+- [feat: shopware 6.6 compatibility (#237)](/cee454a)
+- [Fix message queue monitoring (#236)](/d278848)
+- [fix code styling](/2e1e095)
+- [fix: phpstan errors](/6ba5603)
+- [chore: cleanup files](/b6c06d1)
+- [Update phpstan.neon.dist](/bd22bb1)
+- [Create phpstan.neon.dist](/b6c6467)
+- [ci: use workflows from shopware](/68e8928)
+- [ci: remove check snippets](/d6ce88c)
