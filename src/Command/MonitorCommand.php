@@ -107,10 +107,9 @@ class MonitorCommand extends Command
 
     private function queueFailed(): bool
     {
-        /** @var string $createdAt */
-        $createdAt = $this->connection->fetchOne('SELECT IFNULL(MIN(created_at), 0) FROM messenger_messages');
-        $oldestMessage = (int) $createdAt;
-        $oldestMessage /= 10000;
+        /** @var string $availableAt */
+        $availableAt = $this->connection->fetchOne('SELECT IFNULL(MIN(available_at), 0) FROM messenger_messages');
+        $oldestMessage = (int) strtotime($availableAt);
         $minutes = $this->configService->getInt(
             'FroshTools.config.monitorQueueGraceTime'
         );

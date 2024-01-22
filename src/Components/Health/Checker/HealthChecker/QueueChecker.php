@@ -22,7 +22,7 @@ class QueueChecker implements HealthCheckerInterface, CheckerInterface
         $recommended = \sprintf('max %d mins', $maxDiff);
 
         /** @var string|false $oldestMessageAt */
-        $oldestMessageAt = $this->connection->fetchOne('SELECT available_at FROM messenger_messages ORDER BY available_at ASC LIMIT 1');
+        $oldestMessageAt = $this->connection->fetchOne('SELECT available_at FROM messenger_messages WHERE available_at < UTC_TIMESTAMP() ORDER BY available_at ASC LIMIT 1');
 
         if (\is_string($oldestMessageAt)) {
             $diff = round(abs(
