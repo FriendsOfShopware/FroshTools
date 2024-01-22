@@ -51,7 +51,11 @@ Component.register('frosh-tools-tab-logs', {
                     rawData: true
                 }
             ];
-        }
+        },
+
+        date() {
+            return Shopware.Filter.getByName('date');
+        },
     },
 
     methods: {

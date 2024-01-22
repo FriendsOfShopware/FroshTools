@@ -24,11 +24,7 @@
                 v-model="selectedStateMachine"
                 entity="state_machine"
                 :aside="true"
-                {% if VUE3 %}
-                    @update:value="onStateMachineChange"
-                {% else %}
-                    @change="onStateMachineChange"
-                {% endif %}
+                @update:value="onStateMachineChange"
                 :label="$tc('frosh-tools.tabs.state-machines.label')"
                 :placeholder="$tc('frosh-tools.chooseStateMachine')"
                 :helpText="$tc('frosh-tools.tabs.state-machines.helpText')"

@@ -13,6 +13,7 @@ use Shopware\Core\Framework\MessageQueue\ScheduledTask\ScheduledTaskCollection;
 use Shopware\Core\Framework\MessageQueue\ScheduledTask\ScheduledTaskDefinition;
 use Shopware\Core\Framework\MessageQueue\ScheduledTask\ScheduledTaskEntity;
 use Shopware\Core\Framework\MessageQueue\ScheduledTask\ScheduledTaskHandler;
+use Shopware\Core\Framework\MessageQueue\ScheduledTask\Scheduler\TaskRunner;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\DependencyInjection\Attribute\TaggedIterator;
 use Symfony\Component\HttpFoundation\JsonResponse;
@@ -23,14 +24,12 @@ use Symfony\Component\Routing\Annotation\Route;
 class ScheduledTaskController extends AbstractController
 {
     /**
-     * @param iterable<ScheduledTaskHandler> $taskHandler
      * @param EntityRepository<ScheduledTaskCollection> $scheduledTaskRepository
      */
-    public function __construct(# @phpstan-ignore-line
-        #[TaggedIterator('messenger.message_handler')]
-        private readonly iterable $taskHandler,
+    public function __construct(
         private readonly EntityRepository $scheduledTaskRepository,
-        private readonly TaskRegistry $taskRegistry
+        private readonly TaskRegistry $taskRegistry,
+        private readonly TaskRunner $taskRunner
     ) {}
 
     #[Route(path: '/scheduled-task/{id}', name: 'api.frosh.tools.scheduled.task.run', methods: ['POST'])]
@@ -51,28 +50,7 @@ class ScheduledTaskController extends AbstractController
             ],
         ], $context);
 
-        $className = $scheduledTask->getScheduledTaskClass();
-        /** @var ScheduledTask $task */
-        $task = new $className();
-        $task->setTaskId($id);
-
-        foreach ($this->taskHandler as $handler) {
-            if (!$handler instanceof ScheduledTaskHandler) {
-                continue;
-            }
-
-            // @phpstan-ignore-next-line
-            $handledMessages = $handler::getHandledMessages();
-            if (!\is_array($handledMessages)) {
-                $handledMessages = iterator_to_array($handledMessages);
-            }
-            if (!\in_array($className, $handledMessages, true)) {
-                continue;
-            }
-
-            // calls the __invoke() method of the abstract ScheduledTaskHandler
-            $handler($task);
-        }
+        $this->taskRunner->runSingleTask($scheduledTask->getName(), $context);
 
         return new JsonResponse(null, Response::HTTP_NO_CONTENT);
     }

@@ -27,7 +27,7 @@
                 :columns="columns">
 
             <template #column-lastExecutionTime="{ item }">
-                {{ item.lastExecutionTime | date({hour: '2-digit', minute: '2-digit'}) }}
+                {{ date(item.lastExecutionTime, {hour: '2-digit', minute: '2-digit'}) }}
             </template>
             <template #column-nextExecutionTime="{ item, column, compact, isInlineEdit }">
                 <sw-data-grid-inline-edit
@@ -39,7 +39,7 @@
                 </sw-data-grid-inline-edit>
 
                 <span v-else>
-                     {{ item.nextExecutionTime | date({hour: '2-digit', minute: '2-digit'}) }}
+                     {{ date(item.nextExecutionTime, {hour: '2-digit', minute: '2-digit'}) }}
                 </span>
             </template>
 
