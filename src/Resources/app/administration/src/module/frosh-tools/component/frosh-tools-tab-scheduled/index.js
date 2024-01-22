@@ -62,7 +62,11 @@ Component.register('frosh-tools-tab-scheduled', {
                     rawData: true
                 }
             ];
-        }
+        },
+
+        date() {
+            return Shopware.Filter.getByName('date');
+        },
     },
 
     methods: {

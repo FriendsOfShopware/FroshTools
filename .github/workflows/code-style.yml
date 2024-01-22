@@ -14,4 +14,4 @@ jobs:
         uses: shopware/github-actions/.github/workflows/phpstan.yml@main
         with:
           extensionName: FroshTools
-          shopwareVersion: 6.5.x
+          shopwareVersion: v6.6.0.0-rc1

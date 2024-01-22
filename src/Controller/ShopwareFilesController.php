@@ -15,11 +15,13 @@ use Shopware\Core\System\Integration\IntegrationEntity;
 use Shopware\Core\System\User\UserCollection;
 use Shopware\Core\System\User\UserEntity;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Component\DependencyInjection\Attribute\AutoconfigureTag;
 use Symfony\Component\DependencyInjection\Attribute\Autowire;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Routing\Annotation\Route;
 
+#[AutoconfigureTag('monolog.logger', ['channel' => 'frosh-tools'])]
 #[Route(path: '/api/_action/frosh-tools', defaults: ['_routeScope' => ['api'], '_acl' => ['frosh_tools:read']])]
 class ShopwareFilesController extends AbstractController
 {
@@ -41,7 +43,6 @@ class ShopwareFilesController extends AbstractController
         private readonly string $projectDir,
         #[Autowire('%frosh_tools.file_checker.exclude_files%')]
         private readonly array $projectExcludeFiles,
-        #[Autowire(service: 'frosh_tools.logger')]
         private readonly LoggerInterface $froshToolsLogger,
         private readonly EntityRepository $userRepository,
         private readonly EntityRepository $integrationRepository
