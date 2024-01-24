@@ -1,5 +1,5 @@
 version: "1.0"
-linter: ghcr.io/shyim/qodana-php:8.1
+linter: ghcr.io/shyim/qodana-php:8.2
 bootstrap: composer req shopware/elasticsearch:*
 php:
   version: "8.1"
