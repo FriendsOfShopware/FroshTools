@@ -21,14 +21,32 @@ class RedisTagAwareChecker implements PerformanceCheckerInterface, CheckerInterf
 
     public function collect(HealthCollection $collection): void
     {
-        if (\version_compare('6.5.8.0', $this->shopwareVersion, '>')) {
+        $httpCacheType = $this->cacheRegistry->get('cache.http')->getType();
+
+        $redisActive = \str_starts_with($httpCacheType, CacheAdapter::TYPE_REDIS);
+
+        if (!$redisActive) {
             return;
         }
 
-        $httpCacheType = $this->cacheRegistry->get('cache.http')->getType();
+        $redisTagAwareActive = \str_starts_with($httpCacheType, CacheAdapter::TYPE_REDIS_TAG_AWARE);
+        $redisTagAwareSupported = \version_compare('6.5.8.0', $this->shopwareVersion, '<=');
 
-        if (!\str_starts_with($httpCacheType, CacheAdapter::TYPE_REDIS)
-            || \str_starts_with($httpCacheType, CacheAdapter::TYPE_REDIS_TAG_AWARE)) {
+        if ($redisTagAwareActive && !$redisTagAwareSupported) {
+            $collection->add(
+                SettingsResult::warning(
+                    'redis-tag-aware-unsupported',
+                    'Redis TagAware adapter has issues with your Shopware version',
+                    CacheAdapter::TYPE_REDIS_TAG_AWARE,
+                    CacheAdapter::TYPE_REDIS,
+                    'https://developer.shopware.com/docs/guides/hosting/performance/caches.html#example-replace-some-cache-with-redis'
+                )
+            );
+
+            return;
+        }
+
+        if ($redisTagAwareActive || !$redisTagAwareSupported) {
             return;
         }
 
