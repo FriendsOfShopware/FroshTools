@@ -30,7 +30,7 @@ class RedisTagAwareChecker implements PerformanceCheckerInterface, CheckerInterf
         }
 
         $redisTagAwareActive = \str_starts_with($httpCacheType, CacheAdapter::TYPE_REDIS_TAG_AWARE);
-        $redisTagAwareSupported = \version_compare('6.5.8.0', $this->shopwareVersion, '<=');
+        $redisTagAwareSupported = \version_compare('6.5.8.3', $this->shopwareVersion, '<=');
 
         if ($redisTagAwareActive && !$redisTagAwareSupported) {
             $collection->add(
