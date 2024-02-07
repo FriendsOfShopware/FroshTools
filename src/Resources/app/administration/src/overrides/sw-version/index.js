@@ -72,7 +72,7 @@ Component.override('sw-version', {
                     console.error(e);
                     clearInterval(this.checkInterval);
                 }
-            }, 30000);
+            }, 60000);
 
             this.loginService.addOnLogoutListener(() => clearInterval(this.checkInterval));
         },
