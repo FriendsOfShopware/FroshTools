@@ -107,6 +107,14 @@
             <tag name="frosh_tools.health_checker"/>
         </service>
 
+      <service id="Frosh\Tools\Components\Health\Checker\HealthChecker\SwagSecurityChecker">
+        <argument type="service" id="Doctrine\DBAL\Connection"/>
+        <argument type="service" id="kernel"/>
+        <argument>%kernel.shopware_version%</argument>
+        <argument type="service" id="cache.object"/>
+        <tag name="frosh_tools.health_checker"/>
+      </service>
+
         <service id="Frosh\Tools\Components\Health\Checker\HealthChecker\TaskChecker">
             <argument type="service" id="Doctrine\DBAL\Connection"/>
             <argument type="service" id="parameter_bag"/>
