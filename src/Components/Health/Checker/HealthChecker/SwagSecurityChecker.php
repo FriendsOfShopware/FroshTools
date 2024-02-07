@@ -23,8 +23,7 @@ class SwagSecurityChecker implements HealthCheckerInterface, CheckerInterface
         private readonly KernelInterface $kernel,
         #[Autowire('%kernel.shopware_version%')]
         private readonly string $shopwareVersion,
-        #[Autowire(service: 'cache.object')]
-        private readonly CacheInterface $objectCache
+        private readonly CacheInterface $cacheObject
     ) {}
 
     public function collect(HealthCollection $collection): void
@@ -84,7 +83,7 @@ class SwagSecurityChecker implements HealthCheckerInterface, CheckerInterface
     {
         $cacheKey = \sprintf('security-advisories-%s', $this->shopwareVersion);
 
-        return $this->objectCache->get($cacheKey, function (ItemInterface $cacheItem) {
+        return $this->cacheObject->get($cacheKey, function (ItemInterface $cacheItem) {
             $securityJson = file_get_contents('https://raw.githubusercontent.com/FriendsOfShopware/shopware-static-data/main/data/security.json');
             if ($securityJson === false) {
                 throw new \RuntimeException('Could not fetch security.json');
