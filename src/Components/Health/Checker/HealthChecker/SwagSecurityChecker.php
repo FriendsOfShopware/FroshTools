@@ -30,35 +30,8 @@ class SwagSecurityChecker implements HealthCheckerInterface, CheckerInterface
     {
         $this->refreshPlugins($this->connection);
 
-        try {
-            if (!$this->hasSecurityAdvisories()) {
-                return;
-            }
-        } catch (\Throwable) {
-            $collection->add(
-                SettingsResult::error(
-                    'security-update',
-                    'Cannot check security.json from shopware-static-data',
-                    'not accessible',
-                    'accessible',
-                    'https://raw.githubusercontent.com/FriendsOfShopware/shopware-static-data/main/data/security.json'
-                )
-            );
-        }
-
-        if ($this->swagSecurityInstalled()) {
-            return;
-        }
-
-        $collection->add(
-            SettingsResult::error(
-                'security-update',
-                'Security update',
-                'Shopware outdated',
-                'Update Shopware to the latest version or install recent version of the plugin SwagPlatformSecurity',
-                'https://store.shopware.com/en/swag136939272659f/shopware-6-security-plugin.html'
-            )
-        );
+        $this->determineSecurityIssue($collection);
+        $this->determineEolSupport($collection);
     }
 
     private function refreshPlugins(Connection $connection): void
@@ -109,5 +82,168 @@ class SwagSecurityChecker implements HealthCheckerInterface, CheckerInterface
         )->fetchOne();
 
         return !empty($result);
+    }
+
+    private function determineSecurityIssue(HealthCollection $collection): void
+    {
+        try {
+            if (!$this->hasSecurityAdvisories()) {
+                return;
+            }
+        } catch (\Throwable) {
+            $collection->add(
+                SettingsResult::error(
+                    'security-update',
+                    'Cannot check security.json from shopware-static-data',
+                    'not accessible',
+                    'accessible',
+                    'https://raw.githubusercontent.com/FriendsOfShopware/shopware-static-data/main/data/security.json'
+                )
+            );
+        }
+
+        if ($this->swagSecurityInstalled()) {
+            return;
+        }
+
+        $collection->add(
+            SettingsResult::error(
+                'security-update',
+                'Security update',
+                'Shopware outdated',
+                'Update Shopware to the latest version or install recent version of the plugin SwagPlatformSecurity',
+                'https://store.shopware.com/en/swag136939272659f/shopware-6-security-plugin.html'
+            )
+        );
+    }
+
+    private function determineEolSupport(HealthCollection $collection): void
+    {
+
+        $id = 'security-eol-shopware';
+        $snippet = 'Security updates';
+
+        try {
+            $releaseSupport = $this->getReleasesSupport();
+        } catch (\Throwable) {
+            $collection->add(
+                SettingsResult::error(
+                    $id,
+                    $snippet,
+                    'releases.json not accessible',
+                    'accessible',
+                    'https://raw.githubusercontent.com/shopware/shopware/trunk/releases.json'
+                )
+            );
+
+            return;
+        }
+
+        $recommended = 'Please update to a more recent version and minimum LTS version ' . ($releaseSupport['extended_eol_version'] ?? 'unknown') . '.';
+
+        if (empty($releaseSupport['security_eol'])) {
+            $collection->add(
+                SettingsResult::error(
+                    $id,
+                    $snippet,
+                    'unknown, possibly ended security support',
+                    $recommended
+                )
+            );
+
+            return;
+        }
+
+        $securityEol = new \DateTime($releaseSupport['security_eol']);
+
+        if ($securityEol < (new \DateTime())) {
+            $collection->add(
+                SettingsResult::error(
+                    $id,
+                    $snippet,
+                    'ended security support on ' . $releaseSupport['security_eol'],
+                    $recommended
+                )
+            );
+
+            return;
+        }
+
+        if ($securityEol < (new \DateTime())->modify('+6 month')) {
+            $collection->add(
+                SettingsResult::warning(
+                    $id,
+                    $snippet,
+                    'less than six months (' . $releaseSupport['security_eol'] . ')',
+                    $recommended
+                )
+            );
+
+            return;
+        }
+
+        if ($securityEol < (new \DateTime())->modify('+1 year')) {
+            $collection->add(
+                SettingsResult::info(
+                    $id,
+                    $snippet,
+                    'less than one year (' . $releaseSupport['security_eol'] . ')',
+                    $recommended
+                )
+            );
+
+            return;
+        }
+
+        $collection->add(
+            SettingsResult::ok(
+                $id,
+                $snippet,
+                'until ' . $releaseSupport['security_eol']
+            )
+        );
+    }
+
+    /**
+     * @return array{version?: string, release_date?: string, extended_eol?: string|false, security_eol?: string, extended_eol_version?: string}
+     */
+    private function getReleasesSupport(): array
+    {
+        $cacheKey = \sprintf('shopware-releases-support-%s', $this->shopwareVersion);
+
+        return $this->cacheObject->get($cacheKey, function (ItemInterface $cacheItem) {
+            $releasesJson = file_get_contents('https://raw.githubusercontent.com/shopware/shopware/trunk/releases.json');
+            if ($releasesJson === false) {
+                throw new \RuntimeException('Could not fetch releases.json');
+            }
+
+            $data = \json_decode(trim($releasesJson), true, 512, JSON_THROW_ON_ERROR);
+
+            if (!\is_array($data)) {
+                throw new \RuntimeException('Could not read releases.json');
+            }
+
+            $cacheItem->expiresAfter(3600 * 24 * 14);
+
+            $result = [];
+
+            foreach ($data as $entry) {
+                if (empty($entry['version'])) {
+                    continue;
+                }
+
+                if (!empty($entry['extended_eol'])
+                    && version_compare($entry['version'], ($result['extended_eol_version'] ?? ''), '>')) {
+                    $result['extended_eol_version'] = $entry['version'];
+                }
+
+                if (version_compare($entry['version'], ($result['version'] ?? ''), '>')
+                    && version_compare($entry['version'], $this->shopwareVersion, '<=')) {
+                    $result = [...$result, ...$entry];
+                }
+            }
+
+            return $result;
+        });
     }
 }
