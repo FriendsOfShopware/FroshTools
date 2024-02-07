@@ -10,7 +10,7 @@ Component.override('sw-version', {
         if(!this.checkPermission()) {
             return;
         }
-        
+
         await this.checkHealth();
     },
 
@@ -67,7 +67,7 @@ Component.override('sw-version', {
 
             setInterval(async() => {
                 this.health = await this.froshToolsService.healthStatus();
-            }, 30000);
+            }, 60000);
         },
 
          checkPermission() {
