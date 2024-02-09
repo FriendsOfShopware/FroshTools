@@ -17,12 +17,33 @@ class QueueConnectionChecker implements CheckerInterface
 
     public function collect(HealthCollection $collection): void
     {
-        if (\str_starts_with($this->connection, 'enqueue://default')) {
+        $schema = $this->getSchema();
+
+        $id = 'queue.adapter';
+        $url = 'https://developer.shopware.com/docs/guides/hosting/infrastructure/message-queue.html#message-queue-on-production-systems';
+
+        if ($schema === 'enqueue') {
             $collection->add(
-                SettingsResult::warning('queue.adapter', 'The default queue storage in database does not scale well with multiple workers',
-                    'default',
+                SettingsResult::warning(
+                    $id,
+                    'The default queue storage in database does not scale well with multiple workers',
+                    $schema,
                     'redis or rabbitmq',
-                    'https://developer.shopware.com/docs/guides/hosting/infrastructure/message-queue#transport-rabbitmq-example'
+                    $url
+                )
+            );
+
+            return;
+        }
+
+        if ($schema === 'sync') {
+            $collection->add(
+                SettingsResult::warning(
+                    $id,
+                    'The sync queue is not suitable for production environments',
+                    $schema,
+                    'redis or rabbitmq',
+                    $url
                 )
             );
 
@@ -30,10 +51,23 @@ class QueueConnectionChecker implements CheckerInterface
         }
 
         $collection->add(
-            SettingsResult::ok('queue.adapter', 'Configured queue storage is ok for multiple workers',
-                \parse_url($this->connection, \PHP_URL_SCHEME),
+            SettingsResult::ok(
+                $id,
+                'Configured queue storage is ok for multiple workers',
+                $this->getSchema(),
                 'redis or rabbitmq',
             )
         );
+    }
+
+    private function getSchema(): string
+    {
+        $urlSchema = \parse_url($this->connection, \PHP_URL_SCHEME);
+
+        if (!is_string($urlSchema)) {
+            $urlSchema = explode('://', $this->connection)[0] ?? 'unknown';
+        }
+
+        return $urlSchema;
     }
 }
