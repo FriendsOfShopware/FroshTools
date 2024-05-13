@@ -8,14 +8,18 @@ use Doctrine\DBAL\Connection;
 use Frosh\Tools\Components\Health\Checker\CheckerInterface;
 use Frosh\Tools\Components\Health\HealthCollection;
 use Frosh\Tools\Components\Health\SettingsResult;
+use Shopware\Core\System\SystemConfig\SystemConfigService;
 
 class QueueChecker implements HealthCheckerInterface, CheckerInterface
 {
-    public function __construct(private readonly Connection $connection) {}
+    public function __construct(
+        private readonly Connection $connection,
+        private readonly SystemConfigService $configService,
+    ) {}
 
     public function collect(HealthCollection $collection): void
     {
-        $maxDiff = 15;
+        $maxDiff = $this->configService->getInt('FroshTools.config.monitorQueueGraceTime') ?? 15;
         $oldMessageLimit = (new \DateTimeImmutable())->modify(\sprintf('-%d minutes', $maxDiff));
 
         $snippet = 'Open Queues';
@@ -26,7 +30,7 @@ class QueueChecker implements HealthCheckerInterface, CheckerInterface
 
         if (\is_string($oldestMessageAt)) {
             $diff = round(abs(
-                ((new \DateTime($oldestMessageAt . ' UTC'))->getTimestamp() - $oldMessageLimit->getTimestamp()) / 60
+                ((new \DateTime($oldestMessageAt . ' UTC'))->getTimestamp() - $oldMessageLimit->getTimestamp()) / 60,
             ));
 
             if ($diff > $maxDiff) {
