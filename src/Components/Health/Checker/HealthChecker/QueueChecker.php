@@ -19,7 +19,7 @@ class QueueChecker implements HealthCheckerInterface, CheckerInterface
 
     public function collect(HealthCollection $collection): void
     {
-        $maxDiff = $this->configService->getInt('FroshTools.config.monitorQueueGraceTime') ?? 15;
+        $maxDiff = $this->configService->getInt('FroshTools.config.monitorQueueGraceTime') ?: 15;
         $oldMessageLimit = (new \DateTimeImmutable())->modify(\sprintf('-%d minutes', $maxDiff));
 
         $snippet = 'Open Queues';

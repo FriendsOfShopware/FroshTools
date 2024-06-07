@@ -41,7 +41,7 @@ class TaskChecker implements HealthCheckerInterface, CheckerInterface
             return $taskClass::shouldRun($this->parameterBag);
         });
 
-        $maxDiff = $this->configService->getInt('FroshTools.config.monitorTaskGraceTime') ?? 10;
+        $maxDiff = $this->configService->getInt('FroshTools.config.monitorTaskGraceTime') ?: 10;
         $taskDateLimit = (new \DateTimeImmutable())->modify(\sprintf('-%d minutes', $maxDiff));
         $recommended = \sprintf('max %d mins', $maxDiff);
 
