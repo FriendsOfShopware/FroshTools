@@ -45,7 +45,7 @@ class ShopwareFilesController extends AbstractController
         private readonly array $projectExcludeFiles,
         private readonly LoggerInterface $froshToolsLogger,
         private readonly EntityRepository $userRepository,
-        private readonly EntityRepository $integrationRepository
+        private readonly EntityRepository $integrationRepository,
     ) {
         $this->isPlatform = !is_dir($this->projectDir . '/vendor/shopware/core') && is_dir($this->projectDir . '/src/Core');
     }
@@ -234,7 +234,7 @@ class ShopwareFilesController extends AbstractController
         /** @var null|UserEntity $userEntity */
         $userEntity = $this->userRepository->search(
             new Criteria([$userId]),
-            Context::createDefaultContext()
+            Context::createDefaultContext(),
         )->first();
 
         if (!$userEntity instanceof UserEntity) {
@@ -249,7 +249,7 @@ class ShopwareFilesController extends AbstractController
         /** @var null|IntegrationEntity $integrationEntity */
         $integrationEntity = $this->integrationRepository->search(
             new Criteria([$integrationId]),
-            Context::createDefaultContext()
+            Context::createDefaultContext(),
         )->first();
 
         if (!$integrationEntity instanceof IntegrationEntity) {

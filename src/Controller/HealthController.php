@@ -23,7 +23,7 @@ class HealthController extends AbstractController
         #[TaggedIterator('frosh_tools.health_checker')]
         private readonly iterable $healthCheckers,
         #[TaggedIterator('frosh_tools.performance_checker')]
-        private readonly iterable $performanceCheckers
+        private readonly iterable $performanceCheckers,
     ) {}
 
     #[Route(path: '/health/status', name: 'api.frosh.tools.health.status', methods: ['GET'])]

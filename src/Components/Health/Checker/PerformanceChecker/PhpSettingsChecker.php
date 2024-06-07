@@ -30,8 +30,8 @@ class PhpSettingsChecker implements PerformanceCheckerInterface, CheckerInterfac
                     'PHP value zend.assertions',
                     $currentValue,
                     '-1',
-                    $url
-                )
+                    $url,
+                ),
             );
         }
     }
@@ -46,8 +46,8 @@ class PhpSettingsChecker implements PerformanceCheckerInterface, CheckerInterfac
                     'PHP value opcache.enable_file_override',
                     $currentValue,
                     '1',
-                    $url
-                )
+                    $url,
+                ),
             );
         }
     }
@@ -62,8 +62,8 @@ class PhpSettingsChecker implements PerformanceCheckerInterface, CheckerInterfac
                     'PHP value opcache.interned_strings_buffer',
                     $currentValue,
                     'min 20',
-                    $url
-                )
+                    $url,
+                ),
             );
         }
     }
@@ -78,8 +78,8 @@ class PhpSettingsChecker implements PerformanceCheckerInterface, CheckerInterfac
                     'PHP value zend.detect_unicode',
                     $currentValue,
                     '0',
-                    $url
-                )
+                    $url,
+                ),
             );
         }
     }
@@ -94,8 +94,8 @@ class PhpSettingsChecker implements PerformanceCheckerInterface, CheckerInterfac
                     'PHP value realpath_cache_ttl',
                     $currentValue,
                     'min 3600',
-                    $url
-                )
+                    $url,
+                ),
             );
         }
     }

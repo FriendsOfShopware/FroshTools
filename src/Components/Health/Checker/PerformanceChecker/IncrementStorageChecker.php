@@ -15,7 +15,7 @@ class IncrementStorageChecker implements PerformanceCheckerInterface, CheckerInt
         #[Autowire('%shopware.increment.user_activity.type%')]
         private readonly string $userActivity,
         #[Autowire('%shopware.increment.message_queue.type%')]
-        private readonly string $queueActivity
+        private readonly string $queueActivity,
     ) {}
 
     public function collect(HealthCollection $collection): void
@@ -29,8 +29,8 @@ class IncrementStorageChecker implements PerformanceCheckerInterface, CheckerInt
                     'Increment storage',
                     'mysql',
                     $recommended,
-                    'https://developer.shopware.com/docs/guides/hosting/performance/performance-tweaks#increment-storage'
-                )
+                    'https://developer.shopware.com/docs/guides/hosting/performance/performance-tweaks#increment-storage',
+                ),
             );
         }
     }

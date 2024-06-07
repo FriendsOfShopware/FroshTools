@@ -18,7 +18,7 @@ class CacheController extends AbstractController
     public function __construct(
         #[Autowire('%kernel.cache_dir%')]
         private readonly string $cacheDir,
-        private readonly CacheRegistry $cacheRegistry
+        private readonly CacheRegistry $cacheRegistry,
     ) {}
 
     #[Route(path: '/cache', name: 'api.frosh.tools.cache.get', methods: ['GET'])]
@@ -65,7 +65,7 @@ class CacheController extends AbstractController
             \SORT_ASC,
             $sizeColumns,
             \SORT_DESC,
-            $result
+            $result,
         );
 
         return new JsonResponse($result);

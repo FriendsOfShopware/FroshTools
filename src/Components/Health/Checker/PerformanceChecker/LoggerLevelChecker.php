@@ -20,7 +20,7 @@ class LoggerLevelChecker implements PerformanceCheckerInterface, CheckerInterfac
 
     public function __construct(
         #[Autowire(service: 'monolog.handler.business_event_handler_buffer')]
-        AbstractHandler $businessEventHandlerLevel
+        AbstractHandler $businessEventHandlerLevel,
     ) {
         $this->businessEventHandlerLevel = $businessEventHandlerLevel->getLevel();
     }
@@ -33,7 +33,7 @@ class LoggerLevelChecker implements PerformanceCheckerInterface, CheckerInterfac
                 'BusinessEventHandler logging',
                 Logger::toMonologLevel($this->businessEventHandlerLevel)->getName(),
                 'min WARNING',
-                $this->url
+                $this->url,
             ));
         }
     }

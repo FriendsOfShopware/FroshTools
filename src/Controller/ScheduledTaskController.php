@@ -26,7 +26,7 @@ class ScheduledTaskController extends AbstractController
     public function __construct(
         private readonly EntityRepository $scheduledTaskRepository,
         private readonly TaskRegistry $taskRegistry,
-        private readonly TaskRunner $taskRunner
+        private readonly TaskRunner $taskRunner,
     ) {}
 
     #[Route(path: '/scheduled-task/{id}', name: 'api.frosh.tools.scheduled.task.run', methods: ['POST'])]

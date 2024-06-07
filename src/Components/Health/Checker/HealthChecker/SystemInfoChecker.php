@@ -14,7 +14,7 @@ class SystemInfoChecker implements HealthCheckerInterface, CheckerInterface
 {
     public function __construct(
         #[Autowire('%kernel.project_dir%')]
-        private readonly string $projectDir
+        private readonly string $projectDir,
     ) {}
 
     public function collect(HealthCollection $collection): void
@@ -29,8 +29,8 @@ class SystemInfoChecker implements HealthCheckerInterface, CheckerInterface
             SettingsResult::ok(
                 'installation-path',
                 'Installation Path',
-                $this->projectDir
-            )
+                $this->projectDir,
+            ),
         );
     }
 
@@ -47,9 +47,9 @@ class SystemInfoChecker implements HealthCheckerInterface, CheckerInterface
                     $databaseConnectionInfo->getUsername(),
                     $databaseConnectionInfo->getHostname(),
                     $databaseConnectionInfo->getPort(),
-                    $databaseConnectionInfo->getDatabaseName()
-                )
-            )
+                    $databaseConnectionInfo->getDatabaseName(),
+                ),
+            ),
         );
     }
 }

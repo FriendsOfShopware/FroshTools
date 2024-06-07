@@ -13,7 +13,7 @@ class MailOverQueueChecker implements PerformanceCheckerInterface, CheckerInterf
 {
     public function __construct(
         #[Autowire('%frosh_tools.mail_over_queue%')]
-        protected bool $mailerIsOverQueue
+        protected bool $mailerIsOverQueue,
     ) {}
 
     public function collect(HealthCollection $collection): void
@@ -25,8 +25,8 @@ class MailOverQueueChecker implements PerformanceCheckerInterface, CheckerInterf
                     'Sending mails over queue',
                     'disabled',
                     'enabled',
-                    'https://developer.shopware.com/docs/guides/hosting/infrastructure/message-queue#sending-mails-over-the-message-queue'
-                )
+                    'https://developer.shopware.com/docs/guides/hosting/infrastructure/message-queue#sending-mails-over-the-message-queue',
+                ),
             );
         }
     }

@@ -14,7 +14,7 @@ class FixCacheIdSetChecker implements PerformanceCheckerInterface, CheckerInterf
 {
     public function __construct(
         #[Autowire('%kernel.shopware_version%')]
-        protected string $shopwareVersion
+        protected string $shopwareVersion,
     ) {}
 
     public function collect(HealthCollection $collection): void
@@ -32,8 +32,8 @@ class FixCacheIdSetChecker implements PerformanceCheckerInterface, CheckerInterf
                     'Fixed cache id',
                     'not set',
                     'set',
-                    'https://developer.shopware.com/docs/guides/hosting/performance/performance-tweaks#cache-id'
-                )
+                    'https://developer.shopware.com/docs/guides/hosting/performance/performance-tweaks#cache-id',
+                ),
             );
         }
     }
