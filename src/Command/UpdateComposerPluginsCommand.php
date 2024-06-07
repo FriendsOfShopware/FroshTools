@@ -23,7 +23,7 @@ class UpdateComposerPluginsCommand extends Command
     public function __construct(
         #[Autowire('%kernel.project_dir%')]
         private readonly string $projectDir,
-        private readonly KernelPluginLoader $pluginLoader
+        private readonly KernelPluginLoader $pluginLoader,
     ) {
         parent::__construct();
         $this->application = new Application();
@@ -51,7 +51,7 @@ class UpdateComposerPluginsCommand extends Command
                 '--working-dir' => $this->projectDir,
                 '--direct' => null,
                 '--format' => 'json',
-            ]
+            ],
         );
 
         $this->application->run($composerinput, $composerOutput);
@@ -87,7 +87,7 @@ class UpdateComposerPluginsCommand extends Command
                 'command' => 'update',
                 '--working-dir' => $this->projectDir,
                 'packages' => $updates,
-            ]
+            ],
         );
         $this->application->run($composerUpdate, $composerOutput);
 

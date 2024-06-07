@@ -24,7 +24,7 @@ class MySQL8Checker implements PerformanceCheckerInterface, CheckerInterface
 
         if (isset($extractedVersion['mariadb'])) {
             $collection->add(
-                SettingsResult::error('mysql8', 'MySQL', $version, 'MySQL 8.0', 'https://developer.shopware.com/docs/guides/hosting/performance/performance-tweaks#mysql-instead-of-mariadb')
+                SettingsResult::error('mysql8', 'MySQL', $version, 'MySQL 8.0', 'https://developer.shopware.com/docs/guides/hosting/performance/performance-tweaks#mysql-instead-of-mariadb'),
             );
 
             return;
@@ -35,7 +35,7 @@ class MySQL8Checker implements PerformanceCheckerInterface, CheckerInterface
         }
 
         $collection->add(
-            SettingsResult::warning('mysql8', 'MySQL', $version, 'MySQL 8.0', 'https://developer.shopware.com/docs/guides/hosting/performance/performance-tweaks#mysql-instead-of-mariadb')
+            SettingsResult::warning('mysql8', 'MySQL', $version, 'MySQL 8.0', 'https://developer.shopware.com/docs/guides/hosting/performance/performance-tweaks#mysql-instead-of-mariadb'),
         );
     }
 
@@ -60,7 +60,7 @@ class MySQL8Checker implements PerformanceCheckerInterface, CheckerInterface
         if (!preg_match(
             '/^(?:5\.5\.5-)?(mariadb-)?(?P<major>\d+)\.(?P<minor>\d+)\.(?P<patch>\d+)/i',
             $versionString,
-            $versionParts
+            $versionParts,
         )) {
             throw new \RuntimeException(sprintf('Invalid version string: %s', $versionString));
         }

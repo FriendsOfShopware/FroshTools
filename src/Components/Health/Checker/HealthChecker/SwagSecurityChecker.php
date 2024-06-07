@@ -23,7 +23,7 @@ class SwagSecurityChecker implements HealthCheckerInterface, CheckerInterface
         private readonly KernelInterface $kernel,
         #[Autowire('%kernel.shopware_version%')]
         private readonly string $shopwareVersion,
-        private readonly CacheInterface $cacheObject
+        private readonly CacheInterface $cacheObject,
     ) {}
 
     public function collect(HealthCollection $collection): void
@@ -37,7 +37,7 @@ class SwagSecurityChecker implements HealthCheckerInterface, CheckerInterface
     private function refreshPlugins(Connection $connection): void
     {
         $result = $connection->executeQuery(
-            'SELECT COUNT(*) FROM plugin WHERE updated_at < DATE_SUB(NOW(), INTERVAL 1 DAY)'
+            'SELECT COUNT(*) FROM plugin WHERE updated_at < DATE_SUB(NOW(), INTERVAL 1 DAY)',
         )->fetchOne();
 
         if (empty($result)) {
@@ -97,8 +97,8 @@ class SwagSecurityChecker implements HealthCheckerInterface, CheckerInterface
                     'Cannot check security.json from shopware-static-data',
                     'not accessible',
                     'accessible',
-                    'https://raw.githubusercontent.com/FriendsOfShopware/shopware-static-data/main/data/security.json'
-                )
+                    'https://raw.githubusercontent.com/FriendsOfShopware/shopware-static-data/main/data/security.json',
+                ),
             );
         }
 
@@ -112,8 +112,8 @@ class SwagSecurityChecker implements HealthCheckerInterface, CheckerInterface
                 'Security update',
                 'Shopware outdated',
                 'Update Shopware to the latest version or install recent version of the plugin SwagPlatformSecurity',
-                'https://store.shopware.com/en/swag136939272659f/shopware-6-security-plugin.html'
-            )
+                'https://store.shopware.com/en/swag136939272659f/shopware-6-security-plugin.html',
+            ),
         );
     }
 
@@ -132,8 +132,8 @@ class SwagSecurityChecker implements HealthCheckerInterface, CheckerInterface
                     $snippet,
                     'releases.json not accessible',
                     'accessible',
-                    'https://raw.githubusercontent.com/shopware/shopware/trunk/releases.json'
-                )
+                    'https://raw.githubusercontent.com/shopware/shopware/trunk/releases.json',
+                ),
             );
 
             return;
@@ -147,8 +147,8 @@ class SwagSecurityChecker implements HealthCheckerInterface, CheckerInterface
                     $id,
                     $snippet,
                     'unknown, possibly ended security support',
-                    $recommended
-                )
+                    $recommended,
+                ),
             );
 
             return;
@@ -162,8 +162,8 @@ class SwagSecurityChecker implements HealthCheckerInterface, CheckerInterface
                     $id,
                     $snippet,
                     'ended security support on ' . $releaseSupport['security_eol'],
-                    $recommended
-                )
+                    $recommended,
+                ),
             );
 
             return;
@@ -175,8 +175,8 @@ class SwagSecurityChecker implements HealthCheckerInterface, CheckerInterface
                     $id,
                     $snippet,
                     'less than six months (' . $releaseSupport['security_eol'] . ')',
-                    $recommended
-                )
+                    $recommended,
+                ),
             );
 
             return;
@@ -188,8 +188,8 @@ class SwagSecurityChecker implements HealthCheckerInterface, CheckerInterface
                     $id,
                     $snippet,
                     'less than one year (' . $releaseSupport['security_eol'] . ')',
-                    $recommended
-                )
+                    $recommended,
+                ),
             );
 
             return;
@@ -199,8 +199,8 @@ class SwagSecurityChecker implements HealthCheckerInterface, CheckerInterface
             SettingsResult::ok(
                 $id,
                 $snippet,
-                'until ' . $releaseSupport['security_eol']
-            )
+                'until ' . $releaseSupport['security_eol'],
+            ),
         );
     }
 

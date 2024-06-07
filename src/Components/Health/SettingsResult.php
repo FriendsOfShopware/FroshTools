@@ -8,20 +8,20 @@ use Shopware\Core\Framework\Struct\Struct;
 
 class SettingsResult extends Struct
 {
-    private const GREEN = 'STATE_OK';
-    private const WARNING = 'STATE_WARNING';
-    private const ERROR = 'STATE_ERROR';
-    private const INFO = 'STATE_INFO';
+    public const GREEN = 'STATE_OK';
+    public const WARNING = 'STATE_WARNING';
+    public const ERROR = 'STATE_ERROR';
+    public const INFO = 'STATE_INFO';
 
     public string $current;
 
     public string $recommended;
 
+    public string $state;
+
     public ?string $url = null;
 
     protected string $id;
-
-    protected string $state;
 
     protected string $snippet;
 

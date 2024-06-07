@@ -9,13 +9,15 @@ use Doctrine\DBAL\Connection;
 use Frosh\Tools\Components\Health\Checker\CheckerInterface;
 use Frosh\Tools\Components\Health\HealthCollection;
 use Frosh\Tools\Components\Health\SettingsResult;
+use Shopware\Core\System\SystemConfig\SystemConfigService;
 use Symfony\Component\DependencyInjection\ParameterBag\ParameterBagInterface;
 
 class TaskChecker implements HealthCheckerInterface, CheckerInterface
 {
     public function __construct(
         private readonly Connection $connection,
-        private readonly ParameterBagInterface $parameterBag
+        private readonly ParameterBagInterface $parameterBag,
+        private readonly SystemConfigService $configService,
     ) {}
 
     public function collect(HealthCollection $collection): void
@@ -39,7 +41,7 @@ class TaskChecker implements HealthCheckerInterface, CheckerInterface
             return $taskClass::shouldRun($this->parameterBag);
         });
 
-        $maxDiff = 10;
+        $maxDiff = $this->configService->getInt('FroshTools.config.monitorTaskGraceTime') ?: 10;
         $taskDateLimit = (new \DateTimeImmutable())->modify(\sprintf('-%d minutes', $maxDiff));
         $recommended = \sprintf('max %d mins', $maxDiff);
 
@@ -58,7 +60,7 @@ class TaskChecker implements HealthCheckerInterface, CheckerInterface
         }
 
         $diff = round(abs(
-            ($maxTaskNextExecTime - $taskDateLimit->getTimestamp()) / 60
+            ($maxTaskNextExecTime - $taskDateLimit->getTimestamp()) / 60,
         ));
 
         $collection->add(SettingsResult::warning('scheduled_task', 'Scheduled tasks overdue', \sprintf('%d mins', $diff), $recommended));

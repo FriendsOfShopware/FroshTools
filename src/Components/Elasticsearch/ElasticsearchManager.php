@@ -27,7 +27,7 @@ class ElasticsearchManager
         private readonly ElasticsearchOutdatedIndexDetector $outdatedIndexDetector,
         private readonly Connection $connection,
         #[Autowire(service: 'shopware.increment.gateway.registry')]
-        private readonly IncrementGatewayRegistry $gatewayRegistry
+        private readonly IncrementGatewayRegistry $gatewayRegistry,
     ) {}
 
     public function isEnabled(): bool

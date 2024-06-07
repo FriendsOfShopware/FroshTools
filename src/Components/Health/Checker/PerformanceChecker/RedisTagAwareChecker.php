@@ -13,7 +13,7 @@ use Frosh\Tools\Components\Health\SettingsResult;
 class RedisTagAwareChecker implements PerformanceCheckerInterface, CheckerInterface
 {
     public function __construct(
-        private readonly CacheRegistry $cacheRegistry
+        private readonly CacheRegistry $cacheRegistry,
     ) {}
 
     public function collect(HealthCollection $collection): void
@@ -31,8 +31,8 @@ class RedisTagAwareChecker implements PerformanceCheckerInterface, CheckerInterf
                 'Redis adapter should be TagAware',
                 CacheAdapter::TYPE_REDIS,
                 CacheAdapter::TYPE_REDIS_TAG_AWARE,
-                'https://developer.shopware.com/docs/guides/hosting/performance/caches.html#example-replace-some-cache-with-redis'
-            )
+                'https://developer.shopware.com/docs/guides/hosting/performance/caches.html#example-replace-some-cache-with-redis',
+            ),
         );
     }
 }
