@@ -1,0 +1,5 @@
+{
+	"image": "dockware/play:latest",
+	"workspaceFolder": "/var/www/html/",
+	"workspaceMount": "/var/www/html/custom/plugins/FroshTools"
+}
