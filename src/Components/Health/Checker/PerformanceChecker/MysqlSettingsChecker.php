@@ -12,6 +12,8 @@ use Shopware\Core\DevOps\Environment\EnvironmentHelper;
 
 class MysqlSettingsChecker implements PerformanceCheckerInterface, CheckerInterface
 {
+    public const DOCUMENTATION_URL = 'https://developer.shopware.com/docs/guides/hosting/performance/performance-tweaks.html#mysql-configuration';
+
     public const MYSQL_GROUP_CONCAT_MAX_LEN = 320000;
 
     public const MYSQL_SQL_MODE_PART = 'ONLY_FULL_GROUP_BY';
@@ -20,13 +22,12 @@ class MysqlSettingsChecker implements PerformanceCheckerInterface, CheckerInterf
 
     public function collect(HealthCollection $collection): void
     {
-        $url = 'https://developer.shopware.com/docs/guides/hosting/performance/performance-tweaks.html#mysql-configuration';
-        $this->checkGroupConcatMaxLen($collection, $url);
-        $this->checkSqlMode($collection, $url);
-        $this->checkCheckDefaultEnvironmentSessionVariables($collection, $url);
+        $this->checkGroupConcatMaxLen($collection);
+        $this->checkSqlMode($collection);
+        $this->checkCheckDefaultEnvironmentSessionVariables($collection);
     }
 
-    private function checkGroupConcatMaxLen(HealthCollection $collection, string $url): void
+    private function checkGroupConcatMaxLen(HealthCollection $collection): void
     {
         /** @var string|false $groupConcatMaxLen */
         $groupConcatMaxLen =  $this->connection->fetchOne('SELECT @@group_concat_max_len');
@@ -37,13 +38,13 @@ class MysqlSettingsChecker implements PerformanceCheckerInterface, CheckerInterf
                     'MySQL value group_concat_max_len',
                     (string) $groupConcatMaxLen,
                     'Atleast ' . self::MYSQL_GROUP_CONCAT_MAX_LEN,
-                    $url,
+                    self::DOCUMENTATION_URL,
                 ),
             );
         }
     }
 
-    private function checkSqlMode(HealthCollection $collection, string $url): void
+    private function checkSqlMode(HealthCollection $collection): void
     {
         /** @var string|false $sqlMode */
         $sqlMode = $this->connection->fetchOne('SELECT @@sql_mode');
@@ -54,13 +55,13 @@ class MysqlSettingsChecker implements PerformanceCheckerInterface, CheckerInterf
                     'MySQL value sql_mode',
                     (string) $sqlMode,
                     'Contains ' . self::MYSQL_SQL_MODE_PART,
-                    $url,
+                    self::DOCUMENTATION_URL,
                 ),
             );
         }
     }
 
-    private function checkCheckDefaultEnvironmentSessionVariables(HealthCollection $collection, string $url): void
+    private function checkCheckDefaultEnvironmentSessionVariables(HealthCollection $collection): void
     {
         $setSessionVariables = (bool) EnvironmentHelper::getVariable('SQL_SET_DEFAULT_SESSION_VARIABLES', true);
         if ($setSessionVariables) {
@@ -70,7 +71,7 @@ class MysqlSettingsChecker implements PerformanceCheckerInterface, CheckerInterf
                     'MySQL session vars are set on each connect',
                     'enabled',
                     'disabled',
-                    $url,
+                    self::DOCUMENTATION_URL,
                 ),
             );
         }
