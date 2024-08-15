@@ -27,7 +27,7 @@ class LoggerLevelChecker implements PerformanceCheckerInterface, CheckerInterfac
 
     public function collect(HealthCollection $collection): void
     {
-        if (!$this->businessEventHandlerLevel->isHigherThan(Level::Warning)) {
+        if ($this->businessEventHandlerLevel->isLowerThan(Level::Warning)) {
             $collection->add(SettingsResult::warning(
                 'business_logger',
                 'BusinessEventHandler logging',
