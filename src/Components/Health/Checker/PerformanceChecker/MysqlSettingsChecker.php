@@ -37,7 +37,7 @@ class MysqlSettingsChecker implements PerformanceCheckerInterface, CheckerInterf
                     'sql_group_concat_max_len',
                     'MySQL value group_concat_max_len',
                     (string) $groupConcatMaxLen,
-                    'Atleast ' . self::MYSQL_GROUP_CONCAT_MAX_LEN,
+                    'min ' . self::MYSQL_GROUP_CONCAT_MAX_LEN,
                     self::DOCUMENTATION_URL,
                 ),
             );
@@ -46,15 +46,14 @@ class MysqlSettingsChecker implements PerformanceCheckerInterface, CheckerInterf
 
     private function checkSqlMode(HealthCollection $collection): void
     {
-        /** @var string|false $sqlMode */
         $sqlMode = $this->connection->fetchOne('SELECT @@sql_mode');
-        if (!$sqlMode || !str_contains($sqlMode, self::MYSQL_SQL_MODE_PART)) {
+        if (\is_string($sqlMode) && \str_contains($sqlMode, self::MYSQL_SQL_MODE_PART)) {
             $collection->add(
                 SettingsResult::error(
                     'sql_mode',
                     'MySQL value sql_mode',
-                    (string) $sqlMode,
-                    'Contains ' . self::MYSQL_SQL_MODE_PART,
+                    $sqlMode,
+                    'No ' . self::MYSQL_SQL_MODE_PART,
                     self::DOCUMENTATION_URL,
                 ),
             );
