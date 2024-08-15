@@ -109,7 +109,7 @@ class LogController extends AbstractController
 
         foreach ($finder->getIterator() as $file) {
             $files[] = [
-                'name' => $file->getFilename(),
+                'name' => $file->getRelativePathname(),
             ];
         }
 
