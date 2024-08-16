@@ -41,7 +41,7 @@ class MysqlChecker implements HealthCheckerInterface, CheckerInterface
 
     private function checkMariadbVersion(HealthCollection $collection, string $version): void
     {
-        $minVersion = '10.3';
+        $minVersion = '10.11';
 
         if (version_compare($version, $minVersion, '>=')) {
             $collection->add(SettingsResult::ok(
