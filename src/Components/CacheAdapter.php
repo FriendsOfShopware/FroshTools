@@ -36,7 +36,7 @@ class CacheAdapter
         switch (true) {
             case $this->adapter instanceof RedisAdapter:
             case $this->adapter instanceof RedisTagAwareAdapter:
-                return $this->getRedis($this->adapter)->info()['used_memory'];
+                return $this->getRedis()->info()['used_memory'];
             case $this->adapter instanceof FilesystemAdapter:
                 return CacheHelper::getSize($this->getPathFromFilesystemAdapter($this->adapter));
             case $this->adapter instanceof ArrayAdapter:
@@ -57,7 +57,7 @@ class CacheAdapter
         switch (true) {
             case $this->adapter instanceof RedisAdapter:
             case $this->adapter instanceof RedisTagAwareAdapter:
-                $info = $this->getRedis($this->adapter)->info();
+                $info = $this->getRedis()->info();
                 if ($info['maxmemory'] === 0) {
                     return -1;
                 }
@@ -84,7 +84,7 @@ class CacheAdapter
             case $this->adapter instanceof RedisAdapter:
             case $this->adapter instanceof RedisTagAwareAdapter:
                 try {
-                    $this->getRedis($this->adapter)->flushDB();
+                    $this->getRedis()->flushDB();
                 } catch (\Exception) {
                     $this->adapter->clear();
                 }
@@ -100,14 +100,28 @@ class CacheAdapter
     public function getType(): string
     {
         return match (true) {
-            $this->adapter instanceof RedisAdapter, => self::TYPE_REDIS . ' ' . $this->getRedis($this->adapter)->info()['redis_version'],
-            $this->adapter instanceof RedisTagAwareAdapter => self::TYPE_REDIS_TAG_AWARE . ' ' . $this->getRedis($this->adapter)->info()['redis_version'],
+            $this->adapter instanceof RedisAdapter, => self::TYPE_REDIS . ' ' . $this->getRedis()->info()['redis_version'],
+            $this->adapter instanceof RedisTagAwareAdapter => self::TYPE_REDIS_TAG_AWARE . ' ' . $this->getRedis()->info()['redis_version'],
             $this->adapter instanceof FilesystemAdapter => self::TYPE_FILESYSTEM,
             $this->adapter instanceof ArrayAdapter => self::TYPE_ARRAY,
             $this->adapter instanceof PhpFilesAdapter => self::TYPE_PHP_FILES,
             $this->adapter instanceof ApcuAdapter => self::TYPE_APCU,
             default => '',
         };
+    }
+
+    public function getRedis(): \Redis
+    {
+        $adapter = $this->adapter;
+
+        if ($adapter instanceof RedisTagAwareAdapter) {
+            $redisProxyGetter = \Closure::bind(fn() => $adapter->redis, $adapter, RedisTagAwareAdapter::class);
+        } else {
+            // @phpstan-ignore-next-line
+            $redisProxyGetter = \Closure::bind(fn() => $adapter->redis, $adapter, RedisAdapter::class);
+        }
+
+        return $redisProxyGetter();
     }
 
     private function getCacheAdapter(AdapterInterface $adapter): AdapterInterface
@@ -127,18 +141,6 @@ class CacheAdapter
         }
 
         return $adapter;
-    }
-
-    private function getRedis(AdapterInterface $adapter): \Redis
-    {
-        if ($adapter instanceof RedisTagAwareAdapter) {
-            $redisProxyGetter = \Closure::bind(fn() => $adapter->redis, $adapter, RedisTagAwareAdapter::class);
-        } else {
-            // @phpstan-ignore-next-line
-            $redisProxyGetter = \Closure::bind(fn() => $adapter->redis, $adapter, RedisAdapter::class);
-        }
-
-        return $redisProxyGetter();
     }
 
     private function getPathFromFilesystemAdapter(FilesystemAdapter $adapter): string

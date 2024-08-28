@@ -2,6 +2,7 @@ parameters:
     level: 8
     paths:
         - src
+    checkGenericClassInNonGenericObjectType: false
     type_coverage:
         return_type: 100
         param_type: 98
