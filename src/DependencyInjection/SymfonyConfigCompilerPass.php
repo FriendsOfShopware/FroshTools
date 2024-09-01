@@ -23,5 +23,13 @@ class SymfonyConfigCompilerPass implements CompilerPassInterface
         } else {
             $container->setParameter('frosh_tools.queue_connection', 'unknown://default');
         }
+
+        if (!$container->hasParameter('shopware.cache.cache_compression_method')) {
+            $container->setParameter('shopware.cache.cache_compression_method', false);
+        }
+
+        if (!$container->hasParameter('shopware.cart.compression_method')) {
+            $container->setParameter('shopware.cart.compression_method', false);
+        }
     }
 }
