@@ -43,7 +43,7 @@
         }
     },
     "scripts": {
-        "cs-fix": "docker run --rm -v $(pwd):$(pwd) -w $(pwd) oskarstark/php-cs-fixer-ga --rules @PER-CS2.0,@PER-CS2.0:risky --allow-risky=yes .",
+        "cs-fix": "docker run --rm -v $(pwd):$(pwd) -w $(pwd) oskarstark/php-cs-fixer-ga --rules=@PER-CS2.0,no_unused_imports .",
         "phpstan": "docker run --rm -v $(pwd):/app aragon999/phpstan-shopware:v6.5.6 analyse --level max ."
     }
 }
