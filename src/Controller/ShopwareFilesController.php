@@ -20,6 +20,7 @@ use Symfony\Component\DependencyInjection\Attribute\Autowire;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Routing\Annotation\Route;
+use Symfony\Contracts\HttpClient\HttpClientInterface;
 
 #[AutoconfigureTag('monolog.logger', ['channel' => 'frosh-tools'])]
 #[Route(path: '/api/_action/frosh-tools', defaults: ['_routeScope' => ['api'], '_acl' => ['frosh_tools:read']])]
@@ -46,6 +47,8 @@ class ShopwareFilesController extends AbstractController
         private readonly LoggerInterface $froshToolsLogger,
         private readonly EntityRepository $userRepository,
         private readonly EntityRepository $integrationRepository,
+        #[Autowire(lazy: true)]
+        private readonly HttpClientInterface $httpClient,
     ) {
         $this->isPlatform = !is_dir($this->projectDir . '/vendor/shopware/core') && is_dir($this->projectDir . '/src/Core');
     }
@@ -58,8 +61,8 @@ class ShopwareFilesController extends AbstractController
         }
 
         $url = sprintf('https://swagger.docs.fos.gg/version/%s/Files.xxhsums', $this->shopwareVersion);
-
-        $data = trim((string) @file_get_contents($url));
+        $data = $this->httpClient->request('GET', $url)->getContent(false);
+        $data = trim((string) $data);
 
         if (empty($data)) {
             return new JsonResponse(['error' => 'No file information for this Shopware version']);
@@ -194,7 +197,7 @@ class ShopwareFilesController extends AbstractController
 
     private function getOriginalFileContent(string $name): ?string
     {
-        return @file_get_contents($this->getShopwareUrl($name) . '?raw=true') ?: null;
+        return $this->httpClient->request('GET', $this->getShopwareUrl($name) . '?raw=true')->getContent(false) ?: null;
     }
 
     private function isIgnoredFileHash(string $file): int
