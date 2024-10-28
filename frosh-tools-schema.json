@@ -10,7 +10,7 @@
           "$ref": "#/definitions/frosh_tools"
         }
       },
-      "additionalProperties": false,
+      "additionalProperties": false
     },
     "frosh_tools": {
       "type": "object",
