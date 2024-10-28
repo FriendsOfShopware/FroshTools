@@ -69,11 +69,6 @@ class QueueController extends AbstractController
 
             $transport = $this->transportLocator->get($transportName);
             if (!$transport instanceof MessageCountAwareInterface) {
-                $queueData[] = [
-                    'name' => $transportName,
-                    'size' => 'unknown',
-                ];
-
                 continue;
             }
 
