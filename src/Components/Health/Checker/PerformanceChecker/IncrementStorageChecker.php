@@ -12,9 +12,9 @@ use Symfony\Component\DependencyInjection\Attribute\Autowire;
 class IncrementStorageChecker implements PerformanceCheckerInterface, CheckerInterface
 {
     public function __construct(
-        #[Autowire('%shopware.increment.user_activity.type%')]
+        #[Autowire(param: 'shopware.increment.user_activity.type')]
         private readonly string $userActivity,
-        #[Autowire('%shopware.increment.message_queue.type%')]
+        #[Autowire(param: 'shopware.increment.message_queue.type')]
         private readonly string $queueActivity,
     ) {}
 

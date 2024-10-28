@@ -12,7 +12,7 @@ use Symfony\Component\DependencyInjection\Attribute\Autowire;
 class QueueConnectionChecker implements PerformanceCheckerInterface, CheckerInterface
 {
     public function __construct(
-        #[Autowire('%frosh_tools.queue_connection%')]
+        #[Autowire(param: 'frosh_tools.queue_connection')]
         protected string $connection,
     ) {}
 

@@ -9,13 +9,12 @@ use Symfony\Component\DependencyInjection\Attribute\Autowire;
 use Symfony\Component\HttpKernel\Event\ResponseEvent;
 
 #[AutoconfigureTag('kernel.event_listener')]
-final class AdminInfoSubscriberEventListener
+final readonly class AdminInfoSubscriberEventListener
 {
     public function __construct(
-        #[Autowire('%frosh_tools.elasticsearch.enabled%')]
-        private readonly bool $elasticsearchEnabled,
+        #[Autowire(param: 'frosh_tools.elasticsearch.enabled')]
+        private bool $elasticsearchEnabled,
     ) {}
-
     public function __invoke(ResponseEvent $event): void
     {
         if ($event->getRequest()->attributes->get('_route') !== 'api.info.config') {

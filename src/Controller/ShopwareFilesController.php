@@ -19,7 +19,7 @@ use Symfony\Component\DependencyInjection\Attribute\AutoconfigureTag;
 use Symfony\Component\DependencyInjection\Attribute\Autowire;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
-use Symfony\Component\Routing\Annotation\Route;
+use Symfony\Component\Routing\Attribute\Route;
 use Symfony\Contracts\HttpClient\HttpClientInterface;
 
 #[AutoconfigureTag('monolog.logger', ['channel' => 'frosh-tools'])]
@@ -38,11 +38,11 @@ class ShopwareFilesController extends AbstractController
      * @param EntityRepository<IntegrationCollection> $integrationRepository
      */
     public function __construct(
-        #[Autowire('%kernel.shopware_version%')]
+        #[Autowire(param: 'kernel.shopware_version')]
         private readonly string $shopwareVersion,
-        #[Autowire('%kernel.project_dir%')]
+        #[Autowire(param: 'kernel.project_dir')]
         private readonly string $projectDir,
-        #[Autowire('%frosh_tools.file_checker.exclude_files%')]
+        #[Autowire(param: 'frosh_tools.file_checker.exclude_files')]
         private readonly array $projectExcludeFiles,
         private readonly LoggerInterface $froshToolsLogger,
         private readonly EntityRepository $userRepository,

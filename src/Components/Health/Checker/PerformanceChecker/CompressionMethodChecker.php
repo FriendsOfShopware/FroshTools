@@ -12,15 +12,15 @@ class CompressionMethodChecker implements PerformanceCheckerInterface, CheckerIn
     public const DOCUMENTATION_URL = 'https://developer.shopware.com/docs/guides/hosting/performance/performance-tweaks.html#using-zstd-instead-of-gzip-for-compression';
 
     public function __construct(
-        #[Autowire('%kernel.shopware_version%')]
+        #[Autowire(param: 'kernel.shopware_version')]
         public readonly string $shopwareVersion,
-        #[Autowire('%shopware.cache.cache_compression%')]
+        #[Autowire(param: 'shopware.cache.cache_compression')]
         public readonly bool $cacheCompressionEnabled,
-        #[Autowire('%shopware.cache.cache_compression_method%')]
+        #[Autowire(param: 'shopware.cache.cache_compression_method')]
         public readonly string $cacheCompressionMethod,
-        #[Autowire('%shopware.cart.compress%')]
+        #[Autowire(param: 'shopware.cart.compress')]
         public readonly bool $cartCompressionEnabled,
-        #[Autowire('%shopware.cart.compression_method%')]
+        #[Autowire(param: 'shopware.cart.compression_method')]
         public readonly string $cartCompressionMethod,
     ) {}
 

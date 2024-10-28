@@ -13,7 +13,7 @@ use Symfony\Component\DependencyInjection\Attribute\Autowire;
 class FixCacheIdSetChecker implements PerformanceCheckerInterface, CheckerInterface
 {
     public function __construct(
-        #[Autowire('%kernel.shopware_version%')]
+        #[Autowire(param: 'kernel.shopware_version')]
         protected string $shopwareVersion,
     ) {}
 
