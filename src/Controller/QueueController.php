@@ -13,7 +13,7 @@ use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Messenger\Transport\Receiver\MessageCountAwareInterface;
 use Symfony\Component\Messenger\Transport\Receiver\ReceiverInterface;
-use Symfony\Component\Routing\Annotation\Route;
+use Symfony\Component\Routing\Attribute\Route;
 
 #[Route(path: '/api/_action/frosh-tools', defaults: ['_routeScope' => ['api'], '_acl' => ['frosh_tools:read']])]
 class QueueController extends AbstractController
@@ -69,11 +69,6 @@ class QueueController extends AbstractController
 
             $transport = $this->transportLocator->get($transportName);
             if (!$transport instanceof MessageCountAwareInterface) {
-                $queueData[] = [
-                    'name' => $transportName,
-                    'size' => 'unknown',
-                ];
-
                 continue;
             }
 

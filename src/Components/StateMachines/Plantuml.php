@@ -8,11 +8,11 @@ use Shopware\Core\System\StateMachine\StateMachineEntity;
 use Twig\Environment;
 use Twig\Loader\FilesystemLoader;
 
-final class Plantuml implements ExportInterface
+final readonly class Plantuml implements ExportInterface
 {
     private const DEFAULT_PATH = __DIR__ . '/../../Resources/views/administration/plantuml';
 
-    private readonly Environment $twig;
+    private Environment $twig;
 
     public function __construct()
     {

@@ -10,13 +10,13 @@ use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\DependencyInjection\Attribute\Autowire;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Response;
-use Symfony\Component\Routing\Annotation\Route;
+use Symfony\Component\Routing\Attribute\Route;
 
 #[Route(path: '/api/_action/frosh-tools', defaults: ['_routeScope' => ['api'], '_acl' => ['frosh_tools:read']])]
 class CacheController extends AbstractController
 {
     public function __construct(
-        #[Autowire('%kernel.cache_dir%')]
+        #[Autowire(param: 'kernel.cache_dir')]
         private readonly string $cacheDir,
         private readonly CacheRegistry $cacheRegistry,
     ) {}

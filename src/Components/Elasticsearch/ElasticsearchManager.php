@@ -19,7 +19,7 @@ class ElasticsearchManager
 {
     public function __construct(
         private readonly Client $client,
-        #[Autowire('%frosh_tools.elasticsearch.enabled%')]
+        #[Autowire(param: 'frosh_tools.elasticsearch.enabled')]
         private readonly bool $enabled,
         private readonly ElasticsearchIndexer $indexer,
         private readonly MessageBusInterface $messageBus,

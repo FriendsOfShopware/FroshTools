@@ -21,7 +21,7 @@ class UpdateComposerPluginsCommand extends Command
     private readonly Application $application;
 
     public function __construct(
-        #[Autowire('%kernel.project_dir%')]
+        #[Autowire(param: 'kernel.project_dir')]
         private readonly string $projectDir,
         private readonly KernelPluginLoader $pluginLoader,
     ) {

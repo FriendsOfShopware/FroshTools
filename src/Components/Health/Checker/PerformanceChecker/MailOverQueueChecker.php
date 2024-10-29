@@ -12,7 +12,7 @@ use Symfony\Component\DependencyInjection\Attribute\Autowire;
 class MailOverQueueChecker implements PerformanceCheckerInterface, CheckerInterface
 {
     public function __construct(
-        #[Autowire('%frosh_tools.mail_over_queue%')]
+        #[Autowire(param: 'frosh_tools.mail_over_queue')]
         protected bool $mailerIsOverQueue,
     ) {}
 

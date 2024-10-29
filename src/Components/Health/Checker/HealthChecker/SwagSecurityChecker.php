@@ -22,7 +22,7 @@ class SwagSecurityChecker implements HealthCheckerInterface, CheckerInterface
     public function __construct(
         private readonly Connection $connection,
         private readonly KernelInterface $kernel,
-        #[Autowire('%kernel.shopware_version%')]
+        #[Autowire(param: 'kernel.shopware_version')]
         private readonly string $shopwareVersion,
         private readonly CacheInterface $cacheObject,
         #[Autowire(lazy: true)]
