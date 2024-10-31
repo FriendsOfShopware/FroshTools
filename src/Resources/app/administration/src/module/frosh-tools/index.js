@@ -28,7 +28,7 @@ Shopware.Module.register('frosh-tools', {
                     path: 'index',
                     meta: {
                         privilege: 'frosh_tools:read',
-                        parentPath: 'frosh.tools.index.index'
+                        parentPath: 'sw.settings.index.plugins'
                     }
                 },
                 cache: {
@@ -36,7 +36,7 @@ Shopware.Module.register('frosh-tools', {
                     path: 'cache',
                     meta: {
                         privilege: 'frosh_tools:read',
-                        parentPath: 'frosh.tools.index.index'
+                        parentPath: 'sw.settings.index.plugins'
                     }
                 },
                 queue: {
@@ -44,7 +44,7 @@ Shopware.Module.register('frosh-tools', {
                     path: 'queue',
                     meta: {
                         privilege: 'frosh_tools:read',
-                        parentPath: 'frosh.tools.index.index'
+                        parentPath: 'sw.settings.index.plugins'
                     }
                 },
                 scheduled: {
@@ -52,7 +52,7 @@ Shopware.Module.register('frosh-tools', {
                     path: 'scheduled',
                     meta: {
                         privilege: 'frosh_tools:read',
-                        parentPath: 'frosh.tools.index.index'
+                        parentPath: 'sw.settings.index.plugins'
                     }
                 },
                 elasticsearch: {
@@ -60,7 +60,7 @@ Shopware.Module.register('frosh-tools', {
                     path: 'elasticsearch',
                     meta: {
                         privilege: 'frosh_tools:read',
-                        parentPath: 'frosh.tools.index.index'
+                        parentPath: 'sw.settings.index.plugins'
                     }
                 },
                 logs: {
@@ -68,7 +68,7 @@ Shopware.Module.register('frosh-tools', {
                     path: 'logs',
                     meta: {
                         privilege: 'frosh_tools:read',
-                        parentPath: 'frosh.tools.index.index'
+                        parentPath: 'sw.settings.index.plugins'
                     }
                 },
                 files: {
@@ -76,7 +76,7 @@ Shopware.Module.register('frosh-tools', {
                     path: 'files',
                     meta: {
                         privilege: 'frosh_tools:read',
-                        parentPath: 'frosh.tools.index.index'
+                        parentPath: 'sw.settings.index.plugins'
                     }
                 },
                 statemachines: {
@@ -84,7 +84,7 @@ Shopware.Module.register('frosh-tools', {
                     path: 'state-machines',
                     meta: {
                         privilege: 'frosh_tools:read',
-                        parentPath: 'frosh.tools.index.index'
+                        parentPath: 'sw.settings.index.plugins'
                     }
                 },
             }
