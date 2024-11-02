@@ -1,0 +1,10 @@
+# 2.4.0
+- [chore: prepare release](/4d3d6a8)
+- [fix broken back button in module (#285)](/731a0bd)
+- [ci: fix store release](/8337415)
+- [Feat/ignore unknown queue counts (#284)](/0c877e3)
+- [Update frosh-tools-schema.json (#283)](/b349658)
+- [Use Symfony HttpClient (#281)](/5484056)
+- [Add compression checker for cart and cache (#277)](/2342cfc)
+- [Adjust composer cs-fix script to CI cs check (#278)](/78a686d)
+- [Add "App URL external check" checker (#276)](/4897e27)
