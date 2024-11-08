@@ -13,5 +13,5 @@
 			"onAutoForward": "notify"
 		}
 	},
-	"onCreateCommand": "wait-for-mysql && php bin/console plugin:refresh && php bin/console plugin:install --activate FroshTools"
+	"onCreateCommand": "install-activate-plugin"
 }
