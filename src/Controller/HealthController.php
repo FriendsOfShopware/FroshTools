@@ -8,7 +8,7 @@ use Frosh\Tools\Components\Health\Checker\CheckerInterface;
 use Frosh\Tools\Components\Health\HealthCollection;
 use Frosh\Tools\Components\Health\PerformanceCollection;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
-use Symfony\Component\DependencyInjection\Attribute\TaggedIterator;
+use Symfony\Component\DependencyInjection\Attribute\AutowireIterator;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\Routing\Attribute\Route;
 
@@ -20,9 +20,9 @@ class HealthController extends AbstractController
      * @param CheckerInterface[] $performanceCheckers
      */
     public function __construct(
-        #[TaggedIterator('frosh_tools.health_checker')]
+        #[AutowireIterator('frosh_tools.health_checker')]
         private readonly iterable $healthCheckers,
-        #[TaggedIterator('frosh_tools.performance_checker')]
+        #[AutowireIterator('frosh_tools.performance_checker')]
         private readonly iterable $performanceCheckers,
     ) {}
 
