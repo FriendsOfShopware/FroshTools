@@ -31,5 +31,17 @@ class SymfonyConfigCompilerPass implements CompilerPassInterface
         if (!$container->hasParameter('shopware.cart.compression_method')) {
             $container->setParameter('shopware.cart.compression_method', false);
         }
+
+        if (!$container->hasParameter('shopware.cache.tagging.each_config')) {
+            $container->setParameter('shopware.cache.tagging.each_config', true);
+        }
+
+        if (!$container->hasParameter('shopware.cache.tagging.each_snippet')) {
+            $container->setParameter('shopware.cache.tagging.each_snippet', true);
+        }
+
+        if (!$container->hasParameter('shopware.cache.tagging.each_theme_config')) {
+            $container->setParameter('shopware.cache.tagging.each_theme_config', true);
+        }
     }
 }
