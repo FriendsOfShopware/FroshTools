@@ -109,15 +109,15 @@ Component.register('frosh-tools-tab-scheduled', {
 
             try {
                 this.createNotificationInfo({
-                    message: this.$tc('frosh-tools.scheduledTaskScheduleStarted', 0, {'name': item.name})
+                    message: this.$t('frosh-tools.scheduledTaskScheduleStarted', {'name': item.name})
                 })
                 await this.froshToolsService.scheduleScheduledTask(item.id, immediately);
                 this.createNotificationSuccess({
-                    message: this.$tc('frosh-tools.scheduledTaskScheduleSucceed', 0, {'name': item.name})
+                    message: this.$t('frosh-tools.scheduledTaskScheduleSucceed', {'name': item.name})
                 })
             } catch (e) {
                 this.createNotificationError({
-                    message: this.$tc('frosh-tools.scheduledTaskScheduleFailed', 0, {'name': item.name})
+                    message: this.$t('frosh-tools.scheduledTaskScheduleFailed', {'name': item.name})
                 })
 
                 this.taskError = e.response.data;
