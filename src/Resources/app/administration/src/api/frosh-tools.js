@@ -66,6 +66,21 @@ class FroshTools extends ApiService {
         });
     }
 
+    scheduleScheduledTask(id, immediately = false) {
+        const apiRoute = `${this.getApiBasePath()}/scheduled-task/schedule/${id}`;
+        return this.httpClient.post(
+            apiRoute,
+            {
+                'immediately': immediately
+            },
+            {
+                headers: this.getBasicHeaders()
+            }
+        ).then((response) => {
+            return ApiService.handleResponse(response);
+        });
+    }
+
     scheduledTasksRegister() {
         const apiRoute = `${this.getApiBasePath()}/scheduled-tasks/register`;
         return this.httpClient.post(

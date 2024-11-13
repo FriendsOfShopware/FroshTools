@@ -14,6 +14,7 @@ use Shopware\Core\Framework\MessageQueue\ScheduledTask\ScheduledTaskEntity;
 use Shopware\Core\Framework\MessageQueue\ScheduledTask\Scheduler\TaskRunner;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
+use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
 
@@ -48,6 +49,30 @@ class ScheduledTaskController extends AbstractController
         ], $context);
 
         $this->taskRunner->runSingleTask($scheduledTask->getName(), $context);
+
+        return new JsonResponse(null, Response::HTTP_NO_CONTENT);
+    }
+
+    #[Route(path: '/scheduled-task/schedule/{id}', name: 'api.frosh.tools.scheduled.task.schedule', methods: ['POST'])]
+    public function scheduleTask(Request $request, string $id, Context $context): JsonResponse
+    {
+        $scheduledTask = $this->fetchTask($id, $context);
+
+        if (!$scheduledTask instanceof ScheduledTaskEntity) {
+            return new JsonResponse(null, Response::HTTP_NOT_FOUND);
+        }
+
+        $data = [
+            'id' => $id,
+            'status' => ScheduledTaskDefinition::STATUS_SCHEDULED,
+        ];
+
+        $immediately = $request->request->has('immediately') && $request->request->get('immediately', false);
+        if ($immediately) {
+            $data['nextExecutionTime'] = new \DateTime();
+        }
+
+        $this->scheduledTaskRepository->update([$data], $context);
 
         return new JsonResponse(null, Response::HTTP_NO_CONTENT);
     }
