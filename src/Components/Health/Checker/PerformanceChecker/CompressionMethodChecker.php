@@ -38,7 +38,7 @@ class CompressionMethodChecker implements PerformanceCheckerInterface, CheckerIn
     {
         if (!$enabled) {
             $collection->add(
-                SettingsResult::warning(
+                SettingsResult::info(
                     strtolower($functionality) . '-compress',
                     $functionality . ' compression',
                     'disabled',
@@ -52,7 +52,7 @@ class CompressionMethodChecker implements PerformanceCheckerInterface, CheckerIn
 
         if ($method === 'gzip') {
             $collection->add(
-                SettingsResult::warning(
+                SettingsResult::info(
                     strtolower($functionality) . '-compression-method',
                     $functionality . ' compression method',
                     'gzip',
