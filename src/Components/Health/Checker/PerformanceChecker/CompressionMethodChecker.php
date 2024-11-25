@@ -37,16 +37,6 @@ class CompressionMethodChecker implements PerformanceCheckerInterface, CheckerIn
     private function checkCompression(HealthCollection $collection, string $functionality, bool $enabled, string $method): void
     {
         if (!$enabled) {
-            $collection->add(
-                SettingsResult::info(
-                    strtolower($functionality) . '-compress',
-                    $functionality . ' compression',
-                    'disabled',
-                    'enabled',
-                    self::DOCUMENTATION_URL,
-                ),
-            );
-
             return;
         }
 
