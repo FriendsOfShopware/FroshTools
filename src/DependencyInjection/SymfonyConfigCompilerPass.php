@@ -43,5 +43,9 @@ class SymfonyConfigCompilerPass implements CompilerPassInterface
         if (!$container->hasParameter('shopware.cache.tagging.each_theme_config')) {
             $container->setParameter('shopware.cache.tagging.each_theme_config', true);
         }
+
+        if (!$container->hasParameter('framework.secrets.enabled')) {
+            $container->setParameter('framework.secrets.enabled', true);
+        }
     }
 }
