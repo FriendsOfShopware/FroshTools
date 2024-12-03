@@ -7,6 +7,7 @@ namespace Frosh\Tools\Components\Health\Checker\PerformanceChecker;
 use Frosh\Tools\Components\Health\Checker\CheckerInterface;
 use Frosh\Tools\Components\Health\HealthCollection;
 use Frosh\Tools\Components\Health\SettingsResult;
+use Symfony\Bundle\FrameworkBundle\Secrets\AbstractVault;
 use Symfony\Component\DependencyInjection\Attribute\Autowire;
 
 class DisableSymfonySecretsChecker implements PerformanceCheckerInterface, CheckerInterface
@@ -14,11 +15,15 @@ class DisableSymfonySecretsChecker implements PerformanceCheckerInterface, Check
     public function __construct(
         #[Autowire(param: 'framework.secrets.enabled')]
         private readonly bool $secretsEnabled,
+        #[Autowire(service: 'secrets.vault')]
+        private readonly AbstractVault $vault,
+        #[Autowire(service: 'secrets.local_vault')]
+        private readonly ?AbstractVault $localVault = null,
     ) {}
 
     public function collect(HealthCollection $collection): void
     {
-        if ($this->secretsEnabled) {
+        if ($this->secretsEnabled && !$this->areSecretsInUse()) {
             $collection->add(
                 SettingsResult::info(
                     'symfony-secrets',
@@ -29,5 +34,10 @@ class DisableSymfonySecretsChecker implements PerformanceCheckerInterface, Check
                 ),
             );
         }
+    }
+
+    private function areSecretsInUse(): bool
+    {
+        return count($this->vault->list()) > 0 || ($this->localVault instanceof AbstractVault && count($this->localVault->list()) > 0);
     }
 }
