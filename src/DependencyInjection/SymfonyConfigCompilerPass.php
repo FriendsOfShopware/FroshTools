@@ -31,7 +31,7 @@ class SymfonyConfigCompilerPass implements CompilerPassInterface
             'shopware.cache.tagging.each_snippet' => true,
             'shopware.cache.tagging.each_theme_config' => true,
             'shopware.cart.compression_method' => false,
-            'shopware.product_stream.indexing' => true,
+            'shopware.product_stream.indexing' => false,
         ];
 
         foreach ($defaultParameters as $parameter => $value) {
