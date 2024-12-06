@@ -26,7 +26,7 @@ class DoctrineMessengerAutoSetupChecker implements PerformanceCheckerInterface, 
 
     public function collect(HealthCollection $collection): void
     {
-        if ($this->isAutoSetupEnabled($this->messageTransportDsn) || $this->isAutoSetupEnabled($this->messageTransportDsnLowPriority) || $this->isAutoSetupEnabled($this->messageTransportDsnFailure) ) {
+        if ($this->isAutoSetupEnabled($this->messageTransportDsn) || $this->isAutoSetupEnabled($this->messageTransportDsnLowPriority) || $this->isAutoSetupEnabled($this->messageTransportDsnFailure)) {
             $collection->add(
                 SettingsResult::info(
                     'doctrine-messenger-auto-setup',
