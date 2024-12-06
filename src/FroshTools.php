@@ -23,7 +23,7 @@ class FroshTools extends Plugin
 
 
 
-    
+
 
     protected function createContainerExtension(): FroshToolsExtension
     {
