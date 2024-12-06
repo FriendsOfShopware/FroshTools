@@ -21,6 +21,10 @@ class FroshTools extends Plugin
         $container->addCompilerPass(new DisableElasticsearchCompilerPass());
     }
 
+
+
+    
+
     protected function createContainerExtension(): FroshToolsExtension
     {
         return new FroshToolsExtension();
