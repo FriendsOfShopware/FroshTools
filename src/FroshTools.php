@@ -1,4 +1,6 @@
-<?php declare(strict_types=1);
+<?php
+
+declare(strict_types=1);
 
 namespace Frosh\Tools;
 
@@ -11,7 +13,8 @@ use Symfony\Component\DependencyInjection\ContainerBuilder;
 
 class FroshTools extends Plugin
 {
-    public function build(ContainerBuilder $container): void{
+    public function build(ContainerBuilder $container): void
+    {
         parent::build($container);
         $container->addCompilerPass(new CacheCompilerPass());
         $container->addCompilerPass(new SymfonyConfigCompilerPass());
