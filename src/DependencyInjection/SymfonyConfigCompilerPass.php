@@ -24,28 +24,20 @@ class SymfonyConfigCompilerPass implements CompilerPassInterface
             $container->setParameter('frosh_tools.queue_connection', 'unknown://default');
         }
 
-        if (!$container->hasParameter('shopware.cache.cache_compression_method')) {
-            $container->setParameter('shopware.cache.cache_compression_method', false);
-        }
+        $defaultParameters = [
+            'framework.secrets.enabled' => true,
+            'shopware.cache.cache_compression_method' => false,
+            'shopware.cache.tagging.each_config' => true,
+            'shopware.cache.tagging.each_snippet' => true,
+            'shopware.cache.tagging.each_theme_config' => true,
+            'shopware.cart.compression_method' => false,
+            'shopware.product_stream.indexing' => false,
+        ];
 
-        if (!$container->hasParameter('shopware.cart.compression_method')) {
-            $container->setParameter('shopware.cart.compression_method', false);
-        }
-
-        if (!$container->hasParameter('shopware.cache.tagging.each_config')) {
-            $container->setParameter('shopware.cache.tagging.each_config', true);
-        }
-
-        if (!$container->hasParameter('shopware.cache.tagging.each_snippet')) {
-            $container->setParameter('shopware.cache.tagging.each_snippet', true);
-        }
-
-        if (!$container->hasParameter('shopware.cache.tagging.each_theme_config')) {
-            $container->setParameter('shopware.cache.tagging.each_theme_config', true);
-        }
-
-        if (!$container->hasParameter('framework.secrets.enabled')) {
-            $container->setParameter('framework.secrets.enabled', true);
+        foreach ($defaultParameters as $parameter => $value) {
+            if (!$container->hasParameter($parameter)) {
+                $container->setParameter($parameter, $value);
+            }
         }
     }
 }
