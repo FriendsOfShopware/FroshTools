@@ -2,6 +2,9 @@
 
 This plugin contains some utility functions for managing a Shopware 6 shop.
 
+aaa
+
+
 The current feature set consists of:
 
 - **System Status**
