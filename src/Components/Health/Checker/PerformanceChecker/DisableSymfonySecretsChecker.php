@@ -13,17 +13,13 @@ use Symfony\Component\DependencyInjection\Attribute\Autowire;
 class DisableSymfonySecretsChecker implements PerformanceCheckerInterface, CheckerInterface
 {
     public function __construct(
-        #[Autowire(param: 'framework.secrets.enabled')]
-        private readonly bool $secretsEnabled,
         #[Autowire(service: 'secrets.vault')]
-        private readonly ?AbstractVault $vault = null,
-        #[Autowire(service: 'secrets.local_vault')]
-        private readonly ?AbstractVault $localVault = null,
+        private readonly ?AbstractVault $vault = null
     ) {}
 
     public function collect(HealthCollection $collection): void
     {
-        if ($this->secretsEnabled && !$this->areSecretsInUse()) {
+        if ($this->vault) {
             $collection->add(
                 SettingsResult::info(
                     'symfony-secrets',
@@ -34,14 +30,5 @@ class DisableSymfonySecretsChecker implements PerformanceCheckerInterface, Check
                 ),
             );
         }
-    }
-
-    private function areSecretsInUse(): bool
-    {
-        if ($this->vault === null) {
-            return false;
-        }
-
-        return count($this->vault->list()) > 0 || ($this->localVault instanceof AbstractVault && count($this->localVault->list()) > 0);
     }
 }
