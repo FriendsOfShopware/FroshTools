@@ -7,15 +7,11 @@ namespace Frosh\Tools\Components\Health\Checker\PerformanceChecker;
 use Frosh\Tools\Components\Health\Checker\CheckerInterface;
 use Frosh\Tools\Components\Health\HealthCollection;
 use Frosh\Tools\Components\Health\SettingsResult;
-use Shopware\Core\Framework\Adapter\Doctrine\Messenger\DoctrineTransportFactory;
 use Symfony\Component\DependencyInjection\Attribute\Autowire;
-use Symfony\Component\Messenger\Bridge\Doctrine\Transport\Connection;
 
-class DoctrineMessengerAutoSetupChecker implements PerformanceCheckerInterface, CheckerInterface
+class MessengerAutoSetupChecker implements PerformanceCheckerInterface, CheckerInterface
 {
     public function __construct(
-        #[Autowire(service: 'messenger.transport.doctrine.factory')]
-        private readonly DoctrineTransportFactory $doctrineTransportFactory,
         #[Autowire(param: 'env(MESSENGER_TRANSPORT_DSN)')]
         private readonly string $messageTransportDsn,
         #[Autowire(param: 'env(MESSENGER_TRANSPORT_LOW_PRIORITY_DSN)')]
@@ -29,8 +25,8 @@ class DoctrineMessengerAutoSetupChecker implements PerformanceCheckerInterface, 
         if ($this->isAutoSetupEnabled($this->messageTransportDsn) || $this->isAutoSetupEnabled($this->messageTransportDsnLowPriority) || $this->isAutoSetupEnabled($this->messageTransportDsnFailure)) {
             $collection->add(
                 SettingsResult::info(
-                    'doctrine-messenger-auto-setup',
-                    'Doctrine messenger auto_setup',
+                    'messenger-auto-setup',
+                    'Messenger auto_setup',
                     'enabled',
                     'disabled',
                     'https://developer.shopware.com/docs/guides/hosting/performance/performance-tweaks.html#disable-auto-setup',
@@ -41,12 +37,18 @@ class DoctrineMessengerAutoSetupChecker implements PerformanceCheckerInterface, 
 
     private function isAutoSetupEnabled(string $messageTransportDsn): bool
     {
-        if (!$this->doctrineTransportFactory->supports($messageTransportDsn, [])) {
+        $params = \parse_url($messageTransportDsn);
+        if ($params === false) {
             return false;
         }
 
-        $configuration = Connection::buildConfiguration($messageTransportDsn);
+        $query = [];
+        if (isset($params['query'])) {
+            \parse_str($params['query'], $query);
+        }
 
-        return !isset($configuration['auto_setup']) || $configuration['auto_setup'] !== false;
+        $query += ['auto_setup' => true];
+
+        return filter_var($query['auto_setup'], \FILTER_VALIDATE_BOOL);
     }
 }
