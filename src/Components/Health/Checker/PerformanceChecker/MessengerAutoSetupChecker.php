@@ -37,15 +37,19 @@ class MessengerAutoSetupChecker implements PerformanceCheckerInterface, CheckerI
 
     private function isAutoSetupEnabled(string $messageTransportDsn): bool
     {
-        $params = \parse_url($messageTransportDsn);
+        $queryParams = \parse_url($messageTransportDsn, \PHP_URL_QUERY);
+        
+        // Messenger DSN is invalid. Therefore we can't really check
         if ($params === false) {
             return false;
         }
+        
+        if ($params === null){
+        	return true;
+        }
 
         $query = [];
-        if (isset($params['query'])) {
-            \parse_str($params['query'], $query);
-        }
+        \parse_str($queryParams, $query);
 
         $query += ['auto_setup' => true];
 
