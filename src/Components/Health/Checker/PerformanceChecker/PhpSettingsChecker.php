@@ -39,7 +39,7 @@ class PhpSettingsChecker implements PerformanceCheckerInterface, CheckerInterfac
     private function checkEnableFileOverride(HealthCollection $collection, string $url): void
     {
         $currentValue = $this->iniGetFailover('opcache.enable_file_override');
-        if ($currentValue !== '1') {
+        if (!\filter_var($currentValue, \FILTER_VALIDATE_BOOL)) {
             $collection->add(
                 SettingsResult::warning(
                     'php.opcache.enable_file_override',
@@ -71,7 +71,7 @@ class PhpSettingsChecker implements PerformanceCheckerInterface, CheckerInterfac
     private function checkZendDetectUnicode(HealthCollection $collection, string $url): void
     {
         $currentValue = $this->iniGetFailover('zend.detect_unicode');
-        if ($currentValue !== '0') {
+        if (\filter_var($currentValue, \FILTER_VALIDATE_BOOL)) {
             $collection->add(
                 SettingsResult::warning(
                     'php.zend.detect_unicode',
