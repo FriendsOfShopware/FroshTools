@@ -130,7 +130,7 @@ class MonitorCommand extends Command
         $criteria->addFilter(
             new RangeFilter(
                 'nextExecutionTime',
-                ['lte' => $date->format(\DATE_ATOM)]
+                ['lte' => $date->format('Y-m-d H:i:s.v')]
             )
         );
         $criteria->addFilter(new NotFilter(
