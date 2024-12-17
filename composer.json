@@ -1,6 +1,6 @@
 {
     "name": "frosh/tools",
-    "version": "1.3.4",
+    "version": "1.3.5",
     "description": "Provides some basic things for managing the Shopware Installation",
     "type": "shopware-platform-plugin",
     "license": "MIT",
