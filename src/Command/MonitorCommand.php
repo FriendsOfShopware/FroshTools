@@ -7,6 +7,7 @@ namespace Frosh\Tools\Command;
 use Doctrine\DBAL\Connection;
 use Shopware\Core\Content\Mail\Service\AbstractMailService;
 use Shopware\Core\Content\Mail\Service\MailService;
+use Shopware\Core\Defaults;
 use Shopware\Core\Framework\Context;
 use Shopware\Core\Framework\DataAbstractionLayer\EntityRepository;
 use Shopware\Core\Framework\DataAbstractionLayer\Search\Criteria;
@@ -130,7 +131,7 @@ class MonitorCommand extends Command
         $criteria->addFilter(
             new RangeFilter(
                 'nextExecutionTime',
-                ['lte' => $date->format('Y-m-d H:i:s.v')]
+                ['lte' => $date->format(Defaults::STORAGE_DATE_TIME_FORMAT)]
             )
         );
         $criteria->addFilter(new NotFilter(
