@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace Frosh\Tools\Command;
 
-use DateTimeZone;
 use Doctrine\DBAL\Connection;
 use Shopware\Core\Content\Mail\Service\AbstractMailService;
 use Shopware\Core\Content\Mail\Service\MailService;
@@ -124,7 +123,7 @@ class MonitorCommand extends Command
             'FroshTools.config.monitorTaskGraceTime'
         );
 
-        $date = new \DateTime('now',new DateTimeZone('UTC'));
+        $date = new \DateTime();
         $date->modify(sprintf('-%d minutes', $minutes));
 
         $criteria = new Criteria();
