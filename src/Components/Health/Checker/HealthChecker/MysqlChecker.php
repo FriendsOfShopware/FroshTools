@@ -48,7 +48,7 @@ class MysqlChecker implements HealthCheckerInterface, CheckerInterface
                 'mysql',
                 'MariaDB Version',
                 $version,
-                'min ' . $minVersion
+                'min ' . $minVersion,
             ));
         }
     }
@@ -69,7 +69,7 @@ class MysqlChecker implements HealthCheckerInterface, CheckerInterface
                 'mysql',
                 $snippet,
                 $version,
-                $recommended
+                $recommended,
             ));
 
             return;
@@ -80,7 +80,7 @@ class MysqlChecker implements HealthCheckerInterface, CheckerInterface
                 'mysql',
                 $snippet,
                 $version,
-                $recommended
+                $recommended,
             ));
 
             return;
@@ -90,7 +90,7 @@ class MysqlChecker implements HealthCheckerInterface, CheckerInterface
             'mysql',
             $snippet,
             $version,
-            'min ' . $minVersion
+            'min ' . $minVersion,
         ));
     }
 
@@ -115,7 +115,7 @@ class MysqlChecker implements HealthCheckerInterface, CheckerInterface
         if (!preg_match(
             '/^(?:5\.5\.5-)?(mariadb-)?(?P<major>\d+)\.(?P<minor>\d+)\.(?P<patch>\d+)/i',
             $versionString,
-            $versionParts
+            $versionParts,
         )) {
             throw new \RuntimeException(sprintf('Invalid version string: %s', $versionString));
         }

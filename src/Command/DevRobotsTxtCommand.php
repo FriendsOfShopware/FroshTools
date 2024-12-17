@@ -17,7 +17,7 @@ class DevRobotsTxtCommand extends Command
 {
     public function __construct(
         #[Autowire('%kernel.project_dir%/public')]
-        private readonly string $envPath
+        private readonly string $envPath,
     ) {
         parent::__construct();
     }

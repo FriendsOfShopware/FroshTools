@@ -30,7 +30,7 @@ class ScheduledTaskController extends AbstractController
         #[TaggedIterator('messenger.message_handler')]
         private readonly iterable $taskHandler,
         private readonly EntityRepository $scheduledTaskRepository,
-        private readonly TaskRegistry $taskRegistry
+        private readonly TaskRegistry $taskRegistry,
     ) {}
 
     #[Route(path: '/scheduled-task/{id}', name: 'api.frosh.tools.scheduled.task.run', methods: ['POST'])]

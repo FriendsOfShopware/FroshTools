@@ -73,7 +73,7 @@ class CacheHelper
         $dirIterator = new \RecursiveDirectoryIterator($path, \RecursiveDirectoryIterator::SKIP_DOTS | \FilesystemIterator::SKIP_DOTS);
         $iterator = new \RecursiveIteratorIterator(
             $dirIterator,
-            \RecursiveIteratorIterator::LEAVES_ONLY
+            \RecursiveIteratorIterator::LEAVES_ONLY,
         );
 
         $size = 0;

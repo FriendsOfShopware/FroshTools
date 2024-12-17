@@ -15,7 +15,7 @@ class TaskChecker implements HealthCheckerInterface, CheckerInterface
 {
     public function __construct(
         private readonly Connection $connection,
-        private readonly ParameterBagInterface $parameterBag
+        private readonly ParameterBagInterface $parameterBag,
     ) {}
 
     public function collect(HealthCollection $collection): void
@@ -58,7 +58,7 @@ class TaskChecker implements HealthCheckerInterface, CheckerInterface
         }
 
         $diff = round(abs(
-            ($maxTaskNextExecTime - $taskDateLimit->getTimestamp()) / 60
+            ($maxTaskNextExecTime - $taskDateLimit->getTimestamp()) / 60,
         ));
 
         $collection->add(SettingsResult::warning('scheduled_task', 'Scheduled tasks overdue', \sprintf('%d mins', $diff), $recommended));

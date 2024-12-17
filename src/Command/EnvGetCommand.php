@@ -19,7 +19,7 @@ class EnvGetCommand extends Command
 {
     public function __construct(
         #[Autowire('%kernel.project_dir%/.env')]
-        private readonly string $envPath
+        private readonly string $envPath,
     ) {
         parent::__construct();
     }

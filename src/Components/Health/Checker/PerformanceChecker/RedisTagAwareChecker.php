@@ -16,7 +16,7 @@ class RedisTagAwareChecker implements PerformanceCheckerInterface, CheckerInterf
     public function __construct(
         private readonly CacheRegistry $cacheRegistry,
         #[Autowire('%kernel.shopware_version%')]
-        protected string $shopwareVersion
+        protected string $shopwareVersion,
     ) {}
 
     public function collect(HealthCollection $collection): void
@@ -39,8 +39,8 @@ class RedisTagAwareChecker implements PerformanceCheckerInterface, CheckerInterf
                     'Redis TagAware adapter has issues with your Shopware version',
                     CacheAdapter::TYPE_REDIS_TAG_AWARE,
                     CacheAdapter::TYPE_REDIS,
-                    'https://developer.shopware.com/docs/guides/hosting/performance/caches.html#example-replace-some-cache-with-redis'
-                )
+                    'https://developer.shopware.com/docs/guides/hosting/performance/caches.html#example-replace-some-cache-with-redis',
+                ),
             );
 
             return;
@@ -56,8 +56,8 @@ class RedisTagAwareChecker implements PerformanceCheckerInterface, CheckerInterf
                 'Redis adapter should be TagAware',
                 CacheAdapter::TYPE_REDIS,
                 CacheAdapter::TYPE_REDIS_TAG_AWARE,
-                'https://developer.shopware.com/docs/guides/hosting/performance/caches.html#example-replace-some-cache-with-redis'
-            )
+                'https://developer.shopware.com/docs/guides/hosting/performance/caches.html#example-replace-some-cache-with-redis',
+            ),
         );
     }
 }

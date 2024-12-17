@@ -13,7 +13,7 @@ class QueueConnectionChecker implements PerformanceCheckerInterface, CheckerInte
 {
     public function __construct(
         #[Autowire('%frosh_tools.queue_connection%')]
-        protected string $connection
+        protected string $connection,
     ) {}
 
     public function collect(HealthCollection $collection): void
@@ -30,8 +30,8 @@ class QueueConnectionChecker implements PerformanceCheckerInterface, CheckerInte
                     'The queue storage in database does not scale well with multiple workers',
                     $schema,
                     'redis or rabbitmq',
-                    $url
-                )
+                    $url,
+                ),
             );
 
             return;
@@ -44,8 +44,8 @@ class QueueConnectionChecker implements PerformanceCheckerInterface, CheckerInte
                     'The sync queue is not suitable for production environments',
                     $schema,
                     'redis or rabbitmq',
-                    $url
-                )
+                    $url,
+                ),
             );
         }
     }

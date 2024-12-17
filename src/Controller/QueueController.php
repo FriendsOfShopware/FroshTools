@@ -26,7 +26,7 @@ class QueueController extends AbstractController
         #[Autowire(service: 'shopware.increment.gateway.registry')]
         private readonly IncrementGatewayRegistry $incrementer,
         #[Autowire(service: 'messenger.receiver_locator')]
-        private readonly ServiceLocator $transportLocator
+        private readonly ServiceLocator $transportLocator,
     ) {}
 
     #[Route(path: '/queue/list', name: 'api.frosh.tools.queue.list', methods: ['GET'])]

@@ -26,7 +26,7 @@ class QueueChecker implements HealthCheckerInterface, CheckerInterface
 
         if (\is_string($oldestMessageAt)) {
             $diff = round(abs(
-                ((new \DateTime($oldestMessageAt . ' UTC'))->getTimestamp() - $oldMessageLimit->getTimestamp()) / 60
+                ((new \DateTime($oldestMessageAt . ' UTC'))->getTimestamp() - $oldMessageLimit->getTimestamp()) / 60,
             ));
 
             if ($diff > $maxDiff) {

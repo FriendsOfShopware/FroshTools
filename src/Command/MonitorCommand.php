@@ -40,7 +40,7 @@ class MonitorCommand extends Command
         private readonly AbstractMailService $mailService,
         private readonly SystemConfigService $configService,
         private readonly Connection $connection,
-        private readonly EntityRepository $scheduledTaskRepository
+        private readonly EntityRepository $scheduledTaskRepository,
     ) {
         parent::__construct();
     }
@@ -60,7 +60,7 @@ class MonitorCommand extends Command
             $errorSource = 'CLI option';
         } else {
             $recepientMail = $this->configService->getString(
-                'FroshTools.config.monitorMail'
+                'FroshTools.config.monitorMail',
             );
             $errorSource = 'plugin config';
         }
@@ -77,7 +77,7 @@ class MonitorCommand extends Command
                 'recipients',
                 [
                     $recepientMail => 'Admin',
-                ]
+                ],
             );
             $data->set('senderName', 'Froshtools | Admin');
 
@@ -112,7 +112,7 @@ class MonitorCommand extends Command
         $availableAt = $this->connection->fetchOne('SELECT IFNULL(MIN(available_at), 0) FROM messenger_messages');
         $oldestMessage = (int) strtotime($availableAt);
         $minutes = $this->configService->getInt(
-            'FroshTools.config.monitorQueueGraceTime'
+            'FroshTools.config.monitorQueueGraceTime',
         );
 
         return $oldestMessage && ($oldestMessage + ($minutes * 60)) < time();
@@ -121,7 +121,7 @@ class MonitorCommand extends Command
     private function scheduledTaskFailed(): bool
     {
         $minutes = $this->configService->getInt(
-            'FroshTools.config.monitorTaskGraceTime'
+            'FroshTools.config.monitorTaskGraceTime',
         );
 
         $date = new \DateTime();
@@ -131,14 +131,14 @@ class MonitorCommand extends Command
         $criteria->addFilter(
             new RangeFilter(
                 'nextExecutionTime',
-                ['lte' => $date->format(Defaults::STORAGE_DATE_TIME_FORMAT)]
-            )
+                ['lte' => $date->format(Defaults::STORAGE_DATE_TIME_FORMAT)],
+            ),
         );
         $criteria->addFilter(new NotFilter(
             NotFilter::CONNECTION_AND,
             [
                 new EqualsFilter('status', ScheduledTaskDefinition::STATUS_INACTIVE),
-            ]
+            ],
         ));
 
         $oldTasks = $this->scheduledTaskRepository

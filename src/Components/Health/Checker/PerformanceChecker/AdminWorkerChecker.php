@@ -13,7 +13,7 @@ class AdminWorkerChecker implements PerformanceCheckerInterface, CheckerInterfac
 {
     public function __construct(
         #[Autowire('%shopware.admin_worker.enable_admin_worker%')]
-        private readonly bool $adminWorkerEnabled
+        private readonly bool $adminWorkerEnabled,
     ) {}
 
     public function collect(HealthCollection $collection): void
@@ -25,8 +25,8 @@ class AdminWorkerChecker implements PerformanceCheckerInterface, CheckerInterfac
                     'Admin-Worker',
                     'enabled',
                     'disabled',
-                    'https://developer.shopware.com/docs/guides/plugins/plugins/framework/message-queue/add-message-handler#the-admin-worker'
-                )
+                    'https://developer.shopware.com/docs/guides/plugins/plugins/framework/message-queue/add-message-handler#the-admin-worker',
+                ),
             );
         }
     }

@@ -13,7 +13,7 @@ final class AdminInfoSubscriberEventListener
 {
     public function __construct(
         #[Autowire('%frosh_tools.elasticsearch.enabled%')]
-        private readonly bool $elasticsearchEnabled
+        private readonly bool $elasticsearchEnabled,
     ) {}
 
     public function __invoke(ResponseEvent $event): void

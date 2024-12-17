@@ -31,7 +31,7 @@ class ConfigSystemConfigLoader extends AbstractSystemConfigLoader
 
         $specific = array_merge(
             $this->config['default'] ?? [],
-            $this->config[$salesChannelId] ?? []
+            $this->config[$salesChannelId] ?? [],
         );
 
         foreach ($specific as $key => $value) {

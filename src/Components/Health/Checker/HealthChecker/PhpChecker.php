@@ -37,8 +37,8 @@ class PhpChecker implements HealthCheckerInterface, CheckerInterface
                     'php-version',
                     'PHP Version',
                     $currentPhpVersion,
-                    'min ' . $minPhpVersion
-                )
+                    'min ' . $minPhpVersion,
+                ),
             );
 
             return;
@@ -49,8 +49,8 @@ class PhpChecker implements HealthCheckerInterface, CheckerInterface
                 'php-version',
                 'PHP Version',
                 $currentPhpVersion,
-                'min ' . $minPhpVersion
-            )
+                'min ' . $minPhpVersion,
+            ),
         );
     }
 
@@ -64,8 +64,8 @@ class PhpChecker implements HealthCheckerInterface, CheckerInterface
                     'php-max-execution',
                     'Max-Execution-Time',
                     (string) $currentMaxExecutionTime,
-                    'min ' . $minMaxExecutionTime
-                )
+                    'min ' . $minMaxExecutionTime,
+                ),
             );
 
             return;
@@ -75,7 +75,7 @@ class PhpChecker implements HealthCheckerInterface, CheckerInterface
             'php-max-execution',
             'Max-Execution-Time',
             (string) $currentMaxExecutionTime,
-            'min ' . $minMaxExecutionTime
+            'min ' . $minMaxExecutionTime,
         ));
     }
 
@@ -91,8 +91,8 @@ class PhpChecker implements HealthCheckerInterface, CheckerInterface
                     'php-memory-limit',
                     'Memory-Limit',
                     $this->formatSize($currentMemoryLimit),
-                    'min ' . $this->formatSize($minMemoryLimit)
-                )
+                    'min ' . $this->formatSize($minMemoryLimit),
+                ),
             );
 
             return;
@@ -102,7 +102,7 @@ class PhpChecker implements HealthCheckerInterface, CheckerInterface
             'php-memory-limit',
             'Memory-Limit',
             $this->formatSize($currentMemoryLimit),
-            'min ' . $this->formatSize($minMemoryLimit)
+            'min ' . $this->formatSize($minMemoryLimit),
         ));
     }
 
