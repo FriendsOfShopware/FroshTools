@@ -81,7 +81,7 @@ class PhpChecker implements HealthCheckerInterface, CheckerInterface
 
     private function checkMemoryLimit(HealthCollection $collection): void
     {
-        $minMemoryLimit = $this->parseQuantity('512m');
+        $minMemoryLimit = $this->parseQuantity('256m');
         $currentMemoryLimit = \ini_get('memory_limit');
 
         $currentMemoryLimit = $this->parseQuantity($currentMemoryLimit);
