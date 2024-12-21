@@ -21,6 +21,9 @@ use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\DependencyInjection\Attribute\Autowire;
 use Symfony\Component\HttpFoundation\ParameterBag;
 
+use Symfony\Contracts\Cache\CacheInterface;
+use Symfony\Component\Cache\CacheItem;
+
 #[AsCommand('frosh:monitor', 'Monitor your scheduled tasks and message queue and get notified via email.')]
 class MonitorCommand extends Command
 {
