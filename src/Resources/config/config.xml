@@ -31,6 +31,24 @@
             <helpText lang="de-DE">Nach X Minuten gilt eine geplante Aufgabe als festgefahren / fehlerhaft</helpText>
             <defaultValue>10</defaultValue>
         </input-field>
+
+        <input-field type="bool">
+            <name>monitorTaskSingelMail</name>
+            <label>ONCE MAIL SEND</label>
+            <!-- <label lang="de-DE"></label> -->
+            <helpText>HELP TEXT</helpText>
+            <!-- <helpText lang="de-DE">HELP TEXT</helpText> -->
+            <defaultValue>false</defaultValue>
+        </input-field>
+
+        <input-field type="int">
+            <name>monitorTaskSingelMailTime</name>
+            <label>ONCE MAIL SEND TTL TIME</label>
+            <!-- <label lang="de-DE"></label> -->
+            <helpText>HELP TEXT</helpText>
+            <!-- <helpText lang="de-DE">HELP TEXT</helpText> -->
+            <defaultValue>3600</defaultValue>
+        </input-field>
     </card>
 
 </config>
