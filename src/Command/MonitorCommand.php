@@ -66,38 +66,16 @@ class MonitorCommand extends Command
             return self::INVALID;
         }
 
-        if ($this->checksFailed()) {
-            $data = new ParameterBag();
-            $data->set(
-                'recipients',
-                [
-                    $recipientMail => 'Admin',
-                ],
-            );
-            $data->set('senderName', 'FroshTools | Admin');
-
-            $htmlMailContent = <<<'MAIL'
-                <div>
-                    <p>
-                        Dear Admin,<br/>
-                        <br/>
-                        your message queue or scheduled tasks are not working as expected.<br/>
-                        <br/>
-                        <br/>
-                        Check your queues and tasks <a href="{{ salesChannel.domains|first.url }}/admin#/frosh/tools/index/index">here</a>
-                    </p>
-                </div>
-                MAIL;
-            $plainMailContent = 'Dear Admin, your message queue or scheduled tasks are not working as expected. Check your queues and tasks {{ salesChannel.domains|first.url }}/admin#/frosh/tools/index/index';
-
-            $data->set('contentHtml', $htmlMailContent);
-            $data->set('contentPlain', $plainMailContent);
-            $data->set('salesChannelId', $input->getArgument(self::MONITOR_SALESCHANNEL_ARG));
-            $data->set('subject', 'FroshTools message queue and scheduled task | Warning');
-
-            $this->mailService->send($data->all(), $context);
+        if (!$this->checksFailed()) {
+            return Command::SUCCESS;
         }
 
+        if($this->mailWasSendBevor()){
+            return Command::SUCCESS;
+        }
+        
+        $this->sendMail($recipientMail, $input, $context);
+        
         return self::SUCCESS;
     }
 
@@ -115,5 +93,48 @@ class MonitorCommand extends Command
         }
 
         return false;
+    }
+
+    private function mailWasSendBevor():bool{
+        $sendOnce = $this->configService->getBool(
+            'FroshTools.config.monitorTaskSingelMail',
+        );
+        if(!$sendOnce || $sendOnce == null){
+            return false;
+        }
+
+        return false;
+    }
+
+    private function sendMail(string $recipientMail, InputInterface $input, Context $context):void{
+        $data = new ParameterBag();
+        $data->set(
+            'recipients',
+            [
+                $recipientMail => 'Admin',
+            ],
+        );
+        $data->set('senderName', 'FroshTools | Admin');
+
+        $htmlMailContent = <<<'MAIL'
+            <div>
+                <p>
+                    Dear Admin,<br/>
+                    <br/>
+                    your message queue or scheduled tasks are not working as expected.<br/>
+                    <br/>
+                    <br/>
+                    Check your queues and tasks <a href="{{ salesChannel.domains|first.url }}/admin#/frosh/tools/index/index">here</a>
+                </p>
+            </div>
+            MAIL;
+        $plainMailContent = 'Dear Admin, your message queue or scheduled tasks are not working as expected. Check your queues and tasks {{ salesChannel.domains|first.url }}/admin#/frosh/tools/index/index';
+
+        $data->set('contentHtml', $htmlMailContent);
+        $data->set('contentPlain', $plainMailContent);
+        $data->set('salesChannelId', $input->getArgument(self::MONITOR_SALESCHANNEL_ARG));
+        $data->set('subject', 'FroshTools message queue and scheduled task | Warning');
+
+        $this->mailService->send($data->all(), $context);
     }
 }
