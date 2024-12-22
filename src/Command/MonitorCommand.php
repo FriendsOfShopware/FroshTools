@@ -29,6 +29,7 @@ class MonitorCommand extends Command
 {
     private const MONITOR_EMAIL_OPTION = 'email';
     private const MONITOR_SALESCHANNEL_ARG = 'sales-channel';
+    private const MONITOR_CACHE_KEY = 'frosh_mail_send_once';
 
     public function __construct(
         #[Autowire(service: MailService::class)]
@@ -69,6 +70,8 @@ class MonitorCommand extends Command
         }
 
         if (!$this->checksFailed()) {
+            //Remove cache to reset "timer" for next E-Mail
+            $this->cache->delete(self::MONITOR_CACHE_KEY);
             return Command::SUCCESS;
         }
 
@@ -93,12 +96,12 @@ class MonitorCommand extends Command
                 return true;
             }
         }
-
         return false;
     }
 
     private function mailWasSendBevor(): bool
     {
+        $sendBevor = true;
         $sendOnce = $this->configService->getBool(
             'FroshTools.config.monitorTaskSingelMail',
         );
@@ -112,12 +115,13 @@ class MonitorCommand extends Command
         );
 
         //Send E-Mail on cache miss (No E-Mail was send beovr)
-        $value = $this->cache->get('frosh_mail_send_once', function (ItemInterface $item, int $sendLifeTime): bool {
+        $this->cache->get(self::MONITOR_CACHE_KEY, function (ItemInterface $item) use ($sendLifeTime, $sendBevor): void {
             $item->expiresAfter($sendLifeTime);
-            return true;
+            $sendBevor = false;
         });
 
-        return false;
+        echo "Email was send bevor: ". $sendBevor;
+        return $sendBevor;
     }
 
     private function sendMail(string $recipientMail, InputInterface $input, Context $context): void
