@@ -31,6 +31,8 @@ class MonitorCommand extends Command
     private const MONITOR_SALESCHANNEL_ARG = 'sales-channel';
     private const MONITOR_CACHE_KEY = 'frosh_mail_send_once';
 
+    private bool $wasSentBefore = false;
+
     public function __construct(
         #[Autowire(service: MailService::class)]
         private readonly AbstractMailService $mailService,
@@ -75,7 +77,7 @@ class MonitorCommand extends Command
             return Command::SUCCESS;
         }
 
-        if ($this->mailWasSendBevor()) {
+        if ($this->mailWasSentBefore()) {
             return Command::SUCCESS;
         }
 
@@ -99,11 +101,11 @@ class MonitorCommand extends Command
         return false;
     }
 
-    private function mailWasSendBevor(): bool
+    private function mailWasSentBefore(): bool
     {
-        $sendBevor = true;
+        $this->wasSentBefore = true;
         $sendOnce = $this->configService->getBool(
-            'FroshTools.config.monitorTaskSingelMail',
+            'FroshTools.config.monitorTaskSingleMail',
         );
 
         if (!$sendOnce || $sendOnce == null) {
@@ -111,17 +113,19 @@ class MonitorCommand extends Command
         }
 
         $sendLifeTime = $this->configService->getInt(
-            'FroshTools.config.monitorTaskSingelMailTime',
+            'FroshTools.config.monitorTaskSingleMailTime',
         );
 
+        //convert minutes to seconds
+        $sendLifeTime = $sendLifeTime * 60;
+
         //Send E-Mail on cache miss (No E-Mail was send beovr)
-        $this->cache->get(self::MONITOR_CACHE_KEY, function (ItemInterface $item) use ($sendLifeTime, $sendBevor): void {
+        $this->cache->get(self::MONITOR_CACHE_KEY, function (ItemInterface $item) use ($sendLifeTime): void {
             $item->expiresAfter($sendLifeTime);
-            $sendBevor = false;
+            $this->wasSentBefore = false;
         });
 
-        echo "Email was send bevor: ". $sendBevor;
-        return $sendBevor;
+        return $this->wasSentBefore;
     }
 
     private function sendMail(string $recipientMail, InputInterface $input, Context $context): void
