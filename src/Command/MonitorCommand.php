@@ -22,7 +22,7 @@ use Symfony\Component\DependencyInjection\Attribute\Autowire;
 use Symfony\Component\HttpFoundation\ParameterBag;
 
 use Symfony\Contracts\Cache\CacheInterface;
-use Symfony\Contracts\Cache\ItemInterface;
+use Symfony\Component\Cache\CacheItem;
 
 #[AsCommand('frosh:monitor', 'Monitor your scheduled tasks and message queue and get notified via email.')]
 class MonitorCommand extends Command
@@ -37,8 +37,6 @@ class MonitorCommand extends Command
         private readonly SystemConfigService $configService,
         private readonly QueueChecker $queueChecker,
         private readonly TaskChecker $taskChecker,
-        #[Autowire(service: 'cache.object')]
-        private readonly CacheInterface $cache,
     ) {
         parent::__construct();
     }
@@ -75,12 +73,12 @@ class MonitorCommand extends Command
             return Command::SUCCESS;
         }
 
-        if ($this->mailWasSendBevor()) {
+        if($this->mailWasSendBevor()){
             return Command::SUCCESS;
         }
-
+        
         $this->sendMail($recipientMail, $input, $context);
-
+        
         return self::SUCCESS;
     }
 
@@ -105,8 +103,7 @@ class MonitorCommand extends Command
         $sendOnce = $this->configService->getBool(
             'FroshTools.config.monitorTaskSingelMail',
         );
-
-        if (!$sendOnce || $sendOnce == null) {
+        if(!$sendOnce || $sendOnce == null){
             return false;
         }
 
@@ -124,8 +121,7 @@ class MonitorCommand extends Command
         return $sendBevor;
     }
 
-    private function sendMail(string $recipientMail, InputInterface $input, Context $context): void
-    {
+    private function sendMail(string $recipientMail, InputInterface $input, Context $context):void{
         $data = new ParameterBag();
         $data->set(
             'recipients',
