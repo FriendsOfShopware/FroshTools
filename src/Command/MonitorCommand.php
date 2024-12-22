@@ -116,10 +116,9 @@ class MonitorCommand extends Command
             'FroshTools.config.monitorTaskSingleMailTime',
         );
 
-        //convert minutes to seconds
         $sendLifeTime = $sendLifeTime * 60;
 
-        //Send E-Mail on cache miss (No E-Mail was send beovr)
+        //send E-Mail on cache miss (No E-Mail was send before)
         $this->cache->get(self::MONITOR_CACHE_KEY, function (ItemInterface $item) use ($sendLifeTime): void {
             $item->expiresAfter($sendLifeTime);
             $this->wasSentBefore = false;
