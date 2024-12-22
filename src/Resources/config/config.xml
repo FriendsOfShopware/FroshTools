@@ -35,7 +35,7 @@
         <input-field type="bool">
             <name>monitorTaskSingleMail</name>
             <label>Send E-Mail only once</label>
-            <label lang="de-DE">Mail nur einmal senden<</label>
+            <label lang="de-DE">Mail nur einmal senden</label>
             <helpText>Enable this to send only one email notification when the problem is still active.</helpText>
             <helpText lang="de-DE">Aktiviere diese Option, um nur eine E-Mail-Benachrichtigung zu senden, wenn das Problem weiterhin besteht.</helpText>
             <defaultValue>false</defaultValue>
