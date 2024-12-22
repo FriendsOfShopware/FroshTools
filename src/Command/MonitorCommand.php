@@ -108,7 +108,7 @@ class MonitorCommand extends Command
             'FroshTools.config.monitorTaskSingleMail',
         );
 
-        if (!$sendOnce || $sendOnce == null) {
+        if (!$sendOnce) {
             return false;
         }
 
