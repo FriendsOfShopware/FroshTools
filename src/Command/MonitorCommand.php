@@ -22,7 +22,7 @@ use Symfony\Component\DependencyInjection\Attribute\Autowire;
 use Symfony\Component\HttpFoundation\ParameterBag;
 
 use Symfony\Contracts\Cache\CacheInterface;
-use Symfony\Component\Cache\CacheItem;
+use Symfony\Contracts\Cache\ItemInterface;
 
 #[AsCommand('frosh:monitor', 'Monitor your scheduled tasks and message queue and get notified via email.')]
 class MonitorCommand extends Command
@@ -36,6 +36,8 @@ class MonitorCommand extends Command
         private readonly SystemConfigService $configService,
         private readonly QueueChecker $queueChecker,
         private readonly TaskChecker $taskChecker,
+        #[Autowire(service: 'cache.object')]
+        private readonly CacheInterface $cache,
     ) {
         parent::__construct();
     }
@@ -70,12 +72,12 @@ class MonitorCommand extends Command
             return Command::SUCCESS;
         }
 
-        if($this->mailWasSendBevor()){
+        if ($this->mailWasSendBevor()) {
             return Command::SUCCESS;
         }
-        
+
         $this->sendMail($recipientMail, $input, $context);
-        
+
         return self::SUCCESS;
     }
 
@@ -95,18 +97,31 @@ class MonitorCommand extends Command
         return false;
     }
 
-    private function mailWasSendBevor():bool{
+    private function mailWasSendBevor(): bool
+    {
         $sendOnce = $this->configService->getBool(
             'FroshTools.config.monitorTaskSingelMail',
         );
-        if(!$sendOnce || $sendOnce == null){
+
+        if (!$sendOnce || $sendOnce == null) {
             return false;
         }
+
+        $sendLifeTime = $this->configService->getInt(
+            'FroshTools.config.monitorTaskSingelMailTime',
+        );
+
+        //Send E-Mail on cache miss (No E-Mail was send beovr)
+        $value = $this->cache->get('frosh_mail_send_once', function (ItemInterface $item, int $sendLifeTime): bool {
+            $item->expiresAfter($sendLifeTime);
+            return true;
+        });
 
         return false;
     }
 
-    private function sendMail(string $recipientMail, InputInterface $input, Context $context):void{
+    private function sendMail(string $recipientMail, InputInterface $input, Context $context): void
+    {
         $data = new ParameterBag();
         $data->set(
             'recipients',
