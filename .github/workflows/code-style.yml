@@ -31,6 +31,7 @@ jobs:
                     justMinMaxShopware: false
                     allowShopwareNext: true
                     allowShopwareRC: false
+                    includePhpVersion: false
     phpstan:
         name: PHPStan
         needs: get-matrix
