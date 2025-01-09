@@ -33,7 +33,7 @@ class DebugChecker implements HealthCheckerInterface, CheckerInterface
                 'webprofiler',
                 'WebProfilerBundle is active which leaks sensitive information',
                 'active',
-                'not active'
+                'not active',
             ));
 
             return;
@@ -43,7 +43,7 @@ class DebugChecker implements HealthCheckerInterface, CheckerInterface
             'webprofiler',
             'WebProfilerBundle is not active',
             'not active',
-            'not active'
+            'not active',
         ));
     }
 
@@ -54,7 +54,7 @@ class DebugChecker implements HealthCheckerInterface, CheckerInterface
                 'kerneldebug',
                 'Kernel debug is active',
                 'active',
-                'not active'
+                'not active',
             ));
 
             return;
@@ -64,7 +64,7 @@ class DebugChecker implements HealthCheckerInterface, CheckerInterface
             'kerneldebug',
             'Kernel debug is not active',
             'not active',
-            'not active'
+            'not active',
         ));
     }
 }
