@@ -11,6 +11,8 @@ use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\DependencyInjection\Attribute\TaggedIterator;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\Routing\Annotation\Route;
+use Symfony\Contracts\Cache\CacheInterface;
+use Symfony\Contracts\Cache\ItemInterface;
 
 #[Route(path: '/api/_action/frosh-tools', defaults: ['_routeScope' => ['api'], '_acl' => ['frosh_tools:read']])]
 class HealthController extends AbstractController
@@ -24,6 +26,7 @@ class HealthController extends AbstractController
         private readonly iterable $healthCheckers,
         #[TaggedIterator('frosh_tools.performance_checker')]
         private readonly iterable $performanceCheckers,
+        private readonly CacheInterface $cacheObject,
     ) {}
 
     #[Route(path: '/health/status', name: 'api.frosh.tools.health.status', methods: ['GET'])]
@@ -46,5 +49,15 @@ class HealthController extends AbstractController
         }
 
         return new JsonResponse($collection);
+    }
+
+    #[Route(path: '/health-ping/status', name: 'api.frosh.tools.health-ping.status', methods: ['GET'])]
+    public function pingStatus(): JsonResponse
+    {
+        return $this->cacheObject->get('health-ping', function (ItemInterface $cacheItem) {
+            $cacheItem->expiresAfter(59);
+
+            return $this->status();
+        });
     }
 }
