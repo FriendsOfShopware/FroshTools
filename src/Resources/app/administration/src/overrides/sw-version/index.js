@@ -63,11 +63,11 @@ Component.override('sw-version', {
 
     methods: {
         async checkHealth() {
-            this.health = await this.froshToolsService.healthStatus();
+            this.health = await this.froshToolsService.healthStatus(true);
 
             this.checkInterval = setInterval(async() => {
                 try {
-                    this.health = await this.froshToolsService.healthStatus();
+                    this.health = await this.froshToolsService.healthStatus(true);
                 } catch (e) {
                     console.error(e);
                     clearInterval(this.checkInterval);
