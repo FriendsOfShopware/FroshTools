@@ -28,7 +28,7 @@ jobs:
                 with:
                     versionConstraint: ${{ steps.shopware-constraint.outputs.shopware_constraint }}
                     allowEol: false
-                    justMinMaxShopware: false
+                    justMinMaxShopware: true
                     allowShopwareNext: true
                     allowShopwareRC: false
                     includePhpVersion: false
