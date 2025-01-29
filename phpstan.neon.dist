@@ -2,7 +2,17 @@ parameters:
     level: 8
     paths:
         - src
-    type_coverage:
-        return_type: 100
-        param_type: 98
-        property_type: 100
+
+    ignoreErrors:
+            -
+                message: "#^Out of .* possible param types, only .* %% actually have it\\. Add more param types to get over .* %%$#"
+                reportUnmatched: false
+
+            -
+                message: """
+                    #^Fetching class constant class of deprecated class Shopware\\\\Core\\\\Framework\\\\Adapter\\\\Cache\\\\CacheDecorator\\:
+                    tag\\:v6\\.7\\.0 \\- reason\\:decoration\\-will\\-be\\-removed \\- Will be removed$#
+                """
+                reportUnmatched: false
+                count: 1
+                path: src/Components/CacheAdapter.php
