@@ -112,6 +112,7 @@ class CacheAdapter
 
     private function getCacheAdapter(AdapterInterface $adapter): AdapterInterface
     {
+        // will be removed in Shopware 6.7
         if ($adapter instanceof CacheDecorator) {
             // Do not declare function as static
             $func = \Closure::bind(fn() => $adapter->decorated, $adapter, $adapter::class);
