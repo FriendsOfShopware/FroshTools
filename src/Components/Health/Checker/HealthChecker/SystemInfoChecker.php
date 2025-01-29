@@ -7,7 +7,7 @@ namespace Frosh\Tools\Components\Health\Checker\HealthChecker;
 use Frosh\Tools\Components\Health\Checker\CheckerInterface;
 use Frosh\Tools\Components\Health\HealthCollection;
 use Frosh\Tools\Components\Health\SettingsResult;
-use Shopware\Core\Maintenance\System\Struct\DatabaseConnectionInformation;
+use Shopware\Core\DevOps\Environment\EnvironmentHelper;
 use Symfony\Component\DependencyInjection\Attribute\Autowire;
 
 class SystemInfoChecker implements HealthCheckerInterface, CheckerInterface
@@ -36,20 +36,44 @@ class SystemInfoChecker implements HealthCheckerInterface, CheckerInterface
 
     private function getDatabaseInfo(HealthCollection $collection): void
     {
-        $databaseConnectionInfo = (new DatabaseConnectionInformation())->fromEnv();
+        $result = new SettingsResult();
+        $result->assign([
+            'id' => 'database-info',
+            'snippet' => 'Database',
+            'current' => 'unknown',
+        ]);
 
-        $collection->add(
-            SettingsResult::ok(
-                'database-info',
-                'Database',
-                \sprintf(
-                    '%s@%s:%d/%s',
-                    $databaseConnectionInfo->getUsername(),
-                    $databaseConnectionInfo->getHostname(),
-                    $databaseConnectionInfo->getPort(),
-                    $databaseConnectionInfo->getDatabaseName(),
-                ),
-            ),
-        );
+        try {
+            $dsn = trim((string) EnvironmentHelper::getVariable('DATABASE_URL', getenv('DATABASE_URL')));
+            if ($dsn === '') {
+                return;
+            }
+
+            $params = parse_url($dsn);
+            if ($params === false) {
+                return;
+            }
+
+            foreach ($params as $param => $value) {
+                if (!\is_string($value)) {
+                    continue;
+                }
+
+                $params[$param] = rawurldecode($value);
+            }
+
+            $path = (string) ($params['path'] ?? '/');
+            $dbName = trim(substr($path, 1));
+
+            $result->current =\sprintf(
+                '%s@%s:%d/%s',
+                $params['user'] ?? null,
+                $params['host'] ?? null,
+                (int) ($params['port'] ?? '3306'),
+                $dbName,
+            );
+        } finally {
+            $collection->add($result);
+        }
     }
 }
