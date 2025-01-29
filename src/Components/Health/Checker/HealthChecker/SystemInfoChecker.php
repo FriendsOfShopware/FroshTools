@@ -65,7 +65,7 @@ class SystemInfoChecker implements HealthCheckerInterface, CheckerInterface
             $path = (string) ($params['path'] ?? '/');
             $dbName = trim(substr($path, 1));
 
-            $result->current =\sprintf(
+            $result->current = \sprintf(
                 '%s@%s:%d/%s',
                 $params['user'] ?? null,
                 $params['host'] ?? null,
