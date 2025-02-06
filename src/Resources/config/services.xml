@@ -7,5 +7,6 @@
     <services>
         <defaults autowire="true" autoconfigure="true" />
         <prototype namespace="Frosh\Tools\" resource="../../" exclude="../../{DependencyInjection,Resources,FroshTools.php}" />
+        <service id="Frosh\Tools\Command\HealthCheckJsonCommand" />
     </services>
 </container>
