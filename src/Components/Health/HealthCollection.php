@@ -15,4 +15,19 @@ class HealthCollection extends Collection
     {
         return SettingsResult::class;
     }
+
+    public function getState(): string
+    {
+        foreach ([SettingsResult::ERROR, SettingsResult::WARNING] as $state) {
+            $healthStatus = $this->filter(function (SettingsResult $result) use ($state) {
+                return $result->state === $state;
+            });
+
+            if ($healthStatus->count() > 0) {
+                return $state;
+            }
+        }
+
+        return SettingsResult::GREEN;
+    }
 }

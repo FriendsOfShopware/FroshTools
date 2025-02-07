@@ -7,6 +7,9 @@ namespace Frosh\Tools\Controller;
 use Frosh\Tools\Components\Health\Checker\CheckerInterface;
 use Frosh\Tools\Components\Health\HealthCollection;
 use Frosh\Tools\Components\Health\PerformanceCollection;
+use Frosh\Tools\Components\Health\SettingsResult;
+use Psr\Log\LoggerInterface;
+use Shopware\Core\System\SystemConfig\SystemConfigService;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\DependencyInjection\Attribute\AutowireIterator;
 use Symfony\Component\HttpFoundation\JsonResponse;
@@ -27,17 +30,14 @@ class HealthController extends AbstractController
         #[AutowireIterator('frosh_tools.performance_checker')]
         private readonly iterable $performanceCheckers,
         private readonly CacheInterface $cacheObject,
+        private readonly LoggerInterface $froshToolsLogger,
+        private readonly SystemConfigService $configService,
     ) {}
 
     #[Route(path: '/health/status', name: 'api.frosh.tools.health.status', methods: ['GET'])]
     public function status(): JsonResponse
     {
-        $collection = new HealthCollection();
-        foreach ($this->healthCheckers as $checker) {
-            $checker->collect($collection);
-        }
-
-        return new JsonResponse($collection);
+        return new JsonResponse($this->getHealthStatus());
     }
 
     #[Route(path: '/performance/status', name: 'api.frosh.tools.performance.status', methods: ['GET'])]
@@ -51,13 +51,48 @@ class HealthController extends AbstractController
         return new JsonResponse($collection);
     }
 
-    #[Route(path: '/health-ping/status', name: 'api.frosh.tools.health-ping.status', methods: ['GET'])]
-    public function pingStatus(): JsonResponse
+    #[Route(path: '/health/check', name: 'api.frosh.tools.health-ping.status', methods: ['GET'])]
+    public function healthCheck(): JsonResponse
     {
-        return $this->cacheObject->get('health-ping', function (ItemInterface $cacheItem) {
+        $healthStatus = $this->getHealthCachedStatus();
+
+        return new JsonResponse(['state' => $healthStatus->getState()]);
+    }
+
+    private function getHealthStatus(): HealthCollection
+    {
+        $collection = new HealthCollection();
+        foreach ($this->healthCheckers as $checker) {
+            $checker->collect($collection);
+        }
+
+        return $collection;
+    }
+
+    private function getHealthCachedStatus(): HealthCollection
+    {
+        return $this->cacheObject->get('health-check', function (ItemInterface $cacheItem) {
             $cacheItem->expiresAfter(59);
 
-            return $this->status();
+            $healthStatus = $this->getHealthStatus();
+
+            if ($this->configService->getBool('FroshTools.config.healthLogger')) {
+                foreach ([SettingsResult::ERROR, SettingsResult::WARNING] as $state) {
+                    $healthStatus = $healthStatus->filter(function (SettingsResult $result) use ($state) {
+                        return $result->state === $state;
+                    });
+
+                    if ($healthStatus->count() > 0) {
+                        if ($state === SettingsResult::ERROR) {
+                            $this->froshToolsLogger->error('Health check', ['results' => $healthStatus]);
+                        } else {
+                            $this->froshToolsLogger->warning('Health check', ['results' => $healthStatus]);
+                        }
+                    }
+                }
+            }
+
+            return $healthStatus;
         });
     }
 }

@@ -23,51 +23,41 @@ Component.override('sw-version', {
 
     computed: {
         healthVariant() {
-            let variant = 'success';
-
-            for (let health of this.health) {
-                if (health.state === 'STATE_ERROR') {
-                    variant = 'error';
-                    continue;
-                }
-
-                if (health.state === 'STATE_WARNING' && variant === 'success') {
-                    variant = 'warning';
-                }
+            if (this.health.state === 'STATE_OK') {
+                return 'success';
             }
 
-            return variant;
+            if (this.health.state === 'STATE_WARNING') {
+                return 'warning';
+            }
+
+            return 'error';
         },
 
         healthPlaceholder() {
-            let msg = 'Shop Status: Ok';
-
             if (this.health === null) {
-                return msg;
+                return 'Shop Status: unknown';
             }
 
-            for (let health of this.health) {
-                if (health.state === 'STATE_ERROR') {
-                    msg = 'Shop Status: May outage, Check System Status';
-                    continue;
-                }
-
-                if (health.state === 'STATE_WARNING' && msg === 'Shop Status: Ok') {
-                    msg = 'Shop Status: Issues, Check System Status';
-                }
+            if (this.health.state === 'STATE_OK') {
+                return 'Shop Status: Ok';
             }
 
-            return msg;
+            if (this.health.state === 'STATE_WARNING') {
+                return 'Shop Status: Issues, Check System Status';
+            }
+
+            return 'Shop Status: May outage, Check System Status';
         }
     },
 
     methods: {
         async checkHealth() {
-            this.health = await this.froshToolsService.healthStatus(true);
+            this.health = await this.froshToolsService.healthCheck();
 
             this.checkInterval = setInterval(async() => {
                 try {
-                    this.health = await this.froshToolsService.healthStatus(true);
+                    this.health = await this.froshToolsService.healthCheck(true);
                 } catch (e) {
                     console.error(e);
                     clearInterval(this.checkInterval);
