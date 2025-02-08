@@ -30,7 +30,7 @@ jobs:
                     allowEol: false
                     justMinMaxShopware: true
                     allowShopwareNext: true
-                    allowShopwareRC: false
+                    allowShopwareRC: true
                     includePhpVersion: false
     phpstan:
         name: PHPStan
