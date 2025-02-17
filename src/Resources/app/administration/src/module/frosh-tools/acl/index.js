@@ -1,10 +1,10 @@
-Shopware.Service('privileges').addPrivilegeMappingEntry({
-	category: 'additional_permissions',
+Shopware.Service("privileges").addPrivilegeMappingEntry({
+	category: "additional_permissions",
 	parent: null,
-	key: 'frosh_tools',
+	key: "frosh_tools",
 	roles: {
 		frosh_tools: {
-			privileges: ['frosh_tools:read'],
+			privileges: ["frosh_tools:read"],
 			dependencies: [],
 		},
 	},

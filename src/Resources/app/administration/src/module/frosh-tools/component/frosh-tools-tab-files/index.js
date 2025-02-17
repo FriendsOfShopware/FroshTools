@@ -1,20 +1,20 @@
-import template from './template.twig';
-import DiffMatchPatch from 'diff-match-patch';
+import template from "./template.twig";
+import DiffMatchPatch from "diff-match-patch";
 
 const { Component, Mixin } = Shopware;
 
-Component.register('frosh-tools-tab-files', {
+Component.register("frosh-tools-tab-files", {
 	template,
-	inject: ['repositoryFactory', 'froshToolsService'],
-	mixins: [Mixin.getByName('notification')],
+	inject: ["repositoryFactory", "froshToolsService"],
+	mixins: [Mixin.getByName("notification")],
 
 	data() {
 		return {
 			items: {},
 			isLoading: true,
 			diffData: {
-				html: '',
-				file: '',
+				html: "",
+				file: "",
 			},
 			showModal: false,
 		};
@@ -28,14 +28,14 @@ Component.register('frosh-tools-tab-files', {
 		columns() {
 			return [
 				{
-					property: 'name',
-					label: 'frosh-tools.name',
+					property: "name",
+					label: "frosh-tools.name",
 					rawData: true,
 					primary: true,
 				},
 				{
-					property: 'expected',
-					label: 'frosh-tools.status',
+					property: "expected",
+					label: "frosh-tools.status",
 					rawData: true,
 					primary: true,
 				},
@@ -44,7 +44,7 @@ Component.register('frosh-tools-tab-files', {
 
 		isLoadingClass() {
 			return {
-				'is-loading': this.isLoading,
+				"is-loading": this.isLoading,
 			};
 		},
 	},
@@ -61,7 +61,7 @@ Component.register('frosh-tools-tab-files', {
 		},
 
 		openUrl(url) {
-			window.open(url, '_blank');
+			window.open(url, "_blank");
 		},
 
 		async diff(file) {
@@ -78,10 +78,10 @@ Component.register('frosh-tools-tab-files', {
 			dmp.diff_cleanupSemantic(diff);
 			this.diffData.html = dmp
 				.diff_prettyHtml(diff)
-				.replace(new RegExp('background:#e6ffe6;', 'g'), 'background:#ABF2BC;')
+				.replace(new RegExp("background:#e6ffe6;", "g"), "background:#ABF2BC;")
 				.replace(
-					new RegExp('background:#ffe6e6;', 'g'),
-					'background:rgba(255,129,130,0.4);',
+					new RegExp("background:#ffe6e6;", "g"),
+					"background:rgba(255,129,130,0.4);",
 				);
 			this.diffData.file = file;
 

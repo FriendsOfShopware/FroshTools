@@ -1,10 +1,10 @@
-import template from './template.twig';
+import template from "./template.twig";
 
 const { Component } = Shopware;
 
-Component.override('sw-version', {
+Component.override("sw-version", {
 	template,
-	inject: ['froshToolsService', 'acl', 'loginService'],
+	inject: ["froshToolsService", "acl", "loginService"],
 
 	async created() {
 		if (!this.checkPermission()) {
@@ -23,16 +23,16 @@ Component.override('sw-version', {
 
 	computed: {
 		healthVariant() {
-			let variant = 'success';
+			let variant = "success";
 
 			for (let health of this.health) {
-				if (health.state === 'STATE_ERROR') {
-					variant = 'error';
+				if (health.state === "STATE_ERROR") {
+					variant = "error";
 					continue;
 				}
 
-				if (health.state === 'STATE_WARNING' && variant === 'success') {
-					variant = 'warning';
+				if (health.state === "STATE_WARNING" && variant === "success") {
+					variant = "warning";
 				}
 			}
 
@@ -40,20 +40,20 @@ Component.override('sw-version', {
 		},
 
 		healthPlaceholder() {
-			let msg = 'Shop Status: Ok';
+			let msg = "Shop Status: Ok";
 
 			if (this.health === null) {
 				return msg;
 			}
 
 			for (let health of this.health) {
-				if (health.state === 'STATE_ERROR') {
-					msg = 'Shop Status: May outage, Check System Status';
+				if (health.state === "STATE_ERROR") {
+					msg = "Shop Status: May outage, Check System Status";
 					continue;
 				}
 
-				if (health.state === 'STATE_WARNING' && msg === 'Shop Status: Ok') {
-					msg = 'Shop Status: Issues, Check System Status';
+				if (health.state === "STATE_WARNING" && msg === "Shop Status: Ok") {
+					msg = "Shop Status: Issues, Check System Status";
 				}
 			}
 
@@ -80,7 +80,7 @@ Component.override('sw-version', {
 		},
 
 		checkPermission() {
-			return (this.hasPermission = this.acl.can('frosh_tools:read'));
+			return (this.hasPermission = this.acl.can("frosh_tools:read"));
 		},
 	},
 });

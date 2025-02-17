@@ -1,10 +1,10 @@
-import FroshToolsService from './frosh-tools';
-import Elasticsearch from './elasticsearch';
+import FroshToolsService from "./frosh-tools";
+import Elasticsearch from "./elasticsearch";
 
 const { Application } = Shopware;
 
-Application.addServiceProvider('froshToolsService', (container) => {
-	const initContainer = Application.getContainer('init');
+Application.addServiceProvider("froshToolsService", (container) => {
+	const initContainer = Application.getContainer("init");
 
 	return new FroshToolsService(
 		initContainer.httpClient,
@@ -12,8 +12,8 @@ Application.addServiceProvider('froshToolsService', (container) => {
 	);
 });
 
-Application.addServiceProvider('froshElasticSearch', (container) => {
-	const initContainer = Application.getContainer('init');
+Application.addServiceProvider("froshElasticSearch", (container) => {
+	const initContainer = Application.getContainer("init");
 
 	return new Elasticsearch(initContainer.httpClient, container.loginService);
 });

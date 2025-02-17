@@ -1,7 +1,7 @@
 const { ApiService } = Shopware.Classes;
 
 class FroshTools extends ApiService {
-	constructor(httpClient, loginService, apiEndpoint = '_action/frosh-tools') {
+	constructor(httpClient, loginService, apiEndpoint = "_action/frosh-tools") {
 		super(httpClient, loginService, apiEndpoint);
 	}
 

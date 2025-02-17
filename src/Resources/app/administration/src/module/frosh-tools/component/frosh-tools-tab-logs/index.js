@@ -1,12 +1,12 @@
-import template from './template.twig';
-import './style.scss';
+import template from "./template.twig";
+import "./style.scss";
 
 const { Component, Mixin } = Shopware;
 
-Component.register('frosh-tools-tab-logs', {
+Component.register("frosh-tools-tab-logs", {
 	template,
-	inject: ['froshToolsService'],
-	mixins: [Mixin.getByName('notification')],
+	inject: ["froshToolsService"],
+	mixins: [Mixin.getByName("notification")],
 
 	data() {
 		return {
@@ -29,30 +29,30 @@ Component.register('frosh-tools-tab-logs', {
 		columns() {
 			return [
 				{
-					property: 'date',
-					label: 'frosh-tools.date',
+					property: "date",
+					label: "frosh-tools.date",
 					rawData: true,
 				},
 				{
-					property: 'channel',
-					label: 'frosh-tools.channel',
+					property: "channel",
+					label: "frosh-tools.channel",
 					rawData: true,
 				},
 				{
-					property: 'level',
-					label: 'frosh-tools.level',
+					property: "level",
+					label: "frosh-tools.level",
 					rawData: true,
 				},
 				{
-					property: 'message',
-					label: 'frosh-tools.message',
+					property: "message",
+					label: "frosh-tools.message",
 					rawData: true,
 				},
 			];
 		},
 
 		date() {
-			return Shopware.Filter.getByName('date');
+			return Shopware.Filter.getByName("date");
 		},
 	},
 
@@ -80,7 +80,7 @@ Component.register('frosh-tools-tab-logs', {
 			);
 
 			this.logEntries = logEntries.data;
-			this.totalLogEntries = parseInt(logEntries.headers['file-size'], 10);
+			this.totalLogEntries = parseInt(logEntries.headers["file-size"], 10);
 		},
 
 		async onPageChange(page) {
