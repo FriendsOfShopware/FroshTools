@@ -28,7 +28,8 @@ class ElasticsearchManager
         private readonly Connection $connection,
         #[Autowire(service: 'shopware.increment.gateway.registry')]
         private readonly IncrementGatewayRegistry $gatewayRegistry,
-    ) {}
+    ) {
+    }
 
     public function isEnabled(): bool
     {

@@ -20,7 +20,8 @@ class FineGrainedCachingChecker implements PerformanceCheckerInterface, CheckerI
         public readonly bool $cacheTaggingEachSnippet,
         #[Autowire('%shopware.cache.tagging.each_theme_config%')]
         public readonly bool $cacheTaggingEachThemeConfig,
-    ) {}
+    ) {
+    }
 
     public function collect(HealthCollection $collection): void
     {

@@ -3,163 +3,174 @@ import template from './template.twig';
 const { Mixin, Component } = Shopware;
 
 Component.register('frosh-tools-tab-elasticsearch', {
-    template,
+	template,
 
-    inject: ['froshElasticSearch'],
-    mixins: [
-        Mixin.getByName('notification')
-    ],
+	inject: ['froshElasticSearch'],
+	mixins: [Mixin.getByName('notification')],
 
-    data() {
-        return {
-            isLoading: true,
-            isActive: true,
-            statusInfo: {},
-            indices: [],
-            consoleInput: 'GET /_cat/indices',
-            consoleOutput: {},
-        };
-    },
+	data() {
+		return {
+			isLoading: true,
+			isActive: true,
+			statusInfo: {},
+			indices: [],
+			consoleInput: 'GET /_cat/indices',
+			consoleOutput: {},
+		};
+	},
 
-    computed: {
-        columns() {
-            return [
-                {
-                    property: 'name',
-                    label: 'frosh-tools.name',
-                    rawData: true,
-                    primary: true
-                },
-                {
-                    property: 'indexSize',
-                    label: 'frosh-tools.size',
-                    rawData: true,
-                    primary: true
-                },
-                {
-                    property: 'docs',
-                    label: 'frosh-tools.docs',
-                    rawData: true,
-                    primary: true
-                }
-            ];
-        }
-    },
+	computed: {
+		columns() {
+			return [
+				{
+					property: 'name',
+					label: 'frosh-tools.name',
+					rawData: true,
+					primary: true,
+				},
+				{
+					property: 'indexSize',
+					label: 'frosh-tools.size',
+					rawData: true,
+					primary: true,
+				},
+				{
+					property: 'docs',
+					label: 'frosh-tools.docs',
+					rawData: true,
+					primary: true,
+				},
+			];
+		},
+	},
 
-    created() {
-        this.createdComponent();
-    },
+	created() {
+		this.createdComponent();
+	},
 
-    methods: {
-        async createdComponent() {
-            this.isLoading = true;
+	methods: {
+		async createdComponent() {
+			this.isLoading = true;
 
-            try {
-                this.statusInfo = await this.froshElasticSearch.status();
-            } catch (err) {
-                this.isActive = false;
-                this.isLoading = false;
+			try {
+				this.statusInfo = await this.froshElasticSearch.status();
+			} catch (err) {
+				this.isActive = false;
+				this.isLoading = false;
 
-                return;
-            } finally {
-                this.isLoading = false;
-            }
+				console.error(err);
 
-            this.indices = await this.froshElasticSearch.indices();
-        },
+				return;
+			} finally {
+				this.isLoading = false;
+			}
 
-        formatSize(bytes) {
-            const thresh = 1024;
-            const dp = 1;
-            let formatted = bytes
+			this.indices = await this.froshElasticSearch.indices();
+		},
 
-            if (Math.abs(bytes) < thresh) {
-                return bytes + ' B';
-            }
+		formatSize(bytes) {
+			const thresh = 1024;
+			const dp = 1;
+			let formatted = bytes;
 
-            const units = ['KiB', 'MiB', 'GiB', 'TiB', 'PiB', 'EiB', 'ZiB', 'YiB'];
-            let index = -1;
-            const reach = 10**dp;
+			if (Math.abs(bytes) < thresh) {
+				return bytes + ' B';
+			}
 
-            do {
-                formatted /= thresh;
-                ++index;
-            } while (Math.round(Math.abs(formatted) * reach) / reach >= thresh && index < units.length - 1);
+			const units = [
+				'KiB',
+				'MiB',
+				'GiB',
+				'TiB',
+				'PiB',
+				'EiB',
+				'ZiB',
+				'YiB',
+			];
+			let index = -1;
+			const reach = 10 ** dp;
 
-            return formatted.toFixed(dp) + ' ' + units[index];
-        },
+			do {
+				formatted /= thresh;
+				++index;
+			} while (
+				Math.round(Math.abs(formatted) * reach) / reach >= thresh &&
+				index < units.length - 1
+			);
 
-        async deleteIndex(indexName) {
-            await this.froshElasticSearch.deleteIndex(indexName);
-            await this.createdComponent();
-        },
+			return formatted.toFixed(dp) + ' ' + units[index];
+		},
 
-        async onConsoleEnter() {
-            const lines = this.consoleInput.split("\n")
-            const requestLine = lines.shift();
-            const payload = lines.join("\n").trim();
-            const [method, uri] = requestLine.split(" ");
+		async deleteIndex(indexName) {
+			await this.froshElasticSearch.deleteIndex(indexName);
+			await this.createdComponent();
+		},
 
-            try {
-                this.consoleOutput = await this.froshElasticSearch.console(method, uri, payload);
-            } catch (e) {
-                this.consoleOutput = e.response.data
-            }
-        },
+		async onConsoleEnter() {
+			const lines = this.consoleInput.split('\n');
+			const requestLine = lines.shift();
+			const payload = lines.join('\n').trim();
+			const [method, uri] = requestLine.split(' ');
 
-        async reindex() {
-            await this.froshElasticSearch.reindex();
+			try {
+				this.consoleOutput = await this.froshElasticSearch.console(
+					method,
+					uri,
+					payload,
+				);
+			} catch (e) {
+				this.consoleOutput = e.response.data;
+			}
+		},
 
-            this.createNotificationSuccess({
-                    message: this.$tc('global.default.success')
-                }
-            );
+		async reindex() {
+			await this.froshElasticSearch.reindex();
 
-            await this.createdComponent()
-        },
+			this.createNotificationSuccess({
+				message: this.$tc('global.default.success'),
+			});
 
-        async switchAlias() {
-            await this.froshElasticSearch.switchAlias();
+			await this.createdComponent();
+		},
 
-            this.createNotificationSuccess({
-                    message: this.$tc('global.default.success')
-                }
-            );
+		async switchAlias() {
+			await this.froshElasticSearch.switchAlias();
 
-            await this.createdComponent()
-        },
+			this.createNotificationSuccess({
+				message: this.$tc('global.default.success'),
+			});
 
-        async flushAll() {
-            await this.froshElasticSearch.flushAll();
+			await this.createdComponent();
+		},
 
-            this.createNotificationSuccess({
-                    message: this.$tc('global.default.success')
-                }
-            );
+		async flushAll() {
+			await this.froshElasticSearch.flushAll();
 
-            await this.createdComponent()
-        },
+			this.createNotificationSuccess({
+				message: this.$tc('global.default.success'),
+			});
 
-        async resetElasticsearch() {
-            await this.froshElasticSearch.reset();
+			await this.createdComponent();
+		},
 
-            this.createNotificationSuccess({
-                    message: this.$tc('global.default.success')
-                }
-            );
+		async resetElasticsearch() {
+			await this.froshElasticSearch.reset();
 
-            await this.createdComponent()
-        },
+			this.createNotificationSuccess({
+				message: this.$tc('global.default.success'),
+			});
 
-        async cleanup() {
-            await this.froshElasticSearch.cleanup();
+			await this.createdComponent();
+		},
 
-            this.createNotificationSuccess({
-                    message: this.$tc('global.default.success')
-                }
-            );
+		async cleanup() {
+			await this.froshElasticSearch.cleanup();
 
-            await this.createdComponent()
-        }
-    }
-})
+			this.createNotificationSuccess({
+				message: this.$tc('global.default.success'),
+			});
+
+			await this.createdComponent();
+		},
+	},
+});

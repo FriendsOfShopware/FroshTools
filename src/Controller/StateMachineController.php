@@ -25,7 +25,9 @@ final class StateMachineController extends AbstractController
     /**
      * @param EntityRepository<StateMachineCollection> $stateMachineRepository
      */
-    public function __construct(private readonly EntityRepository $stateMachineRepository) {}
+    public function __construct(private readonly EntityRepository $stateMachineRepository)
+    {
+    }
 
     #[Route(path: '/state-machines/load/{stateMachineId}', name: 'api.frosh.tools.state-machines.load', methods: ['GET'])]
     public function load(string $stateMachineId, Context $context): JsonResponse

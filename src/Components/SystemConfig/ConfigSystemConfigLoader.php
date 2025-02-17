@@ -16,7 +16,9 @@ class ConfigSystemConfigLoader extends AbstractSystemConfigLoader
     /**
      * @param array<string, array<array<mixed>|bool|float|int|string|null>> $config
      */
-    public function __construct(private readonly AbstractSystemConfigLoader $decorated, #[Autowire(param: 'frosh_tools.system_config')] private readonly array $config) {}
+    public function __construct(private readonly AbstractSystemConfigLoader $decorated, #[Autowire(param: 'frosh_tools.system_config')] private readonly array $config)
+    {
+    }
 
     public function getDecorated(): AbstractSystemConfigLoader
     {

@@ -18,7 +18,9 @@ class MysqlSettingsChecker implements PerformanceCheckerInterface, CheckerInterf
 
     public const MYSQL_SQL_MODE_PART = 'ONLY_FULL_GROUP_BY';
 
-    public function __construct(private readonly Connection $connection) {}
+    public function __construct(private readonly Connection $connection)
+    {
+    }
 
     public function collect(HealthCollection $collection): void
     {

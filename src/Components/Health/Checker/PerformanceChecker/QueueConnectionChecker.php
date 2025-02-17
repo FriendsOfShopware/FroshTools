@@ -14,7 +14,8 @@ class QueueConnectionChecker implements PerformanceCheckerInterface, CheckerInte
     public function __construct(
         #[Autowire(param: 'frosh_tools.queue_connection')]
         protected string $connection,
-    ) {}
+    ) {
+    }
 
     public function collect(HealthCollection $collection): void
     {

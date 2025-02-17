@@ -15,7 +15,8 @@ class FixCacheIdSetChecker implements PerformanceCheckerInterface, CheckerInterf
     public function __construct(
         #[Autowire(param: 'kernel.shopware_version')]
         protected string $shopwareVersion,
-    ) {}
+    ) {
+    }
 
     public function collect(HealthCollection $collection): void
     {

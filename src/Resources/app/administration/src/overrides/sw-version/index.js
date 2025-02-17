@@ -3,82 +3,88 @@ import template from './template.twig';
 const { Component } = Shopware;
 
 Component.override('sw-version', {
-    template,
-    inject: ['froshToolsService', 'acl', 'loginService'],
+	template,
+	inject: ['froshToolsService', 'acl', 'loginService'],
 
-    async created() {
-        if(!this.checkPermission()) {
-            return;
-        }
+	async created() {
+		if (!this.checkPermission()) {
+			return;
+		}
 
-        await this.checkHealth();
-    },
+		await this.checkHealth();
+	},
 
-    data() {
-        return {
-            health: null,
-            hasPermission: false
-        }
-    },
+	data() {
+		return {
+			health: null,
+			hasPermission: false,
+		};
+	},
 
-    computed: {
-        healthVariant() {
-            let variant = 'success';
+	computed: {
+		healthVariant() {
+			let variant = 'success';
 
-            for (let health of this.health) {
-                if (health.state === 'STATE_ERROR') {
-                    variant = 'error';
-                    continue;
-                }
+			for (let health of this.health) {
+				if (health.state === 'STATE_ERROR') {
+					variant = 'error';
+					continue;
+				}
 
-                if (health.state === 'STATE_WARNING' && variant === 'success') {
-                    variant = 'warning';
-                }
-            }
+				if (health.state === 'STATE_WARNING' && variant === 'success') {
+					variant = 'warning';
+				}
+			}
 
-            return variant;
-        },
+			return variant;
+		},
 
-        healthPlaceholder() {
-            let msg = 'Shop Status: Ok';
+		healthPlaceholder() {
+			let msg = 'Shop Status: Ok';
 
-            if (this.health === null) {
-                return msg;
-            }
+			if (this.health === null) {
+				return msg;
+			}
 
-            for (let health of this.health) {
-                if (health.state === 'STATE_ERROR') {
-                    msg = 'Shop Status: May outage, Check System Status';
-                    continue;
-                }
+			for (let health of this.health) {
+				if (health.state === 'STATE_ERROR') {
+					msg = 'Shop Status: May outage, Check System Status';
+					continue;
+				}
 
-                if (health.state === 'STATE_WARNING' && msg === 'Shop Status: Ok') {
-                    msg = 'Shop Status: Issues, Check System Status';
-                }
-            }
+				if (
+					health.state === 'STATE_WARNING' &&
+					msg === 'Shop Status: Ok'
+				) {
+					msg = 'Shop Status: Issues, Check System Status';
+				}
+			}
 
-            return msg;
-        }
-    },
+			return msg;
+		},
+	},
 
-    methods: {
-        async checkHealth() {
-            this.health = await this.froshToolsService.healthStatus(true);
+	methods: {
+		async checkHealth() {
+			this.health = await this.froshToolsService.healthStatus(true);
 
-            this.checkInterval = setInterval(async() => {
-                try {
-                    this.health = await this.froshToolsService.healthStatus(true);
-                } catch (e) {
-                    console.error(e);
-                    clearInterval(this.checkInterval);
-                }
-            }, 60000);
+			this.checkInterval = setInterval(async () => {
+				try {
+					this.health =
+						await this.froshToolsService.healthStatus(true);
+				} catch (e) {
+					console.error(e);
+					clearInterval(this.checkInterval);
+				}
+			}, 60000);
 
-            this.loginService.addOnLogoutListener(() => clearInterval(this.checkInterval));
-        },
+			this.loginService.addOnLogoutListener(() =>
+				clearInterval(this.checkInterval),
+			);
+		},
 
-         checkPermission() {
-            return this.hasPermission = this.acl.can('frosh_tools:read');
-        }
-    }
-})
+		checkPermission() {
+			return (this.hasPermission = this.acl.can('frosh_tools:read'));
+		},
+	},
+});

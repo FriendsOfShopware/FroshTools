@@ -14,7 +14,8 @@ class MailOverQueueChecker implements PerformanceCheckerInterface, CheckerInterf
     public function __construct(
         #[Autowire(param: 'frosh_tools.mail_over_queue')]
         protected bool $mailerIsOverQueue,
-    ) {}
+    ) {
+    }
 
     public function collect(HealthCollection $collection): void
     {

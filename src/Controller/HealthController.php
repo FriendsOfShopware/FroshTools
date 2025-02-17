@@ -27,7 +27,8 @@ class HealthController extends AbstractController
         #[AutowireIterator('frosh_tools.performance_checker')]
         private readonly iterable $performanceCheckers,
         private readonly CacheInterface $cacheObject,
-    ) {}
+    ) {
+    }
 
     #[Route(path: '/health/status', name: 'api.frosh.tools.health.status', methods: ['GET'])]
     public function status(): JsonResponse

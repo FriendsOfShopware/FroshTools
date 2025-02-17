@@ -22,7 +22,8 @@ class CompressionMethodChecker implements PerformanceCheckerInterface, CheckerIn
         public readonly bool $cartCompressionEnabled,
         #[Autowire(param: 'shopware.cart.compression_method')]
         public readonly string $cartCompressionMethod,
-    ) {}
+    ) {
+    }
 
     public function collect(HealthCollection $collection): void
     {

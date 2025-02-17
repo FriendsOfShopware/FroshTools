@@ -13,7 +13,9 @@ final class LineReader
     /**
      * Prevent instantiation
      */
-    private function __construct() {}
+    private function __construct()
+    {
+    }
 
     /**
      * @return \Generator<int, string>
