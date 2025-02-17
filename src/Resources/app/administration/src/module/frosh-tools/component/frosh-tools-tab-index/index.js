@@ -49,8 +49,7 @@ Component.register('frosh-tools-tab-index', {
 
 		async createdComponent() {
 			this.health = await this.froshToolsService.healthStatus();
-			this.performanceStatus =
-				await this.froshToolsService.performanceStatus();
+			this.performanceStatus = await this.froshToolsService.performanceStatus();
 			this.isLoading = false;
 		},
 	},

@@ -52,10 +52,7 @@ Component.override('sw-version', {
 					continue;
 				}
 
-				if (
-					health.state === 'STATE_WARNING' &&
-					msg === 'Shop Status: Ok'
-				) {
+				if (health.state === 'STATE_WARNING' && msg === 'Shop Status: Ok') {
 					msg = 'Shop Status: Issues, Check System Status';
 				}
 			}
@@ -70,8 +67,7 @@ Component.override('sw-version', {
 
 			this.checkInterval = setInterval(async () => {
 				try {
-					this.health =
-						await this.froshToolsService.healthStatus(true);
+					this.health = await this.froshToolsService.healthStatus(true);
 				} catch (e) {
 					console.error(e);
 					clearInterval(this.checkInterval);

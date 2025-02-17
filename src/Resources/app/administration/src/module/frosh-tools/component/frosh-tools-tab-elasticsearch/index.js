@@ -77,16 +77,7 @@ Component.register('frosh-tools-tab-elasticsearch', {
 				return bytes + ' B';
 			}
 
-			const units = [
-				'KiB',
-				'MiB',
-				'GiB',
-				'TiB',
-				'PiB',
-				'EiB',
-				'ZiB',
-				'YiB',
-			];
+			const units = ['KiB', 'MiB', 'GiB', 'TiB', 'PiB', 'EiB', 'ZiB', 'YiB'];
 			let index = -1;
 			const reach = 10 ** dp;
 
