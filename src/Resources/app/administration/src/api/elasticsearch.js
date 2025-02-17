@@ -4,7 +4,7 @@ class Elasticsearch extends ApiService {
 	constructor(
 		httpClient,
 		loginService,
-		apiEndpoint = "_action/frosh-tools/elasticsearch",
+		apiEndpoint = '_action/frosh-tools/elasticsearch',
 	) {
 		super(httpClient, loginService, apiEndpoint);
 	}
@@ -50,7 +50,7 @@ class Elasticsearch extends ApiService {
 				method: method,
 				headers: {
 					...this.getBasicHeaders(),
-					"content-type": "application/json",
+					'content-type': 'application/json',
 				},
 				data: payload,
 			})

@@ -1,10 +1,10 @@
-import template from "./template.twig";
-import "./style.scss";
+import template from './template.twig';
+import './style.scss';
 
 const { Component } = Shopware;
 
-Component.register("frosh-tools-tab-index", {
-	inject: ["froshToolsService"],
+Component.register('frosh-tools-tab-index', {
+	inject: ['froshToolsService'],
 	template,
 
 	data() {
@@ -23,18 +23,18 @@ Component.register("frosh-tools-tab-index", {
 		columns() {
 			return [
 				{
-					property: "name",
-					label: "frosh-tools.name",
+					property: 'name',
+					label: 'frosh-tools.name',
 					rawData: true,
 				},
 				{
-					property: "current",
-					label: "frosh-tools.current",
+					property: 'current',
+					label: 'frosh-tools.current',
 					rawData: true,
 				},
 				{
-					property: "recommended",
-					label: "frosh-tools.recommended",
+					property: 'recommended',
+					label: 'frosh-tools.recommended',
 					rawData: true,
 				},
 			];
@@ -49,7 +49,8 @@ Component.register("frosh-tools-tab-index", {
 
 		async createdComponent() {
 			this.health = await this.froshToolsService.healthStatus();
-			this.performanceStatus = await this.froshToolsService.performanceStatus();
+			this.performanceStatus =
+				await this.froshToolsService.performanceStatus();
 			this.isLoading = false;
 		},
 	},
