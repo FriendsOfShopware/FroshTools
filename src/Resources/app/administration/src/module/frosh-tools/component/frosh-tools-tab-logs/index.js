@@ -80,10 +80,7 @@ Component.register('frosh-tools-tab-logs', {
 			);
 
 			this.logEntries = logEntries.data;
-			this.totalLogEntries = parseInt(
-				logEntries.headers['file-size'],
-				10,
-			);
+			this.totalLogEntries = parseInt(logEntries.headers['file-size'], 10);
 		},
 
 		async onPageChange(page) {

@@ -78,10 +78,7 @@ Component.register('frosh-tools-tab-files', {
 			dmp.diff_cleanupSemantic(diff);
 			this.diffData.html = dmp
 				.diff_prettyHtml(diff)
-				.replace(
-					new RegExp('background:#e6ffe6;', 'g'),
-					'background:#ABF2BC;',
-				)
+				.replace(new RegExp('background:#e6ffe6;', 'g'), 'background:#ABF2BC;')
 				.replace(
 					new RegExp('background:#ffe6e6;', 'g'),
 					'background:rgba(255,129,130,0.4);',
@@ -95,8 +92,7 @@ Component.register('frosh-tools-tab-files', {
 		async restoreFile(name) {
 			this.closeModal();
 			this.isLoading = true;
-			const response =
-				await this.froshToolsService.restoreShopwareFile(name);
+			const response = await this.froshToolsService.restoreShopwareFile(name);
 
 			if (response.data.status) {
 				this.createNotificationSuccess({

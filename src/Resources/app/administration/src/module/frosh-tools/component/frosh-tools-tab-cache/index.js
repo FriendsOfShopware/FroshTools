@@ -20,9 +20,7 @@ Component.register('frosh-tools-tab-cache', {
 
 	created() {
 		const language =
-			Shopware.Application.getContainer(
-				'factory',
-			).locale.getLastKnownLocale();
+			Shopware.Application.getContainer('factory').locale.getLastKnownLocale();
 		this.numberFormater = new Intl.NumberFormat(language, {
 			minimumFractionDigits: 2,
 			maximumFractionDigits: 2,
@@ -99,10 +97,7 @@ Component.register('frosh-tools-tab-cache', {
 				const theme = salesChannel.extensions.themes.first();
 
 				if (theme) {
-					await this.themeService.assignTheme(
-						theme.id,
-						salesChannel.id,
-					);
+					await this.themeService.assignTheme(theme.id, salesChannel.id);
 					this.createNotificationSuccess({
 						message: `${salesChannel.translated.name}: ${this.$tc('frosh-tools.themeCompiled')}`,
 					});

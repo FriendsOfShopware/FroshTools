@@ -33,9 +33,7 @@ Component.register('frosh-tools-tab-state-machines', {
 			}
 
 			const response =
-				await this.froshToolsService.stateMachines(
-					stateMachineChangeId,
-				);
+				await this.froshToolsService.stateMachines(stateMachineChangeId);
 
 			const elem = document.getElementById('state_machine');
 			if ('svg' in response) {
