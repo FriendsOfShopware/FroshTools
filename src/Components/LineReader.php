@@ -18,9 +18,9 @@ final class LineReader
     }
 
     /**
-     * @return \Generator<int, string>
-     *
      * @throws \InvalidArgumentException if $filePath is not readable
+     *
+     * @return \Generator<int, string>
      */
     public static function readLines(string $filePath): \Generator
     {
@@ -32,9 +32,9 @@ final class LineReader
     }
 
     /**
-     * @return \Generator<int, string>
-     *
      * @throws \InvalidArgumentException if $filePath is not readable
+     *
+     * @return \Generator<int, string>
      */
     public static function readLinesBackwards(string $filePath): \Generator
     {

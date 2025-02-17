@@ -1,9 +1,9 @@
-<?php
+<?php declare(strict_types=1);
 
 namespace Frosh\Tools\Components\SystemConfig;
 
-use Shopware\Core\System\SystemConfig\SystemConfigLoader;
 use Shopware\Core\System\SystemConfig\AbstractSystemConfigLoader;
+use Shopware\Core\System\SystemConfig\SystemConfigLoader;
 use Symfony\Component\DependencyInjection\Attribute\AsDecorator;
 use Symfony\Component\DependencyInjection\Attribute\Autowire;
 

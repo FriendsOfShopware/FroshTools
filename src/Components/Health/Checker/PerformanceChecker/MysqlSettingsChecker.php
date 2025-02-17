@@ -32,7 +32,7 @@ class MysqlSettingsChecker implements PerformanceCheckerInterface, CheckerInterf
     private function checkGroupConcatMaxLen(HealthCollection $collection): void
     {
         /** @var string|false $groupConcatMaxLen */
-        $groupConcatMaxLen =  $this->connection->fetchOne('SELECT @@group_concat_max_len');
+        $groupConcatMaxLen = $this->connection->fetchOne('SELECT @@group_concat_max_len');
         if (!$groupConcatMaxLen || (int) $groupConcatMaxLen < self::MYSQL_GROUP_CONCAT_MAX_LEN) {
             $collection->add(
                 SettingsResult::error(

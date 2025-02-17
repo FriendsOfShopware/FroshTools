@@ -16,6 +16,7 @@ final readonly class AdminInfoSubscriberEventListener
         private bool $elasticsearchEnabled,
     ) {
     }
+
     public function __invoke(ResponseEvent $event): void
     {
         if ($event->getRequest()->attributes->get('_route') !== 'api.info.config') {

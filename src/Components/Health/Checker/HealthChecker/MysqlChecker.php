@@ -119,7 +119,7 @@ class MysqlChecker implements HealthCheckerInterface, CheckerInterface
             $versionString,
             $versionParts,
         )) {
-            throw new \RuntimeException(sprintf('Invalid version string: %s', $versionString));
+            throw new \RuntimeException(\sprintf('Invalid version string: %s', $versionString));
         }
 
         return $versionParts['major'] . '.' . $versionParts['minor'] . '.' . $versionParts['patch'];
