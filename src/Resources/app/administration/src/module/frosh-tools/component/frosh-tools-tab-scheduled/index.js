@@ -126,6 +126,28 @@ Component.register('frosh-tools-tab-scheduled', {
             this.createdComponent();
         },
 
+        async deactivateTask(item) {
+            this.isLoading = true;
+
+            try {
+                this.createNotificationInfo({
+                    message: this.$t('frosh-tools.scheduledTaskDeactivateStarted', {'name': item.name})
+                })
+                await this.froshToolsService.deactivateScheduledTask(item.id);
+                this.createNotificationSuccess({
+                    message: this.$t('frosh-tools.scheduledTaskDeactivateSucceed', {'name': item.name})
+                })
+            } catch (e) {
+                this.createNotificationError({
+                    message: this.$t('frosh-tools.scheduledTaskDeactivateFailed', {'name': item.name})
+                })
+
+                this.taskError = e.response.data;
+            }
+
+            this.createdComponent();
+        },
+
         async registerScheduledTasks() {
             this.isLoading = true;
 
