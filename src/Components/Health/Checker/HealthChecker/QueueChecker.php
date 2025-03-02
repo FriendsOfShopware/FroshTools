@@ -15,7 +15,8 @@ class QueueChecker implements HealthCheckerInterface, CheckerInterface
     public function __construct(
         private readonly Connection $connection,
         private readonly SystemConfigService $configService,
-    ) {}
+    ) {
+    }
 
     public function collect(HealthCollection $collection): void
     {

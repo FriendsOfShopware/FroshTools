@@ -14,7 +14,8 @@ class RedisTagAwareChecker implements PerformanceCheckerInterface, CheckerInterf
 {
     public function __construct(
         private readonly CacheRegistry $cacheRegistry,
-    ) {}
+    ) {
+    }
 
     public function collect(HealthCollection $collection): void
     {

@@ -10,7 +10,7 @@ class EnvironmentManager
     {
         $content = file_get_contents($path);
         if ($content === false) {
-            throw new \RuntimeException(sprintf('Cannot read file %s', $path));
+            throw new \RuntimeException(\sprintf('Cannot read file %s', $path));
         }
 
         /** @var array<string> $lines */

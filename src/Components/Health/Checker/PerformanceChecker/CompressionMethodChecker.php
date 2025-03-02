@@ -1,4 +1,4 @@
-<?php
+<?php declare(strict_types=1);
 
 namespace Frosh\Tools\Components\Health\Checker\PerformanceChecker;
 
@@ -22,7 +22,8 @@ class CompressionMethodChecker implements PerformanceCheckerInterface, CheckerIn
         public readonly bool $cartCompressionEnabled,
         #[Autowire(param: 'shopware.cart.compression_method')]
         public readonly string $cartCompressionMethod,
-    ) {}
+    ) {
+    }
 
     public function collect(HealthCollection $collection): void
     {
@@ -54,7 +55,7 @@ class CompressionMethodChecker implements PerformanceCheckerInterface, CheckerIn
             return;
         }
 
-        if ($method === 'zstd' && !extension_loaded('zstd')) {
+        if ($method === 'zstd' && !\extension_loaded('zstd')) {
             $collection->add(
                 SettingsResult::error(
                     strtolower($functionality) . '-compression-method-extension-zstd',

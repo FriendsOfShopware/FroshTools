@@ -1,111 +1,118 @@
 import template from './template.twig';
-import DiffMatchPatch from "diff-match-patch";
+import DiffMatchPatch from 'diff-match-patch';
 
 const { Component, Mixin } = Shopware;
 
 Component.register('frosh-tools-tab-files', {
-    template,
-    inject: ['repositoryFactory', 'froshToolsService'],
-    mixins: [
-        Mixin.getByName('notification')
-    ],
+  template,
+  inject: ['repositoryFactory', 'froshToolsService'],
+  mixins: [Mixin.getByName('notification')],
 
-    data() {
-        return {
-            items: {},
-            isLoading: true,
-            diffData: {
-                html: '',
-                file: ''
-            },
-            showModal: false,
-        };
+  data() {
+    return {
+      items: {},
+      isLoading: true,
+      diffData: {
+        html: '',
+        file: '',
+      },
+      showModal: false,
+    };
+  },
+
+  created() {
+    this.createdComponent();
+  },
+
+  computed: {
+    columns() {
+      return [
+        {
+          property: 'name',
+          label: 'frosh-tools.name',
+          rawData: true,
+          primary: true,
+        },
+        {
+          property: 'expected',
+          label: 'frosh-tools.status',
+          rawData: true,
+          primary: true,
+        },
+      ];
     },
 
-    created() {
-        this.createdComponent();
+    isLoadingClass() {
+      return {
+        'is-loading': this.isLoading,
+      };
+    },
+  },
+
+  methods: {
+    async refresh() {
+      this.isLoading = true;
+      await this.createdComponent();
     },
 
-    computed: {
-        columns() {
-            return [
-                {
-                    property: 'name',
-                    label: 'frosh-tools.name',
-                    rawData: true,
-                    primary: true
-                },
-                {
-                    property: 'expected',
-                    label: 'frosh-tools.status',
-                    rawData: true,
-                    primary: true
-                }
-            ];
-        },
-
-        isLoadingClass() {
-            return {
-                'is-loading': this.isLoading
-            }
-        },
+    async createdComponent() {
+      this.items = (await this.froshToolsService.getShopwareFiles()).data;
+      this.isLoading = false;
     },
 
-    methods: {
-        async refresh() {
-            this.isLoading = true;
-            await this.createdComponent();
-        },
+    openUrl(url) {
+      window.open(url, '_blank');
+    },
 
-        async createdComponent() {
-            this.items = (await this.froshToolsService.getShopwareFiles()).data;
-            this.isLoading = false;
-        },
+    async diff(file) {
+      this.isLoading = true;
+      const fileContents = (
+        await this.froshToolsService.getFileContents(file.name)
+      ).data;
 
-        openUrl(url) {
-            window.open(url, '_blank');
-        },
+      const dmp = new DiffMatchPatch();
+      const diff = dmp.diff_main(
+        fileContents.originalContent,
+        fileContents.content,
+      );
+      dmp.diff_cleanupSemantic(diff);
+      this.diffData.html = dmp
+        .diff_prettyHtml(diff)
+        .replace(new RegExp('background:#e6ffe6;', 'g'), 'background:#ABF2BC;')
+        .replace(
+          new RegExp('background:#ffe6e6;', 'g'),
+          'background:rgba(255,129,130,0.4);',
+        );
+      this.diffData.file = file;
 
-        async diff(file) {
-            this.isLoading = true;
-            const fileContents = (await this.froshToolsService.getFileContents(file.name)).data;
+      this.openModal();
+      this.isLoading = false;
+    },
 
-            const dmp = new DiffMatchPatch();
-            const diff = dmp.diff_main(fileContents.originalContent, fileContents.content);
-            dmp.diff_cleanupSemantic(diff);
-            this.diffData.html = dmp.diff_prettyHtml(diff)
-                .replace(new RegExp('background:#e6ffe6;', 'g'), 'background:#ABF2BC;')
-                .replace(new RegExp('background:#ffe6e6;', 'g'), 'background:rgba(255,129,130,0.4);');
-            this.diffData.file = file;
+    async restoreFile(name) {
+      this.closeModal();
+      this.isLoading = true;
+      const response = await this.froshToolsService.restoreShopwareFile(name);
 
-            this.openModal();
-            this.isLoading = false;
-        },
+      if (response.data.status) {
+        this.createNotificationSuccess({
+          message: response.data.status,
+        });
+      } else {
+        this.createNotificationError({
+          message: response.data.error,
+        });
+      }
 
-        async restoreFile(name) {
-            this.closeModal();
-            this.isLoading = true;
-            const response = await this.froshToolsService.restoreShopwareFile(name);
+      await this.refresh();
+    },
 
-            if (response.data.status) {
-                this.createNotificationSuccess({
-                    message: response.data.status
-                })
-            } else {
-                this.createNotificationError({
-                    message: response.data.error
-                })
-            }
+    openModal() {
+      this.showModal = true;
+    },
 
-            await this.refresh();
-        },
-
-        openModal() {
-            this.showModal = true;
-        },
-
-        closeModal() {
-            this.showModal = false;
-        },
-    }
+    closeModal() {
+      this.showModal = false;
+    },
+  },
 });

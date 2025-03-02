@@ -1,9 +1,9 @@
-<?php
+<?php declare(strict_types=1);
 
 namespace Frosh\Tools\Components\SystemConfig;
 
-use Shopware\Core\System\SystemConfig\SystemConfigLoader;
 use Shopware\Core\System\SystemConfig\AbstractSystemConfigLoader;
+use Shopware\Core\System\SystemConfig\SystemConfigLoader;
 use Symfony\Component\DependencyInjection\Attribute\AsDecorator;
 use Symfony\Component\DependencyInjection\Attribute\Autowire;
 
@@ -16,7 +16,9 @@ class ConfigSystemConfigLoader extends AbstractSystemConfigLoader
     /**
      * @param array<string, array<array<mixed>|bool|float|int|string|null>> $config
      */
-    public function __construct(private readonly AbstractSystemConfigLoader $decorated, #[Autowire(param: 'frosh_tools.system_config')] private readonly array $config) {}
+    public function __construct(private readonly AbstractSystemConfigLoader $decorated, #[Autowire(param: 'frosh_tools.system_config')] private readonly array $config)
+    {
+    }
 
     public function getDecorated(): AbstractSystemConfigLoader
     {

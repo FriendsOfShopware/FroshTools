@@ -16,7 +16,8 @@ class IncrementStorageChecker implements PerformanceCheckerInterface, CheckerInt
         private readonly string $userActivity,
         #[Autowire(param: 'shopware.increment.message_queue.type')]
         private readonly string $queueActivity,
-    ) {}
+    ) {
+    }
 
     public function collect(HealthCollection $collection): void
     {

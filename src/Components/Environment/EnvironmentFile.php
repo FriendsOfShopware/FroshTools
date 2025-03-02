@@ -9,7 +9,9 @@ class EnvironmentFile implements \Stringable
     /**
      * @param list<EnvironmentLine> $items
      */
-    public function __construct(private array $items) {}
+    public function __construct(private array $items)
+    {
+    }
 
     public function __toString(): string
     {

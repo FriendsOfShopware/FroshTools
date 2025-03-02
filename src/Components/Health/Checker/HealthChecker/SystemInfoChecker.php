@@ -15,7 +15,8 @@ class SystemInfoChecker implements HealthCheckerInterface, CheckerInterface
     public function __construct(
         #[Autowire(param: 'kernel.project_dir')]
         private readonly string $projectDir,
-    ) {}
+    ) {
+    }
 
     public function collect(HealthCollection $collection): void
     {

@@ -1,49 +1,49 @@
 {
-    "name": "frosh/tools",
-    "version": "2.6.0",
-    "description": "Provides some basic things for managing the Shopware Installation",
-    "type": "shopware-platform-plugin",
-    "license": "MIT",
-    "autoload": {
-        "psr-4": {
-            "Frosh\\Tools\\": "src/"
-        }
-    },
-    "authors": [
-        {
-            "name": "FriendsOfShopware",
-            "homepage": "https://friendsofshopware.com"
-        }
-    ],
-    "extra": {
-        "shopware-plugin-class": "Frosh\\Tools\\FroshTools",
-        "label": {
-            "de-DE": "Tools",
-            "en-GB": "Tools"
-        },
-        "description": {
-            "de-DE": "Die kostenlose Shopware 6 App beinhaltet mehrere Werkzeuge um den Shop besser zu verwalten. Optimierter Cache Manager, Log Viewer um die Logeinträge zu sehen oder Tasks auszuführen.",
-            "en-GB": "The free Shopware 6 app include several tools to manage the store much better like a cache manager, log viewer to see the log entries, run the tasks or see the system status."
-        },
-        "manufacturerLink": {
-            "de-DE": "https://github.com/FriendsOfShopware/FroshTools",
-            "en-GB": "https://github.com/FriendsOfShopware/FroshTools"
-        },
-        "supportLink": {
-            "de-DE": "https://github.com/FriendsOfShopware/FroshTools/issues",
-            "en-GB": "https://github.com/FriendsOfShopware/FroshTools/issues"
-        }
-    },
-    "require": {
-        "shopware/core": "~6.6.0"
-    },
-    "config": {
-        "allow-plugins": {
-            "symfony/runtime": true
-        }
-    },
-    "scripts": {
-        "cs-fix": "docker run --rm -v $(pwd):$(pwd) -w $(pwd) oskarstark/php-cs-fixer-ga --rules=@PER-CS2.0,no_unused_imports .",
-        "phpstan": "docker run --rm -v $(pwd):/app aragon999/phpstan-shopware:v6.6.0 analyse --level max ."
+  "name": "frosh/tools",
+  "version": "2.6.0",
+  "description": "Provides some basic things for managing the Shopware Installation",
+  "type": "shopware-platform-plugin",
+  "license": "MIT",
+  "autoload": {
+    "psr-4": {
+      "Frosh\\Tools\\": "src/"
     }
+  },
+  "authors": [
+    {
+      "name": "FriendsOfShopware",
+      "homepage": "https://friendsofshopware.com"
+    }
+  ],
+  "extra": {
+    "shopware-plugin-class": "Frosh\\Tools\\FroshTools",
+    "label": {
+      "de-DE": "Tools",
+      "en-GB": "Tools"
+    },
+    "description": {
+      "de-DE": "Die kostenlose Shopware 6 App beinhaltet mehrere Werkzeuge um den Shop besser zu verwalten. Optimierter Cache Manager, Log Viewer um die Logeinträge zu sehen oder Tasks auszuführen.",
+      "en-GB": "The free Shopware 6 app include several tools to manage the store much better like a cache manager, log viewer to see the log entries, run the tasks or see the system status."
+    },
+    "manufacturerLink": {
+      "de-DE": "https://github.com/FriendsOfShopware/FroshTools",
+      "en-GB": "https://github.com/FriendsOfShopware/FroshTools"
+    },
+    "supportLink": {
+      "de-DE": "https://github.com/FriendsOfShopware/FroshTools/issues",
+      "en-GB": "https://github.com/FriendsOfShopware/FroshTools/issues"
+    }
+  },
+  "require": {
+    "shopware/core": "~6.6.0"
+  },
+  "config": {
+    "allow-plugins": {
+      "symfony/runtime": true
+    }
+  },
+  "scripts": {
+    "format": "docker run --rm -v $(pwd):/ext ghcr.io/shopwarelabs/extension-verifier:latest format /ext",
+    "check": "docker run --rm -v $(pwd):/ext ghcr.io/shopwarelabs/extension-verifier:latest check /ext"
+  }
 }
