@@ -70,6 +70,7 @@ class ShopwareFilesController extends AbstractController
 
         $invalidFiles = [];
         $allFilesAreOkay = true;
+        $shopwarePatches = $this->getShopwarePatches();
 
         foreach (explode("\n", $data) as $row) {
             if ($this->isPlatform) {
@@ -96,10 +97,16 @@ class ShopwareFilesController extends AbstractController
                     $allFilesAreOkay = false;
                 }
 
+                $isPatched = $shopwarePatches ? $this->isFilePatched($file, $shopwarePatches) : false;
+                if ($isPatched) {
+                    $ignoredState = self::STATUS_IGNORED_IN_PROJECT;
+                }
+
                 $invalidFiles[] = [
                     'name' => $file,
                     'shopwareUrl' => $this->getShopwareUrl($file),
                     'expected' => $ignoredState === self::STATUS_IGNORED_IN_PROJECT,
+                    'patched' => $isPatched,
                 ];
             }
 
@@ -260,5 +267,51 @@ class ShopwareFilesController extends AbstractController
         }
 
         return 'integration ' . $integrationEntity->getLabel();
+    }
+
+    private function getShopwarePatches(): ?array
+    {
+        $shopwarePatches = [];
+        $composerFile = $this->projectDir . '/composer.json';
+        if (!is_file($composerFile)) {
+            return null;
+        }
+
+        $composerJson = json_decode(file_get_contents($composerFile), true);
+        $patchedPackages = $composerJson['extra']['patches'] ?? [];
+
+        foreach ($patchedPackages as $packageName => $patches) {
+            if (!str_starts_with($packageName, 'shopware')) {
+                continue;
+            }
+
+            foreach ($patches as $patch) {
+                $patchFileLocation = $this->projectDir . '/' . $patch;
+                if (is_file($patchFileLocation)) {
+                    $shopwarePatches[$packageName][] = $patch;
+                }
+            }
+        }
+
+        return $shopwarePatches;
+    }
+
+    private function isFilePatched(string $fileName, array $shopwarePatches): ?string
+    {
+        foreach ($shopwarePatches as $package) {
+            foreach ($package as $patch) {
+                $patchFileLocation = $this->projectDir . '/' . $patch;
+                if (!is_file($patchFileLocation)) {
+                    continue;
+                }
+
+                $patchFile = file_get_contents($patchFileLocation);
+                if (str_contains($patchFile, $fileName)) {
+                    return $patch;
+                }
+            }
+        }
+
+        return null;
     }
 }

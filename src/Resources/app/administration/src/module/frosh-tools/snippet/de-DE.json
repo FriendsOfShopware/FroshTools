@@ -45,6 +45,7 @@
           "restoreFile": "Datei wiederherstellen"
         },
         "expectedAll": "Datei wurde manipuliert",
+        "expectedPatched": "Datei wurde gepatcht, Fehler wird ignoriert durch Projekt Konfiguration",
         "expectedProject": "Datei wurde manipuliert, Fehler wird ignoriert durch Projekt Konfiguration"
       },
       "state-machines": {

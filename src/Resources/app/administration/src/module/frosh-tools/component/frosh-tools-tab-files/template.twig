@@ -28,8 +28,14 @@
             </template>
 
             <template #column-expected="{ item }">
-                <span v-if="item.expected">{{ $tc('frosh-tools.tabs.files.expectedProject') }}</span>
+                <span v-if="item.patched">{{ $tc('frosh-tools.tabs.files.expectedPatched') }}</span>
+                <span v-else-if="item.expected">{{ $tc('frosh-tools.tabs.files.expectedProject') }}</span>
                 <span v-else>{{ $tc('frosh-tools.tabs.files.expectedAll') }}</span>
+                <sw-help-text
+                        style="margin-left: 8px"
+                        v-if="item.patched"
+                        :text="item.patched">
+                </sw-help-text>
             </template>
 
             <template #actions="{ item }">
