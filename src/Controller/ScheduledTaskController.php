@@ -77,6 +77,25 @@ class ScheduledTaskController extends AbstractController
         return new JsonResponse(null, Response::HTTP_NO_CONTENT);
     }
 
+    #[Route(path: '/scheduled-task/deactivate/{id}', name: 'api.frosh.tools.scheduled.task.deactivate', methods: ['POST'])]
+    public function deactivateTask(string $id, Context $context): JsonResponse
+    {
+        $scheduledTask = $this->fetchTask($id, $context);
+
+        if (!$scheduledTask instanceof ScheduledTaskEntity) {
+            return new JsonResponse(null, Response::HTTP_NOT_FOUND);
+        }
+
+        $data = [
+            'id' => $id,
+            'status' => ScheduledTaskDefinition::STATUS_INACTIVE,
+        ];
+
+        $this->scheduledTaskRepository->update([$data], $context);
+
+        return new JsonResponse(null, Response::HTTP_NO_CONTENT);
+    }
+
     #[Route(path: '/scheduled-tasks/register', name: 'api.frosh.tools.scheduled.tasks.register', methods: ['POST'])]
     public function registerTasks(): JsonResponse
     {

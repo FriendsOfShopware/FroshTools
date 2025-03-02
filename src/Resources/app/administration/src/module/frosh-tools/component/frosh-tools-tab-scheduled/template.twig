@@ -53,6 +53,9 @@
                 <sw-context-menu-item variant="primary" @click="scheduleTask(item, true)">
                     {{ $tc('frosh-tools.setToScheduledImmediately') }}
                 </sw-context-menu-item>
+                <sw-context-menu-item variant="primary" @click="deactivateTask(item)">
+                    {{ $tc('frosh-tools.setToInactive') }}
+                </sw-context-menu-item>
             </template>
         </sw-entity-listing>
     </sw-card>
