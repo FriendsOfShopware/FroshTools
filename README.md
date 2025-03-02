@@ -20,9 +20,6 @@ The current feature set consists of:
   - Reset queue
 - **Log viewer**
   - Shows the entries of /var/log/*.log files
-- **Task Logging**
-  - Can be enabled with env `FROSH_TOOLS_TASK_LOGGING=1` in `.env`. This will create a log in `var/log/task_logging-xx.log`
-    - Set `FROSH_TOOLS_TASK_LOGGING_INFO=1` in `.env` to log all tasks
 - **Shopware file checker**
   - Checks if core files have been changed
 - **State Machine Visualisation**
