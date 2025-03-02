@@ -45,6 +45,7 @@
           "restoreFile": "Restore file"
         },
         "expectedAll": "File has been modified",
+        "expectedPatched": "File has been patched and will be ignored by project settings",
         "expectedProject": "File has been modified, but will be ignored by project settings"
       },
       "state-machines": {
