@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <config xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-        xsi:noNamespaceSchemaLocation="https://raw.githubusercontent.com/shopware/platform/master/src/Core/System/SystemConfig/Schema/config.xsd">
+        xsi:noNamespaceSchemaLocation="https://raw.githubusercontent.com/shopware/shopware/trunk/src/Core/System/SystemConfig/Schema/config.xsd">
 
     <card>
         <title>Monitoring</title>
@@ -30,6 +30,13 @@
             <helpText>After X minutes a scheduled task is considered stuck / faulty</helpText>
             <helpText lang="de-DE">Nach X Minuten gilt eine geplante Aufgabe als festgefahren / fehlerhaft</helpText>
             <defaultValue>10</defaultValue>
+        </input-field>
+
+        <input-field type="bool">
+            <name>healthLogger</name>
+            <label>Log health warning and error</label>
+            <label lang="de-DE">Warnungen und Fehler im HealthCheck loggen</label>
+            <defaultValue>1</defaultValue>
         </input-field>
     </card>
 

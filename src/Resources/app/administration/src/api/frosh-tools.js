@@ -107,16 +107,29 @@ class FroshTools extends ApiService {
         });
     }
 
-    healthStatus(cached = false) {
+    healthCheck() {
         if (!this.loginService.isLoggedIn()) {
             return;
         }
 
-        let apiRoute = `${this.getApiBasePath()}/health/status`;
+        const apiRoute = `${this.getApiBasePath()}/health/check`;
 
-        if (cached) {
-            apiRoute = `${this.getApiBasePath()}/health-ping/status`;
+        return this.httpClient.get(
+            apiRoute,
+            {
+                headers: this.getBasicHeaders()
+            }
+        ).then((response) => {
+            return ApiService.handleResponse(response);
+        });
+    }
+
+    healthStatus() {
+        if (!this.loginService.isLoggedIn()) {
+            return;
         }
+
+        const apiRoute = `${this.getApiBasePath()}/health/status`;
 
         return this.httpClient.get(
             apiRoute,
