@@ -100,7 +100,7 @@ final class LineReader
                 $pos -= $bufferSize;
             }
             fseek($fh, $pos);
-            if ($bufferSize < 0) {
+            if ($bufferSize < 1) {
                 throw new \RuntimeException('Buffer size cannot be negative');
             }
             $chunk = fread($fh, $bufferSize);

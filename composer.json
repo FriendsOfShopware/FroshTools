@@ -37,6 +37,7 @@
     "require": {
         "shopware/core": "~6.6.0"
     },
+    "minimum-stability": "RC",
     "config": {
         "allow-plugins": {
             "symfony/runtime": true
