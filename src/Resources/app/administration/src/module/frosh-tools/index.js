@@ -5,6 +5,7 @@ import './component/frosh-tools-tab-scheduled';
 import './component/frosh-tools-tab-elasticsearch';
 import './component/frosh-tools-tab-logs';
 import './component/frosh-tools-tab-state-machines';
+import './component/frosh-tools-tab-gmv';
 import './component/frosh-tools-tab-files';
 import './page/index';
 import './acl'
@@ -82,6 +83,14 @@ Shopware.Module.register('frosh-tools', {
                 statemachines: {
                     component: 'frosh-tools-tab-state-machines',
                     path: 'state-machines',
+                    meta: {
+                        privilege: 'frosh_tools:read',
+                        parentPath: 'sw.settings.index.plugins'
+                    }
+                },
+                gmv: {
+                    component: 'frosh-tools-tab-gmv',
+                    path: 'gmv',
                     meta: {
                         privilege: 'frosh_tools:read',
                         parentPath: 'sw.settings.index.plugins'

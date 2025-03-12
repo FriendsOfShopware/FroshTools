@@ -54,6 +54,15 @@
         "orderTitle": "Order status",
         "transactionTitle": "Transaction status",
         "deliveryTitle": "Delivery status"
+      },
+      "gmv": {
+        "title": "Gross Merchandise Volume",
+        "yearly": "Yearly",
+        "monthly": "Monthly",
+        "date": "Date",
+        "orderCount": "Orders",
+        "turnoverGross": "Turnover Gross",
+        "turnoverNet": "Turnover Net"
       }
     },
     "clear": "Clear",

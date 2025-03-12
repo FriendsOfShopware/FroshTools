@@ -1,0 +1,58 @@
+<sw-card-view>
+    <sw-card
+            class="frosh-tools-tab-gmv__manager-card"
+            :title="$tc('frosh-tools.tabs.gmv.title')"
+            :isLoading="isLoading"
+            :large="true"
+            positionIdentifier="frosh-tools-tab-gmv"
+    >
+        <template #toolbar>
+            <sw-button variant="ghost" @click="refresh"><sw-icon :small="true" name="regular-undo"></sw-icon></sw-button>
+        </template>
+
+        <sw-card
+                class="frosh-tools-tab-gmv__yearly"
+                :title="$tc('frosh-tools.tabs.gmv.yearly')"
+                :large="true"
+                positionIdentifier="frosh-tools-tab-gmv-yearly"
+        >
+
+            <sw-data-grid
+                :showSelection="false"
+                :dataSource="gmvEntries.year"
+                :columns="columns"
+                :showActions="false"
+            >
+                <template #column-turnover_total="{ item }">
+                    {{ formatCurrency(item.turnover_total, item.currency_iso_code) }}
+                </template>
+
+                <template #column-turnover_net="{ item }">
+                    {{ formatCurrency(item.turnover_net, item.currency_iso_code) }}
+                </template>
+            </sw-data-grid>
+        </sw-card>
+
+        <sw-card
+                class="frosh-tools-tab-gmv__monthly"
+                :title="$tc('frosh-tools.tabs.gmv.monthly')"
+                :large="true"
+                positionIdentifier="frosh-tools-tab-gmv-monthly"
+        >
+            <sw-data-grid
+                :showSelection="false"
+                :dataSource="gmvEntries.month"
+                :columns="columns"
+                :showActions="false"
+            >
+                <template #column-turnover_total="{ item }">
+                    {{ formatCurrency(item.turnover_total, item.currency_iso_code) }}
+                </template>
+
+                <template #column-turnover_net="{ item }">
+                    {{ formatCurrency(item.turnover_net, item.currency_iso_code) }}
+                </template>
+            </sw-data-grid>
+        </sw-card>
+    </sw-card>
+</sw-card-view>
