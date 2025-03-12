@@ -54,6 +54,15 @@
         "orderTitle": "Bestellstatus",
         "transactionTitle": "Bezahlstatus",
         "deliveryTitle": "Versandstatus"
+      },
+      "gmv": {
+        "title": "Brutto-Warenwert",
+        "yearly": "Jährlich",
+        "monthly": "Monatlich",
+        "date": "Datum",
+        "orderCount": "Bestellungen",
+        "turnoverGross": "Umsatz Brutto",
+        "turnoverNet": "Umsatz Netto"
       }
     },
     "clear": "Leeren",
