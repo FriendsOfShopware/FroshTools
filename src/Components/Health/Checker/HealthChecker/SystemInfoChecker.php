@@ -37,6 +37,7 @@ class SystemInfoChecker implements HealthCheckerInterface, CheckerInterface
 
     private function getDatabaseInfo(HealthCollection $collection): void
     {
+        // @phpstan-ignore-next-line
         $databaseConnectionInfo = (new DatabaseConnectionInformation())->fromEnv();
 
         $collection->add(

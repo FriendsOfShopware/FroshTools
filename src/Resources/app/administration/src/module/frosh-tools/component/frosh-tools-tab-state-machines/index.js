@@ -1,5 +1,3 @@
-/*global Shopware*/
-
 import './style.scss'
 import template from './template.html.twig'
 

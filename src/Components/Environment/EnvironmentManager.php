@@ -13,7 +13,7 @@ class EnvironmentManager
             throw new \RuntimeException(\sprintf('Cannot read file %s', $path));
         }
 
-        /** @var array<string> $lines */
+        /** @var list<string> $lines */
         $lines = preg_split('/\r\n|\r|\n/', $content);
         $parsedLines = [];
         $lineCount = \count($lines) - 1;
@@ -34,7 +34,7 @@ class EnvironmentManager
             unset($parsedLines[$lineCount]);
         }
 
-        return new EnvironmentFile($parsedLines);
+        return new EnvironmentFile(array_values($parsedLines));
     }
 
     public function save(string $path, EnvironmentFile $file): void

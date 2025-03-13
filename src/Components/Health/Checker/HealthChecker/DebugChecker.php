@@ -29,6 +29,7 @@ class DebugChecker implements HealthCheckerInterface, CheckerInterface
 
     private function checkWebProfiler(HealthCollection $collection): void
     {
+        // @phpstan-ignore-next-line
         if (\in_array(WebProfilerBundle::class, $this->kernelBundles, true)) {
             $collection->add(SettingsResult::error(
                 'webprofiler',

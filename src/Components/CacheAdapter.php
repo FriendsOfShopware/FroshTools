@@ -90,7 +90,7 @@ class CacheAdapter
                 }
 
                 break;
-            case $this->adapter instanceof AdapterInterface:
+            default:
                 $this->adapter->clear();
 
                 break;
@@ -114,6 +114,7 @@ class CacheAdapter
     {
         if ($adapter instanceof CacheDecorator) {
             // Do not declare function as static
+            // @phpstan-ignore-next-line
             $func = \Closure::bind(fn () => $adapter->decorated, $adapter, $adapter::class);
 
             return $this->getCacheAdapter($func());

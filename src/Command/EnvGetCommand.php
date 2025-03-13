@@ -46,7 +46,7 @@ class EnvGetCommand extends Command
         if ($variable === null) {
             if ($mode === 'json') {
                 $output->writeln(json_encode($file->values(), \JSON_THROW_ON_ERROR | \JSON_PRETTY_PRINT));
-            } elseif ($mode !== '' && $mode !== '0') {
+            } elseif ($mode !== '') {
                 $output->writeln($file->__toString());
             }
 

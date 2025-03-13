@@ -182,6 +182,8 @@ Component.register('frosh-tools-tab-scheduled', {
         this.createNotificationError({
           message: this.$tc('frosh-tools.scheduledTasksRegisterFailed'),
         })
+
+        this.taskError = e.response.data
       }
 
       this.createdComponent()

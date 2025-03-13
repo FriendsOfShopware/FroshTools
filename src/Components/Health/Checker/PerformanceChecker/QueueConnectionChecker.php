@@ -56,7 +56,7 @@ class QueueConnectionChecker implements PerformanceCheckerInterface, CheckerInte
         $urlSchema = \parse_url($this->connection, \PHP_URL_SCHEME);
 
         if (!\is_string($urlSchema)) {
-            $urlSchema = explode('://', $this->connection)[0] ?? 'unknown';
+            $urlSchema = explode('://', $this->connection)[0];
         }
 
         return $urlSchema;

@@ -220,24 +220,24 @@ class ShopwareFilesController extends AbstractController
         $userId = $contextSource->getUserId();
 
         if ($userId !== null) {
-            return 'user ' . $this->getUserNameByUserId($userId);
+            return 'user ' . $this->getUserNameByUserId($userId, $context);
         }
 
         $integrationId = $contextSource->getIntegrationId();
 
         if ($integrationId !== null) {
-            return 'integration ' . $this->getNameByIntegrationId($integrationId);
+            return 'integration ' . $this->getNameByIntegrationId($integrationId, $context);
         }
 
         return null;
     }
 
-    private function getUserNameByUserId(string $userId): ?string
+    private function getUserNameByUserId(string $userId, Context $context): ?string
     {
         /** @var UserEntity|null $userEntity */
         $userEntity = $this->userRepository->search(
             new Criteria([$userId]),
-            Context::createDefaultContext(),
+            $context,
         )->first();
 
         if (!$userEntity instanceof UserEntity) {
@@ -247,12 +247,12 @@ class ShopwareFilesController extends AbstractController
         return 'user ' . $userEntity->getUsername();
     }
 
-    private function getNameByIntegrationId(string $integrationId): ?string
+    private function getNameByIntegrationId(string $integrationId, Context $context): ?string
     {
         /** @var IntegrationEntity|null $integrationEntity */
         $integrationEntity = $this->integrationRepository->search(
             new Criteria([$integrationId]),
-            Context::createDefaultContext(),
+            $context,
         )->first();
 
         if (!$integrationEntity instanceof IntegrationEntity) {

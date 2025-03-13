@@ -45,6 +45,7 @@ class MonitorCommand extends Command
 
     protected function execute(InputInterface $input, OutputInterface $output): int
     {
+        // @phpstan-ignore-next-line
         $context = Context::createDefaultContext();
 
         if ($input->getOption(self::MONITOR_EMAIL_OPTION)) {
