@@ -1,6 +1,6 @@
 <?php
 
-declare (strict_types=1);
+declare(strict_types=1);
 
 namespace Frosh\Tools\Components\Health\Checker\HealthChecker;
 
@@ -30,7 +30,7 @@ class SystemTimeChecker implements HealthCheckerInterface, CheckerInterface
             $lines = explode("\n", trim((string) $response->getBody()));
             foreach ($lines as $line) {
                 if (str_contains($line, '=')) {
-                    [$key, $value] = explode("=", $line, 2);
+                    [$key, $value] = explode('=', $line, 2);
                     $data[$key] = $value;
                 }
             }
@@ -39,6 +39,7 @@ class SystemTimeChecker implements HealthCheckerInterface, CheckerInterface
             if (!$cloudflareTimestamp) {
                 $status = SettingsResult::info('system-time', $snippet, 'Could not parse remote time', $recommended, $url);
                 $collection->add($status);
+
                 return;
             }
 

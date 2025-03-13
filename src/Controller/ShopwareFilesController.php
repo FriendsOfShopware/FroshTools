@@ -60,7 +60,7 @@ class ShopwareFilesController extends AbstractController
             return new JsonResponse(['error' => 'Git version is not supported']);
         }
 
-        $url = sprintf('https://swagger.docs.fos.gg/version/%s/Files.xxhsums', $this->shopwareVersion);
+        $url = \sprintf('https://swagger.docs.fos.gg/version/%s/Files.xxhsums', $this->shopwareVersion);
         $data = $this->httpClient->request('GET', $url)->getContent(false);
         $data = trim((string) $data);
 
@@ -73,7 +73,7 @@ class ShopwareFilesController extends AbstractController
 
         foreach (explode("\n", $data) as $row) {
             if ($this->isPlatform) {
-                $row = preg_replace_callback('/vendor\/shopware\/(.)/', fn($matches): string => 'src/' . strtoupper($matches[1]), $row);
+                $row = preg_replace_callback('/vendor\/shopware\/(.)/', fn ($matches): string => 'src/' . strtoupper($matches[1]), $row);
             }
 
             [$expectedMd5Sum, $file] = explode('  ', trim((string) $row));
@@ -171,7 +171,7 @@ class ShopwareFilesController extends AbstractController
 
         $userName = $this->getUserName($context) ?? 'unknown';
 
-        $message = sprintf('File at "%s" has been restored by %s', $file, $userName);
+        $message = \sprintf('File at "%s" has been restored by %s', $file, $userName);
 
         $this->froshToolsLogger->info($message);
 
@@ -234,7 +234,7 @@ class ShopwareFilesController extends AbstractController
 
     private function getUserNameByUserId(string $userId): ?string
     {
-        /** @var null|UserEntity $userEntity */
+        /** @var UserEntity|null $userEntity */
         $userEntity = $this->userRepository->search(
             new Criteria([$userId]),
             Context::createDefaultContext(),
@@ -249,7 +249,7 @@ class ShopwareFilesController extends AbstractController
 
     private function getNameByIntegrationId(string $integrationId): ?string
     {
-        /** @var null|IntegrationEntity $integrationEntity */
+        /** @var IntegrationEntity|null $integrationEntity */
         $integrationEntity = $this->integrationRepository->search(
             new Criteria([$integrationId]),
             Context::createDefaultContext(),

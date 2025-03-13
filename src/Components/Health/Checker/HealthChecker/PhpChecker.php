@@ -134,7 +134,7 @@ class PhpChecker implements HealthCheckerInterface, CheckerInterface
 
     private function parseQuantity(string $val): float
     {
-        //TODO: remove condition and own calculation when min php version is 8.2
+        // TODO: remove condition and own calculation when min php version is 8.2
         if (\function_exists('ini_parse_quantity')) {
             return (float) \ini_parse_quantity($val);
         }

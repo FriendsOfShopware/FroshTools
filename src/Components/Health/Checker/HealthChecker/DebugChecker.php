@@ -18,7 +18,8 @@ class DebugChecker implements HealthCheckerInterface, CheckerInterface
         private readonly array $kernelBundles,
         #[Autowire(param: 'kernel.debug')]
         private readonly bool $kernelDebug,
-    ) {}
+    ) {
+    }
 
     public function collect(HealthCollection $collection): void
     {

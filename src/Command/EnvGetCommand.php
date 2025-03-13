@@ -60,7 +60,7 @@ class EnvGetCommand extends Command
         $var = $file->get($variable);
 
         if (!$var instanceof EnvironmentKeyValue) {
-            throw new \RuntimeException(sprintf('Cannot find variable with name: %s', $variable));
+            throw new \RuntimeException(\sprintf('Cannot find variable with name: %s', $variable));
         }
 
         if ($mode === 'json') {
