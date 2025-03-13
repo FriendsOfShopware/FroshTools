@@ -1,16 +1,28 @@
 <sw-card-view>
     <sw-card
-            class="frosh-tools-tab-queue__manager-card"
-            :title="$tc('frosh-tools.tabs.queue.title')"
-            :isLoading="isLoading"
-            :large="true"
-            positionIdentifier="frosh-tools-tab-queue"
+        class="frosh-tools-tab-queue__manager-card"
+        :title="$tc('frosh-tools.tabs.queue.title')"
+        :isLoading="isLoading"
+        :large="true"
+        positionIdentifier="frosh-tools-tab-queue"
     >
         <template #toolbar>
-            <sw-button variant="ghost" @click="refresh"><sw-icon :small="true" name="regular-undo"></sw-icon></sw-button>
-            <sw-button variant="danger" @click="showResetModal = true">{{ $tc('frosh-tools.resetQueue') }}</sw-button>
+            <sw-button
+                variant="ghost"
+                @click="refresh"
+            >
+                <sw-icon
+                    :small="true"
+                    name="regular-undo"
+                ></sw-icon>
+            </sw-button>
+            <sw-button
+                variant="danger"
+                @click="showResetModal = true"
+            >
+                {{ $tc('frosh-tools.resetQueue') }}
+            </sw-button>
         </template>
-
         <sw-data-grid
             :showSelection="false"
             :dataSource="queueEntries"
@@ -19,13 +31,23 @@
         >
         </sw-data-grid>
     </sw-card>
-
-    <sw-modal v-if="showResetModal" :title="$tc('frosh-tools.tabs.queue.reset.modal.title')" variant="small" @modal-close="showResetModal = false">
+    <sw-modal
+        v-if="showResetModal"
+        :title="$tc('frosh-tools.tabs.queue.reset.modal.title')"
+        variant="small"
+        @modal-close="showResetModal = false"
+    >
         {{ $tc('frosh-tools.tabs.queue.reset.modal.description') }}
-
         <template #modal-footer>
-            <sw-button @click="showResetModal = false">{{ $tc('global.default.cancel') }}</sw-button>
-            <sw-button variant="danger" @click="resetQueue">{{ $tc('frosh-tools.tabs.queue.reset.modal.reset') }}</sw-button>
+            <sw-button @click="showResetModal = false">
+                {{ $tc('global.default.cancel') }}
+            </sw-button>
+            <sw-button
+                variant="danger"
+                @click="resetQueue"
+            >
+                {{ $tc('frosh-tools.tabs.queue.reset.modal.reset') }}
+            </sw-button>
         </template>
     </sw-modal>
 </sw-card-view>

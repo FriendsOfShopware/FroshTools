@@ -6,19 +6,20 @@
         :large="true"
         positionIdentifier="frosh-tools-tab-state-machines"
     >
-
-        <div class="frosh-tools-tab-state-machines__state-machines-card-image-wrapper">
-            <img id="state_machine"
-                 class="frosh-tools-tab-state-machines__state-machines-card-image"
-                 type="image/svg+xml"
-                 src="/bundles/administration/static/img/empty-states/media-empty-state.svg"
-                 alt="State Machine"
-                 width="100%"
-                 height="auto"
-                 style="text-align:center; display:inline-block; opacity:0;"
+        <div
+            class="frosh-tools-tab-state-machines__state-machines-card-image-wrapper"
+        >
+            <img
+                id="state_machine"
+                class="frosh-tools-tab-state-machines__state-machines-card-image"
+                type="image/svg+xml"
+                src="/bundles/administration/static/img/empty-states/media-empty-state.svg"
+                alt="State Machine"
+                width="100%"
+                height="auto"
+                style="text-align:center; display:inline-block; opacity:0;"
             />
         </div>
-
         <template #toolbar>
             <sw-entity-single-select
                 v-model="selectedStateMachine"

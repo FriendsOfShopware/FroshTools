@@ -9,11 +9,11 @@ use Frosh\Tools\Components\Health\Checker\CheckerInterface;
 use Frosh\Tools\Components\Health\HealthCollection;
 use Frosh\Tools\Components\Health\SettingsResult;
 use Symfony\Bundle\FrameworkBundle\Console\Application;
-use Symfony\Contracts\Cache\CacheInterface;
 use Symfony\Component\Console\Input\ArrayInput;
 use Symfony\Component\Console\Output\NullOutput;
 use Symfony\Component\DependencyInjection\Attribute\Autowire;
 use Symfony\Component\HttpKernel\KernelInterface;
+use Symfony\Contracts\Cache\CacheInterface;
 use Symfony\Contracts\Cache\ItemInterface;
 use Symfony\Contracts\HttpClient\HttpClientInterface;
 
@@ -27,7 +27,8 @@ class SwagSecurityChecker implements HealthCheckerInterface, CheckerInterface
         private readonly CacheInterface $cacheObject,
         #[Autowire(lazy: true)]
         private readonly HttpClientInterface $httpClient,
-    ) {}
+    ) {
+    }
 
     public function collect(HealthCollection $collection): void
     {
@@ -66,7 +67,7 @@ class SwagSecurityChecker implements HealthCheckerInterface, CheckerInterface
                 throw new \RuntimeException('Could not fetch security.json');
             }
 
-            $data = \json_decode(trim($securityJson), true, 512, JSON_THROW_ON_ERROR);
+            $data = \json_decode(trim($securityJson), true, 512, \JSON_THROW_ON_ERROR);
 
             if (!\is_array($data)) {
                 throw new \RuntimeException('Could not read security.json');
@@ -123,7 +124,6 @@ class SwagSecurityChecker implements HealthCheckerInterface, CheckerInterface
 
     private function determineEolSupport(HealthCollection $collection): void
     {
-
         $id = 'security-eol-shopware';
         $snippet = 'Security updates';
 
@@ -222,7 +222,7 @@ class SwagSecurityChecker implements HealthCheckerInterface, CheckerInterface
                 throw new \RuntimeException('Could not fetch releases.json');
             }
 
-            $data = \json_decode(trim($releasesJson), true, 512, JSON_THROW_ON_ERROR);
+            $data = \json_decode(trim($releasesJson), true, 512, \JSON_THROW_ON_ERROR);
 
             if (!\is_array($data)) {
                 throw new \RuntimeException('Could not read releases.json');
@@ -238,11 +238,11 @@ class SwagSecurityChecker implements HealthCheckerInterface, CheckerInterface
                 }
 
                 if (!empty($entry['extended_eol'])
-                    && version_compare($entry['version'], ($result['extended_eol_version'] ?? ''), '>')) {
+                    && version_compare($entry['version'], $result['extended_eol_version'] ?? '', '>')) {
                     $result['extended_eol_version'] = $entry['version'];
                 }
 
-                if (version_compare($entry['version'], ($result['version'] ?? ''), '>')
+                if (version_compare($entry['version'], $result['version'] ?? '', '>')
                     && version_compare($entry['version'], $this->shopwareVersion, '<=')) {
                     $result = [...$result, ...$entry];
                 }

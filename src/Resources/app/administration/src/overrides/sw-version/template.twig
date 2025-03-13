@@ -9,13 +9,18 @@
         }"
     >
         {% block sw_version_status_badge %}
-            <sw-color-badge v-if="health && hasPermission" :variant="healthVariant" :rounded="true"></sw-color-badge>
-            <template  v-else>
+        <sw-color-badge
+            v-if="health && hasPermission"
+            :variant="healthVariant"
+            :rounded="true"
+        ></sw-color-badge>
+        <template v-else>
                 {% parent %}
             </template>
         {% endblock %}
     </router-link>
-    <template  v-else>
+
+    <template v-else>
         {% parent %}
     </template>
 {% endblock %}

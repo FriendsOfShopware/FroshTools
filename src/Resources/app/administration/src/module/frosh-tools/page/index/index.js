@@ -1,14 +1,17 @@
-import './frosh-tools.scss';
-import template from './template.twig';
+import './frosh-tools.scss'
+import template from './template.twig'
 
-const { Component } = Shopware;
+const { Component } = Shopware
 
 Component.register('frosh-tools-index', {
-    template,
+  template,
 
-    computed: {
-        elasticsearchAvailable() {
-            return Shopware.State.get('context').app.config.settings?.elasticsearchEnabled || false;
-        }
-    }
-});
+  computed: {
+    elasticsearchAvailable() {
+      return (
+        Shopware.State.get('context').app.config.settings
+          ?.elasticsearchEnabled || false
+      )
+    },
+  },
+})

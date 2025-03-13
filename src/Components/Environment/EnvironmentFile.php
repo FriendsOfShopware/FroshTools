@@ -9,7 +9,9 @@ class EnvironmentFile implements \Stringable
     /**
      * @param list<EnvironmentLine> $items
      */
-    public function __construct(private array $items) {}
+    public function __construct(private array $items)
+    {
+    }
 
     public function __toString(): string
     {
@@ -55,7 +57,9 @@ class EnvironmentFile implements \Stringable
     {
         foreach ($this->items as $i => $item) {
             if ($item instanceof EnvironmentKeyValue && $item->getKey() === $key) {
-                unset($this->items[$i]);
+                $copy = $this->items;
+                unset($copy[$i]);
+                $this->items = array_values($copy);
             }
         }
     }

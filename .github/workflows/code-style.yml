@@ -9,9 +9,29 @@ on:
 jobs:
     cs:
         if: github.event_name != 'schedule'
-        uses: shopware/github-actions/.github/workflows/cs-fixer.yml@main
-    phpstan:
-        uses: shopware/github-actions/.github/workflows/phpstan.yml@main
-        with:
-          extensionName: FroshTools
-          shopwareVersion: v6.6.0.0-rc1
+        runs-on: ubuntu-24.04
+        steps:
+            - name: Checkout
+              uses: actions/checkout@v4
+
+            - name: Pull verifier
+              run: docker pull ghcr.io/shopwarelabs/extension-verifier:latest
+
+            - name: Run CS
+              run: docker run --rm -e GITHUB_STEP_SUMMARY -e GITHUB_ACTIONS -v $GITHUB_STEP_SUMMARY:$GITHUB_STEP_SUMMARY -v $(pwd):/ext ghcr.io/shopwarelabs/extension-verifier:latest format /ext --dry-run
+
+    check:
+        runs-on: ubuntu-24.04
+        strategy:
+          fail-fast: false
+          matrix:
+            version-selection: [ 'lowest', 'highest']
+        steps:
+            - name: Checkout
+              uses: actions/checkout@v4
+
+            - name: Pull verifier
+              run: docker pull ghcr.io/shopwarelabs/extension-verifier:latest
+
+            - name: Run Check
+              run: docker run --rm -e GITHUB_STEP_SUMMARY -e GITHUB_ACTIONS -v $GITHUB_STEP_SUMMARY:$GITHUB_STEP_SUMMARY -v $(pwd):/ext ghcr.io/shopwarelabs/extension-verifier:latest check /ext --check-against ${{ matrix.version-selection }}

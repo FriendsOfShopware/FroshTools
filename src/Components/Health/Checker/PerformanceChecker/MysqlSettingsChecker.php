@@ -18,7 +18,9 @@ class MysqlSettingsChecker implements PerformanceCheckerInterface, CheckerInterf
 
     public const MYSQL_SQL_MODE_PART = 'ONLY_FULL_GROUP_BY';
 
-    public function __construct(private readonly Connection $connection) {}
+    public function __construct(private readonly Connection $connection)
+    {
+    }
 
     public function collect(HealthCollection $collection): void
     {
@@ -30,7 +32,7 @@ class MysqlSettingsChecker implements PerformanceCheckerInterface, CheckerInterf
     private function checkGroupConcatMaxLen(HealthCollection $collection): void
     {
         /** @var string|false $groupConcatMaxLen */
-        $groupConcatMaxLen =  $this->connection->fetchOne('SELECT @@group_concat_max_len');
+        $groupConcatMaxLen = $this->connection->fetchOne('SELECT @@group_concat_max_len');
         if (!$groupConcatMaxLen || (int) $groupConcatMaxLen < self::MYSQL_GROUP_CONCAT_MAX_LEN) {
             $collection->add(
                 SettingsResult::error(
