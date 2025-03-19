@@ -18,6 +18,11 @@ class MysqlSettingsChecker implements PerformanceCheckerInterface, CheckerInterf
 
     public const MYSQL_SQL_MODE_PART = 'ONLY_FULL_GROUP_BY';
 
+    public const MYSQL_TIME_ZONES = [
+        '+00:00',
+        'UTC',
+    ];
+
     public function __construct(private readonly Connection $connection)
     {
     }
@@ -26,6 +31,7 @@ class MysqlSettingsChecker implements PerformanceCheckerInterface, CheckerInterf
     {
         $this->checkGroupConcatMaxLen($collection);
         $this->checkSqlMode($collection);
+        $this->checkTimeZone($collection);
         $this->checkCheckDefaultEnvironmentSessionVariables($collection);
     }
 
@@ -56,6 +62,22 @@ class MysqlSettingsChecker implements PerformanceCheckerInterface, CheckerInterf
                     'MySQL value sql_mode',
                     $sqlMode,
                     'No ' . self::MYSQL_SQL_MODE_PART,
+                    self::DOCUMENTATION_URL,
+                ),
+            );
+        }
+    }
+
+    private function checkTimeZone(HealthCollection $collection): void
+    {
+        $timeZone = $this->connection->fetchOne('SELECT @@time_zone');
+        if (\is_string($timeZone) && \in_array($timeZone, self::MYSQL_TIME_ZONES, true)) {
+            $collection->add(
+                SettingsResult::warning(
+                    'sql_time_zone',
+                    'MySQL value time_zone',
+                    $timeZone,
+                    implode(', ', self::MYSQL_TIME_ZONES),
                     self::DOCUMENTATION_URL,
                 ),
             );
