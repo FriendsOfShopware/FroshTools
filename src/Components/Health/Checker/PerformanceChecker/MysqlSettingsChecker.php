@@ -70,7 +70,7 @@ class MysqlSettingsChecker implements PerformanceCheckerInterface, CheckerInterf
         $timeZone = $this->connection->fetchOne('SELECT @@time_zone');
         if (\is_string($timeZone) && $timeZone !== self::MYSQL_TIME_ZONE) {
             $collection->add(
-                SettingsResult::error(
+                SettingsResult::warning(
                     'sql_time_zone',
                     'MySQL value time_zone',
                     $timeZone,
