@@ -18,7 +18,10 @@ class MysqlSettingsChecker implements PerformanceCheckerInterface, CheckerInterf
 
     public const MYSQL_SQL_MODE_PART = 'ONLY_FULL_GROUP_BY';
 
-    public const MYSQL_TIME_ZONE = '+00:00';
+    public const MYSQL_TIME_ZONES = [
+        '+00:00',
+        'UTC',
+    ];
 
     public function __construct(private readonly Connection $connection)
     {
@@ -68,13 +71,13 @@ class MysqlSettingsChecker implements PerformanceCheckerInterface, CheckerInterf
     private function checkTimeZone(HealthCollection $collection): void
     {
         $timeZone = $this->connection->fetchOne('SELECT @@time_zone');
-        if (\is_string($timeZone) && $timeZone !== self::MYSQL_TIME_ZONE) {
+        if (\is_string($timeZone) && \in_array($timeZone, self::MYSQL_TIME_ZONES, true)) {
             $collection->add(
                 SettingsResult::warning(
                     'sql_time_zone',
                     'MySQL value time_zone',
                     $timeZone,
-                    self::MYSQL_TIME_ZONE,
+                    implode(', ', self::MYSQL_TIME_ZONES),
                     self::DOCUMENTATION_URL,
                 ),
             );
