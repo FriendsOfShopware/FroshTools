@@ -71,7 +71,7 @@ class MysqlSettingsChecker implements PerformanceCheckerInterface, CheckerInterf
     private function checkTimeZone(HealthCollection $collection): void
     {
         $timeZone = $this->connection->fetchOne('SELECT @@time_zone');
-        if (\is_string($timeZone) && \in_array($timeZone, self::MYSQL_TIME_ZONES, true)) {
+        if (\is_string($timeZone) && !\in_array($timeZone, self::MYSQL_TIME_ZONES, true)) {
             $collection->add(
                 SettingsResult::warning(
                     'sql_time_zone',
