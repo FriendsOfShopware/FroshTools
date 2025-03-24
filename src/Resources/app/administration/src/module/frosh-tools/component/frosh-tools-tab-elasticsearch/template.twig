@@ -8,24 +8,26 @@
         <sw-alert
             variant="error"
             v-if="!isLoading && !isActive"
-        >Elasticsearch is not enabled</sw-alert>
+        >
+            {{ $tc('frosh-tools.tabs.elasticsearch.disabled') }}
+        </sw-alert>
         <div v-if="!isLoading && isActive">
             <div>
-                <strong>Elasticsearch version: </strong>
+                <strong>{{ $tc('frosh-tools.tabs.elasticsearch.version') }}: </strong>
                 {{ statusInfo.info.version.number }}
             </div>
             <div>
-                <strong>Nodes: </strong>
+                <strong>{{ $tc('frosh-tools.tabs.elasticsearch.nodes') }}: </strong>
                 {{ statusInfo.health.number_of_nodes }}
             </div>
             <div>
-                <strong>Cluster status: </strong>
+                <strong>{{ $tc('frosh-tools.tabs.elasticsearch.status') }}: </strong>
                 {{ statusInfo.health.status }}
             </div>
         </div>
     </sw-card>
     <sw-card
-        title="Indices"
+        :title="tc('frosh-tools.tabs.elasticsearch.indices')"
         v-if="!isLoading && isActive"
         :large="true"
         positionIdentifier="frosh-tools-tab-elasticsearch-indices"
@@ -76,7 +78,7 @@
         </sw-data-grid>
     </sw-card>
     <sw-card
-        title="Actions"
+        :title="tc('frosh-tools.actions')"
         v-if="!isLoading && isActive"
         :large="true"
         positionIdentifier="frosh-tools-tab-elasticsearch-health"
@@ -84,17 +86,17 @@
         <sw-button
             @click="reindex"
             variant="primary"
-        >Reindex</sw-button>
-        <sw-button @click="switchAlias">Trigger alias switching</sw-button>
-        <sw-button @click="flushAll">Flush all indices</sw-button>
-        <sw-button @click="cleanup">Cleanup unused Indices</sw-button>
+        >{{ $tc('frosh-tools.tabs.elasticsearch.action.reindex') }}</sw-button>
+        <sw-button @click="switchAlias">{{ $tc('frosh-tools.tabs.elasticsearch.action.switchAlias') }}</sw-button>
+        <sw-button @click="flushAll">{{ $tc('frosh-tools.tabs.elasticsearch.action.flushAll') }}</sw-button>
+        <sw-button @click="cleanup">{{ $tc('frosh-tools.tabs.elasticsearch.action.cleanup') }}</sw-button>
         <sw-button
             @click="resetElasticsearch"
             variant="danger"
-        >Delete all indices</sw-button>
+        >{{ $tc('frosh-tools.tabs.elasticsearch.action.reset') }}</sw-button>
     </sw-card>
     <sw-card
-        title="Elasticsearch Console"
+        :title="tc('frosh-tools.tabs.elasticsearch.console.title')"
         v-if="!isLoading && isActive"
         :large="true"
         positionIdentifier="frosh-tools-tab-elasticsearch-console"
@@ -108,9 +110,9 @@
             :sanitizeInput="false"
             v-model="consoleInput"
         ></sw-code-editor>
-        <sw-button @click="onConsoleEnter">Send</sw-button>
+        <sw-button @click="onConsoleEnter">{{ $tc('frosh-tools.tabs.elasticsearch.console.send') }}</sw-button>
         <div>
-            <strong>Output:</strong>
+            <strong>{{ $tc('frosh-tools.tabs.elasticsearch.console.output') }}:</strong>
         </div>
         <pre>{{ consoleOutput }}</pre>
     </sw-card>
