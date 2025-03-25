@@ -38,7 +38,7 @@
         "status": "Cluster Status",
         "indices": "Indizes",
         "action": {
-          "reindex": "Neu indizieren",
+          "reindex": "Neu indexieren",
           "switchAlias": "\"Alias switching\" durchführen",
           "flushAll": "Alle Indizes löschen",
           "cleanup": "Ungenutzte Indizes löschen",

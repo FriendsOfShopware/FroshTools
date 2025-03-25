@@ -19,9 +19,9 @@ The current feature set consists of:
   - Shows the amount of messages in the queue
   - Reset queue
 - **Elasticsearch Manager**
-  - Shows the current Elasticsearch status of nodes & cluster
-  - Lists all indeces of the Elasticsearch instance
-  - Quick actions for indeces handling
+  - Shows the current status of the Elasticsearch nodes & cluster
+  - Lists all indices of the Elasticsearch instance
+  - Quick actions for index handling
   - Execute Elasticsearch console commands
 - **Log Viewer**
   - Shows the entries of /var/log/*.log files
