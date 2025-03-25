@@ -1,5 +1,6 @@
 <sw-card-view>
-    <sw-card
+    <!-- TODO Codemod: Converted from sw-card - please check if everything works correctly -->
+    <mt-card
         class="frosh-tools-tab-scheduled__tasks-card"
         :title="$t('frosh-tools.tabs.scheduledTaskOverview.title')"
         :isLoading="isLoading"
@@ -7,21 +8,25 @@
         positionIdentifier="frosh-tools-tab-scheduled"
     >
         <template #toolbar>
-            <sw-button
-                variant="ghost"
+            <!-- TODO Codemod: Converted from sw-button - please check if everything works correctly -->
+            <mt-button
+                variant="primary"
+                ghost
                 @click="refresh"
             >
-                <sw-icon
-                    :small="true"
+                <!-- TODO Codemod: Converted from sw-icon - please check if everything works correctly -->
+                <mt-icon
+                    size="16px"
                     name="regular-undo"
-                ></sw-icon>
-            </sw-button>
-            <sw-button
+                ></mt-icon>
+            </mt-button>
+            <!-- TODO Codemod: Converted from sw-button - please check if everything works correctly -->
+            <mt-button
                 variant="primary"
                 @click="registerScheduledTasks"
             >
                 {{ $t('frosh-tools.scheduledTasksRegisterStarted') }}
-            </sw-button>
+            </mt-button>
         </template>
         <sw-entity-listing
             :showSelection="false"
@@ -81,7 +86,7 @@
                 </sw-context-menu-item>
             </template>
         </sw-entity-listing>
-    </sw-card>
+    </mt-card>
     <sw-modal
         v-if="taskError"
         :title="$t('global.default.error')"
@@ -96,12 +101,14 @@
             v-html="taskError"
         />
         <template #modal-footer>
-            <sw-button
+            <!-- TODO Codemod: Converted from sw-button - please check if everything works correctly -->
+            <mt-button
                 size="small"
                 @click="taskError = null"
+                variant="secondary"
             >
                 {{ $t('global.default.close') }}
-            </sw-button>
+            </mt-button>
         </template>
     </sw-modal>
 </sw-card-view>

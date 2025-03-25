@@ -1,5 +1,6 @@
 <sw-card-view>
-    <sw-card
+    <!-- TODO Codemod: Converted from sw-card - please check if everything works correctly -->
+    <mt-card
         class="frosh-tools-tab-files__files-card"
         :class="isLoadingClass"
         :title="$t('frosh-tools.tabs.files.title')"
@@ -7,33 +8,39 @@
         :large="true"
         positionIdentifier="frosh-tools-tab-files__files-card"
     >
-        <sw-alert
-            variant="error"
+        <!-- TODO Codemod: Converted from sw-alert - please check if everything works correctly -->
+        <mt-banner
+            variant="critical"
             v-if="items.error"
-        >{{ items.error }}</sw-alert>
-        <sw-alert
-            variant="success"
+        >{{ items.error }}</mt-banner>
+        <!-- TODO Codemod: Converted from sw-alert - please check if everything works correctly -->
+        <mt-banner
+            variant="positive"
             v-if="items.ok"
         >
             {{ $t('frosh-tools.tabs.files.allFilesOk') }}
-        </sw-alert>
-        <sw-alert
-            variant="warning"
+        </mt-banner>
+        <!-- TODO Codemod: Converted from sw-alert - please check if everything works correctly -->
+        <mt-banner
+            variant="attention"
             v-else-if="items.files"
         >
             {{ $t('frosh-tools.tabs.files.notOk') }}
-        </sw-alert>
+        </mt-banner>
         <template #toolbar>
             <!-- @todo: Make the refresh button fancy -->
-            <sw-button
-                variant="ghost"
+            <!-- TODO Codemod: Converted from sw-button - please check if everything works correctly -->
+            <mt-button
+                variant="primary"
+                ghost
                 @click="refresh"
             >
-                <sw-icon
-                    :small="true"
+                <!-- TODO Codemod: Converted from sw-icon - please check if everything works correctly -->
+                <mt-icon
+                    size="16px"
                     name="regular-undo"
-                ></sw-icon>
-            </sw-button>
+                ></mt-icon>
+            </mt-button>
         </template>
         <sw-data-grid
             v-if="items.files && items.files.length"
@@ -66,7 +73,7 @@
                 </sw-context-menu-item>
             </template>
         </sw-data-grid>
-    </sw-card>
+    </mt-card>
     <sw-modal
         v-if="showModal"
         variant="large"
@@ -78,14 +85,17 @@
             v-html="diffData.html"
         ></span>
         <template #modal-footer>
-            <sw-button
-                variant="ghost-danger"
+            <!-- TODO Codemod: Converted from sw-button - please check if everything works correctly -->
+            <mt-button
+                variant="critical"
+                ghost
                 @click="restoreFile(diffData.file.name)"
                 :disabled="diffData.file.expected"
             >
-                <sw-icon name="regular-exclamation-triangle"></sw-icon>
+                <!-- TODO Codemod: Converted from sw-icon - please check if everything works correctly -->
+                <mt-icon name="regular-exclamation-triangle"></mt-icon>
                 {{ $t('frosh-tools.tabs.files.restore.restoreFile') }}
-            </sw-button>
+            </mt-button>
         </template>
     </sw-modal>
 </sw-card-view>

@@ -1,5 +1,6 @@
 <sw-card-view>
-    <sw-card
+    <!-- TODO Codemod: Converted from sw-card - please check if everything works correctly -->
+    <mt-card
         class="frosh-tools-tab-logs__logs-card"
         :title="$t('frosh-tools.tabs.logs.title')"
         :isLoading="isLoading"
@@ -7,15 +8,18 @@
         positionIdentifier="frosh-tools-tab-logs"
     >
         <template #toolbar>
-            <sw-button
-                variant="ghost"
+            <!-- TODO Codemod: Converted from sw-button - please check if everything works correctly -->
+            <mt-button
+                variant="primary"
+                ghost
                 @click="refresh"
             >
-                <sw-icon
-                    :small="true"
+                <!-- TODO Codemod: Converted from sw-icon - please check if everything works correctly -->
+                <mt-icon
+                    size="16px"
                     name="regular-undo"
-                ></sw-icon>
-            </sw-button>
+                ></mt-icon>
+            </mt-button>
             <sw-single-select
                 :options="logFiles"
                 :isLoading="isLoading"
@@ -46,7 +50,7 @@
             :page="page"
             @page-change="onPageChange"
         ></sw-pagination>
-    </sw-card>
+    </mt-card>
     <sw-modal
         v-if="displayedLog"
         variant="large"
@@ -68,9 +72,10 @@
                 :aria-label="$t('global.sw-modal.labelClose')"
                 @click="closeInfoModal"
             >
-                <sw-icon
+                <!-- TODO Codemod: Converted from sw-icon - please check if everything works correctly -->
+                <mt-icon
                     name="regular-times-s"
-                    small
+                    size="16px"
                 />
             </button>
         </template>

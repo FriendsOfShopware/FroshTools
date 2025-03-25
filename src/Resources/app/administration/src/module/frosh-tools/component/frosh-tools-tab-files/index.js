@@ -1,5 +1,5 @@
-import template from './template.twig'
 import DiffMatchPatch from 'diff-match-patch'
+import template from './template.html.twig'
 
 const { Component, Mixin } = Shopware
 

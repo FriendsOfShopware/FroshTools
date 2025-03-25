@@ -1,4 +1,4 @@
-import template from './template.twig'
+import template from './template.html.twig'
 
 const { Component } = Shopware
 
@@ -25,7 +25,7 @@ Component.override('sw-version', {
     healthVariant() {
       let variant = 'success'
 
-      for (let health of this.health) {
+      for (const health of this.health) {
         if (health.state === 'STATE_ERROR') {
           variant = 'error'
           continue
@@ -46,7 +46,7 @@ Component.override('sw-version', {
         return msg
       }
 
-      for (let health of this.health) {
+      for (const health of this.health) {
         if (health.state === 'STATE_ERROR') {
           msg = 'Shop Status: May outage, Check System Status'
           continue

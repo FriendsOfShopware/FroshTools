@@ -1,4 +1,4 @@
-import template from './template.twig'
+import template from './template.html.twig'
 import './style.scss'
 
 const { Component, Mixin } = Shopware
@@ -74,7 +74,7 @@ Component.register('frosh-tools-tab-cache', {
     formatSize(bytes) {
       const formatted = bytes / (1024 * 1024)
 
-      return this.numberFormater.format(formatted) + ' MiB'
+      return `${this.numberFormater.format(formatted)} MiB`
     },
 
     async clearCache(item) {
@@ -88,12 +88,12 @@ Component.register('frosh-tools-tab-cache', {
       criteria.addAssociation('themes')
       this.isLoading = true
 
-      let salesChannels = await this.salesChannelRepository.search(
+      const salesChannels = await this.salesChannelRepository.search(
         criteria,
         Shopware.Context.api
       )
 
-      for (let salesChannel of salesChannels) {
+      for (const salesChannel of salesChannels) {
         const theme = salesChannel.extensions.themes.first()
 
         if (theme) {

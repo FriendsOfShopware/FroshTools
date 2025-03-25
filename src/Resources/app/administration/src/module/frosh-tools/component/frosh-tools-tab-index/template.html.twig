@@ -1,5 +1,6 @@
 <sw-card-view>
-    <sw-card
+    <!-- TODO Codemod: Converted from sw-card - please check if everything works correctly -->
+    <mt-card
         class="frosh-tools-tab-index__health-card"
         :isLoading="isLoading"
         :large="true"
@@ -7,17 +8,21 @@
     >
         <template #toolbar>
             <!-- @todo: Make the refresh button fancy -->
-            <sw-button
-                variant="ghost"
+            <!-- TODO Codemod: Converted from sw-button - please check if everything works correctly -->
+            <mt-button
+                variant="primary"
+                ghost
                 @click="refresh"
             >
-                <sw-icon
-                    :small="true"
+                <!-- TODO Codemod: Converted from sw-icon - please check if everything works correctly -->
+                <mt-icon
+                    size="16px"
                     name="regular-undo"
-                ></sw-icon>
-            </sw-button>
+                ></mt-icon>
+            </mt-button>
         </template>
-        <sw-card
+        <!-- TODO Codemod: Converted from sw-card - please check if everything works correctly -->
+        <mt-card
             class="frosh-tools-tab-index__health-card"
             :title="$t('frosh-tools.tabs.index.title')"
             :large="true"
@@ -71,19 +76,21 @@
                     </template>
                 </template>
             </sw-data-grid>
-        </sw-card>
-        <sw-card
+        </mt-card>
+        <!-- TODO Codemod: Converted from sw-card - please check if everything works correctly -->
+        <mt-card
             class="frosh-tools-tab-index__performance-card"
             :title="$t('frosh-tools.tabs.index.performance')"
             :large="true"
             positionIdentifier="frosh-tools-tab-index-performance"
         >
-            <sw-alert
+            <!-- TODO Codemod: Converted from sw-alert - please check if everything works correctly -->
+            <mt-banner
                 v-if="performanceStatus && performanceStatus.length === 0"
-                variant="success"
+                variant="positive"
             >
                 {{ $t('frosh-tools.noRecommendations') }}
-            </sw-alert>
+            </mt-banner>
             <sw-data-grid
                 v-if="performanceStatus && performanceStatus.length > 0"
                 :showSelection="false"
@@ -128,10 +135,12 @@
                         <a
                             :href="item.url"
                             target="_blank"
-                        >{{ $t('frosh-tools.tabs.index.info') }}</a>
+                        >
+                            {{ $t('frosh-tools.tabs.index.info') }}
+                        </a>
                     </template>
                 </template>
             </sw-data-grid>
-        </sw-card>
-    </sw-card>
+        </mt-card>
+    </mt-card>
 </sw-card-view>
