@@ -119,7 +119,7 @@
     "order": "Bestellung",
     "transaction": "Bezahlung",
     "delivery": "Versand",
-    "unkown": "Unbekannt"
+    "unknown": "Unbekannt"
   },
   "sw-privileges": {
     "additional_permissions": {

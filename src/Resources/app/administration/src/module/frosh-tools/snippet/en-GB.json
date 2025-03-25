@@ -119,7 +119,7 @@
     "order": "Order",
     "transaction": "Payment",
     "delivery": "Delivery",
-    "unkown": "Unknown"
+    "unknown": "Unknown"
   },
   "sw-privileges": {
     "additional_permissions": {
