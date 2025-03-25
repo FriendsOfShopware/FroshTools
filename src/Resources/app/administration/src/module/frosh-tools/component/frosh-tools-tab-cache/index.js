@@ -99,7 +99,7 @@ Component.register('frosh-tools-tab-cache', {
         if (theme) {
           await this.themeService.assignTheme(theme.id, salesChannel.id)
           this.createNotificationSuccess({
-            message: `${salesChannel.translated.name}: ${this.$tc('frosh-tools.themeCompiled')}`,
+            message: `${salesChannel.translated.name}: ${this.$t('frosh-tools.themeCompiled')}`,
           })
         }
       }

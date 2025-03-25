@@ -1,7 +1,7 @@
 <sw-card-view>
     <sw-card
         class="frosh-tools-tab-state-machines__state-machines-card"
-        :title="$tc('frosh-tools.tabs.state-machines.title')"
+        :title="$t('frosh-tools.tabs.state-machines.title')"
         :isLoading="isLoading"
         :large="true"
         positionIdentifier="frosh-tools-tab-state-machines"
@@ -26,9 +26,9 @@
                 entity="state_machine"
                 :aside="true"
                 @update:value="onStateMachineChange"
-                :label="$tc('frosh-tools.tabs.state-machines.label')"
-                :placeholder="$tc('frosh-tools.chooseStateMachine')"
-                :helpText="$tc('frosh-tools.tabs.state-machines.helpText')"
+                :label="$t('frosh-tools.tabs.state-machines.label')"
+                :placeholder="$t('frosh-tools.chooseStateMachine')"
+                :helpText="$t('frosh-tools.tabs.state-machines.helpText')"
             />
         </template>
     </sw-card>

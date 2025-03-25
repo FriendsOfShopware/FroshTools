@@ -117,7 +117,7 @@ Component.register('frosh-tools-tab-elasticsearch', {
       await this.froshElasticSearch.reindex()
 
       this.createNotificationSuccess({
-        message: this.$tc('global.default.success'),
+        message: this.$t('global.default.success'),
       })
 
       await this.createdComponent()
@@ -127,7 +127,7 @@ Component.register('frosh-tools-tab-elasticsearch', {
       await this.froshElasticSearch.switchAlias()
 
       this.createNotificationSuccess({
-        message: this.$tc('global.default.success'),
+        message: this.$t('global.default.success'),
       })
 
       await this.createdComponent()
@@ -137,7 +137,7 @@ Component.register('frosh-tools-tab-elasticsearch', {
       await this.froshElasticSearch.flushAll()
 
       this.createNotificationSuccess({
-        message: this.$tc('global.default.success'),
+        message: this.$t('global.default.success'),
       })
 
       await this.createdComponent()
@@ -147,7 +147,7 @@ Component.register('frosh-tools-tab-elasticsearch', {
       await this.froshElasticSearch.reset()
 
       this.createNotificationSuccess({
-        message: this.$tc('global.default.success'),
+        message: this.$t('global.default.success'),
       })
 
       await this.createdComponent()
@@ -157,7 +157,7 @@ Component.register('frosh-tools-tab-elasticsearch', {
       await this.froshElasticSearch.cleanup()
 
       this.createNotificationSuccess({
-        message: this.$tc('global.default.success'),
+        message: this.$t('global.default.success'),
       })
 
       await this.createdComponent()

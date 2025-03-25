@@ -1,7 +1,7 @@
 <sw-card-view>
     <sw-card
         class="frosh-tools-tab-queue__manager-card"
-        :title="$tc('frosh-tools.tabs.queue.title')"
+        :title="$t('frosh-tools.tabs.queue.title')"
         :isLoading="isLoading"
         :large="true"
         positionIdentifier="frosh-tools-tab-queue"
@@ -20,7 +20,7 @@
                 variant="danger"
                 @click="showResetModal = true"
             >
-                {{ $tc('frosh-tools.resetQueue') }}
+                {{ $t('frosh-tools.resetQueue') }}
             </sw-button>
         </template>
         <sw-data-grid
@@ -33,20 +33,20 @@
     </sw-card>
     <sw-modal
         v-if="showResetModal"
-        :title="$tc('frosh-tools.tabs.queue.reset.modal.title')"
+        :title="$t('frosh-tools.tabs.queue.reset.modal.title')"
         variant="small"
         @modal-close="showResetModal = false"
     >
-        {{ $tc('frosh-tools.tabs.queue.reset.modal.description') }}
+        {{ $t('frosh-tools.tabs.queue.reset.modal.description') }}
         <template #modal-footer>
             <sw-button @click="showResetModal = false">
-                {{ $tc('global.default.cancel') }}
+                {{ $t('global.default.cancel') }}
             </sw-button>
             <sw-button
                 variant="danger"
                 @click="resetQueue"
             >
-                {{ $tc('frosh-tools.tabs.queue.reset.modal.reset') }}
+                {{ $t('frosh-tools.tabs.queue.reset.modal.reset') }}
             </sw-button>
         </template>
     </sw-modal>

@@ -1,6 +1,6 @@
 <sw-card-view>
     <sw-card
-        :title="$tc('frosh-tools.tabs.elasticsearch.title')"
+        :title="$t('frosh-tools.tabs.elasticsearch.title')"
         :large="true"
         :isLoading="isLoading"
         positionIdentifier="frosh-tools-tab-elasticsearch"
@@ -9,25 +9,25 @@
             variant="error"
             v-if="!isLoading && !isActive"
         >
-            {{ $tc('frosh-tools.tabs.elasticsearch.disabled') }}
+            {{ $t('frosh-tools.tabs.elasticsearch.disabled') }}
         </sw-alert>
         <div v-if="!isLoading && isActive">
             <div>
-                <strong>{{ $tc('frosh-tools.tabs.elasticsearch.version') }}: </strong>
+                <strong>{{ $t('frosh-tools.tabs.elasticsearch.version') }}: </strong>
                 {{ statusInfo.info.version.number }}
             </div>
             <div>
-                <strong>{{ $tc('frosh-tools.tabs.elasticsearch.nodes') }}: </strong>
+                <strong>{{ $t('frosh-tools.tabs.elasticsearch.nodes') }}: </strong>
                 {{ statusInfo.health.number_of_nodes }}
             </div>
             <div>
-                <strong>{{ $tc('frosh-tools.tabs.elasticsearch.status') }}: </strong>
+                <strong>{{ $t('frosh-tools.tabs.elasticsearch.status') }}: </strong>
                 {{ statusInfo.health.status }}
             </div>
         </div>
     </sw-card>
     <sw-card
-        :title="tc('frosh-tools.tabs.elasticsearch.indices')"
+        :title="$t('frosh-tools.tabs.elasticsearch.indices')"
         v-if="!isLoading && isActive"
         :large="true"
         positionIdentifier="frosh-tools-tab-elasticsearch-indices"
@@ -56,7 +56,7 @@
                     appearance="pill"
                     v-if="item.aliases.length"
                 >
-                    {{ $tc('frosh-tools.active') }}
+                    {{ $t('frosh-tools.active') }}
                 </sw-label>
                 {{ item.name }}
                 <br/>
@@ -72,13 +72,13 @@
                     variant="danger"
                     @click="deleteIndex(item.name)"
                 >
-                    {{ $tc('frosh-tools.delete') }}
+                    {{ $t('frosh-tools.delete') }}
                 </sw-context-menu-item>
             </template>
         </sw-data-grid>
     </sw-card>
     <sw-card
-        :title="tc('frosh-tools.actions')"
+        :title="$t('frosh-tools.actions')"
         v-if="!isLoading && isActive"
         :large="true"
         positionIdentifier="frosh-tools-tab-elasticsearch-health"
@@ -86,17 +86,17 @@
         <sw-button
             @click="reindex"
             variant="primary"
-        >{{ $tc('frosh-tools.tabs.elasticsearch.action.reindex') }}</sw-button>
-        <sw-button @click="switchAlias">{{ $tc('frosh-tools.tabs.elasticsearch.action.switchAlias') }}</sw-button>
-        <sw-button @click="flushAll">{{ $tc('frosh-tools.tabs.elasticsearch.action.flushAll') }}</sw-button>
-        <sw-button @click="cleanup">{{ $tc('frosh-tools.tabs.elasticsearch.action.cleanup') }}</sw-button>
+        >{{ $t('frosh-tools.tabs.elasticsearch.action.reindex') }}</sw-button>
+        <sw-button @click="switchAlias">{{ $t('frosh-tools.tabs.elasticsearch.action.switchAlias') }}</sw-button>
+        <sw-button @click="flushAll">{{ $t('frosh-tools.tabs.elasticsearch.action.flushAll') }}</sw-button>
+        <sw-button @click="cleanup">{{ $t('frosh-tools.tabs.elasticsearch.action.cleanup') }}</sw-button>
         <sw-button
             @click="resetElasticsearch"
             variant="danger"
-        >{{ $tc('frosh-tools.tabs.elasticsearch.action.reset') }}</sw-button>
+        >{{ $t('frosh-tools.tabs.elasticsearch.action.reset') }}</sw-button>
     </sw-card>
     <sw-card
-        :title="tc('frosh-tools.tabs.elasticsearch.console.title')"
+        :title="$t('frosh-tools.tabs.elasticsearch.console.title')"
         v-if="!isLoading && isActive"
         :large="true"
         positionIdentifier="frosh-tools-tab-elasticsearch-console"
@@ -110,9 +110,9 @@
             :sanitizeInput="false"
             v-model="consoleInput"
         ></sw-code-editor>
-        <sw-button @click="onConsoleEnter">{{ $tc('frosh-tools.tabs.elasticsearch.console.send') }}</sw-button>
+        <sw-button @click="onConsoleEnter">{{ $t('frosh-tools.tabs.elasticsearch.console.send') }}</sw-button>
         <div>
-            <strong>{{ $tc('frosh-tools.tabs.elasticsearch.console.output') }}:</strong>
+            <strong>{{ $t('frosh-tools.tabs.elasticsearch.console.output') }}:</strong>
         </div>
         <pre>{{ consoleOutput }}</pre>
     </sw-card>

@@ -1,7 +1,7 @@
 <sw-card-view>
     <sw-card
         class="frosh-tools-tab-logs__logs-card"
-        :title="$tc('frosh-tools.tabs.logs.title')"
+        :title="$t('frosh-tools.tabs.logs.title')"
         :isLoading="isLoading"
         :large="true"
         positionIdentifier="frosh-tools-tab-logs"
@@ -19,7 +19,7 @@
             <sw-single-select
                 :options="logFiles"
                 :isLoading="isLoading"
-                :placeholder="$tc('frosh-tools.tabs.logs.logFileSelect.placeholder')"
+                :placeholder="$t('frosh-tools.tabs.logs.logFileSelect.placeholder')"
                 labelProperty="name"
                 valueProperty="name"
                 v-model:value="selectedLogFile"
@@ -64,8 +64,8 @@
             </div>
             <button
                 class="sw-modal__close"
-                :title="$tc('global.sw-modal.labelClose')"
-                :aria-label="$tc('global.sw-modal.labelClose')"
+                :title="$t('global.sw-modal.labelClose')"
+                :aria-label="$t('global.sw-modal.labelClose')"
                 @click="closeInfoModal"
             >
                 <sw-icon

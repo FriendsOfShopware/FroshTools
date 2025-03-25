@@ -57,7 +57,7 @@ Component.register('frosh-tools-tab-queue', {
       this.showResetModal = false
       await this.createdComponent()
       this.createNotificationSuccess({
-        message: this.$tc('frosh-tools.tabs.queue.reset.success'),
+        message: this.$t('frosh-tools.tabs.queue.reset.success'),
       })
       this.isLoading = false
     },
