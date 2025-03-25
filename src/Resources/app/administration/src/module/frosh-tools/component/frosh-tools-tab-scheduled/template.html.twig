@@ -28,6 +28,7 @@
                 {{ $t('frosh-tools.scheduledTasksRegisterStarted') }}
             </mt-button>
         </template>
+        <template #grid>
         <sw-entity-listing
             :showSelection="false"
             :fullPage="false"
@@ -86,6 +87,7 @@
                 </sw-context-menu-item>
             </template>
         </sw-entity-listing>
+        </template>
     </mt-card>
     <sw-modal
         v-if="taskError"

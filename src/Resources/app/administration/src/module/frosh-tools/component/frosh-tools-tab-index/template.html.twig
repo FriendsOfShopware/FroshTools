@@ -28,6 +28,7 @@
             :large="true"
             positionIdentifier="frosh-tools-tab-index-health"
         >
+            <template #grid>
             <sw-data-grid
                 v-if="health"
                 :showSelection="false"
@@ -76,6 +77,7 @@
                     </template>
                 </template>
             </sw-data-grid>
+            </template>
         </mt-card>
         <!-- TODO Codemod: Converted from sw-card - please check if everything works correctly -->
         <mt-card
@@ -91,6 +93,7 @@
             >
                 {{ $t('frosh-tools.noRecommendations') }}
             </mt-banner>
+            <template #grid>
             <sw-data-grid
                 v-if="performanceStatus && performanceStatus.length > 0"
                 :showSelection="false"
@@ -141,6 +144,7 @@
                     </template>
                 </template>
             </sw-data-grid>
+            </template>
         </mt-card>
     </mt-card>
 </sw-card-view>

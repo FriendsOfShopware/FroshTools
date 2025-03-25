@@ -9,7 +9,7 @@ Component.register('frosh-tools-index', {
   computed: {
     elasticsearchAvailable() {
       return (
-        Shopware.State.get('context').app.config.settings
+        Shopware.Store.get('context').app.config.settings
           ?.elasticsearchEnabled || false
       )
     },

@@ -30,6 +30,7 @@
                 @update:value="onFileSelected"
             ></sw-single-select>
         </template>
+        <template #grid>
         <sw-data-grid
             :showSelection="false"
             :showActions="false"
@@ -50,6 +51,7 @@
             :page="page"
             @page-change="onPageChange"
         ></sw-pagination>
+        </template>
     </mt-card>
     <sw-modal
         v-if="displayedLog"

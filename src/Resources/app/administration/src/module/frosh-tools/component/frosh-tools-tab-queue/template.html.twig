@@ -28,6 +28,7 @@
                 {{ $t('frosh-tools.resetQueue') }}
             </mt-button>
         </template>
+        <template #grid>
         <sw-data-grid
             :showSelection="false"
             :dataSource="queueEntries"
@@ -35,6 +36,7 @@
             :showActions="false"
         >
         </sw-data-grid>
+        </template>
     </mt-card>
     <sw-modal
         v-if="showResetModal"

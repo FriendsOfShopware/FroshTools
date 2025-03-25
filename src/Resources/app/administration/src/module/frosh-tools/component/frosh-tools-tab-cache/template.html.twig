@@ -22,6 +22,7 @@
                 ></mt-icon>
             </mt-button>
         </template>
+        <template #grid>
         <sw-data-grid
             :showSelection="false"
             :dataSource="cacheFolders"
@@ -74,6 +75,7 @@
                 </sw-context-menu-item>
             </template>
         </sw-data-grid>
+        </template>
     </mt-card>
     <!-- TODO Codemod: Converted from sw-card - please check if everything works correctly -->
     <mt-card
