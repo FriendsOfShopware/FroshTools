@@ -1,7 +1,7 @@
 <sw-card-view>
     <sw-card
         class="frosh-tools-tab-scheduled__tasks-card"
-        :title="$tc('frosh-tools.tabs.scheduledTaskOverview.title')"
+        :title="$t('frosh-tools.tabs.scheduledTaskOverview.title')"
         :isLoading="isLoading"
         :large="true"
         positionIdentifier="frosh-tools-tab-scheduled"
@@ -20,7 +20,7 @@
                 variant="primary"
                 @click="registerScheduledTasks"
             >
-                {{ $tc('frosh-tools.scheduledTasksRegisterStarted') }}
+                {{ $t('frosh-tools.scheduledTasksRegisterStarted') }}
             </sw-button>
         </template>
         <sw-entity-listing
@@ -59,32 +59,32 @@
                     variant="primary"
                     @click="runTask(item)"
                 >
-                    {{ $tc('frosh-tools.runManually') }}
+                    {{ $t('frosh-tools.runManually') }}
                 </sw-context-menu-item>
                 <sw-context-menu-item
                     variant="primary"
                     @click="scheduleTask(item)"
                 >
-                    {{ $tc('frosh-tools.setToScheduled') }}
+                    {{ $t('frosh-tools.setToScheduled') }}
                 </sw-context-menu-item>
                 <sw-context-menu-item
                     variant="primary"
                     @click="scheduleTask(item, true)"
                 >
-                    {{ $tc('frosh-tools.setToScheduledImmediately') }}
+                    {{ $t('frosh-tools.setToScheduledImmediately') }}
                 </sw-context-menu-item>
                 <sw-context-menu-item
                     variant="primary"
                     @click="deactivateTask(item)"
                 >
-                    {{ $tc('frosh-tools.setToInactive') }}
+                    {{ $t('frosh-tools.setToInactive') }}
                 </sw-context-menu-item>
             </template>
         </sw-entity-listing>
     </sw-card>
     <sw-modal
         v-if="taskError"
-        :title="$tc('global.default.error')"
+        :title="$t('global.default.error')"
         @modal-close="taskError = null"
     >
         <pre
@@ -100,7 +100,7 @@
                 size="small"
                 @click="taskError = null"
             >
-                {{ $tc('global.default.close') }}
+                {{ $t('global.default.close') }}
             </sw-button>
         </template>
     </sw-modal>

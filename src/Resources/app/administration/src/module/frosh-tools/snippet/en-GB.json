@@ -3,40 +3,55 @@
     "title": "Tools",
     "tabs": {
       "index": {
-        "title": "System Status",
-        "performance": "Performance recommendations"
-      },
-      "systemInfo": {
-        "title": "System Info"
+        "title": "System-Status",
+        "performance": "Performance recommendations",
+        "info": "Info"
       },
       "cache": {
         "title": "Cache"
       },
       "scheduledTaskOverview": {
-        "title": "Scheduled Tasks Manager"
+        "title": "Scheduled Tasks"
       },
       "queue": {
-        "title": "Queue Manager",
+        "title": "Queue",
         "reset": {
           "modal": {
             "title": "Reset Queue",
-            "description": "Resetting Queue will remove all outgoing tasks.",
+            "description": "Resetting Queue will remove all pending tasks.",
             "reset": "Reset"
           },
           "success": "The queue has been cleared"
         }
       },
-      "elasticsearch": {
-        "title": "Elasticsearch Manager"
-      },
       "logs": {
-        "title": "Log viewer",
+        "title": "Log Viewer",
         "logFileSelect": {
           "placeholder": "Choose file"
         }
       },
+      "elasticsearch": {
+        "title": "Elasticsearch",
+        "disabled": "Elasticsearch is not enabled",
+        "version": "Elasticsearch version",
+        "nodes": "Nodes",
+        "status": "Cluster Status",
+        "indices": "Indices",
+        "action": {
+          "reindex": "Reindex",
+          "switchAlias": "Trigger \"Alias switching\"",
+          "flushAll": "Delete all indices",
+          "cleanup": "Delete unused indices",
+          "reset": "Reset Elasticsearch"
+        },
+        "console": {
+          "title": "Elasticsearch Console",
+          "send": "Send",
+          "output": "Output"
+        }
+      },
       "files": {
-        "title": "Shopware file checker",
+        "title": "Shopware File Checker",
         "allFilesOk": "No files modified",
         "notOk": "There are modified files",
         "openOriginal": "Open original file on GitHub",
@@ -71,15 +86,15 @@
     "actions": "Actions",
     "scheduledTasks": "Scheduled Tasks",
     "interval": "Interval",
-    "lastExecutionTime": "last execution",
-    "nextExecutionTime": "next execution",
-    "runManually": "start manually",
+    "lastExecutionTime": "Last execution",
+    "nextExecutionTime": "Next execution",
+    "runManually": "Start manually",
     "scheduledTaskStarted": "The scheduled task execution for \"{name}\" started",
     "scheduledTaskSucceed": "The scheduled task execution for \"{name}\" succeed",
     "scheduledTaskFailed": "The scheduled task execution for \"{name}\" failed",
-    "setToScheduled": "Set task status to scheduled",
-    "setToScheduledImmediately": "Set task status to scheduled immediately",
-    "setToInactive": "Set task status to inactive",
+    "setToScheduled": "Set task status to \"Scheduled\"",
+    "setToScheduledImmediately": "Set task status to \"Scheduled immediately\"",
+    "setToInactive": "Set task status to \"Inactive\"",
     "scheduledTaskScheduleStarted": "The scheduled task for \"{name}\" is being scheduled",
     "scheduledTaskScheduleSucceed": "The scheduled task for \"{name}\" has been scheduled",
     "scheduledTaskScheduleFailed": "The scheduled task for \"{name}\" could not be scheduled",
@@ -97,13 +112,14 @@
     "channel": "Channel",
     "level": "Level",
     "message": "Message",
-    "current": "current",
-    "recommended": "recommended",
+    "current": "Current",
+    "recommended": "Recommended",
     "noRecommendations": "No recommendations",
     "chooseStateMachine": "Choose a State Machine...",
     "order": "Order",
     "transaction": "Payment",
-    "delivery": "Delivery"
+    "delivery": "Delivery",
+    "unknown": "Unknown"
   },
   "sw-privileges": {
     "additional_permissions": {

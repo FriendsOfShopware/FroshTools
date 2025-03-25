@@ -88,19 +88,19 @@ Component.register('frosh-tools-tab-scheduled', {
 
       try {
         this.createNotificationInfo({
-          message: this.$tc('frosh-tools.scheduledTaskStarted', 0, {
+          message: this.$t('frosh-tools.scheduledTaskStarted', {
             name: item.name,
           }),
         })
         await this.froshToolsService.runScheduledTask(item.id)
         this.createNotificationSuccess({
-          message: this.$tc('frosh-tools.scheduledTaskSucceed', 0, {
+          message: this.$t('frosh-tools.scheduledTaskSucceed', {
             name: item.name,
           }),
         })
       } catch (e) {
         this.createNotificationError({
-          message: this.$tc('frosh-tools.scheduledTaskFailed', 0, {
+          message: this.$t('frosh-tools.scheduledTaskFailed', {
             name: item.name,
           }),
         })
@@ -172,15 +172,15 @@ Component.register('frosh-tools-tab-scheduled', {
 
       try {
         this.createNotificationInfo({
-          message: this.$tc('frosh-tools.scheduledTasksRegisterStarted'),
+          message: this.$t('frosh-tools.scheduledTasksRegisterStarted'),
         })
         await this.froshToolsService.scheduledTasksRegister()
         this.createNotificationSuccess({
-          message: this.$tc('frosh-tools.scheduledTasksRegisterSucceed'),
+          message: this.$t('frosh-tools.scheduledTasksRegisterSucceed'),
         })
       } catch (e) {
         this.createNotificationError({
-          message: this.$tc('frosh-tools.scheduledTasksRegisterFailed'),
+          message: this.$t('frosh-tools.scheduledTasksRegisterFailed'),
         })
 
         this.taskError = e.response.data

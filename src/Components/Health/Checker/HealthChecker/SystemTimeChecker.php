@@ -20,7 +20,7 @@ class SystemTimeChecker implements HealthCheckerInterface, CheckerInterface
     private function checkSystemTime(HealthCollection $collection): void
     {
         $url = 'https://cloudflare.com/cdn-cgi/trace';
-        $snippet = 'System time';
+        $snippet = 'System time offset';
         $recommended = 'max 5 seconds';
 
         try {

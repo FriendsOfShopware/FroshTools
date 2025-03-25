@@ -25,12 +25,12 @@ Component.register('frosh-tools-tab-queue', {
       return [
         {
           property: 'name',
-          label: 'Name',
+          label: 'frosh-tools.name',
           rawData: true,
         },
         {
           property: 'size',
-          label: 'Size',
+          label: 'frosh-tools.size',
           rawData: true,
         },
       ]
@@ -57,7 +57,7 @@ Component.register('frosh-tools-tab-queue', {
       this.showResetModal = false
       await this.createdComponent()
       this.createNotificationSuccess({
-        message: this.$tc('frosh-tools.tabs.queue.reset.success'),
+        message: this.$t('frosh-tools.tabs.queue.reset.success'),
       })
       this.isLoading = false
     },

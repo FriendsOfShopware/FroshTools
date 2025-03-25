@@ -2,7 +2,7 @@
     <sw-card
         class="frosh-tools-tab-files__files-card"
         :class="isLoadingClass"
-        :title="$tc('frosh-tools.tabs.files.title')"
+        :title="$t('frosh-tools.tabs.files.title')"
         :isLoading="isLoading"
         :large="true"
         positionIdentifier="frosh-tools-tab-files__files-card"
@@ -15,13 +15,13 @@
             variant="success"
             v-if="items.ok"
         >
-            {{ $tc('frosh-tools.tabs.files.allFilesOk') }}
+            {{ $t('frosh-tools.tabs.files.allFilesOk') }}
         </sw-alert>
         <sw-alert
             variant="warning"
             v-else-if="items.files"
         >
-            {{ $tc('frosh-tools.tabs.files.notOk') }}
+            {{ $t('frosh-tools.tabs.files.notOk') }}
         </sw-alert>
         <template #toolbar>
             <!-- @todo: Make the refresh button fancy -->
@@ -44,25 +44,25 @@
             <template #column-name="{ item }">
                 <a
                     @click="diff(item)"
-                    :title="$tc('frosh-tools.tabs.files.restore.diff')"
+                    :title="$t('frosh-tools.tabs.files.restore.diff')"
                 >{{ item.name }}</a>
             </template>
 
             <template #column-expected="{ item }">
                 <span v-if="item.expected">
-                    {{ $tc('frosh-tools.tabs.files.expectedProject') }}
+                    {{ $t('frosh-tools.tabs.files.expectedProject') }}
                 </span>
                 <span v-else>
-                    {{ $tc('frosh-tools.tabs.files.expectedAll') }}
+                    {{ $t('frosh-tools.tabs.files.expectedAll') }}
                 </span>
             </template>
 
             <template #actions="{ item }">
                 <sw-context-menu-item @click="openUrl(item.shopwareUrl)">
-                    {{ $tc('frosh-tools.tabs.files.openOriginal') }}
+                    {{ $t('frosh-tools.tabs.files.openOriginal') }}
                 </sw-context-menu-item>
                 <sw-context-menu-item @click="diff(item)">
-                    {{ $tc('frosh-tools.tabs.files.restore.diff') }}
+                    {{ $t('frosh-tools.tabs.files.restore.diff') }}
                 </sw-context-menu-item>
             </template>
         </sw-data-grid>
@@ -84,7 +84,7 @@
                 :disabled="diffData.file.expected"
             >
                 <sw-icon name="regular-exclamation-triangle"></sw-icon>
-                {{ $tc('frosh-tools.tabs.files.restore.restoreFile') }}
+                {{ $t('frosh-tools.tabs.files.restore.restoreFile') }}
             </sw-button>
         </template>
     </sw-modal>

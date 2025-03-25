@@ -1,7 +1,7 @@
 <sw-card-view>
     <sw-card
         class="frosh-tools-tab-cache__cache-card"
-        :title="$tc('frosh-tools.tabs.cache.title')"
+        :title="$t('frosh-tools.tabs.cache.title')"
         :isLoading="isLoading"
         :large="true"
         positionIdentifier="frosh-tools-tab-cache"
@@ -29,7 +29,7 @@
                     appearance="pill"
                     v-if="item.active"
                 >
-                    {{ $tc('frosh-tools.active') }}
+                    {{ $t('frosh-tools.active') }}
                 </sw-label>
                 <sw-label
                     variant="primary"
@@ -43,7 +43,7 @@
 
             <template #column-size="{ item }">
                 <template v-if="item.size < 0">
-                    unknown
+                    {{ $t('frosh-tools.unknown') }}
                 </template>
 
                 <template v-else>
@@ -53,7 +53,7 @@
 
             <template #column-freeSpace="{ item }">
                 <template v-if="item.freeSpace < 0">
-                    unknown
+                    {{ $t('frosh-tools.unknown') }}
                 </template>
 
                 <template v-else>
@@ -66,14 +66,14 @@
                     variant="danger"
                     @click="clearCache(item)"
                 >
-                    {{ $tc('frosh-tools.clear') }}
+                    {{ $t('frosh-tools.clear') }}
                 </sw-context-menu-item>
             </template>
         </sw-data-grid>
     </sw-card>
     <sw-card
         class="frosh-tools-tab-cache__action-card"
-        :title="$tc('frosh-tools.actions')"
+        :title="$t('frosh-tools.actions')"
         :isLoading="isLoading"
         :large="true"
         positionIdentifier="frosh-tools-tab-cache-action"
@@ -82,7 +82,7 @@
             variant="primary"
             @click="compileTheme"
         >
-            {{ $tc('frosh-tools.compileTheme') }}
+            {{ $t('frosh-tools.compileTheme') }}
         </sw-button>
     </sw-card>
 </sw-card-view>

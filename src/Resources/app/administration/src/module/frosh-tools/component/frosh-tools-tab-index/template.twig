@@ -19,7 +19,7 @@
         </template>
         <sw-card
             class="frosh-tools-tab-index__health-card"
-            :title="$tc('frosh-tools.tabs.index.title')"
+            :title="$t('frosh-tools.tabs.index.title')"
             :large="true"
             positionIdentifier="frosh-tools-tab-index-health"
         >
@@ -37,21 +37,21 @@
                             appearance="pill"
                             v-if="item.state === 'STATE_WARNING'"
                         >
-                            {{ $tc('frosh-tools.warning') }}
+                            {{ $t('frosh-tools.warning') }}
                         </sw-label>
                         <sw-label
                             variant="danger"
                             appearance="pill"
                             v-if="item.state === 'STATE_ERROR'"
                         >
-                            {{ $tc('frosh-tools.error') }}
+                            {{ $t('frosh-tools.error') }}
                         </sw-label>
                         <sw-label
                             variant="info"
                             appearance="pill"
                             v-if="item.state === 'STATE_INFO'"
                         >
-                            {{ $tc('frosh-tools.info') }}
+                            {{ $t('frosh-tools.info') }}
                         </sw-label>
                     </template>
 
@@ -74,7 +74,7 @@
         </sw-card>
         <sw-card
             class="frosh-tools-tab-index__performance-card"
-            :title="$tc('frosh-tools.tabs.index.performance')"
+            :title="$t('frosh-tools.tabs.index.performance')"
             :large="true"
             positionIdentifier="frosh-tools-tab-index-performance"
         >
@@ -82,7 +82,7 @@
                 v-if="performanceStatus && performanceStatus.length === 0"
                 variant="success"
             >
-                {{ $tc('frosh-tools.noRecommendations') }}
+                {{ $t('frosh-tools.noRecommendations') }}
             </sw-alert>
             <sw-data-grid
                 v-if="performanceStatus && performanceStatus.length > 0"
@@ -98,21 +98,21 @@
                             appearance="pill"
                             v-if="item.state === 'STATE_WARNING'"
                         >
-                            {{ $tc('frosh-tools.warning') }}
+                            {{ $t('frosh-tools.warning') }}
                         </sw-label>
                         <sw-label
                             variant="danger"
                             appearance="pill"
                             v-if="item.state === 'STATE_ERROR'"
                         >
-                            {{ $tc('frosh-tools.error') }}
+                            {{ $t('frosh-tools.error') }}
                         </sw-label>
                         <sw-label
                             variant="info"
                             appearance="pill"
                             v-if="item.state === 'STATE_INFO'"
                         >
-                            {{ $tc('frosh-tools.info') }}
+                            {{ $t('frosh-tools.info') }}
                         </sw-label>
                     </template>
 
@@ -128,7 +128,7 @@
                         <a
                             :href="item.url"
                             target="_blank"
-                        >Info</a>
+                        >{{ $t('frosh-tools.tabs.index.info') }}</a>
                     </template>
                 </template>
             </sw-data-grid>
