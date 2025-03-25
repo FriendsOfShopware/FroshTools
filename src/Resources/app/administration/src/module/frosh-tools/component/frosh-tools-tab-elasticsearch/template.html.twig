@@ -1,0 +1,169 @@
+<sw-card-view>
+    <!-- TODO Codemod: Converted from sw-card - please check if everything works correctly -->
+    <mt-card
+        :title="$t('frosh-tools.tabs.elasticsearch.title')"
+        :large="true"
+        :isLoading="isLoading"
+        positionIdentifier="frosh-tools-tab-elasticsearch"
+    >
+        <!-- TODO Codemod: Converted from sw-alert - please check if everything works correctly -->
+        <mt-banner
+            variant="critical"
+            v-if="!isLoading && !isActive"
+        >
+            {{ $t('frosh-tools.tabs.elasticsearch.disabled') }}
+        </mt-banner>
+        <div v-if="!isLoading && isActive">
+            <div>
+                <strong>
+                    {{ $t('frosh-tools.tabs.elasticsearch.version') }}
+                    :
+                </strong>
+                {{ statusInfo.info.version.number }}
+            </div>
+            <div>
+                <strong>
+                    {{ $t('frosh-tools.tabs.elasticsearch.nodes') }}
+                    :
+                </strong>
+                {{ statusInfo.health.number_of_nodes }}
+            </div>
+            <div>
+                <strong>
+                    {{ $t('frosh-tools.tabs.elasticsearch.status') }}
+                    :
+                </strong>
+                {{ statusInfo.health.status }}
+            </div>
+        </div>
+    </mt-card>
+    <!-- TODO Codemod: Converted from sw-card - please check if everything works correctly -->
+    <mt-card
+        :title="$t('frosh-tools.tabs.elasticsearch.indices')"
+        v-if="!isLoading && isActive"
+        :large="true"
+        positionIdentifier="frosh-tools-tab-elasticsearch-indices"
+    >
+        <template #toolbar>
+            <!-- @todo: Make the refresh button fancy -->
+            <!-- TODO Codemod: Converted from sw-button - please check if everything works correctly -->
+            <mt-button
+                variant="primary"
+                ghost
+                @click="createdComponent"
+            >
+                <!-- TODO Codemod: Converted from sw-icon - please check if everything works correctly -->
+                <mt-icon
+                    size="16px"
+                    name="regular-undo"
+                ></mt-icon>
+            </mt-button>
+        </template>
+        <sw-data-grid
+            v-if="indices"
+            :showSelection="false"
+            :dataSource="indices"
+            :columns="columns"
+        >
+            <template #column-name="{ item }">
+                <sw-label
+                    variant="primary"
+                    appearance="pill"
+                    v-if="item.aliases.length"
+                >
+                    {{ $t('frosh-tools.active') }}
+                </sw-label>
+                {{ item.name }}
+                <br/>
+            </template>
+
+            <template #column-indexSize="{ item }">
+                {{ formatSize(item.indexSize) }}
+                <br/>
+            </template>
+
+            <template #actions="{ item }">
+                <sw-context-menu-item
+                    variant="danger"
+                    @click="deleteIndex(item.name)"
+                >
+                    {{ $t('frosh-tools.delete') }}
+                </sw-context-menu-item>
+            </template>
+        </sw-data-grid>
+    </mt-card>
+    <!-- TODO Codemod: Converted from sw-card - please check if everything works correctly -->
+    <mt-card
+        :title="$t('frosh-tools.actions')"
+        v-if="!isLoading && isActive"
+        :large="true"
+        positionIdentifier="frosh-tools-tab-elasticsearch-health"
+    >
+        <!-- TODO Codemod: Converted from sw-button - please check if everything works correctly -->
+        <mt-button
+            @click="reindex"
+            variant="primary"
+        >
+            {{ $t('frosh-tools.tabs.elasticsearch.action.reindex') }}
+        </mt-button>
+        <!-- TODO Codemod: Converted from sw-button - please check if everything works correctly -->
+        <mt-button
+            @click="switchAlias"
+            variant="secondary"
+        >
+            {{ $t('frosh-tools.tabs.elasticsearch.action.switchAlias') }}
+        </mt-button>
+        <!-- TODO Codemod: Converted from sw-button - please check if everything works correctly -->
+        <mt-button
+            @click="flushAll"
+            variant="secondary"
+        >
+            {{ $t('frosh-tools.tabs.elasticsearch.action.flushAll') }}
+        </mt-button>
+        <!-- TODO Codemod: Converted from sw-button - please check if everything works correctly -->
+        <mt-button
+            @click="cleanup"
+            variant="secondary"
+        >
+            {{ $t('frosh-tools.tabs.elasticsearch.action.cleanup') }}
+        </mt-button>
+        <!-- TODO Codemod: Converted from sw-button - please check if everything works correctly -->
+        <mt-button
+            @click="resetElasticsearch"
+            variant="critical"
+        >
+            {{ $t('frosh-tools.tabs.elasticsearch.action.reset') }}
+        </mt-button>
+    </mt-card>
+    <!-- TODO Codemod: Converted from sw-card - please check if everything works correctly -->
+    <mt-card
+        :title="$t('frosh-tools.tabs.elasticsearch.console.title')"
+        v-if="!isLoading && isActive"
+        :large="true"
+        positionIdentifier="frosh-tools-tab-elasticsearch-console"
+    >
+        <sw-code-editor
+            completionMode="text"
+            mode="twig"
+            :softWraps="true"
+            :setFocus="false"
+            :disabled="false"
+            :sanitizeInput="false"
+            v-model="consoleInput"
+        ></sw-code-editor>
+        <!-- TODO Codemod: Converted from sw-button - please check if everything works correctly -->
+        <mt-button
+            @click="onConsoleEnter"
+            variant="secondary"
+        >
+            {{ $t('frosh-tools.tabs.elasticsearch.console.send') }}
+        </mt-button>
+        <div>
+            <strong>
+                {{ $t('frosh-tools.tabs.elasticsearch.console.output') }}
+                :
+            </strong>
+        </div>
+        <pre>{{ consoleOutput }}</pre>
+    </mt-card>
+</sw-card-view>

@@ -1,6 +1,6 @@
 {
     "name": "frosh/tools",
-    "version": "2.6.2",
+    "version": "3.0.0",
     "description": "Provides some basic things for managing the Shopware Installation",
     "type": "shopware-platform-plugin",
     "license": "MIT",
@@ -35,10 +35,10 @@
         }
     },
     "require": {
-        "shopware/core": "~6.6.0"
+        "shopware/core": "~6.7.0"
     },
     "require-dev": {
-        "shopware/elasticsearch": "~6.6.0"
+        "shopware/elasticsearch": "~6.7.0"
     },
     "config": {
         "allow-plugins": {

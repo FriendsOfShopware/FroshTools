@@ -32,7 +32,7 @@ class Elasticsearch extends ApiService {
   }
 
   deleteIndex(indexName) {
-    const apiRoute = `${this.getApiBasePath()}/index/` + indexName
+    const apiRoute = `${this.getApiBasePath()}/index/${indexName}`
     return this.httpClient
       .delete(apiRoute, {
         headers: this.getBasicHeaders(),
@@ -43,7 +43,7 @@ class Elasticsearch extends ApiService {
   }
 
   console(method, path, payload) {
-    const apiRoute = `${this.getApiBasePath()}/console` + path
+    const apiRoute = `${this.getApiBasePath()}/console${path}`
     return this.httpClient
       .request({
         url: apiRoute,

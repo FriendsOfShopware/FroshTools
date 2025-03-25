@@ -1,4 +1,4 @@
-import template from './template.twig'
+import template from './template.html.twig'
 
 const { Mixin, Component } = Shopware
 
@@ -73,7 +73,7 @@ Component.register('frosh-tools-tab-elasticsearch', {
       let formatted = bytes
 
       if (Math.abs(bytes) < thresh) {
-        return bytes + ' B'
+        return `${bytes} B`
       }
 
       const units = ['KiB', 'MiB', 'GiB', 'TiB', 'PiB', 'EiB', 'ZiB', 'YiB']
@@ -88,7 +88,7 @@ Component.register('frosh-tools-tab-elasticsearch', {
         index < units.length - 1
       )
 
-      return formatted.toFixed(dp) + ' ' + units[index]
+      return `${formatted.toFixed(dp)} ${units[index]}`
     },
 
     async deleteIndex(indexName) {

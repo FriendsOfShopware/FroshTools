@@ -94,7 +94,7 @@ Shopware.Module.register('frosh-tools', {
   settingsItem: [
     {
       group: 'plugins',
-      to: 'frosh.tools.index.cache',
+      to: 'frosh.tools.index.index',
       icon: 'regular-cog',
       name: 'frosh-tools',
       label: 'frosh-tools.title',
