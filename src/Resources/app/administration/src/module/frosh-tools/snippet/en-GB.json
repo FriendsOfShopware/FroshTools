@@ -18,7 +18,7 @@
         "reset": {
           "modal": {
             "title": "Reset Queue",
-            "description": "Resetting Queue will remove all outgoing tasks.",
+            "description": "Resetting Queue will remove all pending tasks.",
             "reset": "Reset"
           },
           "success": "The queue has been cleared"

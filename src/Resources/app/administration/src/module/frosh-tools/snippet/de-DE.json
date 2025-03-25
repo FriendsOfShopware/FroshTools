@@ -18,7 +18,7 @@
         "reset": {
           "modal": {
             "title": "Warteschlange zurücksetzen",
-            "description": "Durch das Zurücksetzen der Warteschlange werden alle ausgehenden Aufgaben entfernt.",
+            "description": "Durch das Zurücksetzen der Warteschlange werden alle ausstehenden Aufgaben entfernt.",
             "reset": "Zurücksetzen"
           },
           "success": "Die Warteschlange wurde geleert"
