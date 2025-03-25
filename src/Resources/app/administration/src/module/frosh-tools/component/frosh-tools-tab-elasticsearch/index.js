@@ -54,7 +54,7 @@ Component.register('frosh-tools-tab-elasticsearch', {
 
       try {
         this.statusInfo = await this.froshElasticSearch.status()
-      } catch (err) {
+      } catch {
         // eslint-disable-line
         this.isActive = false
         this.isLoading = false
