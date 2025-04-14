@@ -19,7 +19,8 @@ class CacheController extends AbstractController
         #[Autowire(param: 'kernel.cache_dir')]
         private readonly string $cacheDir,
         private readonly CacheRegistry $cacheRegistry,
-    ) {}
+    ) {
+    }
 
     #[Route(path: '/cache', name: 'api.frosh.tools.cache.get', methods: ['GET'])]
     public function cacheStatistics(): JsonResponse
@@ -71,6 +72,18 @@ class CacheController extends AbstractController
         return new JsonResponse($result);
     }
 
+    #[Route(path: '/interface', name: 'api.frosh.tools.cache.get_interface', methods: ['GET'])]
+    public function phpInterfaceInformation(): JsonResponse
+    {
+        $sapiName = \PHP_SAPI;
+
+        return new JsonResponse([
+            'isFPM' => \str_starts_with($sapiName, 'fpm'),
+            'isCLI' => \str_starts_with($sapiName, 'cli'),
+            'isCGI' => \str_starts_with($sapiName, 'cgi'),
+        ]);
+    }
+
     #[Route(path: '/cache/{folder}', name: 'api.frosh.tools.cache.clear', methods: ['DELETE'])]
     public function clearCache(string $folder): JsonResponse
     {
@@ -89,6 +102,11 @@ class CacheController extends AbstractController
         if (\function_exists('opcache_reset')) {
             opcache_reset();
         }
+
+        if (\function_exists('apcu_clear_cache')) {
+            apcu_clear_cache();
+        }
+
         return new JsonResponse(null, Response::HTTP_NO_CONTENT);
     }
 }

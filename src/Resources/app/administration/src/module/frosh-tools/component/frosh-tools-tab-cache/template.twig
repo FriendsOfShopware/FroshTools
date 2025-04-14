@@ -84,10 +84,10 @@
         >
             {{ $t('frosh-tools.compileTheme') }}
         </sw-button>
-
         <sw-button
             variant="primary"
-            @click="clearOpCache"
+            @click="clearOPcache"
+            v-if="interfaceInfo && interfaceInfo.isFPM"
         >
             {{ $t('frosh-tools.clearOpCache') }}
         </sw-button>
