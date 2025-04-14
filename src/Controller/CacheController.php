@@ -84,7 +84,7 @@ class CacheController extends AbstractController
     }
 
     #[Route(path: '/cache/clear_opcache', name: 'api.frosh.tools.cache.clear_op', methods: ['DELETE'])]
-    public function clearOpCache(string $folder): JsonResponse
+    public function clearOpCache(): JsonResponse
     {
         if (\function_exists('opcache_reset')) {
             opcache_reset();
