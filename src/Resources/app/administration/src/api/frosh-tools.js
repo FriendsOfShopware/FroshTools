@@ -27,6 +27,17 @@ class FroshTools extends ApiService {
       })
   }
 
+  clearOpCache(folder) {
+    const apiRoute = `${this.getApiBasePath()}/cache/clear_opcache`
+    return this.httpClient
+      .delete(apiRoute, {
+        headers: this.getBasicHeaders(),
+      })
+      .then((response) => {
+        return ApiService.handleResponse(response)
+      })
+  }
+
   getQueue() {
     const apiRoute = `${this.getApiBasePath()}/queue/list`
     return this.httpClient

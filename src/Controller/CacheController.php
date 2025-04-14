@@ -19,8 +19,7 @@ class CacheController extends AbstractController
         #[Autowire(param: 'kernel.cache_dir')]
         private readonly string $cacheDir,
         private readonly CacheRegistry $cacheRegistry,
-    ) {
-    }
+    ) {}
 
     #[Route(path: '/cache', name: 'api.frosh.tools.cache.get', methods: ['GET'])]
     public function cacheStatistics(): JsonResponse
@@ -81,6 +80,15 @@ class CacheController extends AbstractController
             CacheHelper::removeDir(\dirname($this->cacheDir) . '/' . basename($folder));
         }
 
+        return new JsonResponse(null, Response::HTTP_NO_CONTENT);
+    }
+
+    #[Route(path: '/cache/clear_opcache', name: 'api.frosh.tools.cache.clear_op', methods: ['DELETE'])]
+    public function clearOpCache(string $folder): JsonResponse
+    {
+        if (\function_exists('opcache_reset')) {
+            opcache_reset();
+        }
         return new JsonResponse(null, Response::HTTP_NO_CONTENT);
     }
 }

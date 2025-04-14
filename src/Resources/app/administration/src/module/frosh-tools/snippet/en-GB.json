@@ -83,6 +83,7 @@
     "free": "Free",
     "compileTheme": "Compile theme",
     "themeCompiled": "Theme were compiled",
+    "clearOpCache": "Clear OPcache",
     "actions": "Actions",
     "scheduledTasks": "Scheduled Tasks",
     "interval": "Interval",

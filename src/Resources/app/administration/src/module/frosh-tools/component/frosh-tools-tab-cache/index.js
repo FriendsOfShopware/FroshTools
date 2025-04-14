@@ -106,5 +106,11 @@ Component.register('frosh-tools-tab-cache', {
 
       this.isLoading = false
     },
+
+    async clearOpCache() {
+      this.isLoading = true
+      await this.froshToolsService.clearOpCache()
+      await this.createdComponent()
+    },
   },
 })
