@@ -31,6 +31,24 @@
             <helpText lang="de-DE">Nach X Minuten gilt eine geplante Aufgabe als festgefahren / fehlerhaft</helpText>
             <defaultValue>10</defaultValue>
         </input-field>
+
+        <input-field type="bool">
+            <name>monitorTaskSingleMail</name>
+            <label>Send E-Mail only once</label>
+            <label lang="de-DE">Mail nur einmal senden</label>
+            <helpText>Enable this to send only one email notification when the problem is still active.</helpText>
+            <helpText lang="de-DE">Aktiviere diese Option, um nur eine E-Mail-Benachrichtigung zu senden, wenn das Problem weiterhin besteht.</helpText>
+            <defaultValue>false</defaultValue>
+        </input-field>
+
+        <input-field type="int">
+            <name>monitorTaskSingleMailTime</name>
+            <label>When to allow to send e-mail again</label>
+            <label lang="de-DE">Wann das erneute Senden von E-Mails erlaubt ist</label>
+            <helpText>Specify the time interval (in minutes) to allow resending email notifications.</helpText>
+            <helpText lang="de-DE">Gib das Zeitintervall (in Minuten) an, um das erneute Senden von E-Mail-Benachrichtigungen zu ermöglichen.</helpText>
+            <defaultValue>60</defaultValue>
+        </input-field>
     </card>
 
 </config>
