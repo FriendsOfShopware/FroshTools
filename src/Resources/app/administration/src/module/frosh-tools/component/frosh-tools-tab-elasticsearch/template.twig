@@ -1,75 +1,105 @@
 <sw-card-view>
     <sw-card
-            :title="$tc('frosh-tools.tabs.elasticsearch.title')"
-            :large="true"
-            :isLoading="isLoading"
-            positionIdentifier="frosh-tools-tab-elasticsearch"
+        :title="$t('frosh-tools.tabs.elasticsearch.title')"
+        :large="true"
+        :isLoading="isLoading"
+        positionIdentifier="frosh-tools-tab-elasticsearch"
     >
-        <sw-alert variant="error" v-if="!isLoading && !isActive">Elasticsearch is not enabled</sw-alert>
-
+        <sw-alert
+            variant="error"
+            v-if="!isLoading && !isActive"
+        >
+            {{ $t('frosh-tools.tabs.elasticsearch.disabled') }}
+        </sw-alert>
         <div v-if="!isLoading && isActive">
-            <div><strong>Elasticsearch version: </strong> {{ statusInfo.info.version.number }}</div>
-            <div><strong>Nodes: </strong> {{ statusInfo.health.number_of_nodes }}</div>
-            <div><strong>Cluster status: </strong> {{ statusInfo.health.status }}</div>
+            <div>
+                <strong>{{ $t('frosh-tools.tabs.elasticsearch.version') }}: </strong>
+                {{ statusInfo.info.version.number }}
+            </div>
+            <div>
+                <strong>{{ $t('frosh-tools.tabs.elasticsearch.nodes') }}: </strong>
+                {{ statusInfo.health.number_of_nodes }}
+            </div>
+            <div>
+                <strong>{{ $t('frosh-tools.tabs.elasticsearch.status') }}: </strong>
+                {{ statusInfo.health.status }}
+            </div>
         </div>
     </sw-card>
-
     <sw-card
-            title="Indices"
-            v-if="!isLoading && isActive"
-            :large="true"
-            positionIdentifier="frosh-tools-tab-elasticsearch-indices"
+        :title="$t('frosh-tools.tabs.elasticsearch.indices')"
+        v-if="!isLoading && isActive"
+        :large="true"
+        positionIdentifier="frosh-tools-tab-elasticsearch-indices"
     >
         <template #toolbar>
             <!-- @todo: Make the refresh button fancy -->
-            <sw-button variant="ghost" @click="createdComponent"><sw-icon :small="true" name="regular-undo"></sw-icon></sw-button>
+            <sw-button
+                variant="ghost"
+                @click="createdComponent"
+            >
+                <sw-icon
+                    :small="true"
+                    name="regular-undo"
+                ></sw-icon>
+            </sw-button>
         </template>
-
         <sw-data-grid
             v-if="indices"
             :showSelection="false"
             :dataSource="indices"
-            :columns="columns">
-
+            :columns="columns"
+        >
             <template #column-name="{ item }">
-                <sw-label variant="primary" appearance="pill" v-if="item.aliases.length">
-                    {{ $tc('frosh-tools.active') }}
+                <sw-label
+                    variant="primary"
+                    appearance="pill"
+                    v-if="item.aliases.length"
+                >
+                    {{ $t('frosh-tools.active') }}
                 </sw-label>
-
-                {{ item.name }}<br>
+                {{ item.name }}
+                <br/>
             </template>
 
             <template #column-indexSize="{ item }">
-                {{ formatSize(item.indexSize) }}<br>
+                {{ formatSize(item.indexSize) }}
+                <br/>
             </template>
 
             <template #actions="{ item }">
-                <sw-context-menu-item variant="danger" @click="deleteIndex(item.name)">
-                    {{ $tc('frosh-tools.delete') }}
+                <sw-context-menu-item
+                    variant="danger"
+                    @click="deleteIndex(item.name)"
+                >
+                    {{ $t('frosh-tools.delete') }}
                 </sw-context-menu-item>
             </template>
         </sw-data-grid>
     </sw-card>
-
     <sw-card
-            title="Actions"
-            v-if="!isLoading && isActive"
-            :large="true"
-            positionIdentifier="frosh-tools-tab-elasticsearch-health"
+        :title="$t('frosh-tools.actions')"
+        v-if="!isLoading && isActive"
+        :large="true"
+        positionIdentifier="frosh-tools-tab-elasticsearch-health"
     >
-        <sw-button @click="reindex" variant="primary">Reindex</sw-button>
-        <sw-button @click="switchAlias">Trigger alias switching</sw-button>
-        <sw-button @click="flushAll">Flush all indices</sw-button>
-
-        <sw-button @click="cleanup">Cleanup unused Indices</sw-button>
-        <sw-button @click="resetElasticsearch" variant="danger">Delete all indices</sw-button>
+        <sw-button
+            @click="reindex"
+            variant="primary"
+        >{{ $t('frosh-tools.tabs.elasticsearch.action.reindex') }}</sw-button>
+        <sw-button @click="switchAlias">{{ $t('frosh-tools.tabs.elasticsearch.action.switchAlias') }}</sw-button>
+        <sw-button @click="flushAll">{{ $t('frosh-tools.tabs.elasticsearch.action.flushAll') }}</sw-button>
+        <sw-button @click="cleanup">{{ $t('frosh-tools.tabs.elasticsearch.action.cleanup') }}</sw-button>
+        <sw-button
+            @click="resetElasticsearch"
+            variant="danger"
+        >{{ $t('frosh-tools.tabs.elasticsearch.action.reset') }}</sw-button>
     </sw-card>
-
     <sw-card
-            title="Elasticsearch Console"
-            v-if="!isLoading && isActive"
-            :large="true"
-            positionIdentifier="frosh-tools-tab-elasticsearch-console"
+        :title="$t('frosh-tools.tabs.elasticsearch.console.title')"
+        v-if="!isLoading && isActive"
+        :large="true"
+        positionIdentifier="frosh-tools-tab-elasticsearch-console"
     >
         <sw-code-editor
             completionMode="text"
@@ -80,11 +110,10 @@
             :sanitizeInput="false"
             v-model="consoleInput"
         ></sw-code-editor>
-
-        <sw-button @click="onConsoleEnter">Send</sw-button>
-
-        <div><strong>Output:</strong></div>
-
+        <sw-button @click="onConsoleEnter">{{ $t('frosh-tools.tabs.elasticsearch.console.send') }}</sw-button>
+        <div>
+            <strong>{{ $t('frosh-tools.tabs.elasticsearch.console.output') }}:</strong>
+        </div>
         <pre>{{ consoleOutput }}</pre>
     </sw-card>
 </sw-card-view>

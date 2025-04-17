@@ -13,12 +13,14 @@ final class LineReader
     /**
      * Prevent instantiation
      */
-    private function __construct() {}
+    private function __construct()
+    {
+    }
 
     /**
-     * @return \Generator<int, string>
-     *
      * @throws \InvalidArgumentException if $filePath is not readable
+     *
+     * @return \Generator<int, string>
      */
     public static function readLines(string $filePath): \Generator
     {
@@ -30,9 +32,9 @@ final class LineReader
     }
 
     /**
-     * @return \Generator<int, string>
-     *
      * @throws \InvalidArgumentException if $filePath is not readable
+     *
+     * @return \Generator<int, string>
      */
     public static function readLinesBackwards(string $filePath): \Generator
     {
@@ -103,6 +105,7 @@ final class LineReader
             if ($bufferSize < 0) {
                 throw new \RuntimeException('Buffer size cannot be negative');
             }
+            // @phpstan-ignore-next-line
             $chunk = fread($fh, $bufferSize);
             if (!\is_string($chunk)) {
                 throw new \RuntimeException('Could not read file');

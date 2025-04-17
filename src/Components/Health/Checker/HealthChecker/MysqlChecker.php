@@ -11,7 +11,9 @@ use Frosh\Tools\Components\Health\SettingsResult;
 
 class MysqlChecker implements HealthCheckerInterface, CheckerInterface
 {
-    public function __construct(private readonly Connection $connection) {}
+    public function __construct(private readonly Connection $connection)
+    {
+    }
 
     public function collect(HealthCollection $collection): void
     {
@@ -100,8 +102,9 @@ class MysqlChecker implements HealthCheckerInterface, CheckerInterface
     private function extract(string $versionString): array
     {
         if (mb_stripos($versionString, 'mariadb') === false) {
-            if (mb_strpos($versionString, '-')) {
-                $versionString = mb_substr($versionString, 0, mb_strpos($versionString, '-'));
+            $pos = mb_strpos($versionString, '-');
+            if ($pos) {
+                $versionString = mb_substr($versionString, 0, $pos);
             }
 
             return ['mysql' => $versionString];
@@ -117,7 +120,7 @@ class MysqlChecker implements HealthCheckerInterface, CheckerInterface
             $versionString,
             $versionParts,
         )) {
-            throw new \RuntimeException(sprintf('Invalid version string: %s', $versionString));
+            throw new \RuntimeException(\sprintf('Invalid version string: %s', $versionString));
         }
 
         return $versionParts['major'] . '.' . $versionParts['minor'] . '.' . $versionParts['patch'];

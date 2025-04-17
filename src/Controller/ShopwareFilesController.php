@@ -60,7 +60,7 @@ class ShopwareFilesController extends AbstractController
             return new JsonResponse(['error' => 'Git version is not supported']);
         }
 
-        $url = sprintf('https://swagger.docs.fos.gg/version/%s/Files.xxhsums', $this->shopwareVersion);
+        $url = \sprintf('https://swagger.docs.fos.gg/version/%s/Files.xxhsums', $this->shopwareVersion);
         $data = $this->httpClient->request('GET', $url)->getContent(false);
         $data = trim((string) $data);
 
@@ -73,7 +73,7 @@ class ShopwareFilesController extends AbstractController
 
         foreach (explode("\n", $data) as $row) {
             if ($this->isPlatform) {
-                $row = preg_replace_callback('/vendor\/shopware\/(.)/', fn($matches): string => 'src/' . strtoupper($matches[1]), $row);
+                $row = preg_replace_callback('/vendor\/shopware\/(.)/', fn ($matches): string => 'src/' . strtoupper($matches[1]), $row);
             }
 
             [$expectedMd5Sum, $file] = explode('  ', trim((string) $row));
@@ -171,7 +171,7 @@ class ShopwareFilesController extends AbstractController
 
         $userName = $this->getUserName($context) ?? 'unknown';
 
-        $message = sprintf('File at "%s" has been restored by %s', $file, $userName);
+        $message = \sprintf('File at "%s" has been restored by %s', $file, $userName);
 
         $this->froshToolsLogger->info($message);
 
@@ -220,24 +220,24 @@ class ShopwareFilesController extends AbstractController
         $userId = $contextSource->getUserId();
 
         if ($userId !== null) {
-            return 'user ' . $this->getUserNameByUserId($userId);
+            return 'user ' . $this->getUserNameByUserId($userId, $context);
         }
 
         $integrationId = $contextSource->getIntegrationId();
 
         if ($integrationId !== null) {
-            return 'integration ' . $this->getNameByIntegrationId($integrationId);
+            return 'integration ' . $this->getNameByIntegrationId($integrationId, $context);
         }
 
         return null;
     }
 
-    private function getUserNameByUserId(string $userId): ?string
+    private function getUserNameByUserId(string $userId, Context $context): ?string
     {
-        /** @var null|UserEntity $userEntity */
+        /** @var UserEntity|null $userEntity */
         $userEntity = $this->userRepository->search(
             new Criteria([$userId]),
-            Context::createDefaultContext(),
+            $context,
         )->first();
 
         if (!$userEntity instanceof UserEntity) {
@@ -247,12 +247,12 @@ class ShopwareFilesController extends AbstractController
         return 'user ' . $userEntity->getUsername();
     }
 
-    private function getNameByIntegrationId(string $integrationId): ?string
+    private function getNameByIntegrationId(string $integrationId, Context $context): ?string
     {
-        /** @var null|IntegrationEntity $integrationEntity */
+        /** @var IntegrationEntity|null $integrationEntity */
         $integrationEntity = $this->integrationRepository->search(
             new Criteria([$integrationId]),
-            Context::createDefaultContext(),
+            $context,
         )->first();
 
         if (!$integrationEntity instanceof IntegrationEntity) {

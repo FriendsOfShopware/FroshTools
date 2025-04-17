@@ -18,19 +18,27 @@ class MysqlSettingsChecker implements PerformanceCheckerInterface, CheckerInterf
 
     public const MYSQL_SQL_MODE_PART = 'ONLY_FULL_GROUP_BY';
 
-    public function __construct(private readonly Connection $connection) {}
+    public const MYSQL_TIME_ZONES = [
+        '+00:00',
+        'UTC',
+    ];
+
+    public function __construct(private readonly Connection $connection)
+    {
+    }
 
     public function collect(HealthCollection $collection): void
     {
         $this->checkGroupConcatMaxLen($collection);
         $this->checkSqlMode($collection);
+        $this->checkTimeZone($collection);
         $this->checkCheckDefaultEnvironmentSessionVariables($collection);
     }
 
     private function checkGroupConcatMaxLen(HealthCollection $collection): void
     {
         /** @var string|false $groupConcatMaxLen */
-        $groupConcatMaxLen =  $this->connection->fetchOne('SELECT @@group_concat_max_len');
+        $groupConcatMaxLen = $this->connection->fetchOne('SELECT @@group_concat_max_len');
         if (!$groupConcatMaxLen || (int) $groupConcatMaxLen < self::MYSQL_GROUP_CONCAT_MAX_LEN) {
             $collection->add(
                 SettingsResult::error(
@@ -54,6 +62,22 @@ class MysqlSettingsChecker implements PerformanceCheckerInterface, CheckerInterf
                     'MySQL value sql_mode',
                     $sqlMode,
                     'No ' . self::MYSQL_SQL_MODE_PART,
+                    self::DOCUMENTATION_URL,
+                ),
+            );
+        }
+    }
+
+    private function checkTimeZone(HealthCollection $collection): void
+    {
+        $timeZone = $this->connection->fetchOne('SELECT @@time_zone');
+        if (\is_string($timeZone) && !\in_array($timeZone, self::MYSQL_TIME_ZONES, true)) {
+            $collection->add(
+                SettingsResult::warning(
+                    'sql_time_zone',
+                    'MySQL value time_zone',
+                    $timeZone,
+                    implode(', ', self::MYSQL_TIME_ZONES),
                     self::DOCUMENTATION_URL,
                 ),
             );

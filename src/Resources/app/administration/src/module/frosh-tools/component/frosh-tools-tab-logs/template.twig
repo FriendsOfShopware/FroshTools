@@ -1,37 +1,45 @@
 <sw-card-view>
     <sw-card
-            class="frosh-tools-tab-logs__logs-card"
-            :title="$tc('frosh-tools.tabs.logs.title')"
-            :isLoading="isLoading"
-            :large="true"
-            positionIdentifier="frosh-tools-tab-logs"
+        class="frosh-tools-tab-logs__logs-card"
+        :title="$t('frosh-tools.tabs.logs.title')"
+        :isLoading="isLoading"
+        :large="true"
+        positionIdentifier="frosh-tools-tab-logs"
     >
         <template #toolbar>
-            <sw-button variant="ghost" @click="refresh"><sw-icon :small="true" name="regular-undo"></sw-icon></sw-button>
+            <sw-button
+                variant="ghost"
+                @click="refresh"
+            >
+                <sw-icon
+                    :small="true"
+                    name="regular-undo"
+                ></sw-icon>
+            </sw-button>
             <sw-single-select
                 :options="logFiles"
                 :isLoading="isLoading"
-                :placeholder="$tc('frosh-tools.tabs.logs.logFileSelect.placeholder')"
+                :placeholder="$t('frosh-tools.tabs.logs.logFileSelect.placeholder')"
                 labelProperty="name"
                 valueProperty="name"
                 v-model:value="selectedLogFile"
                 @update:value="onFileSelected"
             ></sw-single-select>
         </template>
-
         <sw-data-grid
             :showSelection="false"
             :showActions="false"
             :dataSource="logEntries"
-            :columns="columns">
+            :columns="columns"
+        >
             <template #column-date="{ item }">
                 {{ date(item.date, {hour: '2-digit', minute: '2-digit', second: '2-digit'}) }}
             </template>
+
             <template #column-message="{ item }">
                 <a @click="showInfoModal(item)">{{ item.message }}</a>
             </template>
         </sw-data-grid>
-
         <sw-pagination
             :total="totalLogEntries"
             :limit="limit"
@@ -39,25 +47,25 @@
             @page-change="onPageChange"
         ></sw-pagination>
     </sw-card>
-
-    <sw-modal v-if="displayedLog"
-              variant="large">
-
+    <sw-modal
+        v-if="displayedLog"
+        variant="large"
+    >
         <template #modal-header>
             <div class="sw-modal__titles">
                 <h4 class="sw-modal__title">
-                    {{ displayedLog.channel }} - {{ displayedLog.level }}
+                    {{ displayedLog.channel }}
+                    -
+                    {{ displayedLog.level }}
                 </h4>
-
                 <h5 class="sw-modal__subtitle">
                     {{ date(displayedLog.date, {hour: '2-digit', minute: '2-digit', second: '2-digit'}) }}
                 </h5>
             </div>
-
             <button
                 class="sw-modal__close"
-                :title="$tc('global.sw-modal.labelClose')"
-                :aria-label="$tc('global.sw-modal.labelClose')"
+                :title="$t('global.sw-modal.labelClose')"
+                :aria-label="$t('global.sw-modal.labelClose')"
                 @click="closeInfoModal"
             >
                 <sw-icon
@@ -66,7 +74,6 @@
                 />
             </button>
         </template>
-
         <div v-html="displayedLog.message"></div>
     </sw-modal>
 </sw-card-view>

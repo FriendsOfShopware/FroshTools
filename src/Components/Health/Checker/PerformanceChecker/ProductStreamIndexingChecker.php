@@ -14,7 +14,8 @@ class ProductStreamIndexingChecker implements PerformanceCheckerInterface, Check
     public function __construct(
         #[Autowire(param: 'shopware.product_stream.indexing')]
         private readonly bool $productStreamIndexingEnabled,
-    ) {}
+    ) {
+    }
 
     public function collect(HealthCollection $collection): void
     {

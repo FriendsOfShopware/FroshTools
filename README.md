@@ -4,10 +4,10 @@ This plugin contains some utility functions for managing a Shopware 6 shop.
 
 The current feature set consists of:
 
-- **System Status**
+- **System-Status**
   - Checks PHP Version, MySQL, Queue is working etc.
   - Checks for performance optimizations and links documentation
-- **Cache manager**
+- **Cache Manager**
   - Lists App and Http Cache and all folders in var/cache
   - Clear specific caches
   - Compile theme
@@ -18,14 +18,16 @@ The current feature set consists of:
 - **Queue Manager**
   - Shows the amount of messages in the queue
   - Reset queue
-- **Log viewer**
+- **Elasticsearch Manager**
+  - Shows the current status of the Elasticsearch nodes & cluster
+  - Lists all indices of the Elasticsearch instance
+  - Quick actions for index handling
+  - Execute Elasticsearch console commands
+- **Log Viewer**
   - Shows the entries of /var/log/*.log files
-- **Task Logging**
-  - Can be enabled with env `FROSH_TOOLS_TASK_LOGGING=1` in `.env`. This will create a log in `var/log/task_logging-xx.log`
-    - Set `FROSH_TOOLS_TASK_LOGGING_INFO=1` in `.env` to log all tasks
-- **Shopware file checker**
+- **Shopware File Checker**
   - Checks if core files have been changed
-- **State Machine Visualisation**
+- **State Machine Viewer**
   - basic view of order, transaction and delivery states
 - **Override system config by config files**
   - Overwrite any system config value with static or environment values

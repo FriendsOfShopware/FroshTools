@@ -14,7 +14,9 @@ final readonly class AdminInfoSubscriberEventListener
     public function __construct(
         #[Autowire(param: 'frosh_tools.elasticsearch.enabled')]
         private bool $elasticsearchEnabled,
-    ) {}
+    ) {
+    }
+
     public function __invoke(ResponseEvent $event): void
     {
         if ($event->getRequest()->attributes->get('_route') !== 'api.info.config') {

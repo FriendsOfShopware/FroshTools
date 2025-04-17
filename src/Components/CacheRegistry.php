@@ -27,7 +27,7 @@ class CacheRegistry
     public function get(string $name): CacheAdapter
     {
         if (!isset($this->adapters[$name])) {
-            throw new \OutOfBoundsException(sprintf('Cannot find adapter by name %s', $name));
+            throw new \OutOfBoundsException(\sprintf('Cannot find adapter by name %s', $name));
         }
 
         return $this->adapters[$name];
