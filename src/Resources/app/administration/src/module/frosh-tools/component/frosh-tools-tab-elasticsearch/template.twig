@@ -13,15 +13,24 @@
         </sw-alert>
         <div v-if="!isLoading && isActive">
             <div>
-                <strong>{{ $t('frosh-tools.tabs.elasticsearch.version') }}: </strong>
+                <strong>
+                    {{ $t('frosh-tools.tabs.elasticsearch.version') }}
+                    :
+                </strong>
                 {{ statusInfo.info.version.number }}
             </div>
             <div>
-                <strong>{{ $t('frosh-tools.tabs.elasticsearch.nodes') }}: </strong>
+                <strong>
+                    {{ $t('frosh-tools.tabs.elasticsearch.nodes') }}
+                    :
+                </strong>
                 {{ statusInfo.health.number_of_nodes }}
             </div>
             <div>
-                <strong>{{ $t('frosh-tools.tabs.elasticsearch.status') }}: </strong>
+                <strong>
+                    {{ $t('frosh-tools.tabs.elasticsearch.status') }}
+                    :
+                </strong>
                 {{ statusInfo.health.status }}
             </div>
         </div>
@@ -86,14 +95,24 @@
         <sw-button
             @click="reindex"
             variant="primary"
-        >{{ $t('frosh-tools.tabs.elasticsearch.action.reindex') }}</sw-button>
-        <sw-button @click="switchAlias">{{ $t('frosh-tools.tabs.elasticsearch.action.switchAlias') }}</sw-button>
-        <sw-button @click="flushAll">{{ $t('frosh-tools.tabs.elasticsearch.action.flushAll') }}</sw-button>
-        <sw-button @click="cleanup">{{ $t('frosh-tools.tabs.elasticsearch.action.cleanup') }}</sw-button>
+        >
+            {{ $t('frosh-tools.tabs.elasticsearch.action.reindex') }}
+        </sw-button>
+        <sw-button @click="switchAlias">
+            {{ $t('frosh-tools.tabs.elasticsearch.action.switchAlias') }}
+        </sw-button>
+        <sw-button @click="flushAll">
+            {{ $t('frosh-tools.tabs.elasticsearch.action.flushAll') }}
+        </sw-button>
+        <sw-button @click="cleanup">
+            {{ $t('frosh-tools.tabs.elasticsearch.action.cleanup') }}
+        </sw-button>
         <sw-button
             @click="resetElasticsearch"
             variant="danger"
-        >{{ $t('frosh-tools.tabs.elasticsearch.action.reset') }}</sw-button>
+        >
+            {{ $t('frosh-tools.tabs.elasticsearch.action.reset') }}
+        </sw-button>
     </sw-card>
     <sw-card
         :title="$t('frosh-tools.tabs.elasticsearch.console.title')"
@@ -110,9 +129,14 @@
             :sanitizeInput="false"
             v-model="consoleInput"
         ></sw-code-editor>
-        <sw-button @click="onConsoleEnter">{{ $t('frosh-tools.tabs.elasticsearch.console.send') }}</sw-button>
+        <sw-button @click="onConsoleEnter">
+            {{ $t('frosh-tools.tabs.elasticsearch.console.send') }}
+        </sw-button>
         <div>
-            <strong>{{ $t('frosh-tools.tabs.elasticsearch.console.output') }}:</strong>
+            <strong>
+                {{ $t('frosh-tools.tabs.elasticsearch.console.output') }}
+                :
+            </strong>
         </div>
         <pre>{{ consoleOutput }}</pre>
     </sw-card>

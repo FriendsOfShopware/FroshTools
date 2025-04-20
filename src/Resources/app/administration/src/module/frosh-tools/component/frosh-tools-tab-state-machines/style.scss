@@ -1,28 +1,28 @@
 .frosh-tools-tab-state-machines__state-machines-card {
-  .sw-card__toolbar {
-    .sw-select {
-      margin: 0;
-      display: flex;
-      flex-direction: row;
-      gap: 10px;
-      align-items: center;
+    .sw-card__toolbar {
+        .sw-select {
+            margin: 0;
+            display: flex;
+            flex-direction: row;
+            gap: 10px;
+            align-items: center;
 
-      .sw-field__label {
-        gap: 6px;
-        margin-bottom: 2px;
-      }
+            .sw-field__label {
+                gap: 6px;
+                margin-bottom: 2px;
+            }
 
-      .sw-block-field__block {
-        flex: 1;
-      }
+            .sw-block-field__block {
+                flex: 1;
+            }
+        }
     }
-  }
 
-  .sw-card__content {
-    padding: 0;
+    .sw-card__content {
+        padding: 0;
 
-    .sw-label {
-      text-align: center;
+        .sw-label {
+            text-align: center;
+        }
     }
-  }
 }
