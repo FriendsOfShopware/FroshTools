@@ -35,10 +35,10 @@
         }
     },
     "require": {
-        "shopware/core": "~6.6.0"
+        "shopware/core": "~6.6.0 || ~6.7.0"
     },
     "require-dev": {
-        "shopware/elasticsearch": "~6.6.0"
+        "shopware/elasticsearch": "~6.6.0 || ~6.7.0"
     },
     "config": {
         "allow-plugins": {
