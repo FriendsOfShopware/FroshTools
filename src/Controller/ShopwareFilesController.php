@@ -64,7 +64,8 @@ class ShopwareFilesController extends AbstractController
         $data = $this->httpClient->request('GET', $url)->getContent(false);
         $data = trim((string) $data);
 
-        if (empty($data)) {
+        // Cloudflare fallbacks to index.html for 404 pages...
+        if (empty($data) || str_contains($data, '<!DOCTYPE html>')) {
             return new JsonResponse(['error' => 'No file information for this Shopware version']);
         }
 

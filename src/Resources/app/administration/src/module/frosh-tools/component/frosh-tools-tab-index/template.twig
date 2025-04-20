@@ -31,7 +31,7 @@
                 :columns="columns"
             >
                 <template #column-current="{ item }">
-                    <template>
+                    <div>
                         <sw-label
                             variant="warning"
                             appearance="pill"
@@ -53,11 +53,8 @@
                         >
                             {{ $t('frosh-tools.info') }}
                         </sw-label>
-                    </template>
-
-                    <template>
-                        {{ item.current }}
-                    </template>
+                    </div>
+                    {{ item.current }}
                 </template>
 
                 <template #column-name="{ item }">
@@ -92,7 +89,7 @@
                 :columns="columns"
             >
                 <template #column-current="{ item }">
-                    <template>
+                    <div>
                         <sw-label
                             variant="warning"
                             appearance="pill"
@@ -114,11 +111,8 @@
                         >
                             {{ $t('frosh-tools.info') }}
                         </sw-label>
-                    </template>
-
-                    <template>
                         {{ item.current }}
-                    </template>
+                    </div>
                 </template>
 
                 <template #column-name="{ item }">
