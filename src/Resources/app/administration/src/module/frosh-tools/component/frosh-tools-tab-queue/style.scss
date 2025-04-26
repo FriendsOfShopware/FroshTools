@@ -1,10 +1,18 @@
-.frosh-tools-tab-queue__manager-card {
-  .sw-card__toolbar {
-    display: flex;
-    justify-content: space-between;
+.frosh-tools-tab-queue__ {
+  &manager-card {
+    .sw-card__toolbar {
+      display: flex;
+      justify-content: space-between;
+    }
+
+    .sw-card__content {
+      padding: 0;
+    }
   }
 
-  .sw-card__content {
-    padding: 0;
+  &toolbar {
+    display: flex;
+    justify-content: space-between;
+    width: 100%;
   }
 }

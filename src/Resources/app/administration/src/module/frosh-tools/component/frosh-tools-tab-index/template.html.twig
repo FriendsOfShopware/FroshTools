@@ -1,27 +1,22 @@
 <sw-card-view>
-    <!-- TODO Codemod: Converted from sw-card - please check if everything works correctly -->
     <mt-card
             class="frosh-tools-tab-index__health-card"
             :isLoading="isLoading"
-            :large="true"
+            large
             positionIdentifier="frosh-tools-tab-index"
     >
         <template #toolbar>
-            <!-- @todo: Make the refresh button fancy -->
-            <!-- TODO Codemod: Converted from sw-button - please check if everything works correctly -->
             <mt-button
                     variant="primary"
                     ghost
                     @click="refresh"
             >
-                <!-- TODO Codemod: Converted from sw-icon - please check if everything works correctly -->
                 <mt-icon
                         size="16px"
                         name="regular-undo"
                 ></mt-icon>
             </mt-button>
         </template>
-        <!-- TODO Codemod: Converted from sw-card - please check if everything works correctly -->
         <mt-card
                 class="frosh-tools-tab-index__health-card"
                 :title="$t('frosh-tools.tabs.index.title')"
@@ -69,20 +64,18 @@
                             <a
                                     :href="item.url"
                                     target="_blank"
-                            >Info</a>
+                            >{{ $t('frosh-tools.tabs.index.info') }}</a>
                         </template>
                     </template>
                 </sw-data-grid>
             </template>
         </mt-card>
-        <!-- TODO Codemod: Converted from sw-card - please check if everything works correctly -->
         <mt-card
                 class="frosh-tools-tab-index__performance-card"
                 :title="$t('frosh-tools.tabs.index.performance')"
                 :large="true"
                 positionIdentifier="frosh-tools-tab-index-performance"
         >
-            <!-- TODO Codemod: Converted from sw-alert - please check if everything works correctly -->
             <mt-banner
                     v-if="performanceStatus && performanceStatus.length === 0"
                     variant="positive"

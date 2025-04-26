@@ -97,6 +97,7 @@ Component.register('frosh-tools-tab-elasticsearch', {
     },
 
     async onConsoleEnter() {
+      console.log(this.consoleInput)
       const lines = this.consoleInput.split('\n')
       const requestLine = lines.shift()
       const payload = lines.join('\n').trim()

@@ -1,5 +1,6 @@
 import DiffMatchPatch from 'diff-match-patch'
 import template from './template.html.twig'
+import './style.scss'
 
 const { Component, Mixin } = Shopware
 
@@ -40,12 +41,6 @@ Component.register('frosh-tools-tab-files', {
           primary: true,
         },
       ]
-    },
-
-    isLoadingClass() {
-      return {
-        'is-loading': this.isLoading,
-      }
     },
   },
 

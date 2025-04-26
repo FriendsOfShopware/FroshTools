@@ -1,62 +1,58 @@
 <sw-card-view>
-    <!-- TODO Codemod: Converted from sw-card - please check if everything works correctly -->
     <mt-card
-        class="frosh-tools-tab-queue__manager-card"
-        :title="$t('frosh-tools.tabs.queue.title')"
-        :isLoading="isLoading"
-        :large="true"
-        positionIdentifier="frosh-tools-tab-queue"
+            class="frosh-tools-tab-queue__manager-card"
+            :title="$t('frosh-tools.tabs.queue.title')"
+            :isLoading="isLoading"
+            :large="true"
+            positionIdentifier="frosh-tools-tab-queue"
     >
         <template #toolbar>
-            <!-- TODO Codemod: Converted from sw-button - please check if everything works correctly -->
-            <mt-button
-                variant="primary"
-                ghost
-                @click="refresh"
-            >
-                <!-- TODO Codemod: Converted from sw-icon - please check if everything works correctly -->
-                <mt-icon
-                    size="16px"
-                    name="regular-undo"
-                ></mt-icon>
-            </mt-button>
-            <!-- TODO Codemod: Converted from sw-button - please check if everything works correctly -->
-            <mt-button
-                variant="critical"
-                @click="showResetModal = true"
-            >
-                {{ $t('frosh-tools.resetQueue') }}
-            </mt-button>
+            <div class="frosh-tools-tab-queue__toolbar">
+                <mt-button
+                        variant="primary"
+                        ghost
+                        @click="refresh"
+                >
+                    <mt-icon
+                            size="16px"
+                            name="regular-undo"
+                    ></mt-icon>
+                </mt-button>
+                <mt-button
+                        variant="critical"
+                        @click="showResetModal = true"
+                >
+                    {{ $t('frosh-tools.resetQueue') }}
+                </mt-button>
+            </div>
         </template>
         <template #grid>
-        <sw-data-grid
-            :showSelection="false"
-            :dataSource="queueEntries"
-            :columns="columns"
-            :showActions="false"
-        >
-        </sw-data-grid>
+            <sw-data-grid
+                    :showSelection="false"
+                    :dataSource="queueEntries"
+                    :columns="columns"
+                    :showActions="false"
+            >
+            </sw-data-grid>
         </template>
     </mt-card>
     <sw-modal
-        v-if="showResetModal"
-        :title="$t('frosh-tools.tabs.queue.reset.modal.title')"
-        variant="small"
-        @modal-close="showResetModal = false"
+            v-if="showResetModal"
+            :title="$t('frosh-tools.tabs.queue.reset.modal.title')"
+            variant="small"
+            @modal-close="showResetModal = false"
     >
         {{ $t('frosh-tools.tabs.queue.reset.modal.description') }}
         <template #modal-footer>
-            <!-- TODO Codemod: Converted from sw-button - please check if everything works correctly -->
             <mt-button
-                @click="showResetModal = false"
-                variant="secondary"
+                    @click="showResetModal = false"
+                    variant="secondary"
             >
                 {{ $t('global.default.cancel') }}
             </mt-button>
-            <!-- TODO Codemod: Converted from sw-button - please check if everything works correctly -->
             <mt-button
-                variant="critical"
-                @click="resetQueue"
+                    variant="critical"
+                    @click="resetQueue"
             >
                 {{ $t('frosh-tools.tabs.queue.reset.modal.reset') }}
             </mt-button>

@@ -1,8 +1,7 @@
 <sw-card-view>
-    <!-- TODO Codemod: Converted from sw-card - please check if everything works correctly -->
     <mt-card
         :title="$t('frosh-tools.tabs.elasticsearch.title')"
-        :large="true"
+        large
         :isLoading="isLoading"
         positionIdentifier="frosh-tools-tab-elasticsearch"
     >
@@ -37,28 +36,25 @@
             </div>
         </div>
     </mt-card>
-    <!-- TODO Codemod: Converted from sw-card - please check if everything works correctly -->
     <mt-card
         :title="$t('frosh-tools.tabs.elasticsearch.indices')"
         v-if="!isLoading && isActive"
-        :large="true"
+        large
         positionIdentifier="frosh-tools-tab-elasticsearch-indices"
     >
         <template #toolbar>
-            <!-- @todo: Make the refresh button fancy -->
-            <!-- TODO Codemod: Converted from sw-button - please check if everything works correctly -->
             <mt-button
                 variant="primary"
                 ghost
                 @click="createdComponent"
             >
-                <!-- TODO Codemod: Converted from sw-icon - please check if everything works correctly -->
                 <mt-icon
                     size="16px"
                     name="regular-undo"
                 ></mt-icon>
             </mt-button>
         </template>
+        <template #grid>
         <sw-data-grid
             v-if="indices"
             :showSelection="false"
@@ -91,43 +87,38 @@
                 </sw-context-menu-item>
             </template>
         </sw-data-grid>
+        </template>
     </mt-card>
-    <!-- TODO Codemod: Converted from sw-card - please check if everything works correctly -->
     <mt-card
         :title="$t('frosh-tools.actions')"
         v-if="!isLoading && isActive"
-        :large="true"
+        large
         positionIdentifier="frosh-tools-tab-elasticsearch-health"
     >
-        <!-- TODO Codemod: Converted from sw-button - please check if everything works correctly -->
         <mt-button
             @click="reindex"
             variant="primary"
         >
             {{ $t('frosh-tools.tabs.elasticsearch.action.reindex') }}
         </mt-button>
-        <!-- TODO Codemod: Converted from sw-button - please check if everything works correctly -->
         <mt-button
             @click="switchAlias"
             variant="secondary"
         >
             {{ $t('frosh-tools.tabs.elasticsearch.action.switchAlias') }}
         </mt-button>
-        <!-- TODO Codemod: Converted from sw-button - please check if everything works correctly -->
         <mt-button
             @click="flushAll"
             variant="secondary"
         >
             {{ $t('frosh-tools.tabs.elasticsearch.action.flushAll') }}
         </mt-button>
-        <!-- TODO Codemod: Converted from sw-button - please check if everything works correctly -->
         <mt-button
             @click="cleanup"
             variant="secondary"
         >
             {{ $t('frosh-tools.tabs.elasticsearch.action.cleanup') }}
         </mt-button>
-        <!-- TODO Codemod: Converted from sw-button - please check if everything works correctly -->
         <mt-button
             @click="resetElasticsearch"
             variant="critical"
@@ -135,23 +126,17 @@
             {{ $t('frosh-tools.tabs.elasticsearch.action.reset') }}
         </mt-button>
     </mt-card>
-    <!-- TODO Codemod: Converted from sw-card - please check if everything works correctly -->
     <mt-card
         :title="$t('frosh-tools.tabs.elasticsearch.console.title')"
         v-if="!isLoading && isActive"
-        :large="true"
+        large
         positionIdentifier="frosh-tools-tab-elasticsearch-console"
     >
         <sw-code-editor
-            completionMode="text"
-            mode="twig"
-            :softWraps="true"
-            :setFocus="false"
-            :disabled="false"
-            :sanitizeInput="false"
-            v-model="consoleInput"
-        ></sw-code-editor>
-        <!-- TODO Codemod: Converted from sw-button - please check if everything works correctly -->
+                v-model:value="consoleInput"
+                completion-mode="text"
+                softWraps
+        />
         <mt-button
             @click="onConsoleEnter"
             variant="secondary"

@@ -1,26 +1,34 @@
-.frosh-tools-tab-scheduled__tasks-card {
-  .sw-card__toolbar {
-    display: flex;
-    justify-content: space-between;
-  }
-
-  .sw-card__content {
-    padding: 0;
-  }
-
-  .sw-data-grid__cell--nextExecutionTime {
-    .sw-field--datepicker {
+.frosh-tools-tab-scheduled__ {
+  &tasks-card {
+    .sw-card__toolbar {
       display: flex;
-      gap: 10px;
+      justify-content: space-between;
     }
 
-    &.is--compact {
+    .sw-card__content {
+      padding: 0;
+    }
+
+    .sw-data-grid__cell--nextExecutionTime {
       .sw-field--datepicker {
-        input {
-          padding-top: 10px;
-          padding-bottom: 10px;
+        display: flex;
+        gap: 10px;
+      }
+
+      &.is--compact {
+        .sw-field--datepicker {
+          input {
+            padding-top: 10px;
+            padding-bottom: 10px;
+          }
         }
       }
     }
+  }
+
+  &toolbar {
+    display: flex;
+    justify-content: space-between;
+    width: 100%;
   }
 }

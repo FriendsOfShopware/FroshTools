@@ -1,5 +1,4 @@
 <sw-card-view>
-    <!-- TODO Codemod: Converted from sw-card - please check if everything works correctly -->
     <mt-card
         class="frosh-tools-tab-state-machines__state-machines-card"
         :title="$t('frosh-tools.tabs.state-machines.title')"
@@ -23,7 +22,7 @@
         </div>
         <template #toolbar>
             <sw-entity-single-select
-                v-model="selectedStateMachine"
+                v-model:value="selectedStateMachine"
                 entity="state_machine"
                 :aside="true"
                 @update:value="onStateMachineChange"

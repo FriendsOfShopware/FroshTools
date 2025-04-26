@@ -1,25 +1,21 @@
 <sw-card-view>
-    <!-- TODO Codemod: Converted from sw-card - please check if everything works correctly -->
     <mt-card
         class="frosh-tools-tab-cache__cache-card"
         :title="$t('frosh-tools.tabs.cache.title')"
         :isLoading="isLoading"
-        :large="true"
+        large
         positionIdentifier="frosh-tools-tab-cache"
     >
         <template #toolbar>
-            <!-- @todo: Make the refresh button fancy -->
-            <!-- TODO Codemod: Converted from sw-button - please check if everything works correctly -->
             <mt-button
                 variant="primary"
                 ghost
                 @click="createdComponent"
             >
-                <!-- TODO Codemod: Converted from sw-icon - please check if everything works correctly -->
                 <mt-icon
                     size="16px"
                     name="regular-undo"
-                ></mt-icon>
+                />
             </mt-button>
         </template>
         <template #grid>
@@ -77,15 +73,13 @@
         </sw-data-grid>
         </template>
     </mt-card>
-    <!-- TODO Codemod: Converted from sw-card - please check if everything works correctly -->
     <mt-card
         class="frosh-tools-tab-cache__action-card"
         :title="$t('frosh-tools.actions')"
         :isLoading="isLoading"
-        :large="true"
+        large
         positionIdentifier="frosh-tools-tab-cache-action"
     >
-        <!-- TODO Codemod: Converted from sw-button - please check if everything works correctly -->
         <mt-button
             variant="primary"
             @click="compileTheme"

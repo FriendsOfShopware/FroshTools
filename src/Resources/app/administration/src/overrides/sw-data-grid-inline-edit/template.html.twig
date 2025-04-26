@@ -1,20 +1,22 @@
 {% block sw_data_grid_inline_edit_type_unknown %}
-    <!-- TODO Codemod: Converted from sw-datepicker - please check if everything works correctly -->
     <mt-datepicker
         v-else-if="column.inlineEdit === 'date'"
+        class="frosh-tools_grid__inline-edit__datepicker"
         key="date"
         date-type="date"
         v-model="currentValue"
         name="sw-field--currentValue"
+        @update:model-value="emitInput"
     />
 
-    <!-- TODO Codemod: Converted from sw-datepicker - please check if everything works correctly -->
     <mt-datepicker
         v-else-if="column.inlineEdit === 'datetime'"
+        class="frosh-tools_grid__inline-edit__datepicker"
         key="datetime"
         date-type="datetime"
         v-model="currentValue"
         name="sw-field--currentValue"
+        @update:model-value="emitInput"
     />
 
     {% parent() %}

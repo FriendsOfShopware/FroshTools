@@ -1,0 +1,7 @@
+.frosh-tools_grid__inline-edit__datepicker {
+  grid-template-areas: "label datepicker hint";
+  column-gap: .4rem;
+  .field-hint {
+    margin-bottom: 0;
+  }
+}

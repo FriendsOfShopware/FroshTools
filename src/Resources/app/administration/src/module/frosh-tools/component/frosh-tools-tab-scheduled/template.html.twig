@@ -1,113 +1,111 @@
 <sw-card-view>
-    <!-- TODO Codemod: Converted from sw-card - please check if everything works correctly -->
     <mt-card
-        class="frosh-tools-tab-scheduled__tasks-card"
-        :title="$t('frosh-tools.tabs.scheduledTaskOverview.title')"
-        :isLoading="isLoading"
-        :large="true"
-        positionIdentifier="frosh-tools-tab-scheduled"
+            class="frosh-tools-tab-scheduled__tasks-card"
+            :title="$t('frosh-tools.tabs.scheduledTaskOverview.title')"
+            :isLoading="isLoading"
+            :large="true"
+            positionIdentifier="frosh-tools-tab-scheduled"
     >
         <template #toolbar>
-            <!-- TODO Codemod: Converted from sw-button - please check if everything works correctly -->
-            <mt-button
-                variant="primary"
-                ghost
-                @click="refresh"
-            >
-                <!-- TODO Codemod: Converted from sw-icon - please check if everything works correctly -->
-                <mt-icon
-                    size="16px"
-                    name="regular-undo"
-                ></mt-icon>
-            </mt-button>
-            <!-- TODO Codemod: Converted from sw-button - please check if everything works correctly -->
-            <mt-button
-                variant="primary"
-                @click="registerScheduledTasks"
-            >
-                {{ $t('frosh-tools.scheduledTasksRegisterStarted') }}
-            </mt-button>
+            <div class="frosh-tools-tab-scheduled__toolbar">
+
+                <mt-button
+                        variant="primary"
+                        ghost
+                        @click="refresh"
+                >
+                    <mt-icon
+                            size="16px"
+                            name="regular-undo"
+                    ></mt-icon>
+                </mt-button>
+                <mt-button
+                        variant="primary"
+                        @click="registerScheduledTasks"
+                >
+                    {{ $t('frosh-tools.scheduledTasksRegisterStarted') }}
+                </mt-button>
+            </div>
         </template>
         <template #grid>
-        <sw-entity-listing
-            :showSelection="false"
-            :fullPage="false"
-            :allowInlineEdit="true"
-            :allowEdit="false"
-            :allowDelete="false"
-            :showActions="true"
-            :repository="scheduledRepository"
-            :items="items"
-            :columns="columns"
-        >
-            <template #column-lastExecutionTime="{ item }">
-                {{ date(item.lastExecutionTime, {hour: '2-digit', minute: '2-digit'}) }}
-            </template>
-
-            <template
-                #column-nextExecutionTime="{ item, column, compact, isInlineEdit }"
+            <sw-entity-listing
+                    :showSelection="false"
+                    :fullPage="false"
+                    :allowInlineEdit="true"
+                    :allowEdit="false"
+                    :allowDelete="false"
+                    :showActions="true"
+                    :repository="scheduledRepository"
+                    :items="items"
+                    :columns="columns"
             >
-                <sw-data-grid-inline-edit
-                    v-if="isInlineEdit"
-                    :column="column"
-                    :compact="compact"
-                    :value="item[column.property]"
-                    @update:value="item[column.property] = $event"
+                <template #column-lastExecutionTime="{ item }">
+                    {{ date(item.lastExecutionTime, {hour: '2-digit', minute: '2-digit'}) }}
+                </template>
+
+                <template
+                        #column-nextExecutionTime="{ item, column, compact, isInlineEdit }"
                 >
-                </sw-data-grid-inline-edit>
-                <span v-else>
+                    <sw-data-grid-inline-edit
+                            v-if="isInlineEdit"
+                            :column="column"
+                            :compact="compact"
+                            :value="item[column.property]"
+                            @update:value="item[column.property] = $event"
+                    >
+                    </sw-data-grid-inline-edit>
+                    <span v-else>
                     {{ date(item.nextExecutionTime, {hour: '2-digit', minute: '2-digit'}) }}
                 </span>
-            </template>
+                </template>
 
-            <template #actions="{ item }">
-                <sw-context-menu-item
-                    variant="primary"
-                    @click="runTask(item)"
-                >
-                    {{ $t('frosh-tools.runManually') }}
-                </sw-context-menu-item>
-                <sw-context-menu-item
-                    variant="primary"
-                    @click="scheduleTask(item)"
-                >
-                    {{ $t('frosh-tools.setToScheduled') }}
-                </sw-context-menu-item>
-                <sw-context-menu-item
-                    variant="primary"
-                    @click="scheduleTask(item, true)"
-                >
-                    {{ $t('frosh-tools.setToScheduledImmediately') }}
-                </sw-context-menu-item>
-                <sw-context-menu-item
-                    variant="primary"
-                    @click="deactivateTask(item)"
-                >
-                    {{ $t('frosh-tools.setToInactive') }}
-                </sw-context-menu-item>
-            </template>
-        </sw-entity-listing>
+                <template #actions="{ item }">
+                    <sw-context-menu-item
+                            variant="primary"
+                            @click="runTask(item)"
+                    >
+                        {{ $t('frosh-tools.runManually') }}
+                    </sw-context-menu-item>
+                    <sw-context-menu-item
+                            variant="primary"
+                            @click="scheduleTask(item)"
+                    >
+                        {{ $t('frosh-tools.setToScheduled') }}
+                    </sw-context-menu-item>
+                    <sw-context-menu-item
+                            variant="primary"
+                            @click="scheduleTask(item, true)"
+                    >
+                        {{ $t('frosh-tools.setToScheduledImmediately') }}
+                    </sw-context-menu-item>
+                    <sw-context-menu-item
+                            variant="primary"
+                            @click="deactivateTask(item)"
+                    >
+                        {{ $t('frosh-tools.setToInactive') }}
+                    </sw-context-menu-item>
+                </template>
+            </sw-entity-listing>
         </template>
     </mt-card>
     <sw-modal
-        v-if="taskError"
-        :title="$t('global.default.error')"
-        @modal-close="taskError = null"
+            v-if="taskError"
+            :title="$t('global.default.error')"
+            @modal-close="taskError = null"
     >
         <pre
-            v-if="typeof taskError === 'object'"
-            v-text="taskError"
+                v-if="typeof taskError === 'object'"
+                v-text="taskError"
         />
         <div
-            v-else
-            v-html="taskError"
+                v-else
+                v-html="taskError"
         />
         <template #modal-footer>
-            <!-- TODO Codemod: Converted from sw-button - please check if everything works correctly -->
             <mt-button
-                size="small"
-                @click="taskError = null"
-                variant="secondary"
+                    size="small"
+                    @click="taskError = null"
+                    variant="secondary"
             >
                 {{ $t('global.default.close') }}
             </mt-button>
