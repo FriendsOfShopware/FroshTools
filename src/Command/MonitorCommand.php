@@ -4,13 +4,17 @@ declare(strict_types=1);
 
 namespace Frosh\Tools\Command;
 
+use Doctrine\DBAL\Connection;
 use Frosh\Tools\Components\Health\Checker\HealthChecker\QueueChecker;
 use Frosh\Tools\Components\Health\Checker\HealthChecker\TaskChecker;
 use Frosh\Tools\Components\Health\HealthCollection;
 use Frosh\Tools\Components\Health\SettingsResult;
 use Shopware\Core\Content\Mail\Service\AbstractMailService;
 use Shopware\Core\Content\Mail\Service\MailService;
+use Shopware\Core\Defaults;
+use Shopware\Core\Framework\Adapter\Console\ShopwareStyle;
 use Shopware\Core\Framework\Context;
+use Shopware\Core\Framework\Uuid\Uuid;
 use Shopware\Core\System\SystemConfig\SystemConfigService;
 use Symfony\Component\Console\Attribute\AsCommand;
 use Symfony\Component\Console\Command\Command;
@@ -33,6 +37,7 @@ class MonitorCommand extends Command
         private readonly SystemConfigService $configService,
         private readonly QueueChecker $queueChecker,
         private readonly TaskChecker $taskChecker,
+        private readonly Connection $connection,
     ) {
         parent::__construct();
     }
@@ -41,6 +46,23 @@ class MonitorCommand extends Command
     {
         $this->addArgument(self::MONITOR_SALESCHANNEL_ARG, InputArgument::REQUIRED, 'Sales Channel ID.');
         $this->addOption(self::MONITOR_EMAIL_OPTION, 'em', InputOption::VALUE_OPTIONAL, 'Custom mail address');
+    }
+
+    protected function interact(InputInterface $input, OutputInterface $output): void
+    {
+        $io = new ShopwareStyle($input, $output);
+        $salesChannelId = $input->getArgument(self::MONITOR_SALESCHANNEL_ARG);
+
+        if ($salesChannelId) {
+            return;
+        }
+
+        $salesChannels = $this->connection->fetchAllKeyValue('SELECT CONCAT(sct.name, \' (\', LOWER(HEX(sc.id)), \')\'), LOWER(HEX(sc.id)) FROM sales_channel sc INNER JOIN sales_channel_translation sct ON sc.id = sct.sales_channel_id WHERE sct.language_id = :defaultLang', [
+            'defaultLang' => Uuid::fromHexToBytes(Defaults::LANGUAGE_SYSTEM),
+        ]);
+
+        $salesChannelName = $io->choice('Please select a sales channel', array_keys($salesChannels));
+        $input->setArgument(self::MONITOR_SALESCHANNEL_ARG, $salesChannels[$salesChannelName]);
     }
 
     protected function execute(InputInterface $input, OutputInterface $output): int
