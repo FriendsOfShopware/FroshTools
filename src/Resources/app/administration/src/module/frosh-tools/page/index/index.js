@@ -11,12 +11,12 @@ Component.register('frosh-tools-index', {
         return (
           Shopware.Store.get('context').app.config.settings
             ?.elasticsearchEnabled || false
-        );
+        )
       } else {
         return (
           Shopware.State.get('context').app.config.settings
             ?.elasticsearchEnabled || false
-        );
+        )
       }
     },
   },

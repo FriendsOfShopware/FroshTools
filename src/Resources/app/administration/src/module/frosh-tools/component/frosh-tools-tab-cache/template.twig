@@ -18,58 +18,61 @@
                 ></sw-icon>
             </sw-button>
         </template>
-        <sw-data-grid
-            :showSelection="false"
-            :dataSource="cacheFolders"
-            :columns="columns"
-        >
-            <template #column-name="{ item }">
-                <sw-label
-                    variant="success"
-                    appearance="pill"
-                    v-if="item.active"
-                >
-                    {{ $t('frosh-tools.active') }}
-                </sw-label>
-                <sw-label
-                    variant="primary"
-                    appearance="pill"
-                    v-if="item.type"
-                >
-                    {{ item.type }}
-                </sw-label>
-                {{ item.name }}
-            </template>
 
-            <template #column-size="{ item }">
-                <template v-if="item.size < 0">
-                    {{ $t('frosh-tools.unknown') }}
+        <template #grid>
+            <sw-data-grid
+                :showSelection="false"
+                :dataSource="cacheFolders"
+                :columns="columns"
+            >
+                <template #column-name="{ item }">
+                    <sw-label
+                        variant="success"
+                        appearance="pill"
+                        v-if="item.active"
+                    >
+                        {{ $t('frosh-tools.active') }}
+                    </sw-label>
+                    <sw-label
+                        variant="primary"
+                        appearance="pill"
+                        v-if="item.type"
+                    >
+                        {{ item.type }}
+                    </sw-label>
+                    {{ item.name }}
                 </template>
 
-                <template v-else>
-                    {{ formatSize(item.size) }}
-                </template>
-            </template>
+                <template #column-size="{ item }">
+                    <template v-if="item.size < 0">
+                        {{ $t('frosh-tools.unknown') }}
+                    </template>
 
-            <template #column-freeSpace="{ item }">
-                <template v-if="item.freeSpace < 0">
-                    {{ $t('frosh-tools.unknown') }}
+                    <template v-else>
+                        {{ formatSize(item.size) }}
+                    </template>
                 </template>
 
-                <template v-else>
-                    {{ formatSize(item.freeSpace) }}
-                </template>
-            </template>
+                <template #column-freeSpace="{ item }">
+                    <template v-if="item.freeSpace < 0">
+                        {{ $t('frosh-tools.unknown') }}
+                    </template>
 
-            <template #actions="{ item }">
-                <sw-context-menu-item
-                    variant="danger"
-                    @click="clearCache(item)"
-                >
-                    {{ $t('frosh-tools.clear') }}
-                </sw-context-menu-item>
-            </template>
-        </sw-data-grid>
+                    <template v-else>
+                        {{ formatSize(item.freeSpace) }}
+                    </template>
+                </template>
+
+                <template #actions="{ item }">
+                    <sw-context-menu-item
+                        variant="danger"
+                        @click="clearCache(item)"
+                    >
+                        {{ $t('frosh-tools.clear') }}
+                    </sw-context-menu-item>
+                </template>
+            </sw-data-grid>
+        </template>
     </sw-card>
     <sw-card
         class="frosh-tools-tab-cache__action-card"

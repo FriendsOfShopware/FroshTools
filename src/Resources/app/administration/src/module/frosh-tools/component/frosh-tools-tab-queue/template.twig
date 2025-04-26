@@ -20,13 +20,16 @@
                 {{ $t('frosh-tools.resetQueue') }}
             </sw-button>
         </template>
-        <sw-data-grid
-            :showSelection="false"
-            :dataSource="queueEntries"
-            :columns="columns"
-            :showActions="false"
-        >
-        </sw-data-grid>
+
+        <template #grid>
+            <sw-data-grid
+                :showSelection="false"
+                :dataSource="queueEntries"
+                :columns="columns"
+                :showActions="false"
+            >
+            </sw-data-grid>
+        </template>
     </sw-card>
     <sw-modal
         v-if="showResetModal"
