@@ -24,10 +24,6 @@ class Configuration implements ConfigurationInterface
                         ->end()
                     ->end()
                 ->end()
-                ->arrayNode('system_config')
-                    ->variablePrototype()
-                    ->end()
-                ->end()
             ->end()
         ;
 
