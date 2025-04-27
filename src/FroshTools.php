@@ -21,6 +21,18 @@ class FroshTools extends Plugin
         $container->addCompilerPass(new DisableElasticsearchCompilerPass());
     }
 
+    public static function formatSize(float $size): string
+    {
+        if ($size <= 0) {
+            return '0';
+        }
+
+        $base = log($size) / log(1024);
+        $suffix = ['', 'k', 'M', 'G', 'T'][floor($base)];
+
+        return round(1024 ** ($base - floor($base)), 2) . $suffix;
+    }
+
     protected function createContainerExtension(): FroshToolsExtension
     {
         return new FroshToolsExtension();
