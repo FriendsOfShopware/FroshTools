@@ -79,8 +79,12 @@ class PhpFpmChecker implements HealthCheckerInterface, CheckerInterface
 
     private function checkMemoryPeak(array $fpmStatus, HealthCollection $collection): void
     {
-        $memoryPeak = $fpmStatus['memory-peak'] ?? 0;
+        // Skip this check if memory-peak is not available (PHP < 8.4)
+        if (!isset($fpmStatus['memory-peak'])) {
+            return;
+        }
 
+        $memoryPeak = $fpmStatus['memory-peak'];
         $memoryPeak = FroshTools::formatSize($memoryPeak);
 
         $collection->add(

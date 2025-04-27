@@ -26,7 +26,7 @@ class FroshTools extends Plugin
         if ($size <= 0) {
             return '0';
         }
-        
+
         $base = log($size) / log(1024);
         $suffix = ['', 'k', 'M', 'G', 'T'][floor($base)];
 
