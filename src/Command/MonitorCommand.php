@@ -10,9 +10,11 @@ use Frosh\Tools\Components\Health\HealthCollection;
 use Frosh\Tools\Components\Health\SettingsResult;
 use Shopware\Core\Content\Mail\Service\AbstractMailSender;
 use Shopware\Core\Content\Mail\Service\MailSender;
+use Shopware\Core\Framework\Adapter\Console\ShopwareStyle;
 use Shopware\Core\System\SystemConfig\SystemConfigService;
 use Symfony\Component\Console\Attribute\AsCommand;
 use Symfony\Component\Console\Command\Command;
+use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
@@ -38,11 +40,18 @@ class MonitorCommand extends Command
 
     protected function configure(): void
     {
+        $this->addArgument('sales-channel', InputArgument::OPTIONAL, 'This argument has no effect. Only for backward compatibility');
         $this->addOption(self::MONITOR_EMAIL_OPTION, 'em', InputOption::VALUE_OPTIONAL, 'Custom mail address');
     }
 
     protected function execute(InputInterface $input, OutputInterface $output): int
     {
+        $io = new ShopwareStyle($input, $output);
+
+        if ($input->getArgument('sales-channel')) {
+            $io->warning('The sales channel argument is deprecated and has no effect. It will be removed in a future release.');
+        }
+
         $recipientMail = $input->getOption(self::MONITOR_EMAIL_OPTION) ?: $this->configService->getString(
             'FroshTools.config.monitorMail',
         );
