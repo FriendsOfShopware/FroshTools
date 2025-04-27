@@ -8,71 +8,53 @@ use Frosh\Tools\Components\Health\Checker\HealthChecker\QueueChecker;
 use Frosh\Tools\Components\Health\Checker\HealthChecker\TaskChecker;
 use Frosh\Tools\Components\Health\HealthCollection;
 use Frosh\Tools\Components\Health\SettingsResult;
-use Shopware\Core\Content\Mail\Service\AbstractMailService;
-use Shopware\Core\Content\Mail\Service\MailService;
-use Shopware\Core\Framework\Context;
+use Shopware\Core\Content\Mail\Service\AbstractMailSender;
+use Shopware\Core\Content\Mail\Service\MailSender;
 use Shopware\Core\System\SystemConfig\SystemConfigService;
 use Symfony\Component\Console\Attribute\AsCommand;
 use Symfony\Component\Console\Command\Command;
-use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\DependencyInjection\Attribute\Autowire;
-use Symfony\Component\HttpFoundation\ParameterBag;
+use Symfony\Component\Mime\Email;
 
 #[AsCommand('frosh:monitor', 'Monitor your scheduled tasks and message queue and get notified via email.')]
 class MonitorCommand extends Command
 {
     private const MONITOR_EMAIL_OPTION = 'email';
-    private const MONITOR_SALESCHANNEL_ARG = 'sales-channel';
 
     public function __construct(
-        #[Autowire(service: MailService::class)]
-        private readonly AbstractMailService $mailService,
+        #[Autowire(service: MailSender::class)]
+        private readonly AbstractMailSender $mailSender,
         private readonly SystemConfigService $configService,
         private readonly QueueChecker $queueChecker,
         private readonly TaskChecker $taskChecker,
+        #[Autowire('%env(APP_URL)%')]
+        private readonly string $appUrl,
     ) {
         parent::__construct();
     }
 
     protected function configure(): void
     {
-        $this->addArgument(self::MONITOR_SALESCHANNEL_ARG, InputArgument::REQUIRED, 'Sales Channel ID.');
         $this->addOption(self::MONITOR_EMAIL_OPTION, 'em', InputOption::VALUE_OPTIONAL, 'Custom mail address');
     }
 
     protected function execute(InputInterface $input, OutputInterface $output): int
     {
-        // @phpstan-ignore-next-line
-        $context = Context::createDefaultContext();
-
-        if ($input->getOption(self::MONITOR_EMAIL_OPTION)) {
-            $recipientMail = $input->getOption(self::MONITOR_EMAIL_OPTION);
-            $errorSource = 'CLI option';
-        } else {
-            $recipientMail = $this->configService->getString(
-                'FroshTools.config.monitorMail',
-            );
-            $errorSource = 'plugin config';
-        }
+        $recipientMail = $input->getOption(self::MONITOR_EMAIL_OPTION) ?: $this->configService->getString(
+            'FroshTools.config.monitorMail',
+        );
 
         if (empty($recipientMail) || !filter_var($recipientMail, \FILTER_VALIDATE_EMAIL)) {
-            $output->writeln('<error>Empty or invalid email format in ' . $errorSource . '</error>');
-
-            return self::INVALID;
+            throw new \RuntimeException('Empty or invalid email format.');
         }
 
         if ($this->checksFailed()) {
-            $data = new ParameterBag();
-            $data->set(
-                'recipients',
-                [
-                    $recipientMail => 'Admin',
-                ],
-            );
-            $data->set('senderName', 'FroshTools | Admin');
+            if (empty($this->appUrl)) {
+                throw new \RuntimeException('APP URL is not configured');
+            }
 
             $htmlMailContent = <<<'MAIL'
                 <div>
@@ -82,18 +64,23 @@ class MonitorCommand extends Command
                         your message queue or scheduled tasks are not working as expected.<br/>
                         <br/>
                         <br/>
-                        Check your queues and tasks <a href="{{ salesChannel.domains|first.url }}/admin#/frosh/tools/index/index">here</a>
+                        Check your queues and tasks <a href="{domain_url}/admin#/frosh/tools/index/index">here</a>
                     </p>
                 </div>
                 MAIL;
-            $plainMailContent = 'Dear Admin, your message queue or scheduled tasks are not working as expected. Check your queues and tasks {{ salesChannel.domains|first.url }}/admin#/frosh/tools/index/index';
+            $htmlMailContent = str_replace('{domain_url}', $this->appUrl, $htmlMailContent);
 
-            $data->set('contentHtml', $htmlMailContent);
-            $data->set('contentPlain', $plainMailContent);
-            $data->set('salesChannelId', $input->getArgument(self::MONITOR_SALESCHANNEL_ARG));
-            $data->set('subject', 'FroshTools message queue and scheduled task | Warning');
+            $plainMailContent = 'Dear Admin, your message queue or scheduled tasks are not working as expected. Check your queues and tasks ' . $this->appUrl . '/admin#/frosh/tools/index/index';
 
-            $this->mailService->send($data->all(), $context);
+            $email = new Email();
+            $email->subject('FroshTools message queue and scheduled task | Warning');
+
+            $email->from($this->getSender());
+            $email->to($recipientMail);
+            $email->html($htmlMailContent);
+            $email->text($plainMailContent);
+
+            $this->mailSender->send($email);
         }
 
         return self::SUCCESS;
@@ -113,5 +100,18 @@ class MonitorCommand extends Command
         }
 
         return false;
+    }
+
+    private function getSender(): string
+    {
+        return trim(
+            $this->configService->getString(
+                'core.basicInformation.email'
+            )
+        ) ?: trim(
+            $this->configService->getString(
+                'core.mailerSettings.senderAddress'
+            )
+        );
     }
 }
