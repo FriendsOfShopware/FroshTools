@@ -23,6 +23,10 @@ class FroshTools extends Plugin
 
     public static function formatSize(float $size): string
     {
+        if ($size <= 0) {
+            return '0';
+        }
+        
         $base = log($size) / log(1024);
         $suffix = ['', 'k', 'M', 'G', 'T'][floor($base)];
 
