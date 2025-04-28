@@ -4,6 +4,7 @@ The current feature set consists of:
 
 *   System Status
     *   Checks PHP Version, MySQL, Queue is working etc.
+    *   Shows Performance Recommendations
 *   Cache manager
     *   Lists App and Http Cache and all folders in var/cache
 *   Scheduled Task Manager
@@ -12,11 +13,14 @@ The current feature set consists of:
     *   Shows the amount of messages in the queue
 *   Log viewer
     *   Shows the entries of /var/log/*.log files
-*   Task Logging
-    *   Can be enabled with env FROSH_TOOLS_TASK_LOGGING=1 in .env. This will create a log in var/log/task_logging-xx.log
-        *   Set FROSH_TOOLS_TASK_LOGGING_INFO=1 in .env to log all tasks
-*   Feature Flag Manager
-    *   Provides the ability to enable or disable feature flags
+*   Elasticsearch Tools
+    *   Shows some useful information about Elasticsearch
+    *   Elasticsearch Console in Admin
+    *   Manage the indices
+*   State Machine Viewer
+    *   Shows the State Machine Transitions in a diagram
+*   File Checker
+    *   Checks if files have been modified
 
 Link to repository: [https://github.com/FriendsOfShopware/FroshTools](https://github.com/FriendsOfShopware/FroshTools)
 
