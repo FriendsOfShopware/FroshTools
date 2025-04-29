@@ -1,0 +1,11 @@
+# 3.0.0
+- [chore: release 3.0.0](https://github.com/FriendsOfShopware/FroshTools/commit/53e429d)
+- [chore: update store information](https://github.com/FriendsOfShopware/FroshTools/commit/068a842)
+- [feat: remove sales channel attribute from monitor command (#337)](https://github.com/FriendsOfShopware/FroshTools/commit/30c064e)
+- [feat: add checks for PHP FPM when not in cluster mode (#336)](https://github.com/FriendsOfShopware/FroshTools/commit/f3f741a)
+- [chore: format source files (#335)](https://github.com/FriendsOfShopware/FroshTools/commit/c8f0fbd)
+- [feat!: remove system config override feature](https://github.com/FriendsOfShopware/FroshTools/commit/f2b4858)
+- [feat!: remove environment component](https://github.com/FriendsOfShopware/FroshTools/commit/4a8528f)
+- [feat!: remove env and plugin update commands](https://github.com/FriendsOfShopware/FroshTools/commit/c39c7bd)
+- [fix: formatting issues](https://github.com/FriendsOfShopware/FroshTools/commit/b5454eb)
+- [feat: Unify snippets (#325)](https://github.com/FriendsOfShopware/FroshTools/commit/8dcda58)
