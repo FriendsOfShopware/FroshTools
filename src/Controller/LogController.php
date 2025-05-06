@@ -52,7 +52,7 @@ class LogController extends AbstractController
 
         /** @var string $item */
         foreach ($reader as $item) {
-            if (preg_match(self::LINE_MATCH, $item, $matches) === false || !array_key_exists('message', $matches)) {
+            if (preg_match(self::LINE_MATCH, $item, $matches) !== 1) {
                 $result[] = [
                     'message' => $item,
                     'channel' => 'unknown',
