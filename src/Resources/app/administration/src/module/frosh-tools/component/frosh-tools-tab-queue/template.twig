@@ -16,20 +16,20 @@
                     name="regular-undo"
                 ></sw-icon>
             </sw-button>
-            <sw-button
-                variant="danger"
-                @click="showResetModal = true"
-            >
+            <sw-button @click="showResetModal = true">
                 {{ $t('frosh-tools.resetQueue') }}
             </sw-button>
         </template>
-        <sw-data-grid
-            :showSelection="false"
-            :dataSource="queueEntries"
-            :columns="columns"
-            :showActions="false"
-        >
-        </sw-data-grid>
+
+        <template #grid>
+            <sw-data-grid
+                :showSelection="false"
+                :dataSource="queueEntries"
+                :columns="columns"
+                :showActions="false"
+            >
+            </sw-data-grid>
+        </template>
     </sw-card>
     <sw-modal
         v-if="showResetModal"
@@ -43,8 +43,8 @@
                 {{ $t('global.default.cancel') }}
             </sw-button>
             <sw-button
-                variant="danger"
                 @click="resetQueue"
+                variant="primary"
             >
                 {{ $t('frosh-tools.tabs.queue.reset.modal.reset') }}
             </sw-button>
