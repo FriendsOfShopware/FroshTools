@@ -11,7 +11,9 @@ use Symfony\Component\Finder\Finder;
 
 class PluginFileHashService
 {
-    public const CHECKSUM_FILE = 'checksums.json';
+    private const HASH_ALGORITHM = 'xxh128';
+
+    private const CHECKSUM_FILE = 'checksums.json';
 
     public function __construct(
         #[Autowire('%kernel.project_dir%')]
@@ -30,7 +32,7 @@ class PluginFileHashService
     public function getChecksumData(PluginEntity $plugin, array $fileExtensions): PluginChecksumStruct
     {
         return PluginChecksumStruct::fromArray([
-            'algorithm' => Hasher::ALGO,
+            'algorithm' => self::HASH_ALGORITHM,
             'fileExtensions' => $fileExtensions,
             'hashes' => $this->getHashes($plugin, $fileExtensions),
             'pluginVersion' => $plugin->getVersion(),
@@ -103,7 +105,12 @@ class PluginFileHashService
 
             $relativePath = (string) str_replace($this->rootDir . '/' . $pluginPath, '', $absoluteFilePath);
 
-            $hashes[$relativePath] = Hasher::hashFile($absoluteFilePath, $algorithm);
+            $hash = \hash_file(self::HASH_ALGORITHM, $absoluteFilePath);
+            if ($hash === false) {
+                throw new \RuntimeException('Could not generate hash for "' . $absoluteFilePath . '"');
+            }
+
+            $hashes[$relativePath] = $hash;
         }
 
         return $hashes;
@@ -120,7 +127,7 @@ class PluginFileHashService
         $psr4 = $autoload['psr-4'] ?? [];
         foreach ($psr4 as $path) {
             if (\is_string($path) && $path !== '') {
-                $directories[] = "$this->rootDir/{$plugin->getPath()}$path";
+                $directories[] = \rtrim($this->rootDir . '/' . $plugin->getPath(), '/\\') . '/' . \ltrim($path, '/\\');
             }
         }
 
