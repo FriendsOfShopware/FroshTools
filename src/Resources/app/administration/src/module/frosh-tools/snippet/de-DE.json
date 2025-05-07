@@ -82,6 +82,7 @@
     "used": "Belegt",
     "free": "Frei",
     "compileTheme": "Theme kompilieren",
+    "clearOpCache": "OPcache leeren",
     "themeCompiled": "Theme wurde kompiliert",
     "actions": "Aktionen",
     "scheduledTasks": "Geplante Aufgaben",
