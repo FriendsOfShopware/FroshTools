@@ -57,7 +57,7 @@ class PluginChecksumCheckCommand extends Command
 
             $pluginChecksumCheckResult = $this->pluginFileHashService->checkPluginForChanges($plugin);
             if ($pluginChecksumCheckResult->isFileMissing()) {
-                $io->info(\sprintf('Plugin "%s" checksum file for not found', $plugin->getName()));
+                $io->info(\sprintf('Plugin "%s" checksum file not found', $plugin->getName()));
 
                 // Not setting $success to false because the creation of the checksum file is optional
                 continue;
