@@ -11,6 +11,7 @@ Component.register('frosh-tools-tab-files', {
   data() {
     return {
       items: {},
+      pluginItems: {},
       isLoading: true,
       diffData: {
         html: '',
@@ -57,6 +58,7 @@ Component.register('frosh-tools-tab-files', {
 
     async createdComponent() {
       this.items = (await this.froshToolsService.getShopwareFiles()).data
+      this.pluginItems = (await this.froshToolsService.getPluginFiles()).data
       this.isLoading = false
     },
 
