@@ -21,7 +21,7 @@ class PluginFileHashService
 
     public function getChecksumFilePathForPlugin(PluginEntity $plugin): string
     {
-        return "$this->rootDir/{$plugin->getPath()}" . self::CHECKSUM_FILE;
+        return \rtrim($this->rootDir . '/' . $plugin->getPath(), '/\\') . '/' . self::CHECKSUM_FILE;
     }
 
     /**
@@ -59,11 +59,16 @@ class PluginFileHashService
 
         $newFiles = array_diff_key($currentHashes, $previouslyHashedFiles);
         $missingFiles = array_diff_key($previouslyHashedFiles, $currentHashes);
-        $manipulatedFiles = array_diff(array_diff_key($previouslyHashedFiles, $missingFiles, $newFiles), $currentHashes);
+        $changedFiles = [];
+        foreach ($previouslyHashedFiles as $file => $oldHash) {
+            if (isset($currentHashes[$file]) && $currentHashes[$file] !== $oldHash) {
+                $changedFiles[] = $file;
+            }
+        }
 
         return new PluginChecksumCheckResult(
             newFiles: array_keys($newFiles),
-            changedFiles: array_keys($manipulatedFiles),
+            changedFiles: $changedFiles,
             missingFiles: array_keys($missingFiles),
         );
     }
@@ -82,6 +87,9 @@ class PluginFileHashService
         }
 
         $directories = $this->getDirectories($plugin);
+        if ($directories === []) {
+            return [];
+        }
 
         $finder = new Finder();
         $finder->in($directories)->files()->name($extensions);

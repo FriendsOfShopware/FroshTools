@@ -75,7 +75,24 @@ class PluginChecksumCreateCommand extends Command
 
         $io->info(\sprintf('Writing %s checksums for plugin "%s" to file %s', \count($checksumStruct->getHashes()), $plugin->getName(), $checksumFilePath));
 
-        file_put_contents($checksumFilePath, \json_encode($checksumStruct->jsonSerialize(), \JSON_THROW_ON_ERROR));
+        $directory = \dirname($checksumFilePath);
+        if (!is_dir($directory)) {
+            $io->error(\sprintf('Directory "%s" cannot be read', $directory));
+
+            return self::FAILURE;
+        }
+
+        if (!is_writable($directory)) {
+            $io->error(\sprintf('Directory "%s" is not writable', $directory));
+
+            return self::FAILURE;
+        }
+
+        if (file_put_contents($checksumFilePath, \json_encode($checksumStruct->jsonSerialize(), \JSON_THROW_ON_ERROR)) === false) {
+            $io->error(\sprintf('Failed to write to file "%s"', $checksumFilePath));
+
+            return self::FAILURE;
+        }
 
         return self::SUCCESS;
     }
