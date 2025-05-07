@@ -62,6 +62,14 @@
                 "expectedAll": "Datei wurde manipuliert",
                 "expectedProject": "Datei wurde manipuliert, Fehler wird ignoriert durch Projekt Konfiguration"
             },
+            "pluginFiles": {
+                "title": "Plugin Dateien Checker",
+                "allFilesOk": "Keine Plugins wurden manipuliert",
+                "notOk": "Es gibt Plugins, die manipuliert wurden",
+                "newFiles": "Neue Dateien",
+                "changedFiles": "Geänderte Dateien",
+                "missingFiles": "Fehlende Dateien"
+            },
             "state-machines": {
                 "title": "State Machine Viewer",
                 "label": "State Machine",

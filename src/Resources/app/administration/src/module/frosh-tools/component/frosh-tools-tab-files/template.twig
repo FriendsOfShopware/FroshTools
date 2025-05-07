@@ -88,4 +88,62 @@
             </sw-button>
         </template>
     </sw-modal>
+    <sw-card
+        class="frosh-tools-tab-files__plugin-files-card"
+        :class="isLoadingClass"
+        :title="$t('frosh-tools.tabs.pluginFiles.title')"
+        :isLoading="isLoading"
+        :large="true"
+        positionIdentifier="frosh-tools-tab-files__plugin-files-card"
+    >
+        <sw-alert
+            variant="success"
+            v-if="pluginItems.success"
+        >
+            {{ $t('frosh-tools.tabs.pluginFiles.allFilesOk') }}
+        </sw-alert>
+        <sw-alert
+            variant="warning"
+            v-else
+        >
+            {{ $t('frosh-tools.tabs.pluginFiles.notOk') }}
+        </sw-alert>
+        <template #toolbar>
+            <!-- @todo: Make the refresh button fancy -->
+            <sw-button
+                variant="ghost"
+                @click="refresh"
+            >
+                <sw-icon
+                    :small="true"
+                    name="regular-undo"
+                ></sw-icon>
+            </sw-button>
+        </template>
+        <div
+            v-for="(plugin, pluginName) in pluginItems.pluginResults"
+        >
+            <h4>{{ pluginName }}</h4>
+            <sw-description-list>
+                <dt v-if="plugin.newFiles.length > 0">
+                    {{ $t('frosh-tools.tabs.pluginFiles.newFiles') }}
+                </dt>
+                <dd v-for="file in plugin.newFiles">
+                    {{ file }}
+                </dd>
+                <dt v-if="plugin.changedFiles.length > 0">
+                    {{ $t('frosh-tools.tabs.pluginFiles.changedFiles') }}
+                </dt>
+                <dd v-for="file in plugin.changedFiles">
+                    {{ file }}
+                </dd>
+                <dt v-if="plugin.missingFiles.length > 0">
+                    {{ $t('frosh-tools.tabs.pluginFiles.missingFiles') }}
+                </dt>
+                <dd v-for="file in plugin.missingFiles">
+                    {{ file }}
+                </dd>
+            </sw-description-list>
+        </div>
+    </sw-card>
 </sw-card-view>

@@ -62,6 +62,14 @@
                 "expectedAll": "File has been modified",
                 "expectedProject": "File has been modified, but will be ignored by project settings"
             },
+            "pluginFiles": {
+                "title": "Plugin File Checker",
+                "allFilesOk": "No plugins modified",
+                "notOk": "There are modified plugins",
+                "newFiles": "New files",
+                "changedFiles": "Changed files",
+                "missingFiles": "Missing files"
+            },
             "state-machines": {
                 "title": "State Machine Viewer",
                 "label": "State Machine",
