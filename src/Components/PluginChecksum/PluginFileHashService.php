@@ -5,7 +5,6 @@ namespace Frosh\Tools\Components\PluginChecksum;
 use Frosh\Tools\Components\PluginChecksum\Struct\PluginChecksumCheckResult;
 use Frosh\Tools\Components\PluginChecksum\Struct\PluginChecksumStruct;
 use Shopware\Core\Framework\Plugin\PluginEntity;
-use Shopware\Core\Framework\Util\Hasher;
 use Symfony\Component\DependencyInjection\Attribute\Autowire;
 use Symfony\Component\Finder\Finder;
 
@@ -82,7 +81,7 @@ class PluginFileHashService
      */
     private function getHashes(PluginEntity $plugin, array $extensions, ?string $algorithm = null): array
     {
-        $algorithm = $algorithm ?? Hasher::ALGO;
+        $algorithm = $algorithm ?? self::HASH_ALGORITHM;
         $pluginPath = $plugin->getPath();
         if ($pluginPath === null) {
             return [];
@@ -105,9 +104,13 @@ class PluginFileHashService
 
             $relativePath = (string) str_replace($this->rootDir . '/' . $pluginPath, '', $absoluteFilePath);
 
-            $hash = \hash_file(self::HASH_ALGORITHM, $absoluteFilePath);
+            $hash = \hash_file($algorithm, $absoluteFilePath);
             if ($hash === false) {
-                throw new \RuntimeException('Could not generate hash for "' . $absoluteFilePath . '"');
+                throw new \RuntimeException(\sprintf(
+                    'Could not generate %s hash for "%s"',
+                    $algorithm,
+                    $absoluteFilePath
+                ));
             }
 
             $hashes[$relativePath] = $hash;
