@@ -77,7 +77,7 @@ class PluginChecksumCreateCommand extends Command
 
         $directory = \dirname($checksumFilePath);
         if (!is_dir($directory)) {
-            $io->error(\sprintf('Directory "%s" cannot be read', $directory));
+            $io->error(\sprintf('Directory "%s" does not exist or cannot be read', $directory));
 
             return self::FAILURE;
         }

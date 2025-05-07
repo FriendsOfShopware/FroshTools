@@ -59,12 +59,13 @@ class PluginChecksumCheckCommand extends Command
             if ($pluginChecksumCheckResult->isFileMissing()) {
                 $io->info(\sprintf('Plugin "%s" checksum file for not found', $plugin->getName()));
 
+                // Not setting $success to false because the creation of the checksum file is optional
                 continue;
             }
 
             if ($pluginChecksumCheckResult->isWrongVersion()) {
                 $io->error(\sprintf('Checksum file for plugin "%s" was generated for different version', $plugin->getName()));
-
+                $success = false;
                 continue;
             }
 
