@@ -121,26 +121,40 @@
             </sw-button>
         </template>
         <div
-            v-for="(plugin, pluginName) in pluginItems.pluginResults"
+            v-for="(pluginResult, pluginName) in pluginItems.pluginResults"
         >
             <h4>{{ pluginName }}</h4>
-            <sw-description-list>
-                <dt v-if="plugin.newFiles.length > 0">
+            <sw-alert
+                variant="error"
+                v-if="pluginResult.checkFailed"
+            >
+                {{ $t('frosh-tools.tabs.pluginFiles.checkFailed') }}
+            </sw-alert>
+            <sw-description-list v-else>
+                <dt v-if="pluginResult.newFiles.length > 0">
                     {{ $t('frosh-tools.tabs.pluginFiles.newFiles') }}
                 </dt>
-                <dd v-for="file in plugin.newFiles">
+                <dd v-for="file in pluginResult.newFiles">
                     {{ file }}
                 </dd>
-                <dt v-if="plugin.changedFiles.length > 0">
+                <dt
+                    v-if="pluginResult.changedFiles.length > 0"
+                >
                     {{ $t('frosh-tools.tabs.pluginFiles.changedFiles') }}
                 </dt>
-                <dd v-for="file in plugin.changedFiles">
+                <dd
+                    v-for="file in pluginResult.changedFiles"
+                >
                     {{ file }}
                 </dd>
-                <dt v-if="plugin.missingFiles.length > 0">
+                <dt
+                    v-if="pluginResult.missingFiles.length > 0"
+                >
                     {{ $t('frosh-tools.tabs.pluginFiles.missingFiles') }}
                 </dt>
-                <dd v-for="file in plugin.missingFiles">
+                <dd
+                    v-for="file in pluginResult.missingFiles"
+                >
                     {{ file }}
                 </dd>
             </sw-description-list>

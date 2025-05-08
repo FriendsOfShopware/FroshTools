@@ -64,8 +64,9 @@
             },
             "pluginFiles": {
                 "title": "Plugin Dateien Checker",
-                "allFilesOk": "Keine Plugins wurden manipuliert",
-                "notOk": "Es gibt Plugins, die manipuliert wurden",
+                "allFilesOk": "Keine Plugins wurden manipuliert.",
+                "notOk": "Es gibt Plugins, die manipuliert wurden.",
+                "checkFailed": "Das Plugin konnte nicht geprüft werden. Bitte prüfe die Logs.",
                 "newFiles": "Neue Dateien",
                 "changedFiles": "Geänderte Dateien",
                 "missingFiles": "Fehlende Dateien"

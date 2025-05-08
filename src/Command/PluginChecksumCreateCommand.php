@@ -46,7 +46,8 @@ class PluginChecksumCreateCommand extends Command
     protected function execute(InputInterface $input, OutputInterface $output): int
     {
         $io = new ShopwareStyle($input, $output);
-        $context = Context::createCLIContext();
+        // @phpstan-ignore-next-line
+        $context = method_exists(Context::class, 'createCLIContext') ? Context::createCLIContext() : Context::createDefaultContext();
 
         $pluginName = (string) $input->getArgument('plugin');
         $plugin = $this->getPlugin($pluginName, $context);

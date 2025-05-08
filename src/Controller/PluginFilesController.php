@@ -5,6 +5,8 @@ declare(strict_types=1);
 namespace Frosh\Tools\Controller;
 
 use Frosh\Tools\Components\PluginChecksum\PluginFileHashService;
+use Frosh\Tools\Components\PluginChecksum\Struct\PluginChecksumCheckResult;
+use Psr\Log\LoggerInterface;
 use Shopware\Core\Framework\Context;
 use Shopware\Core\Framework\DataAbstractionLayer\EntityRepository;
 use Shopware\Core\Framework\DataAbstractionLayer\Search\Criteria;
@@ -24,6 +26,7 @@ class PluginFilesController extends AbstractController
     public function __construct(
         private readonly EntityRepository $pluginRepository,
         private readonly PluginFileHashService $pluginFileHashService,
+        private readonly LoggerInterface $froshToolsLogger,
     ) {
     }
 
@@ -35,12 +38,24 @@ class PluginFilesController extends AbstractController
         /** @var PluginCollection $plugins */
         $plugins = $this->pluginRepository->search(new Criteria(), $context)->getEntities();
         foreach ($plugins as $plugin) {
-            $pluginChecksumCheckResult = $this->pluginFileHashService->checkPluginForChanges($plugin);
-            if ($pluginChecksumCheckResult->getNewFiles() !== [] || $pluginChecksumCheckResult->getChangedFiles() !== [] || $pluginChecksumCheckResult->getMissingFiles() !== []) {
-                $pluginResults[$plugin->getName()] = $pluginChecksumCheckResult;
+            try {
+                $pluginChecksumCheckResult = $this->pluginFileHashService->checkPluginForChanges($plugin);
+                if ($pluginChecksumCheckResult->getNewFiles() !== [] || $pluginChecksumCheckResult->getChangedFiles() !== [] || $pluginChecksumCheckResult->getMissingFiles() !== []) {
+                    $pluginResults[$plugin->getName()] = $pluginChecksumCheckResult;
+                }
+            } catch (\Exception $exception) {
+                $pluginResults[$plugin->getName()] = new PluginChecksumCheckResult(checkFailed: true);
+                $this->froshToolsLogger->error('Error checking checksums for plugin {plugin}: {message}', [
+                    'plugin' => $plugin->getName(),
+                    'message' => $exception->getMessage(),
+                    'exception' => $exception,
+                ]);
             }
         }
 
-        return new JsonResponse(['success' => \count($pluginResults) === 0, 'pluginResults' => $pluginResults]);
+        return new JsonResponse([
+            'success' => \count($pluginResults) === 0,
+            'pluginResults' => $pluginResults,
+        ]);
     }
 }
