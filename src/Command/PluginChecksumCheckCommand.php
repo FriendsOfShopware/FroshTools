@@ -112,10 +112,9 @@ class PluginChecksumCheckCommand extends Command
         if ($plugin instanceof PluginEntity) {
             $plugins->add($plugin);
         } else {
-            $io->error(sprintf('Plugin "%s" not found', $pluginName));
+            $io->error(\sprintf('Plugin "%s" not found', $pluginName));
         }
 
-        return $plugins;
         return $plugins;
     }
 
