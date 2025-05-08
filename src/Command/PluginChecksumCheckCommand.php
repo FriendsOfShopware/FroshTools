@@ -45,11 +45,13 @@ class PluginChecksumCheckCommand extends Command
         $io = new ShopwareStyle($input, $output);
 
         $plugins = $this->getPlugins((string) $input->getArgument('plugin'), $io);
-        if ($plugins->count() === 0) {
+        if ($plugins->count() < 1) {
             $io->error('No plugins found');
 
             return self::FAILURE;
         }
+
+        $io->info(\sprintf('Found %d plugins to check', $plugins->count()));
 
         $success = true;
         foreach ($plugins as $plugin) {
@@ -57,7 +59,7 @@ class PluginChecksumCheckCommand extends Command
 
             $pluginChecksumCheckResult = $this->pluginFileHashService->checkPluginForChanges($plugin);
             if ($pluginChecksumCheckResult->isFileMissing()) {
-                $io->info(\sprintf('Plugin "%s" checksum file not found', $plugin->getName()));
+                $io->warning(\sprintf('Plugin "%s" checksum file not found', $plugin->getName()));
 
                 // Not setting $success to false because the creation of the checksum file is optional
                 continue;

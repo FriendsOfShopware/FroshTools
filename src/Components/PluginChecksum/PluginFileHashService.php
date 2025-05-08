@@ -10,6 +10,10 @@ use Symfony\Component\Finder\Finder;
 
 class PluginFileHashService
 {
+    /**
+     * xxh128 is chosen for its excellent speed and collision resistance,
+     * making it ideal for file integrity verification.
+     */
     private const HASH_ALGORITHM = 'xxh128';
 
     private const CHECKSUM_FILE = 'checksums.json';
@@ -22,7 +26,7 @@ class PluginFileHashService
 
     public function getChecksumFilePathForPlugin(PluginEntity $plugin): string
     {
-        return \rtrim($this->rootDir . '/' . $plugin->getPath(), '/\\') . '/' . self::CHECKSUM_FILE;
+        return $this->getPluginRootPath($plugin) . '/' . self::CHECKSUM_FILE;
     }
 
     /**
@@ -45,9 +49,22 @@ class PluginFileHashService
             return new PluginChecksumCheckResult(fileMissing: true);
         }
 
-        $checksumFileContent = (string) file_get_contents($checksumFilePath);
-        $checksumFileData = PluginChecksumStruct::fromArray(json_decode($checksumFileContent, true, 512, \JSON_THROW_ON_ERROR));
+        if (!is_readable($checksumFilePath)) {
+            throw new \RuntimeException(\sprintf('Checksum file "%s" exists but is not readable', $checksumFilePath));
+        }
 
+        try {
+            $checksumFileContent = json_decode(
+                (string) file_get_contents($checksumFilePath),
+                true,
+                512,
+                \JSON_THROW_ON_ERROR
+            );
+        } catch (\JsonException $exception) {
+            throw new \RuntimeException(\sprintf('Checksum file "%s" is not valid JSON', $checksumFilePath), 0, $exception);
+        }
+
+        $checksumFileData = PluginChecksumStruct::fromArray($checksumFileContent);
         $extensions = $checksumFileData->getFileExtensions();
         $checksumPluginVersion = $checksumFileData->getPluginVersion();
 
@@ -82,15 +99,19 @@ class PluginFileHashService
     private function getHashes(PluginEntity $plugin, array $extensions, ?string $algorithm = null): array
     {
         $algorithm = $algorithm ?? self::HASH_ALGORITHM;
-        $pluginPath = $plugin->getPath();
-        if ($pluginPath === null) {
-            return [];
-        }
+
+        $rootPluginPath = $this->getPluginRootPath($plugin);
 
         $directories = $this->getDirectories($plugin);
         if ($directories === []) {
             return [];
         }
+
+        // Normalize extensions
+        $extensions = array_map(
+            static fn (string $extension) => str_contains($extension, '*.') ? $extension : '*.' . $extension,
+            $extensions
+        );
 
         $finder = new Finder();
         $finder->in($directories)->files()->name($extensions);
@@ -102,8 +123,6 @@ class PluginFileHashService
                 continue;
             }
 
-            $relativePath = (string) str_replace($this->rootDir . '/' . $pluginPath, '', $absoluteFilePath);
-
             $hash = \hash_file($algorithm, $absoluteFilePath);
             if ($hash === false) {
                 throw new \RuntimeException(\sprintf(
@@ -112,6 +131,9 @@ class PluginFileHashService
                     $absoluteFilePath
                 ));
             }
+
+            // Make sure the replacement handles Windows and Unix paths
+            $relativePath = \ltrim(str_replace([$rootPluginPath, '\\'], ['', '/'], $absoluteFilePath), '/');
 
             $hashes[$relativePath] = $hash;
         }
@@ -126,14 +148,26 @@ class PluginFileHashService
     {
         $directories = [];
 
+        $pluginRootPath = $this->getPluginRootPath($plugin);
+
         $autoload = $plugin->getAutoload();
+        if ($autoload === []) {
+            // Fall back to plugin root if no autoload info is available
+            return [$pluginRootPath];
+        }
+
         $psr4 = $autoload['psr-4'] ?? [];
         foreach ($psr4 as $path) {
             if (\is_string($path) && $path !== '') {
-                $directories[] = \rtrim($this->rootDir . '/' . $plugin->getPath(), '/\\') . '/' . \ltrim($path, '/\\');
+                $directories[] = $pluginRootPath . '/' . \ltrim($path, '/\\');
             }
         }
 
         return array_unique($directories);
+    }
+
+    private function getPluginRootPath(PluginEntity $plugin): string
+    {
+        return \rtrim($this->rootDir . '/' . $plugin->getPath(), '/\\');
     }
 }
