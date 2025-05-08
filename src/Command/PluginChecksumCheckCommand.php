@@ -111,8 +111,11 @@ class PluginChecksumCheckCommand extends Command
         $plugin = $this->pluginRepository->search($criteria, $context)->first();
         if ($plugin instanceof PluginEntity) {
             $plugins->add($plugin);
+        } else {
+            $io->error(sprintf('Plugin "%s" not found', $pluginName));
         }
 
+        return $plugins;
         return $plugins;
     }
 
