@@ -14,6 +14,7 @@ class PluginChecksumCheckResult extends Struct
     public function __construct(
         protected bool $fileMissing = false,
         protected bool $wrongVersion = false,
+        protected bool $checkFailed = false,
         protected array $newFiles = [],
         protected array $changedFiles = [],
         protected array $missingFiles = [],
@@ -28,6 +29,11 @@ class PluginChecksumCheckResult extends Struct
     public function isWrongVersion(): bool
     {
         return $this->wrongVersion;
+    }
+
+    public function isCheckFailed(): bool
+    {
+        return $this->checkFailed;
     }
 
     /**
