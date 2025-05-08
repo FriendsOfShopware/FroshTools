@@ -93,7 +93,8 @@ class PluginChecksumCheckCommand extends Command
 
     private function getPlugins(string $pluginName, ShopwareStyle $io): PluginCollection
     {
-        $context = Context::createDefaultContext();
+        // @phpstan-ignore-next-line
+        $context = method_exists(Context::class, 'createCLIContext') ? Context::createCLIContext() : Context::createDefaultContext();
 
         if (!$pluginName) {
             $io->info('Checking all plugins');
