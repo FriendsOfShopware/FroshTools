@@ -58,7 +58,7 @@ Component.register('frosh-tools-tab-files', {
 
         async createdComponent() {
             this.items = (await this.froshToolsService.getShopwareFiles()).data;
-            this.pluginItems = (await this.froshToolsService.getPluginFiles()).data
+            this.pluginItems = (await this.froshToolsService.getPluginFiles()).data;
             this.isLoading = false;
         },
 
