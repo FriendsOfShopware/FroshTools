@@ -12,13 +12,13 @@ Component.register('frosh-tools-tab-files', {
         return {
             items: {},
             pluginItems: {},
-      isLoading: true,
-      diffData: {
-        html: '',
-        file: '',
-      },
-      showModal: false,
-    };
+            isLoading: true,
+            diffData: {
+                html: '',
+                file: '',
+            },
+            showModal: false,
+        };
     },
 
     created() {
@@ -59,7 +59,7 @@ Component.register('frosh-tools-tab-files', {
         async createdComponent() {
             this.items = (await this.froshToolsService.getShopwareFiles()).data;
             this.pluginItems = (await this.froshToolsService.getPluginFiles()).data
-      this.isLoading = false;
+            this.isLoading = false;
         },
 
         openUrl(url) {
