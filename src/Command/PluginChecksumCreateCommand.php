@@ -15,7 +15,6 @@ use Symfony\Component\Console\Attribute\AsCommand;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
-use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
 
 #[AsCommand(
@@ -37,7 +36,6 @@ class PluginChecksumCreateCommand extends Command
     protected function configure(): void
     {
         $this->addArgument('plugin', InputArgument::REQUIRED, 'Plugin name');
-        $this->addOption('file-extensions', null, InputOption::VALUE_OPTIONAL, 'Comma-separated list of file extensions to include in the checksum (example: "*.php,*.twig")', '*.php,*.twig');
     }
 
     /**
@@ -58,13 +56,6 @@ class PluginChecksumCreateCommand extends Command
             return self::FAILURE;
         }
 
-        $fileExtensions = array_unique(array_filter(\explode(',', (string) $input->getOption('file-extensions'))));
-        if ($fileExtensions === []) {
-            $io->error('No valid file extensions provided');
-
-            return self::FAILURE;
-        }
-
         $checksumFilePath = $this->pluginFileHashService->getChecksumFilePathForPlugin($plugin);
         if (!$checksumFilePath) {
             $io->error(\sprintf('Plugin "%s" checksum file path could not be identified', $plugin->getName()));
@@ -72,7 +63,7 @@ class PluginChecksumCreateCommand extends Command
             return self::FAILURE;
         }
 
-        $checksumStruct = $this->pluginFileHashService->getChecksumData($plugin, $fileExtensions);
+        $checksumStruct = $this->pluginFileHashService->getChecksumData($plugin);
 
         $io->info(\sprintf('Writing %s checksums for plugin "%s" to file %s', \count($checksumStruct->getHashes()), $plugin->getName(), $checksumFilePath));
 

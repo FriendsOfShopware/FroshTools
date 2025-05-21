@@ -9,12 +9,7 @@ class PluginChecksumStruct extends Struct
     protected string $algorithm;
 
     /**
-     * @var array<string>
-     */
-    protected array $fileExtensions;
-
-    /**
-     * @var array<string>
+     * @var array<string, string>
      */
     protected array $hashes;
 
@@ -31,14 +26,6 @@ class PluginChecksumStruct extends Struct
     public function getAlgorithm(): string
     {
         return $this->algorithm;
-    }
-
-    /**
-     * @return array<string>
-     */
-    public function getFileExtensions(): array
-    {
-        return $this->fileExtensions;
     }
 
     /**

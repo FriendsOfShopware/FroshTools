@@ -29,15 +29,11 @@ class PluginFileHashService
         return $this->getPluginRootPath($plugin) . '/' . self::CHECKSUM_FILE;
     }
 
-    /**
-     * @param string[] $fileExtensions
-     */
-    public function getChecksumData(PluginEntity $plugin, array $fileExtensions): PluginChecksumStruct
+    public function getChecksumData(PluginEntity $plugin): PluginChecksumStruct
     {
         return PluginChecksumStruct::fromArray([
             'algorithm' => self::HASH_ALGORITHM,
-            'fileExtensions' => $fileExtensions,
-            'hashes' => $this->getHashes($plugin, $fileExtensions),
+            'hashes' => $this->getHashes($plugin),
             'pluginVersion' => $plugin->getVersion(),
         ]);
     }
@@ -65,14 +61,13 @@ class PluginFileHashService
         }
 
         $checksumFileData = PluginChecksumStruct::fromArray($checksumFileContent);
-        $extensions = $checksumFileData->getFileExtensions();
         $checksumPluginVersion = $checksumFileData->getPluginVersion();
 
         if ($plugin->getVersion() !== $checksumPluginVersion) {
             return new PluginChecksumCheckResult(wrongVersion: true);
         }
 
-        $currentHashes = $this->getHashes($plugin, $extensions, $checksumFileData->getAlgorithm());
+        $currentHashes = $this->getHashes($plugin, $checksumFileData->getAlgorithm());
         $previouslyHashedFiles = $checksumFileData->getHashes();
 
         $newFiles = array_diff_key($currentHashes, $previouslyHashedFiles);
@@ -92,11 +87,9 @@ class PluginFileHashService
     }
 
     /**
-     * @param string[] $extensions
-     *
      * @return array<string, string>
      */
-    private function getHashes(PluginEntity $plugin, array $extensions, ?string $algorithm = null): array
+    private function getHashes(PluginEntity $plugin, ?string $algorithm = null): array
     {
         $algorithm = $algorithm ?? self::HASH_ALGORITHM;
 
@@ -107,14 +100,11 @@ class PluginFileHashService
             return [];
         }
 
-        // Normalize extensions
-        $extensions = array_map(
-            static fn (string $extension) => str_contains($extension, '*.') ? $extension : '*.' . $extension,
-            $extensions
-        );
-
         $finder = new Finder();
-        $finder->in($directories)->files()->name($extensions);
+        $finder->in($directories)
+            ->files()
+            ->notPath('/vendor/')
+            ->notPath('/node_modules/');
 
         $hashes = [];
         foreach ($finder as $file) {
@@ -137,6 +127,8 @@ class PluginFileHashService
 
             $hashes[$relativePath] = $hash;
         }
+
+        ksort($hashes);
 
         return $hashes;
     }
