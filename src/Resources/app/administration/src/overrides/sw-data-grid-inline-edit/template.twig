@@ -1,5 +1,6 @@
 {% block sw_data_grid_inline_edit_type_unknown %}
     <sw-datepicker
+        deprecated
         v-else-if="column.inlineEdit === 'date'"
         key="date"
         date-type="date"
@@ -8,6 +9,7 @@
     />
 
     <sw-datepicker
+        deprecated
         v-else-if="column.inlineEdit === 'datetime'"
         key="datetime"
         date-type="datetime"

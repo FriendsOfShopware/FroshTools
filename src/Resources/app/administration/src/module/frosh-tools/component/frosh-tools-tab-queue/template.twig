@@ -5,31 +5,37 @@
         :isLoading="isLoading"
         :large="true"
         positionIdentifier="frosh-tools-tab-queue"
+        deprecated
     >
         <template #toolbar>
             <sw-button
                 variant="ghost"
+                deprecated
                 @click="refresh"
             >
                 <sw-icon
                     :small="true"
+                    deprecated
                     name="regular-undo"
                 ></sw-icon>
             </sw-button>
             <sw-button
-                variant="danger"
+                deprecated
                 @click="showResetModal = true"
             >
                 {{ $t('frosh-tools.resetQueue') }}
             </sw-button>
         </template>
-        <sw-data-grid
-            :showSelection="false"
-            :dataSource="queueEntries"
-            :columns="columns"
-            :showActions="false"
-        >
-        </sw-data-grid>
+
+        <template #grid>
+            <sw-data-grid
+                :showSelection="false"
+                :dataSource="queueEntries"
+                :columns="columns"
+                :showActions="false"
+            >
+            </sw-data-grid>
+        </template>
     </sw-card>
     <sw-modal
         v-if="showResetModal"
@@ -39,12 +45,16 @@
     >
         {{ $t('frosh-tools.tabs.queue.reset.modal.description') }}
         <template #modal-footer>
-            <sw-button @click="showResetModal = false">
+            <sw-button
+                deprecated
+                @click="showResetModal = false"
+            >
                 {{ $t('global.default.cancel') }}
             </sw-button>
             <sw-button
-                variant="danger"
+                deprecated
                 @click="resetQueue"
+                variant="primary"
             >
                 {{ $t('frosh-tools.tabs.queue.reset.modal.reset') }}
             </sw-button>

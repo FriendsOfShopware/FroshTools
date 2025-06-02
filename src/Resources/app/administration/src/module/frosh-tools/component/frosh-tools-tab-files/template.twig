@@ -6,13 +6,16 @@
         :isLoading="isLoading"
         :large="true"
         positionIdentifier="frosh-tools-tab-files__files-card"
+        deprecated
     >
         <sw-alert
             variant="error"
+            deprecated
             v-if="items.error"
         >{{ items.error }}</sw-alert>
         <sw-alert
             variant="success"
+            deprecated
             v-if="items.ok"
         >
             {{ $t('frosh-tools.tabs.files.allFilesOk') }}
@@ -20,6 +23,7 @@
         <sw-alert
             variant="warning"
             v-else-if="items.files"
+            deprecated
         >
             {{ $t('frosh-tools.tabs.files.notOk') }}
         </sw-alert>
@@ -27,10 +31,12 @@
             <!-- @todo: Make the refresh button fancy -->
             <sw-button
                 variant="ghost"
+                deprecated
                 @click="refresh"
             >
                 <sw-icon
                     :small="true"
+                    deprecated
                     name="regular-undo"
                 ></sw-icon>
             </sw-button>
@@ -80,10 +86,14 @@
         <template #modal-footer>
             <sw-button
                 variant="ghost-danger"
+                deprecated
                 @click="restoreFile(diffData.file.name)"
                 :disabled="diffData.file.expected"
             >
-                <sw-icon name="regular-exclamation-triangle"></sw-icon>
+                <sw-icon
+                    name="regular-exclamation-triangle"
+                    deprecated
+                ></sw-icon>
                 {{ $t('frosh-tools.tabs.files.restore.restoreFile') }}
             </sw-button>
         </template>
