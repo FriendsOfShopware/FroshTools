@@ -9,6 +9,11 @@
             "Frosh\\Tools\\": "src/"
         }
     },
+    "autoload-dev": {
+        "psr-4": {
+            "Frosh\\Tools\\Tests\\": "tests/"
+        }
+    },
     "authors": [
         {
             "name": "FriendsOfShopware",
