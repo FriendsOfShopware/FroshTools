@@ -125,6 +125,12 @@
         >
             <h4>{{ pluginName }}</h4>
             <sw-alert
+                variant="warning"
+                v-if="pluginResult.wrongPluginVersion"
+            >
+                {{ $t('frosh-tools.tabs.pluginFiles.wrongPluginVersion') }}
+            </sw-alert>
+            <sw-alert
                 variant="error"
                 v-if="pluginResult.checkFailed"
             >

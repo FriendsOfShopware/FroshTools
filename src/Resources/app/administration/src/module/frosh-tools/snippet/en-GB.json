@@ -65,7 +65,8 @@
             "pluginFiles": {
                 "title": "Plugin File Checker",
                 "allFilesOk": "No plugins were modified.",
-                "notOk": "There are modified plugins.",
+                "notOk": "There are errors or modified plugins.",
+                "wrongPluginVersion": "The checksum file was created for a different plugin version.",
                 "checkFailed": "The plugin could not be checked. Please check the logs.",
                 "newFiles": "New files",
                 "changedFiles": "Changed files",

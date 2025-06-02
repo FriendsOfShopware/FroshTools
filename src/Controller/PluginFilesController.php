@@ -40,7 +40,7 @@ class PluginFilesController extends AbstractController
         foreach ($plugins as $plugin) {
             try {
                 $pluginChecksumCheckResult = $this->pluginFileHashService->checkPluginForChanges($plugin);
-                if ($pluginChecksumCheckResult->getNewFiles() !== [] || $pluginChecksumCheckResult->getChangedFiles() !== [] || $pluginChecksumCheckResult->getMissingFiles() !== []) {
+                if (!$pluginChecksumCheckResult->isPluginOk()) {
                     $pluginResults[$plugin->getName()] = $pluginChecksumCheckResult;
                 }
             } catch (\Exception $exception) {

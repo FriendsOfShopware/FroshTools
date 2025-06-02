@@ -26,7 +26,7 @@ class PluginFileHashService
 
     public function getChecksumFilePathForPlugin(PluginEntity $plugin): string
     {
-        return $this->getPluginRootPath($plugin) . '/' . self::CHECKSUM_FILE;
+        return $this->getExtensionRootPath($plugin) . '/' . self::CHECKSUM_FILE;
     }
 
     public function getChecksumData(PluginEntity $plugin): PluginChecksumStruct
@@ -34,6 +34,7 @@ class PluginFileHashService
         return PluginChecksumStruct::fromArray([
             'algorithm' => self::HASH_ALGORITHM,
             'hashes' => $this->getHashes($plugin),
+            'version' => PluginChecksumStruct::CURRENT_VERSION,
             'pluginVersion' => $plugin->getVersion(),
         ]);
     }
@@ -61,10 +62,12 @@ class PluginFileHashService
         }
 
         $checksumFileData = PluginChecksumStruct::fromArray($checksumFileContent);
-        $checksumPluginVersion = $checksumFileData->getPluginVersion();
 
-        if ($plugin->getVersion() !== $checksumPluginVersion) {
-            return new PluginChecksumCheckResult(wrongVersion: true);
+        // If the checksum file format changes: Add a check for $checksumFileData->getVersion() here
+        // Right now the version is always 1.0.0
+
+        if ($checksumFileData->getPluginVersion() !== $plugin->getVersion()) {
+            return new PluginChecksumCheckResult(wrongPluginVersion: true);
         }
 
         $currentHashes = $this->getHashes($plugin, $checksumFileData->getAlgorithm());
@@ -93,16 +96,14 @@ class PluginFileHashService
     {
         $algorithm = $algorithm ?? self::HASH_ALGORITHM;
 
-        $rootPluginPath = $this->getPluginRootPath($plugin);
-
-        $directories = $this->getDirectories($plugin);
-        if ($directories === []) {
-            return [];
-        }
+        $extensionRootPath = $this->getExtensionRootPath($plugin);
 
         $finder = new Finder();
-        $finder->in($directories)
+        $finder->in([$extensionRootPath])
             ->files()
+            ->ignoreDotFiles(false)
+            ->notPath('checksums.json')
+            ->notPath('Resources/public/administration')
             ->notPath('/vendor/')
             ->notPath('/node_modules/');
 
@@ -123,7 +124,7 @@ class PluginFileHashService
             }
 
             // Make sure the replacement handles Windows and Unix paths
-            $relativePath = \ltrim(str_replace([$rootPluginPath, '\\'], ['', '/'], $absoluteFilePath), '/');
+            $relativePath = \ltrim(str_replace([$extensionRootPath, '\\'], ['', '/'], $absoluteFilePath), '/');
 
             $hashes[$relativePath] = $hash;
         }
@@ -133,32 +134,7 @@ class PluginFileHashService
         return $hashes;
     }
 
-    /**
-     * @return string[]
-     */
-    private function getDirectories(PluginEntity $plugin): array
-    {
-        $directories = [];
-
-        $pluginRootPath = $this->getPluginRootPath($plugin);
-
-        $autoload = $plugin->getAutoload();
-        if ($autoload === []) {
-            // Fall back to plugin root if no autoload info is available
-            return [$pluginRootPath];
-        }
-
-        $psr4 = $autoload['psr-4'] ?? [];
-        foreach ($psr4 as $path) {
-            if (\is_string($path) && $path !== '') {
-                $directories[] = $pluginRootPath . '/' . \ltrim($path, '/\\');
-            }
-        }
-
-        return array_unique($directories);
-    }
-
-    private function getPluginRootPath(PluginEntity $plugin): string
+    private function getExtensionRootPath(PluginEntity $plugin): string
     {
         return \rtrim($this->rootDir . '/' . $plugin->getPath(), '/\\');
     }

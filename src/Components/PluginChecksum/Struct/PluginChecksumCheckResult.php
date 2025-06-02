@@ -14,6 +14,7 @@ class PluginChecksumCheckResult extends Struct
     public function __construct(
         protected bool $fileMissing = false,
         protected bool $wrongVersion = false,
+        protected bool $wrongPluginVersion = false,
         protected bool $checkFailed = false,
         protected array $newFiles = [],
         protected array $changedFiles = [],
@@ -21,14 +22,27 @@ class PluginChecksumCheckResult extends Struct
     ) {
     }
 
+    public function isPluginOk(): bool
+    {
+        return !$this->wrongPluginVersion && !$this->checkFailed && $this->newFiles === [] && $this->changedFiles === [] && $this->missingFiles === [];
+    }
+
     public function isFileMissing(): bool
     {
         return $this->fileMissing;
     }
 
+    /**
+     * Unused for now, will be needed if the checksum file format changes
+     */
     public function isWrongVersion(): bool
     {
         return $this->wrongVersion;
+    }
+
+    public function isWrongPluginVersion(): bool
+    {
+        return $this->wrongPluginVersion;
     }
 
     public function isCheckFailed(): bool

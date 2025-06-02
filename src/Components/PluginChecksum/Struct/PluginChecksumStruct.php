@@ -6,12 +6,16 @@ use Shopware\Core\Framework\Struct\Struct;
 
 class PluginChecksumStruct extends Struct
 {
+    public const CURRENT_VERSION = '1.0.0';
+
     protected string $algorithm;
 
     /**
      * @var array<string, string>
      */
     protected array $hashes;
+
+    protected ?string $version;
 
     protected string $pluginVersion;
 
@@ -34,6 +38,11 @@ class PluginChecksumStruct extends Struct
     public function getHashes(): array
     {
         return $this->hashes;
+    }
+
+    public function getVersion(): ?string
+    {
+        return $this->version;
     }
 
     public function getPluginVersion(): string

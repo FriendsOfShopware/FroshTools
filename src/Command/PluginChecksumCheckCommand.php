@@ -65,16 +65,16 @@ class PluginChecksumCheckCommand extends Command
                 continue;
             }
 
-            if ($pluginChecksumCheckResult->isWrongVersion()) {
-                $io->error(\sprintf('Checksum file for plugin "%s" was generated for different version', $plugin->getName()));
+            // If the checksum file format changes: Add a check for $pluginChecksumCheckResult->isWrongVersion() here
+            // Right now the version is always 1.0.0
+
+            if ($pluginChecksumCheckResult->isWrongPluginVersion()) {
+                $io->error(\sprintf('Checksum file for plugin "%s" was generated for a different plugin version', $plugin->getName()));
                 $success = false;
                 continue;
             }
 
-            if ($pluginChecksumCheckResult->getNewFiles() === []
-                && $pluginChecksumCheckResult->getChangedFiles() === []
-                && $pluginChecksumCheckResult->getMissingFiles() === []
-            ) {
+            if ($pluginChecksumCheckResult->isPluginOk()) {
                 $io->success(\sprintf('Plugin "%s" has no detected file-changes.', $plugin->getName()));
 
                 continue;
