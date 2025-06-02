@@ -70,13 +70,7 @@ class RedisTagCleanupCommand extends Command
         $dryRun = $input->getOption('dry-run');
         $batchSize = (int) $input->getOption('batch-size');
 
-        try {
-            $redis = $cacheAdapter->getRedisOrFail();
-        } catch (\RuntimeException $e) {
-            $io->error($e->getMessage());
-
-            return Command::FAILURE;
-        }
+        $redis = $cacheAdapter->getRedisOrFail();
 
         $activeNamespace = $cacheAdapter->getNamespace();
         $pattern = $activeNamespace . ":\x01tags\x01*";

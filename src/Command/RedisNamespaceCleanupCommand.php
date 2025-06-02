@@ -103,7 +103,7 @@ class RedisNamespaceCleanupCommand extends Command
         $io->writeln(\sprintf('Keys to delete: <comment>%d</comment> out of <comment>%d</comment> total keys', $deleteCount, $totalKeys));
 
         if (!$dryRun) {
-            if (!$io->confirm('Do you want to proceed with deleting these keys?', false)) {
+            if (!$io->confirm('Do you want to proceed with deleting these keys?')) {
                 $io->warning('Operation cancelled');
 
                 return Command::SUCCESS;
