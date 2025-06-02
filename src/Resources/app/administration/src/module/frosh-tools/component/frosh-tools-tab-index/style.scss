@@ -1,16 +1,16 @@
 .frosh-tools-tab-index {
-  &__health-card {
-    .sw-card__content {
-      padding: 0;
+    &__health-card {
+        .sw-card__content {
+            padding: 0;
 
-      .sw-label {
-        text-align: center;
-        min-width: 70px;
-      }
+            .sw-label {
+                text-align: center;
+                min-width: 70px;
+            }
+        }
     }
-  }
-  &__alert-wrapper {
-    width: 100%;
-    padding: 24px;
-  }
+    &__alert-wrapper {
+        width: 100%;
+        padding: 24px;
+    }
 }

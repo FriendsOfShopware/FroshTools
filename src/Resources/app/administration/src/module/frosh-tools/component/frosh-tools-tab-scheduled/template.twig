@@ -5,18 +5,22 @@
         :isLoading="isLoading"
         :large="true"
         positionIdentifier="frosh-tools-tab-scheduled"
+        deprecated
     >
         <template #toolbar>
             <sw-button
+                deprecated
                 variant="ghost"
                 @click="refresh"
             >
                 <sw-icon
                     :small="true"
                     name="regular-undo"
+                    deprecated
                 ></sw-icon>
             </sw-button>
             <sw-button
+                deprecated
                 variant="primary"
                 @click="registerScheduledTasks"
             >
@@ -100,6 +104,7 @@
         />
         <template #modal-footer>
             <sw-button
+                deprecated
                 size="small"
                 @click="taskError = null"
             >

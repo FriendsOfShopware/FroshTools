@@ -1,6 +1,7 @@
 <sw-card-view>
     <sw-card
         class="frosh-tools-tab-cache__cache-card"
+        deprecated
         :title="$t('frosh-tools.tabs.cache.title')"
         :isLoading="isLoading"
         :large="true"
@@ -10,9 +11,11 @@
             <!-- @todo: Make the refresh button fancy -->
             <sw-button
                 variant="ghost"
+                deprecated
                 @click="createdComponent"
             >
                 <sw-icon
+                    deprecated
                     :small="true"
                     name="regular-undo"
                 ></sw-icon>
@@ -76,6 +79,7 @@
     </sw-card>
     <sw-card
         class="frosh-tools-tab-cache__action-card"
+        deprecated
         :title="$t('frosh-tools.actions')"
         :isLoading="isLoading"
         :large="true"
@@ -83,6 +87,7 @@
     >
         <sw-button
             variant="primary"
+            deprecated
             @click="compileTheme"
         >
             {{ $t('frosh-tools.compileTheme') }}

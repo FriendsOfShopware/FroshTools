@@ -1,12 +1,14 @@
 <sw-card-view>
     <sw-card
         :title="$t('frosh-tools.tabs.elasticsearch.title')"
+        deprecated
         :large="true"
         :isLoading="isLoading"
         positionIdentifier="frosh-tools-tab-elasticsearch"
     >
         <sw-alert
             variant="error"
+            deprecated
             v-if="!isLoading && !isActive"
         >
             {{ $t('frosh-tools.tabs.elasticsearch.disabled') }}
@@ -37,6 +39,7 @@
     </sw-card>
     <sw-card
         :title="$t('frosh-tools.tabs.elasticsearch.indices')"
+        deprecated
         v-if="!isLoading && isActive"
         :large="true"
         positionIdentifier="frosh-tools-tab-elasticsearch-indices"
@@ -44,11 +47,13 @@
         <template #toolbar>
             <!-- @todo: Make the refresh button fancy -->
             <sw-button
+                deprecated
                 variant="ghost"
                 @click="createdComponent"
             >
                 <sw-icon
                     :small="true"
+                    deprecated
                     name="regular-undo"
                 ></sw-icon>
             </sw-button>
@@ -92,25 +97,37 @@
     <sw-card
         :title="$t('frosh-tools.actions')"
         v-if="!isLoading && isActive"
+        deprecated
         :large="true"
         positionIdentifier="frosh-tools-tab-elasticsearch-health"
     >
         <sw-button
+            deprecated
             @click="reindex"
             variant="primary"
         >
             {{ $t('frosh-tools.tabs.elasticsearch.action.reindex') }}
         </sw-button>
-        <sw-button @click="switchAlias">
+        <sw-button
+            deprecated
+            @click="switchAlias"
+        >
             {{ $t('frosh-tools.tabs.elasticsearch.action.switchAlias') }}
         </sw-button>
-        <sw-button @click="flushAll">
+        <sw-button
+            deprecated
+            @click="flushAll"
+        >
             {{ $t('frosh-tools.tabs.elasticsearch.action.flushAll') }}
         </sw-button>
-        <sw-button @click="cleanup">
+        <sw-button
+            deprecated
+            @click="cleanup"
+        >
             {{ $t('frosh-tools.tabs.elasticsearch.action.cleanup') }}
         </sw-button>
         <sw-button
+            deprecated
             @click="resetElasticsearch"
             variant="danger"
         >
@@ -119,6 +136,7 @@
     </sw-card>
     <sw-card
         :title="$t('frosh-tools.tabs.elasticsearch.console.title')"
+        deprecated
         v-if="!isLoading && isActive"
         :large="true"
         positionIdentifier="frosh-tools-tab-elasticsearch-console"
@@ -132,7 +150,10 @@
             :sanitizeInput="false"
             v-model="consoleInput"
         ></sw-code-editor>
-        <sw-button @click="onConsoleEnter">
+        <sw-button
+            deprecated
+            @click="onConsoleEnter"
+        >
             {{ $t('frosh-tools.tabs.elasticsearch.console.send') }}
         </sw-button>
         <div>

@@ -4,14 +4,17 @@
         :isLoading="isLoading"
         :large="true"
         positionIdentifier="frosh-tools-tab-index"
+        deprecated
     >
         <template #toolbar>
             <!-- @todo: Make the refresh button fancy -->
             <sw-button
                 variant="ghost"
+                deprecated
                 @click="refresh"
             >
                 <sw-icon
+                    deprecated
                     :small="true"
                     name="regular-undo"
                 ></sw-icon>
@@ -20,6 +23,7 @@
         <sw-card
             class="frosh-tools-tab-index__health-card"
             :title="$t('frosh-tools.tabs.index.title')"
+            deprecated
             :large="true"
             positionIdentifier="frosh-tools-tab-index-health"
         >
@@ -76,13 +80,17 @@
             :title="$t('frosh-tools.tabs.index.performance')"
             :large="true"
             positionIdentifier="frosh-tools-tab-index-performance"
+            deprecated
         >
             <template #grid>
                 <sw-card-section
                     divider="bottom"
                     v-if="performanceStatus && performanceStatus.length === 0"
                 >
-                    <sw-alert variant="success">
+                    <sw-alert
+                        variant="success"
+                        deprecated
+                    >
                         {{ $t('frosh-tools.noRecommendations') }}
                     </sw-alert>
                 </sw-card-section>
