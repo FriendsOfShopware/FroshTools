@@ -1,10 +1,10 @@
 <?php declare(strict_types=1);
 
-namespace Frosh\Tools\Components\PluginChecksum\Struct;
+namespace Frosh\Tools\Components\ExtensionChecksum\Struct;
 
 use Shopware\Core\Framework\Struct\Struct;
 
-class PluginChecksumCheckResult extends Struct
+class ExtensionChecksumCheckResult extends Struct
 {
     /**
      * @param string[] $newFiles
@@ -14,7 +14,7 @@ class PluginChecksumCheckResult extends Struct
     public function __construct(
         protected bool $fileMissing = false,
         protected bool $wrongVersion = false,
-        protected bool $wrongPluginVersion = false,
+        protected bool $wrongExtensionVersion = false,
         protected bool $checkFailed = false,
         protected array $newFiles = [],
         protected array $changedFiles = [],
@@ -22,9 +22,9 @@ class PluginChecksumCheckResult extends Struct
     ) {
     }
 
-    public function isPluginOk(): bool
+    public function isExtensionOk(): bool
     {
-        return !$this->wrongPluginVersion && !$this->checkFailed && $this->newFiles === [] && $this->changedFiles === [] && $this->missingFiles === [];
+        return !$this->wrongExtensionVersion && !$this->checkFailed && $this->newFiles === [] && $this->changedFiles === [] && $this->missingFiles === [];
     }
 
     public function isFileMissing(): bool
@@ -40,9 +40,9 @@ class PluginChecksumCheckResult extends Struct
         return $this->wrongVersion;
     }
 
-    public function isWrongPluginVersion(): bool
+    public function isWrongExtensionVersion(): bool
     {
-        return $this->wrongPluginVersion;
+        return $this->wrongExtensionVersion;
     }
 
     public function isCheckFailed(): bool

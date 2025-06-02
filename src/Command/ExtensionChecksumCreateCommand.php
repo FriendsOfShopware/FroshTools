@@ -2,7 +2,7 @@
 
 namespace Frosh\Tools\Command;
 
-use Frosh\Tools\Components\PluginChecksum\PluginFileHashService;
+use Frosh\Tools\Components\ExtensionChecksum\ExtensionFileHashService;
 use Shopware\Core\Framework\Adapter\Console\ShopwareStyle;
 use Shopware\Core\Framework\Context;
 use Shopware\Core\Framework\DataAbstractionLayer\Entity;
@@ -18,24 +18,24 @@ use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 
 #[AsCommand(
-    name: 'frosh:plugin:checksum:create',
-    description: 'Creates a list of files and their checksums for a plugin',
+    name: 'frosh:extension:checksum:create',
+    description: 'Creates a list of files and their checksums for an extension',
 )]
-class PluginChecksumCreateCommand extends Command
+class ExtensionChecksumCreateCommand extends Command
 {
     /**
      * @param EntityRepository<PluginCollection> $pluginRepository
      */
     public function __construct(
         private readonly EntityRepository $pluginRepository,
-        private readonly PluginFileHashService $pluginFileHashService,
+        private readonly ExtensionFileHashService $extensionFileHashService,
     ) {
         parent::__construct();
     }
 
     protected function configure(): void
     {
-        $this->addArgument('plugin', InputArgument::REQUIRED, 'Plugin name');
+        $this->addArgument('extension', InputArgument::OPTIONAL, 'Extension name');
     }
 
     /**
@@ -47,25 +47,25 @@ class PluginChecksumCreateCommand extends Command
         // @phpstan-ignore-next-line
         $context = method_exists(Context::class, 'createCLIContext') ? Context::createCLIContext() : Context::createDefaultContext();
 
-        $pluginName = (string) $input->getArgument('plugin');
-        $plugin = $this->getPlugin($pluginName, $context);
+        $extensionName = (string) $input->getArgument('extension');
+        $extension = $this->getExtension($extensionName, $context);
 
-        if (!$plugin instanceof PluginEntity) {
-            $io->error(\sprintf('Plugin "%s" not found', $pluginName));
+        if (!$extension instanceof PluginEntity) {
+            $io->error(\sprintf('Extension "%s" not found', $extensionName));
 
             return self::FAILURE;
         }
 
-        $checksumFilePath = $this->pluginFileHashService->getChecksumFilePathForPlugin($plugin);
+        $checksumFilePath = $this->extensionFileHashService->getChecksumFilePathForExtension($extension);
         if (!$checksumFilePath) {
-            $io->error(\sprintf('Plugin "%s" checksum file path could not be identified', $plugin->getName()));
+            $io->error(\sprintf('Extension "%s" checksum file path could not be identified', $extension->getName()));
 
             return self::FAILURE;
         }
 
-        $checksumStruct = $this->pluginFileHashService->getChecksumData($plugin);
+        $checksumStruct = $this->extensionFileHashService->getChecksumData($extension);
 
-        $io->info(\sprintf('Writing %s checksums for plugin "%s" to file %s', \count($checksumStruct->getHashes()), $plugin->getName(), $checksumFilePath));
+        $io->info(\sprintf('Writing %s checksums for extension "%s" to file %s', \count($checksumStruct->getHashes()), $extension->getName(), $checksumFilePath));
 
         $directory = \dirname($checksumFilePath);
         if (!is_dir($directory)) {
@@ -89,10 +89,10 @@ class PluginChecksumCreateCommand extends Command
         return self::SUCCESS;
     }
 
-    private function getPlugin(string $pluginName, Context $context): ?Entity
+    private function getExtension(string $name, Context $context): ?Entity
     {
         $criteria = new Criteria();
-        $criteria->addFilter(new EqualsFilter('name', $pluginName));
+        $criteria->addFilter(new EqualsFilter('name', $name));
 
         return $this->pluginRepository->search($criteria, $context)->first();
     }

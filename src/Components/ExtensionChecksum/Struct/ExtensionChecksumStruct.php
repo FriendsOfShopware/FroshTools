@@ -1,10 +1,10 @@
 <?php declare(strict_types=1);
 
-namespace Frosh\Tools\Components\PluginChecksum\Struct;
+namespace Frosh\Tools\Components\ExtensionChecksum\Struct;
 
 use Shopware\Core\Framework\Struct\Struct;
 
-class PluginChecksumStruct extends Struct
+class ExtensionChecksumStruct extends Struct
 {
     public const CURRENT_VERSION = '1.0.0';
 
@@ -17,7 +17,7 @@ class PluginChecksumStruct extends Struct
 
     protected ?string $version;
 
-    protected string $pluginVersion;
+    protected string $extensionVersion = '';
 
     /**
      * @param array<string, mixed> $data
@@ -45,8 +45,8 @@ class PluginChecksumStruct extends Struct
         return $this->version;
     }
 
-    public function getPluginVersion(): string
+    public function getExtensionVersion(): string
     {
-        return $this->pluginVersion;
+        return $this->extensionVersion;
     }
 }

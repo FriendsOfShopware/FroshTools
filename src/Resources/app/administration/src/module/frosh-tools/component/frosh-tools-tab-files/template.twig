@@ -89,24 +89,24 @@
         </template>
     </sw-modal>
     <sw-card
-        class="frosh-tools-tab-files__plugin-files-card"
+        class="frosh-tools-tab-files__extension-files-card"
         :class="isLoadingClass"
-        :title="$t('frosh-tools.tabs.pluginFiles.title')"
+        :title="$t('frosh-tools.tabs.extensionFiles.title')"
         :isLoading="isLoading"
         :large="true"
-        positionIdentifier="frosh-tools-tab-files__plugin-files-card"
+        positionIdentifier="frosh-tools-tab-files__extension-files-card"
     >
         <sw-alert
             variant="success"
-            v-if="pluginItems.success"
+            v-if="extensionItems.success"
         >
-            {{ $t('frosh-tools.tabs.pluginFiles.allFilesOk') }}
+            {{ $t('frosh-tools.tabs.extensionFiles.allFilesOk') }}
         </sw-alert>
         <sw-alert
             variant="warning"
             v-else
         >
-            {{ $t('frosh-tools.tabs.pluginFiles.notOk') }}
+            {{ $t('frosh-tools.tabs.extensionFiles.notOk') }}
         </sw-alert>
         <template #toolbar>
             <!-- @todo: Make the refresh button fancy -->
@@ -121,45 +121,45 @@
             </sw-button>
         </template>
         <div
-            v-for="(pluginResult, pluginName) in pluginItems.pluginResults"
+            v-for="(extensionResult, extensionName) in extensionItems.extensionResults"
         >
-            <h4>{{ pluginName }}</h4>
+            <h4>{{ extensionName }}</h4>
             <sw-alert
                 variant="warning"
-                v-if="pluginResult.wrongPluginVersion"
+                v-if="extensionResult.wrongExtensionVersion"
             >
-                {{ $t('frosh-tools.tabs.pluginFiles.wrongPluginVersion') }}
+                {{ $t('frosh-tools.tabs.extensionFiles.wrongExtensionVersion') }}
             </sw-alert>
             <sw-alert
                 variant="error"
-                v-if="pluginResult.checkFailed"
+                v-if="extensionResult.checkFailed"
             >
-                {{ $t('frosh-tools.tabs.pluginFiles.checkFailed') }}
+                {{ $t('frosh-tools.tabs.extensionFiles.checkFailed') }}
             </sw-alert>
             <sw-description-list v-else>
-                <dt v-if="pluginResult.newFiles.length > 0">
-                    {{ $t('frosh-tools.tabs.pluginFiles.newFiles') }}
+                <dt v-if="extensionResult.newFiles.length > 0">
+                    {{ $t('frosh-tools.tabs.extensionFiles.newFiles') }}
                 </dt>
-                <dd v-for="file in pluginResult.newFiles">
+                <dd v-for="file in extensionResult.newFiles">
                     {{ file }}
                 </dd>
                 <dt
-                    v-if="pluginResult.changedFiles.length > 0"
+                    v-if="extensionResult.changedFiles.length > 0"
                 >
-                    {{ $t('frosh-tools.tabs.pluginFiles.changedFiles') }}
+                    {{ $t('frosh-tools.tabs.extensionFiles.changedFiles') }}
                 </dt>
                 <dd
-                    v-for="file in pluginResult.changedFiles"
+                    v-for="file in extensionResult.changedFiles"
                 >
                     {{ file }}
                 </dd>
                 <dt
-                    v-if="pluginResult.missingFiles.length > 0"
+                    v-if="extensionResult.missingFiles.length > 0"
                 >
-                    {{ $t('frosh-tools.tabs.pluginFiles.missingFiles') }}
+                    {{ $t('frosh-tools.tabs.extensionFiles.missingFiles') }}
                 </dt>
                 <dd
-                    v-for="file in pluginResult.missingFiles"
+                    v-for="file in extensionResult.missingFiles"
                 >
                     {{ file }}
                 </dd>

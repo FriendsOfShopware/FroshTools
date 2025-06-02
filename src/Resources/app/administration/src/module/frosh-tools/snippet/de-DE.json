@@ -62,12 +62,12 @@
                 "expectedAll": "Datei wurde manipuliert",
                 "expectedProject": "Datei wurde manipuliert, Fehler wird ignoriert durch Projekt Konfiguration"
             },
-            "pluginFiles": {
-                "title": "Plugin Dateien Checker",
-                "allFilesOk": "Keine Plugins wurden manipuliert.",
-                "notOk": "Es gibt Fehler oder manipulierte Plugins",
-                "wrongPluginVersion": "Die Checksummen-Datei ist für eine andere Plugin-Version erzeugt worden.",
-                "checkFailed": "Das Plugin konnte nicht geprüft werden. Bitte prüfe die Logs.",
+            "extensionFiles": {
+                "title": "Erweiterung Dateien Checker",
+                "allFilesOk": "Keine Erweiterung wurden manipuliert.",
+                "notOk": "Es gibt Fehler oder manipulierte Erweiterungen",
+                "wrongExtensionVersion": "Die Checksummen-Datei wurde für eine andere Erweiterungsversion erzeugt.",
+                "checkFailed": "Das oder konnte nicht geprüft werden. Bitte prüfe die Logs.",
                 "newFiles": "Neue Dateien",
                 "changedFiles": "Geänderte Dateien",
                 "missingFiles": "Fehlende Dateien"

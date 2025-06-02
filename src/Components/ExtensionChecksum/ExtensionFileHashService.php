@@ -1,14 +1,14 @@
 <?php declare(strict_types=1);
 
-namespace Frosh\Tools\Components\PluginChecksum;
+namespace Frosh\Tools\Components\ExtensionChecksum;
 
-use Frosh\Tools\Components\PluginChecksum\Struct\PluginChecksumCheckResult;
-use Frosh\Tools\Components\PluginChecksum\Struct\PluginChecksumStruct;
+use Frosh\Tools\Components\ExtensionChecksum\Struct\ExtensionChecksumCheckResult;
+use Frosh\Tools\Components\ExtensionChecksum\Struct\ExtensionChecksumStruct;
 use Shopware\Core\Framework\Plugin\PluginEntity;
 use Symfony\Component\DependencyInjection\Attribute\Autowire;
 use Symfony\Component\Finder\Finder;
 
-class PluginFileHashService
+class ExtensionFileHashService
 {
     /**
      * xxh128 is chosen for its excellent speed and collision resistance,
@@ -16,7 +16,7 @@ class PluginFileHashService
      */
     private const HASH_ALGORITHM = 'xxh128';
 
-    private const CHECKSUM_FILE = 'checksums.json';
+    private const CHECKSUM_FILE = 'checksum.json';
 
     public function __construct(
         #[Autowire('%kernel.project_dir%')]
@@ -24,26 +24,26 @@ class PluginFileHashService
     ) {
     }
 
-    public function getChecksumFilePathForPlugin(PluginEntity $plugin): string
+    public function getChecksumFilePathForExtension(PluginEntity $extension): string
     {
-        return $this->getExtensionRootPath($plugin) . '/' . self::CHECKSUM_FILE;
+        return $this->getExtensionRootPath($extension) . '/' . self::CHECKSUM_FILE;
     }
 
-    public function getChecksumData(PluginEntity $plugin): PluginChecksumStruct
+    public function getChecksumData(PluginEntity $extension): ExtensionChecksumStruct
     {
-        return PluginChecksumStruct::fromArray([
+        return ExtensionChecksumStruct::fromArray([
             'algorithm' => self::HASH_ALGORITHM,
-            'hashes' => $this->getHashes($plugin),
-            'version' => PluginChecksumStruct::CURRENT_VERSION,
-            'pluginVersion' => $plugin->getVersion(),
+            'hashes' => $this->getHashes($extension),
+            'version' => ExtensionChecksumStruct::CURRENT_VERSION,
+            'extensionVersion' => $extension->getVersion(),
         ]);
     }
 
-    public function checkPluginForChanges(PluginEntity $plugin): PluginChecksumCheckResult
+    public function checkExtensionForChanges(PluginEntity $extension): ExtensionChecksumCheckResult
     {
-        $checksumFilePath = $this->getChecksumFilePathForPlugin($plugin);
+        $checksumFilePath = $this->getChecksumFilePathForExtension($extension);
         if (!is_file($checksumFilePath)) {
-            return new PluginChecksumCheckResult(fileMissing: true);
+            return new ExtensionChecksumCheckResult(fileMissing: true);
         }
 
         if (!is_readable($checksumFilePath)) {
@@ -61,16 +61,16 @@ class PluginFileHashService
             throw new \RuntimeException(\sprintf('Checksum file "%s" is not valid JSON', $checksumFilePath), 0, $exception);
         }
 
-        $checksumFileData = PluginChecksumStruct::fromArray($checksumFileContent);
+        $checksumFileData = ExtensionChecksumStruct::fromArray($checksumFileContent);
 
         // If the checksum file format changes: Add a check for $checksumFileData->getVersion() here
         // Right now the version is always 1.0.0
 
-        if ($checksumFileData->getPluginVersion() !== $plugin->getVersion()) {
-            return new PluginChecksumCheckResult(wrongPluginVersion: true);
+        if ($checksumFileData->getExtensionVersion() !== $extension->getVersion()) {
+            return new ExtensionChecksumCheckResult(wrongExtensionVersion: true);
         }
 
-        $currentHashes = $this->getHashes($plugin, $checksumFileData->getAlgorithm());
+        $currentHashes = $this->getHashes($extension, $checksumFileData->getAlgorithm());
         $previouslyHashedFiles = $checksumFileData->getHashes();
 
         $newFiles = array_diff_key($currentHashes, $previouslyHashedFiles);
@@ -82,7 +82,7 @@ class PluginFileHashService
             }
         }
 
-        return new PluginChecksumCheckResult(
+        return new ExtensionChecksumCheckResult(
             newFiles: array_keys($newFiles),
             changedFiles: $changedFiles,
             missingFiles: array_keys($missingFiles),
@@ -92,17 +92,17 @@ class PluginFileHashService
     /**
      * @return array<string, string>
      */
-    private function getHashes(PluginEntity $plugin, ?string $algorithm = null): array
+    private function getHashes(PluginEntity $extension, ?string $algorithm = null): array
     {
         $algorithm = $algorithm ?? self::HASH_ALGORITHM;
 
-        $extensionRootPath = $this->getExtensionRootPath($plugin);
+        $extensionRootPath = $this->getExtensionRootPath($extension);
 
         $finder = new Finder();
         $finder->in([$extensionRootPath])
             ->files()
             ->ignoreDotFiles(false)
-            ->notPath('checksums.json')
+            ->notPath(self::CHECKSUM_FILE)
             ->notPath('Resources/public/administration')
             ->notPath('/vendor/')
             ->notPath('/node_modules/');
@@ -134,8 +134,8 @@ class PluginFileHashService
         return $hashes;
     }
 
-    private function getExtensionRootPath(PluginEntity $plugin): string
+    private function getExtensionRootPath(PluginEntity $extension): string
     {
-        return \rtrim($this->rootDir . '/' . $plugin->getPath(), '/\\');
+        return \rtrim($this->rootDir . '/' . $extension->getPath(), '/\\');
     }
 }
