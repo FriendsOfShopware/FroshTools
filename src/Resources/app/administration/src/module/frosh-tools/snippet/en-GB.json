@@ -62,6 +62,16 @@
                 "expectedAll": "File has been modified",
                 "expectedProject": "File has been modified, but will be ignored by project settings"
             },
+            "extensionFiles": {
+                "title": "Extension File Checker",
+                "allFilesOk": "No extensions were modified.",
+                "notOk": "There are errors or modified extensions.",
+                "wrongExtensionVersion": "The checksum file was created for a different extension version.",
+                "checkFailed": "The extension could not be checked. Please check the logs.",
+                "newFiles": "New files",
+                "changedFiles": "Changed files",
+                "missingFiles": "Missing files"
+            },
             "state-machines": {
                 "title": "State Machine Viewer",
                 "label": "State Machine",

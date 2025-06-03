@@ -62,6 +62,16 @@
                 "expectedAll": "Datei wurde manipuliert",
                 "expectedProject": "Datei wurde manipuliert, Fehler wird ignoriert durch Projekt Konfiguration"
             },
+            "extensionFiles": {
+                "title": "Erweiterung Dateien Checker",
+                "allFilesOk": "Keine Erweiterung wurden manipuliert.",
+                "notOk": "Es gibt Fehler oder manipulierte Erweiterungen",
+                "wrongExtensionVersion": "Die Checksummen-Datei wurde für eine andere Erweiterungsversion erzeugt.",
+                "checkFailed": "Das oder konnte nicht geprüft werden. Bitte prüfe die Logs.",
+                "newFiles": "Neue Dateien",
+                "changedFiles": "Geänderte Dateien",
+                "missingFiles": "Fehlende Dateien"
+            },
             "state-machines": {
                 "title": "State Machine Viewer",
                 "label": "State Machine",

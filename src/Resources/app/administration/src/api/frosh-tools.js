@@ -180,6 +180,17 @@ class FroshTools extends ApiService {
             });
     }
 
+    getExtensionFiles() {
+        const apiRoute = `${this.getApiBasePath()}/extension-files`;
+        return this.httpClient
+            .get(apiRoute, {
+                headers: this.getBasicHeaders(),
+            })
+            .then((response) => {
+                return response
+            });
+    }
+
     getFileContents(file) {
         const apiRoute = `${this.getApiBasePath()}/file-contents`;
         return this.httpClient
