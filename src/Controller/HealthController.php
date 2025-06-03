@@ -38,6 +38,8 @@ class HealthController extends AbstractController
             $checker->collect($collection);
         }
 
+        $collection->sortByState();
+
         return new JsonResponse($collection);
     }
 
@@ -48,6 +50,8 @@ class HealthController extends AbstractController
         foreach ($this->performanceCheckers as $checker) {
             $checker->collect($collection);
         }
+
+        $collection->sortByState();
 
         return new JsonResponse($collection);
     }
