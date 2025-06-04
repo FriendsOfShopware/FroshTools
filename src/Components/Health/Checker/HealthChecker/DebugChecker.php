@@ -27,7 +27,7 @@ class DebugChecker implements HealthCheckerInterface, CheckerInterface
         $this->checkKernelDebug($collection);
     }
 
-    private function checkWebProfiler(HealthCollection $collection): void
+    public function checkWebProfiler(HealthCollection $collection): void
     {
         // @phpstan-ignore-next-line
         if (\in_array(WebProfilerBundle::class, $this->kernelBundles, true)) {
@@ -49,7 +49,7 @@ class DebugChecker implements HealthCheckerInterface, CheckerInterface
         ));
     }
 
-    private function checkKernelDebug(HealthCollection $collection): void
+    public function checkKernelDebug(HealthCollection $collection): void
     {
         if ($this->kernelDebug) {
             $collection->add(SettingsResult::error(

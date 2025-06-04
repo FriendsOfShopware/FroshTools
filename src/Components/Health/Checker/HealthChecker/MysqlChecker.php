@@ -17,7 +17,7 @@ class MysqlChecker implements HealthCheckerInterface, CheckerInterface
 
     public function collect(HealthCollection $collection): void
     {
-        $version = $this->connection->fetchOne('SELECT VERSION()');
+        $version = $this->fetchDatabaseVersion();
         if (!\is_string($version)) {
             $collection->add(SettingsResult::error('mysql', 'MySQL Version', 'unknown'));
 
@@ -39,6 +39,11 @@ class MysqlChecker implements HealthCheckerInterface, CheckerInterface
         }
 
         $collection->add(SettingsResult::error('mysql', 'MySQL Version cannot be checked'));
+    }
+
+    protected function fetchDatabaseVersion(): mixed
+    {
+        return $this->connection->fetchOne('SELECT VERSION()');
     }
 
     private function checkMariadbVersion(HealthCollection $collection, string $version): void
