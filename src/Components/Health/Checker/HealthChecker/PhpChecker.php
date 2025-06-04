@@ -6,6 +6,7 @@ namespace Frosh\Tools\Components\Health\Checker\HealthChecker;
 
 use Frosh\Tools\Components\Health\Checker\CheckerInterface;
 use Frosh\Tools\Components\Health\HealthCollection;
+use Frosh\Tools\Components\Health\IniReader;
 use Frosh\Tools\Components\Health\SettingsResult;
 use Frosh\Tools\FroshTools;
 
@@ -103,7 +104,7 @@ class PhpChecker implements HealthCheckerInterface, CheckerInterface
     {
         $snippet = 'Zend Opcache';
 
-        if (\extension_loaded('Zend OPcache') && \ini_get('opcache.enable')) {
+        if (\extension_loaded('Zend OPcache') && IniReader::getBoolean('opcache.enable', false)) {
             $collection->add(SettingsResult::ok('zend-opcache', $snippet, 'active', 'active'));
 
             return;
@@ -116,7 +117,7 @@ class PhpChecker implements HealthCheckerInterface, CheckerInterface
     {
         $snippet = 'PCRE-Jit';
 
-        if (\ini_get('pcre.jit')) {
+        if(IniReader::getBoolean('pcre.jit')) {
             $collection->add(SettingsResult::ok('pcre-jit', $snippet, 'active', 'active'));
 
             return;

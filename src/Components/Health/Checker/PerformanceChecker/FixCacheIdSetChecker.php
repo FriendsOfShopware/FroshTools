@@ -14,7 +14,9 @@ class FixCacheIdSetChecker implements PerformanceCheckerInterface, CheckerInterf
 {
     public function __construct(
         #[Autowire(param: 'kernel.shopware_version')]
-        protected string $shopwareVersion,
+        protected readonly string $shopwareVersion,
+        #[Autowire('%env(default::SHOPWARE_CACHE_ID)%')]
+        protected readonly ?string $cacheId
     ) {
     }
 
@@ -24,9 +26,7 @@ class FixCacheIdSetChecker implements PerformanceCheckerInterface, CheckerInterf
             return;
         }
 
-        $cacheId = (string) EnvironmentHelper::getVariable('SHOPWARE_CACHE_ID', '');
-
-        if ($cacheId === '') {
+        if ($this->cacheId === null || $this->cacheId === '') {
             $collection->add(
                 SettingsResult::warning(
                     'cache-id',

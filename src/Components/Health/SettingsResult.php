@@ -23,7 +23,7 @@ class SettingsResult extends Struct
 
     protected string $id;
 
-    protected string $snippet;
+    public string $snippet;
 
     public static function ok(string $id, string $snippet, string $current = '', string $recommended = '', ?string $url = null): self
     {
@@ -75,5 +75,10 @@ class SettingsResult extends Struct
         $me->url = $url;
 
         return $me;
+    }
+
+    public function getId(): string
+    {
+        return $this->id;
     }
 }
