@@ -35,7 +35,7 @@ class RedisNamespaceListCommand extends Command
             return Command::FAILURE;
         }
 
-        $namespace = $cacheAdapter->getNamespace();
+        $activeNamespaces = $this->cacheRegistry->getActiveNamespaces();
         $io->title('Redis Key Groupping by Namespace');
 
         // Group keys by first 10 characters
@@ -66,8 +66,12 @@ class RedisNamespaceListCommand extends Command
         // Display results in a table
         $tableData = [];
         foreach ($keyGroups as $prefix => $count) {
-            $tableData[] = [$prefix, $count, \sprintf('%.1f%%', ($count / $totalKeys) * 100), $namespace === $prefix ? 'Yes' : 'No'];
+            $tableData[] = [$prefix, $count, \sprintf('%.1f%%', ($count / $totalKeys) * 100), \in_array($prefix, $activeNamespaces, true) ? 'Yes' : 'No'];
         }
+
+        usort($tableData, function ($a, $b) {
+            return $b[0] <=> $a[0];
+        });
 
         $io->table(
             ['Prefix', 'Count', 'Percentage', 'Active'],

@@ -31,20 +31,21 @@ class RedisNamespaceCleanupCommand extends Command
     protected function execute(InputInterface $input, OutputInterface $output): int
     {
         $io = new SymfonyStyle($input, $output);
-        $cacheAdapter = $this->cacheRegistry->get('cache.object');
+        $activeNamespaces = $this->cacheRegistry->getActiveNamespaces();
+
         $dryRun = $input->getOption('dry-run');
 
-        try {
-            $redis = $cacheAdapter->getRedisOrFail();
-        } catch (\RuntimeException $e) {
-            $io->error($e->getMessage());
+        if (empty($activeNamespaces)) {
+            $io->error('No active Redis namespaces found. Please check your configuration.');
 
             return Command::FAILURE;
         }
 
-        $activeNamespace = $cacheAdapter->getNamespace();
+        $cacheApp = $this->cacheRegistry->get('cache.app');
+        $redis = $cacheApp->getRedisOrFail();
+
         $io->title('Redis Namespace Cleanup');
-        $io->writeln(\sprintf('Active namespace: <info>%s</info>', $activeNamespace));
+        $io->writeln(\sprintf('Active namespaces: <info>%s</info>', implode(', ', $activeNamespaces)));
 
         if ($dryRun) {
             $io->note('Running in dry-run mode - no keys will be deleted');
@@ -73,7 +74,7 @@ class RedisNamespaceCleanupCommand extends Command
                 ++$namespaces[$namespace];
 
                 // Track keys that are not in the active namespace
-                if ($namespace !== $activeNamespace) {
+                if (!\in_array($namespace, $activeNamespaces, true)) {
                     $keysToDelete[] = $key;
                 }
             }
@@ -82,9 +83,13 @@ class RedisNamespaceCleanupCommand extends Command
         // Display namespace summary
         $tableData = [];
         foreach ($namespaces as $namespace => $count) {
-            $status = $namespace === $activeNamespace ? 'KEEP' : 'DELETE';
+            $status = \in_array($namespace, $activeNamespaces, true) ? 'KEEP' : 'DELETE';
             $tableData[] = [$namespace, $count, $status];
         }
+
+        usort($tableData, function ($a, $b) {
+            return $b[0] <=> $a[0];
+        });
 
         $io->section('Namespace Summary');
         $io->table(
