@@ -27,7 +27,7 @@ class IniReader
     {
         $value = $this->getIniValue($key);
 
-        if ($value === "" || $default === false) {
+        if ($value === "" || $value === false) {
             return $default;
         }
 
@@ -45,7 +45,7 @@ class IniReader
     {
         $value = $this->getIniValue($key);
 
-        if ($value === "" || $default === false) {
+        if ($value === "" || $value === false) {
             return $default;
         }
 
@@ -62,7 +62,7 @@ class IniReader
     {
         $value = $this->getIniValue($key);
 
-        if ($value === "" || $default === false) {
+        if ($value === "" || $value === false) {
             return $default;
         }
 

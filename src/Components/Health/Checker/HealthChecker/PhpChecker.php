@@ -12,6 +12,13 @@ use Frosh\Tools\FroshTools;
 
 class PhpChecker implements HealthCheckerInterface, CheckerInterface
 {
+
+    public function __construct(
+        private readonly IniReader $iniReader
+    )
+    {
+    }
+
     public function collect(HealthCollection $collection): void
     {
         $this->checkPhp($collection);
@@ -104,7 +111,7 @@ class PhpChecker implements HealthCheckerInterface, CheckerInterface
     {
         $snippet = 'Zend Opcache';
 
-        if (\extension_loaded('Zend OPcache') && IniReader::getBoolean('opcache.enable', false)) {
+        if (\extension_loaded('Zend OPcache') && $this->iniReader->getBoolean('opcache.enable', false)) {
             $collection->add(SettingsResult::ok('zend-opcache', $snippet, 'active', 'active'));
 
             return;
@@ -117,7 +124,7 @@ class PhpChecker implements HealthCheckerInterface, CheckerInterface
     {
         $snippet = 'PCRE-Jit';
 
-        if(IniReader::getBoolean('pcre.jit')) {
+        if($this->iniReader->getBoolean('pcre.jit')) {
             $collection->add(SettingsResult::ok('pcre-jit', $snippet, 'active', 'active'));
 
             return;
