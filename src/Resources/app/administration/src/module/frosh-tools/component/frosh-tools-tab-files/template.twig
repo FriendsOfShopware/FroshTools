@@ -153,24 +153,16 @@
                 <dd v-for="file in extensionResult.newFiles">
                     {{ file }}
                 </dd>
-                <dt
-                    v-if="extensionResult.changedFiles.length > 0"
-                >
+                <dt v-if="extensionResult.changedFiles.length > 0">
                     {{ $t('frosh-tools.tabs.extensionFiles.changedFiles') }}
                 </dt>
-                <dd
-                    v-for="file in extensionResult.changedFiles"
-                >
+                <dd v-for="file in extensionResult.changedFiles">
                     {{ file }}
                 </dd>
-                <dt
-                    v-if="extensionResult.missingFiles.length > 0"
-                >
+                <dt v-if="extensionResult.missingFiles.length > 0">
                     {{ $t('frosh-tools.tabs.extensionFiles.missingFiles') }}
                 </dt>
-                <dd
-                    v-for="file in extensionResult.missingFiles"
-                >
+                <dd v-for="file in extensionResult.missingFiles">
                     {{ file }}
                 </dd>
             </sw-description-list>

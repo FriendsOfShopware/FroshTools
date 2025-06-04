@@ -187,7 +187,7 @@ class FroshTools extends ApiService {
                 headers: this.getBasicHeaders(),
             })
             .then((response) => {
-                return response
+                return response;
             });
     }
 
