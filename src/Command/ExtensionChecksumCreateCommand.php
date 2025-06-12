@@ -80,6 +80,7 @@ class ExtensionChecksumCreateCommand extends Command
             return self::FAILURE;
         }
 
+        /** @phpstan-ignore shopware.forbidLocalDiskWrite */
         if (file_put_contents($checksumFilePath, \json_encode($checksumStruct->jsonSerialize(), \JSON_THROW_ON_ERROR)) === false) {
             $io->error(\sprintf('Failed to write to file "%s"', $checksumFilePath));
 

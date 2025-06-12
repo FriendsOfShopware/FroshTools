@@ -164,6 +164,7 @@ class ShopwareFilesController extends AbstractController
             return new JsonResponse(['error' => 'File would be empty!']);
         }
 
+        /** @phpstan-ignore shopware.forbidLocalDiskWrite */
         file_put_contents($path, $content);
 
         if (\function_exists('opcache_reset')) {
