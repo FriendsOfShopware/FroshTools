@@ -1,0 +1,75 @@
+name: Test
+on:
+  push:
+    branches:
+      - 'main'
+    tags-ignore:
+      - '*'
+  pull_request:
+  schedule:
+    - cron: "5 15 * * *"
+jobs:
+  get-matrix:
+    runs-on: ubuntu-latest
+    outputs:
+      matrix: ${{ steps.matrix.outputs.matrix }}
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Get Shopware Version
+        id: shopware-constraint
+        run: echo "shopware_constraint=$(cat composer.json | jq -r '.require."shopware/core"')" >> $GITHUB_OUTPUT
+
+      - name: Get Shopware Matrix
+        uses: tinect/github-shopware-matrix-generator@main
+        id: matrix
+        with:
+          versionConstraint: ${{ steps.shopware-constraint.outputs.shopware_constraint }}
+          allowEol: false
+          justMinMaxShopware: true
+          allowShopwareNext: true
+          allowShopwareRC: true
+
+  test:
+    env:
+      PLUGIN_NAME: FroshTools
+    needs: get-matrix
+    strategy:
+      fail-fast: false
+      matrix: ${{ fromJson(needs.get-matrix.outputs.matrix) }}
+    runs-on: ubuntu-latest
+    steps:
+      - name: Setup Shopware
+        uses: shopware/setup-shopware@main
+        with:
+          shopware-version: ${{ matrix.shopware }}
+          php-version: ${{ matrix.php }}
+          php-extensions: pcov
+          install: true
+
+      - name: Info
+        run: |
+          php bin/console -V
+          mysql -V
+          php -v
+
+      - name: Checkout
+        uses: actions/checkout@v3
+        with:
+          path: ${{ github.workspace }}/custom/plugins/${{ env.PLUGIN_NAME }}
+
+      - name: Run Tests
+        working-directory: ${{ github.workspace }}/custom/plugins/${{ env.PLUGIN_NAME }}
+        run: |
+          cd ${{ github.workspace }} && composer require frosh/tools
+          php -d pcov.enabled=1 ${{ github.workspace }}/vendor/bin/phpunit --coverage-clover clover.xml --testsuite Unit
+
+      - uses: codecov/codecov-action@v3
+        if: matrix.shopware == 'trunk'
+        env:
+          CODECOV_TOKEN: ${{ secrets.CODECOV_TOKEN }}
+        with:
+          files: ./clover.xml
+          root_dir: ${{ github.workspace }}/custom/plugins/${{ env.PLUGIN_NAME }}
+          working-directory: ${{ github.workspace }}/custom/plugins/${{ env.PLUGIN_NAME }}

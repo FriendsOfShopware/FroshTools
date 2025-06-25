@@ -8,13 +8,21 @@ use Frosh\Tools\Components\Health\Checker\CheckerInterface;
 use Frosh\Tools\Components\Health\HealthCollection;
 use Frosh\Tools\Components\Health\SettingsResult;
 use Shopware\Core\DevOps\Environment\EnvironmentHelper;
+use Symfony\Component\DependencyInjection\Attribute\Autowire;
 
 class DisableAppUrlExternalCheckChecker implements PerformanceCheckerInterface, CheckerInterface
 {
+
+    public function __construct(
+        #[Autowire('%env(default::bool:APP_URL_CHECK_DISABLED)%')]
+        private readonly ?bool $appUrlCheckDisabled,
+    )
+    {
+    }
+
     public function collect(HealthCollection $collection): void
     {
-        $appUrlCheckDisabled = (bool) EnvironmentHelper::getVariable('APP_URL_CHECK_DISABLED', false);
-        if (!$appUrlCheckDisabled) {
+        if (!$this->appUrlCheckDisabled) {
             $collection->add(
                 SettingsResult::warning(
                     'app-url-check-disabled',

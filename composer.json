@@ -9,6 +9,11 @@
             "Frosh\\Tools\\": "src/"
         }
     },
+    "autoload-dev": {
+        "psr-4": {
+            "Frosh\\Tools\\Tests\\": "tests/"
+        }
+    },
     "authors": [
         {
             "name": "FriendsOfShopware",
@@ -38,7 +43,8 @@
         "shopware/core": "~6.6.0 || ~6.7.0"
     },
     "require-dev": {
-        "shopware/elasticsearch": "~6.6.0 || ~6.7.0"
+        "shopware/elasticsearch": "~6.6.0 || ~6.7.0",
+        "phpunit/phpunit": "*"
     },
     "config": {
         "allow-plugins": {
@@ -47,6 +53,7 @@
     },
     "scripts": {
         "format": "docker run --rm -v $(pwd):/ext shopware/shopware-cli:latest extension format /ext",
-        "check": "docker run --rm -v $(pwd):/ext shopware/shopware-cli:latest extension validate --full /ext"
+        "check": "docker run --rm -v $(pwd):/ext shopware/shopware-cli:latest extension validate --full /ext",
+        "phpunit": "../../../vendor/bin/phpunit -c phpunit.xml.dist"
     }
 }

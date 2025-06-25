@@ -6,107 +6,119 @@ namespace Frosh\Tools\Components\Health\Checker\PerformanceChecker;
 
 use Frosh\Tools\Components\Health\Checker\CheckerInterface;
 use Frosh\Tools\Components\Health\HealthCollection;
+use Frosh\Tools\Components\Health\IniReader;
 use Frosh\Tools\Components\Health\SettingsResult;
+use Frosh\Tools\Components\Health\UnexpectedIniValueException;
 
 class PhpSettingsChecker implements PerformanceCheckerInterface, CheckerInterface
 {
-    public function collect(HealthCollection $collection): void
+
+    private const DOCS_URL = 'https://developer.shopware.com/docs/guides/hosting/performance/performance-tweaks#php-config-tweaks';
+
+    public function __construct(
+        private readonly IniReader $iniReader
+    )
     {
-        $url = 'https://developer.shopware.com/docs/guides/hosting/performance/performance-tweaks#php-config-tweaks';
-        $this->checkAssertActive($collection, $url);
-        $this->checkEnableFileOverride($collection, $url);
-        $this->checkInternedStringsBuffer($collection, $url);
-        $this->checkZendDetectUnicode($collection, $url);
-        $this->checkRealpathCacheTtl($collection, $url);
     }
 
-    private function checkAssertActive(HealthCollection $collection, string $url): void
+    public function collect(HealthCollection $collection): void
     {
-        $currentValue = $this->iniGetFailover('zend.assertions');
-        if ($currentValue !== '-1') {
+        $this->checkAssertActive($collection);
+        $this->checkEnableFileOverride($collection);
+        $this->checkInternedStringsBuffer($collection);
+        $this->checkZendDetectUnicode($collection);
+        $this->checkRealpathCacheTtl($collection);
+    }
+
+    public function checkAssertActive(HealthCollection $collection): void
+    {
+        try {
+            $currentValue = $this->iniReader->getInt('zend.assertions');
+        } catch (UnexpectedIniValueException $e) {
+            $currentValue = $e->getActualValue();
+        }
+        if ($currentValue !== -1) {
             $collection->add(
                 SettingsResult::warning(
                     'zend.assertions',
                     'PHP value zend.assertions',
-                    $currentValue,
+                    (string) $currentValue,
                     '-1',
-                    $url,
+                    self::DOCS_URL,
                 ),
             );
         }
     }
 
-    private function checkEnableFileOverride(HealthCollection $collection, string $url): void
+    public function checkEnableFileOverride(HealthCollection $collection): void
     {
-        $currentValue = $this->iniGetFailover('opcache.enable_file_override');
-        if (!\filter_var($currentValue, \FILTER_VALIDATE_BOOL)) {
+        $opcacheFileOverrideEnabled = $this->iniReader->getBoolean('opcache.enable_file_override');
+        if (!$opcacheFileOverrideEnabled) {
             $collection->add(
                 SettingsResult::warning(
                     'php.opcache.enable_file_override',
                     'PHP value opcache.enable_file_override',
-                    $currentValue,
+                    (string) $opcacheFileOverrideEnabled,
                     '1',
-                    $url,
+                    self::DOCS_URL,
                 ),
             );
         }
     }
 
-    private function checkInternedStringsBuffer(HealthCollection $collection, string $url): void
+    public function checkInternedStringsBuffer(HealthCollection $collection): void
     {
-        $currentValue = $this->iniGetFailover('opcache.interned_strings_buffer');
-        if ((int) $currentValue < 20) {
+        try {
+            $currentValue = $this->iniReader->getInt('opcache.interned_strings_buffer');
+        } catch (UnexpectedIniValueException) {
+            $currentValue = null;
+        }
+        if ($currentValue === null || $currentValue < 20) {
             $collection->add(
                 SettingsResult::warning(
                     'php.opcache.interned_strings_buffer',
                     'PHP value opcache.interned_strings_buffer',
-                    $currentValue,
+                    (string) $currentValue,
                     'min 20',
-                    $url,
+                    self::DOCS_URL,
                 ),
             );
         }
     }
 
-    private function checkZendDetectUnicode(HealthCollection $collection, string $url): void
+    public function checkZendDetectUnicode(HealthCollection $collection): void
     {
-        $currentValue = $this->iniGetFailover('zend.detect_unicode');
-        if (\filter_var($currentValue, \FILTER_VALIDATE_BOOL)) {
+        $currentValue = $this->iniReader->getBoolean('zend.detect_unicode', true);
+        if ($currentValue) {
             $collection->add(
                 SettingsResult::warning(
                     'php.zend.detect_unicode',
                     'PHP value zend.detect_unicode',
-                    $currentValue,
+                    (string) $currentValue,
                     '0',
-                    $url,
+                    self::DOCS_URL,
                 ),
             );
         }
     }
 
-    private function checkRealpathCacheTtl(HealthCollection $collection, string $url): void
+    public function checkRealpathCacheTtl(HealthCollection $collection): void
     {
-        $currentValue = $this->iniGetFailover('realpath_cache_ttl');
-        if ((int) $currentValue < 3600) {
+        try {
+            $currentValue = $this->iniReader->getInt('realpath_cache_ttl');
+        } catch (UnexpectedIniValueException) {
+            $currentValue = null;
+        }
+        if ($currentValue === null || $currentValue < 3600) {
             $collection->add(
                 SettingsResult::warning(
                     'php.zend.realpath_cache_ttl',
                     'PHP value realpath_cache_ttl',
-                    $currentValue,
+                    (string) $currentValue,
                     'min 3600',
-                    $url,
+                    self::DOCS_URL,
                 ),
             );
         }
-    }
-
-    private function iniGetFailover(string $option): string
-    {
-        $currentValue = \ini_get($option);
-        if (\is_string($currentValue)) {
-            return $currentValue;
-        }
-
-        return 'not set';
     }
 }
