@@ -29,6 +29,11 @@ class FineGrainedCachingChecker implements PerformanceCheckerInterface, CheckerI
             return;
         }
 
+        // Fine-grained caching was removed in 6.7.0.0
+        if (\version_compare($this->shopwareVersion, '6.7.0.0', '>=')) {
+            return;
+        }
+
         if ($this->cacheTaggingEachConfig || $this->cacheTaggingEachSnippet || $this->cacheTaggingEachThemeConfig) {
             $collection->add(
                 // only info, because it only affects redis, varnish etc.
