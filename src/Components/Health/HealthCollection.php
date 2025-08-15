@@ -31,7 +31,7 @@ class HealthCollection extends Collection
     public function removeByIds(array $ids): void
     {
         $this->elements = array_filter($this->elements, static function (SettingsResult $result) use ($ids) {
-            return !in_array($result->id, $ids, true);
+            return !\in_array($result->id, $ids, true);
         });
     }
 
