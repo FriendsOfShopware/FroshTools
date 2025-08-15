@@ -44,8 +44,8 @@ class FroshToolsExtension extends Extension
             $container->setParameter('frosh_tools.file_checker.exclude_files', []);
         }
 
-        if (!$container->hasParameter('frosh_tools.system_config')) {
-            $container->setParameter('frosh_tools.system_config', []);
+        if (!$container->hasParameter('frosh_tools.checker.disabled_checks')) {
+            $container->setParameter('frosh_tools.checker.disabled_checks', []);
         }
     }
 }
