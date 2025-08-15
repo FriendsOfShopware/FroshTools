@@ -16,6 +16,14 @@ class Configuration implements ConfigurationInterface
         $rootNode = $treeBuilder->getRootNode();
         $rootNode
             ->children()
+                ->arrayNode('checker')
+                    ->children()
+                        ->arrayNode('disabled_checks')
+                            ->scalarPrototype()
+                            ->end()
+                        ->end()
+                    ->end()
+                ->end()
                 ->arrayNode('file_checker')
                     ->children()
                         ->arrayNode('exclude_files')

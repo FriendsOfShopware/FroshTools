@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Frosh\Tools\Components\Health;
 
+use Shopware\Core\DevOps\Environment\EnvironmentHelper;
 use Shopware\Core\Framework\Struct\Collection;
 
 /**
@@ -22,6 +23,16 @@ class HealthCollection extends Collection
     {
         $this->sort(static function (SettingsResult $a, SettingsResult $b) {
             return (self::STATE_PRIORITY[$a->state] ?? -1) <=> (self::STATE_PRIORITY[$b->state] ?? -1);
+        });
+    }
+
+    /**
+     * @param array<string> $ids
+     */
+    public function removeByIds(array $ids): void
+    {
+        $this->elements = array_filter($this->elements, static function (SettingsResult $result) use ($ids) {
+            return !in_array($result->id, $ids, true);
         });
     }
 

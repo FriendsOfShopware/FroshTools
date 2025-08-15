@@ -21,7 +21,7 @@ class SettingsResult extends Struct
 
     public ?string $url = null;
 
-    protected string $id;
+    public string $id;
 
     protected string $snippet;
 
