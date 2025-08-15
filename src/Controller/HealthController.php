@@ -28,7 +28,7 @@ class HealthController extends AbstractController
         #[AutowireIterator('frosh_tools.performance_checker')]
         private readonly iterable $performanceCheckers,
         private readonly CacheInterface $cacheObject,
-        #[Autowire(param:'frosh_tools.checker.disabled_checks')]
+        #[Autowire(param: 'frosh_tools.checker.disabled_checks')]
         private readonly array $ignoredChecks
     ) {
     }
