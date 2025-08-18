@@ -69,6 +69,36 @@ bin/console frosh:composer-plugin:update
 bin/console frosh:monitor <sales-channel-id>
 ```
 
+### `frosh:es:delete-unused-indices` - Delete unused Elasticsearch indices
+```bash
+bin/console frosh:es:delete-unused-indices
+```
+
+### `frosh:extension:checksum:check` - Check extension file integrity
+```bash
+bin/console frosh:extension:checksum:check [extension-name]
+```
+
+### `frosh:extension:checksum:create` - Create extension checksums
+```bash
+bin/console frosh:extension:checksum:create [extension-name]
+```
+
+### `frosh:redis-namespace:cleanup` - Clean up Redis namespaces (experimental)
+```bash
+bin/console frosh:redis-namespace:cleanup [--dry-run]
+```
+
+### `frosh:redis-namespace:list` - List Redis namespaces (experimental)
+```bash
+bin/console frosh:redis-namespace:list
+```
+
+### `frosh:redis-tag:cleanup` - Clean up Redis tags
+```bash
+bin/console frosh:redis-tag:cleanup
+```
+
 ## Suppress files from being restorable in FileChecker
 
 ```yaml
