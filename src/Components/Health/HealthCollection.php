@@ -25,6 +25,16 @@ class HealthCollection extends Collection
         });
     }
 
+    /**
+     * @param array<string> $ids
+     */
+    public function removeByIds(array $ids): void
+    {
+        $this->elements = array_filter($this->elements, static function (SettingsResult $result) use ($ids) {
+            return !\in_array($result->id, $ids, true);
+        });
+    }
+
     protected function getExpectedClass(): ?string
     {
         return SettingsResult::class;
