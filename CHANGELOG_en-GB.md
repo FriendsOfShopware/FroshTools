@@ -1,0 +1,10 @@
+# 3.2.0
+- [chore: prepare release 3.2.0](https://github.com/FriendsOfShopware/FroshTools/commit/c51dbec)
+- [feat: allow skipping checks (#362)](https://github.com/FriendsOfShopware/FroshTools/commit/46cb187)
+- [add: missing commands (#363)](https://github.com/FriendsOfShopware/FroshTools/commit/15144e7)
+- [chore: fix codestyle](https://github.com/FriendsOfShopware/FroshTools/commit/a6ffd61)
+- [Skip fix cache ID performance check from 6.7.0.0 (#361)](https://github.com/FriendsOfShopware/FroshTools/commit/fbe519b)
+- [fix: Skip `sql_set_default_session_variables` for Shopware >= 6.7](https://github.com/FriendsOfShopware/FroshTools/commit/470b00f)
+- [Skip `fine-grained-caching` check for >= 6.7 (#357)](https://github.com/FriendsOfShopware/FroshTools/commit/7e26db3)
+- [style: fix issues reported by linter](https://github.com/FriendsOfShopware/FroshTools/commit/be5b264)
+- [feat: add frosh:es:delete-unused-indices](https://github.com/FriendsOfShopware/FroshTools/commit/095539b)
