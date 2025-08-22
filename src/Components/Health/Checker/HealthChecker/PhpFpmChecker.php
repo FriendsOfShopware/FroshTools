@@ -52,7 +52,7 @@ class PhpFpmChecker implements HealthCheckerInterface, CheckerInterface
         );
 
         if ($listenQueue > 0) {
-            $status->state = SettingsResult::WARNING;
+            $status->state = SettingsResult::INFO;
         }
 
         $collection->add($status);
