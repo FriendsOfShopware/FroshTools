@@ -35,7 +35,7 @@ class PhpFpmChecker implements HealthCheckerInterface, CheckerInterface
         }
 
         $this->checkListenQueue($fpmStatus, $collection);
-        $this->checkMaxChildren($fpmStatus, $collection);
+        $this->checkMaxChildrenReached($fpmStatus, $collection);
         $this->checkMemoryPeak($fpmStatus, $collection);
     }
 
@@ -58,20 +58,20 @@ class PhpFpmChecker implements HealthCheckerInterface, CheckerInterface
         $collection->add($status);
     }
 
-    private function checkMaxChildren(array $fpmStatus, HealthCollection $collection): void
+    private function checkMaxChildrenReached(array $fpmStatus, HealthCollection $collection): void
     {
-        $maxChildrenReached = (bool) ($fpmStatus['max-children-reached'] ?? false);
+        $maxChildrenReached = (int) $fpmStatus['max-children-reached'];
 
         $status = SettingsResult::ok(
             'php-fpm-max-children-reached',
             'PHP FPM max children reached',
-            $maxChildrenReached ? 'yes' : 'no',
-            'no',
+            (string) $maxChildrenReached,
+            '0',
             'https://www.php.net/manual/en/fpm.status.php#:~:text=max%20children%20reached'
         );
 
-        if ($maxChildrenReached) {
-            $status->state = SettingsResult::WARNING;
+        if ($maxChildrenReached > 0) {
+            $status->state = SettingsResult::INFO;
         }
 
         $collection->add($status);
