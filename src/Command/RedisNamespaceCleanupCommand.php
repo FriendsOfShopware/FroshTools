@@ -69,12 +69,15 @@ class RedisNamespaceCleanupCommand extends Command
                 $namespace = substr($key, 0, 10);
 
                 if (!isset($namespaces[$namespace])) {
-                    $namespaces[$namespace] = 0;
+                    $namespaces[$namespace] = [
+                        'count' => 0,
+                        'isActive' => $this->isActiveNamespace($namespace, $activeNamespaces)
+                    ];
                 }
-                ++$namespaces[$namespace];
+                ++$namespaces[$namespace]['count'];
 
                 // Track keys that are not in the active namespace
-                if (!\in_array($namespace, $activeNamespaces, true)) {
+                if (!$namespaces[$namespace]['isActive']) {
                     $keysToDelete[] = $key;
                 }
             }
@@ -82,9 +85,9 @@ class RedisNamespaceCleanupCommand extends Command
 
         // Display namespace summary
         $tableData = [];
-        foreach ($namespaces as $namespace => $count) {
-            $status = \in_array($namespace, $activeNamespaces, true) ? 'KEEP' : 'DELETE';
-            $tableData[] = [$namespace, $count, $status];
+        foreach ($namespaces as $namespace => $data) {
+            $status = $data['isActive'] ? 'KEEP' : 'DELETE';
+            $tableData[] = [$namespace, $data['count'], $status];
         }
 
         usort($tableData, function ($a, $b) {
@@ -131,5 +134,16 @@ class RedisNamespaceCleanupCommand extends Command
         }
 
         return Command::SUCCESS;
+    }
+
+    private function isActiveNamespace(string $prefix, array $activeNamespaces): bool
+    {
+        foreach ($activeNamespaces as $activeNamespace) {
+            if (str_starts_with($activeNamespace, $prefix)) {
+                return true;
+            }
+        }
+
+        return false;
     }
 }
