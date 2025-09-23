@@ -41,9 +41,13 @@ The current feature set consists of:
 
 ### Packagist
     composer require frosh/tools
+    bin/console plugin:refresh
+    bin/console plugin:install --activate FroshTools
 
 ### Store (Bearer token required from packages.shopware.com)
     composer require store.shopware.com/froshtools
+    bin/console plugin:refresh
+    bin/console plugin:install --activate FroshTools
 
 ## Commands
 
