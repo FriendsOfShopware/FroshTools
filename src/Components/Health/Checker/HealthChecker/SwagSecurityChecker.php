@@ -25,7 +25,6 @@ class SwagSecurityChecker implements HealthCheckerInterface, CheckerInterface
         #[Autowire(param: 'kernel.shopware_version')]
         private readonly string $shopwareVersion,
         private readonly CacheInterface $cacheObject,
-        #[Autowire(lazy: true)]
         private readonly HttpClientInterface $httpClient,
     ) {
     }
