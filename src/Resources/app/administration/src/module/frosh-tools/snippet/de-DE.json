@@ -65,7 +65,7 @@
             "extensionFiles": {
                 "title": "Erweiterung Dateien Checker",
                 "allFilesOk": "Keine Erweiterung wurden manipuliert.",
-                "notOk": "Es gibt Fehler oder manipulierte Erweiterungen",
+                "notOk": "Es gibt Fehler oder manipulierte Erweiterungen. JS, CSS oder Snippet Dateien können durch Deployment-Skripte verändert worden sein, ohne dass dies ein Problem darstellt.",
                 "wrongExtensionVersion": "Die Checksummen-Datei wurde für eine andere Erweiterungsversion erzeugt.",
                 "checkFailed": "Das oder konnte nicht geprüft werden. Bitte prüfe die Logs.",
                 "newFiles": "Neue Dateien",
