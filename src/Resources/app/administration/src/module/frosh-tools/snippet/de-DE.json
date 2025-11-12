@@ -50,6 +50,15 @@
                     "output": "Ausgabe"
                 }
             },
+            "feature-flags": {
+                "title": "Feature Flags",
+                "flag": "Feature Flag",
+                "description": "Beschreibung",
+                "major": "Major",
+                "default": "Default",
+                "deactivate": "Deaktivieren",
+                "activate": "Aktivieren"
+            },
             "files": {
                 "title": "Shopware Dateien Checker",
                 "allFilesOk": "Alle Dateien entsprechen den Originalen, es wurden keine Manipulationen erkannt",

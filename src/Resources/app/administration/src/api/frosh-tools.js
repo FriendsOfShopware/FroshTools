@@ -219,6 +219,31 @@ class FroshTools extends ApiService {
             });
     }
 
+    getFeatureFlags() {
+        const apiRoute = `${this.getApiBasePath()}/feature-flag/list`;
+        return this.httpClient.get(
+            apiRoute,
+            {
+                headers: this.getBasicHeaders()
+            }
+        ).then((response) => {
+            return ApiService.handleResponse(response);
+        });
+    }
+
+    toggleFeatureFlag(flag) {
+        const apiRoute = `${this.getApiBasePath()}/feature-flag/toggle`;
+        return this.httpClient.post(
+            apiRoute,
+            { flag },
+            {
+                headers: this.getBasicHeaders()
+            }
+        ).then((response) => {
+            return ApiService.handleResponse(response);
+        });
+    }
+
     stateMachines(id) {
         const apiRoute = `${this.getApiBasePath()}/state-machines/load/${id}`;
         return this.httpClient

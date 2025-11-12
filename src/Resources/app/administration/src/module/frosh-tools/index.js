@@ -3,6 +3,7 @@ import './component/frosh-tools-tab-cache';
 import './component/frosh-tools-tab-queue';
 import './component/frosh-tools-tab-scheduled';
 import './component/frosh-tools-tab-elasticsearch';
+import './component/frosh-tools-tab-feature-flags';
 import './component/frosh-tools-tab-logs';
 import './component/frosh-tools-tab-state-machines';
 import './component/frosh-tools-tab-files';
@@ -62,6 +63,14 @@ Shopware.Module.register('frosh-tools', {
                         privilege: 'frosh_tools:read',
                         parentPath: 'sw.settings.index.plugins',
                     },
+                },
+                featureflags: {
+                    component: 'frosh-tools-tab-feature-flags',
+                    path: 'feature-flags',
+                    meta: {
+                        privilege: 'frosh_tools:read',
+                        parentPath: 'frosh.tools.index.index'
+                    }
                 },
                 logs: {
                     component: 'frosh-tools-tab-logs',
