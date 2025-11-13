@@ -8,15 +8,13 @@ Component.register('frosh-tools-tab-feature-flags', {
 
     inject: ['froshToolsService'],
 
-    mixins: [
-        Mixin.getByName('notification')
-    ],
+    mixins: [Mixin.getByName('notification')],
 
     data() {
         return {
             featureFlags: null,
             isLoading: true,
-        }
+        };
     },
 
     created() {
@@ -65,25 +63,5 @@ Component.register('frosh-tools-tab-feature-flags', {
             this.featureFlags = await this.froshToolsService.getFeatureFlags();
             this.isLoading = false;
         },
-
-        async toggle(flag) {
-            this.isLoading = true;
-            await this.froshToolsService.toggleFeatureFlag(flag)
-                .then(async () => {
-                    this.featureFlags = await this.froshToolsService.getFeatureFlags();
-                    window.location.reload();
-                })
-                .catch((error) => {
-                    try {
-                        this.createNotificationError({
-                            message: error.response.data.errors[0].detail
-                        });
-                    }
-                    catch (e) {
-                        console.error(error);
-                    }
-                    this.isLoading = false;
-                });
-        }
-    }
+    },
 });

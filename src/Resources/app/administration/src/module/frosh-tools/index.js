@@ -69,8 +69,8 @@ Shopware.Module.register('frosh-tools', {
                     path: 'feature-flags',
                     meta: {
                         privilege: 'frosh_tools:read',
-                        parentPath: 'frosh.tools.index.index'
-                    }
+                        parentPath: 'frosh.tools.index.index',
+                    },
                 },
                 logs: {
                     component: 'frosh-tools-tab-logs',

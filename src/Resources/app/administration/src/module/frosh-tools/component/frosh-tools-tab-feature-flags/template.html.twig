@@ -5,7 +5,6 @@
         :isLoading="isLoading"
         :large="true"
     >
-
         <template #toolbar>
             <!-- @todo: Make the refresh button fancy -->
             <sw-button
@@ -20,11 +19,11 @@
                 ></sw-icon>
             </sw-button>
         </template>
-
         <sw-data-grid
             :showSelection="false"
             :dataSource="featureFlags"
             :columns="columns"
+            :showActions="false"
         >
             <template #column-active="{ item }">
                 <sw-icon
@@ -69,17 +68,6 @@
                     name="regular-plus-xs"
                     small
                 />
-            </template>
-
-            <template #actions="{ item }">
-                <sw-context-menu-item variant="danger" @click="toggle(item.flag)">
-                    <template v-if="item.active">
-                        {{ $tc('frosh-tools.tabs.feature-flags.deactivate') }}
-                    </template>
-                    <template v-else>
-                        {{ $tc('frosh-tools.tabs.feature-flags.activate') }}
-                    </template>
-                </sw-context-menu-item>
             </template>
         </sw-data-grid>
     </sw-card>
