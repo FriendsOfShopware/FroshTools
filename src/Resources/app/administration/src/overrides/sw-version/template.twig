@@ -1,27 +1,26 @@
 {% block sw_version_status %}
-<router-link
-    v-if="hasPermission"
-    :to="{ name: 'frosh.tools.index.index' }"
-    class="sw-version__status has-permission"
-    v-tooltip="{
+    <router-link
+        v-if="hasPermission"
+        :to="{ name: 'frosh.tools.index.index' }"
+        class="sw-version__status has-permission"
+        v-tooltip="{
             showDelay: 300,
             message: healthPlaceholder
         }"
->
-    {% block sw_version_status_badge %}
-    <sw-color-badge
-        v-if="health && hasPermission"
-        :variant="healthVariant"
-        :rounded="true"
-    ></sw-color-badge>
+    >
+        {% block sw_version_status_badge %}
+        <sw-color-badge
+            v-if="health && hasPermission"
+            :variant="healthVariant"
+            :rounded="true"
+        ></sw-color-badge>
+        <template v-else>
+                {% parent %}
+            </template>
+        {% endblock %}
+    </router-link>
 
     <template v-else>
-        {% parent() %}
+        {% parent %}
     </template>
-    {% endblock %}
-</router-link>
-
-<template v-else>
-    {% parent() %}
-</template>
 {% endblock %}
