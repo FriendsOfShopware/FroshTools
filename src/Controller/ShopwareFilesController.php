@@ -47,7 +47,6 @@ class ShopwareFilesController extends AbstractController
         private readonly LoggerInterface $froshToolsLogger,
         private readonly EntityRepository $userRepository,
         private readonly EntityRepository $integrationRepository,
-        #[Autowire(lazy: true)]
         private readonly HttpClientInterface $httpClient,
     ) {
         $this->isPlatform = !is_dir($this->projectDir . '/vendor/shopware/core') && is_dir($this->projectDir . '/src/Core');
