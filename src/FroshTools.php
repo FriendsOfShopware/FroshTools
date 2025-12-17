@@ -28,7 +28,7 @@ class FroshTools extends Plugin
         }
 
         $base = log($size) / log(1024);
-        $suffix = ['', 'k', 'M', 'G', 'T'][floor($base)];
+        $suffix = ['', 'k', 'M', 'G', 'T'][(int) floor($base)];
 
         return round(1024 ** ($base - floor($base)), 2) . $suffix;
     }
