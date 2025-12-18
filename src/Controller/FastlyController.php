@@ -35,7 +35,7 @@ class FastlyController extends AbstractController
     #[Route(path: '/statistics', name: 'api.frosh.tools.fastly.statistics', methods: ['GET'])]
     public function statistics(Request $request): JsonResponse
     {
-        if (!$this->isFastlyEnabled()) {
+        if (!$this->client || !$this->isFastlyEnabled()) {
             return new JsonResponse(['message' => 'Fastly is not enabled'], Response::HTTP_BAD_REQUEST);
         }
 
@@ -87,7 +87,7 @@ class FastlyController extends AbstractController
     #[Route(path: '/snippets', name: 'api.frosh.tools.fastly.snippets', methods: ['GET'])]
     public function snippets(): JsonResponse
     {
-        if (!$this->isFastlyEnabled()) {
+        if (!$this->client || !$this->isFastlyEnabled()) {
             return new JsonResponse(['message' => 'Fastly is not enabled'], Response::HTTP_BAD_REQUEST);
         }
 
@@ -125,7 +125,7 @@ class FastlyController extends AbstractController
     #[Route(path: '/purge', name: 'api.frosh.tools.fastly.purge', methods: ['POST'])]
     public function purge(Request $request): JsonResponse
     {
-        if (!$this->isFastlyEnabled()) {
+        if (!$this->reverseProxyGateway || !$this->isFastlyEnabled()) {
             return new JsonResponse(['message' => 'Fastly is not enabled'], Response::HTTP_BAD_REQUEST);
         }
 
@@ -143,7 +143,7 @@ class FastlyController extends AbstractController
     #[Route(path: '/purge-all', name: 'api.frosh.tools.fastly.purge_all', methods: ['POST'])]
     public function purgeAll(): JsonResponse
     {
-        if (!$this->isFastlyEnabled()) {
+        if (!$this->reverseProxyGateway || !$this->isFastlyEnabled()) {
             return new JsonResponse(['message' => 'Fastly is not enabled'], Response::HTTP_BAD_REQUEST);
         }
 
