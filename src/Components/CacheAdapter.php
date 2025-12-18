@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace Frosh\Tools\Components;
 
-use Shopware\Core\Framework\Adapter\Cache\CacheDecorator;
 use Symfony\Component\Cache\Adapter\AdapterInterface;
 use Symfony\Component\Cache\Adapter\ApcuAdapter;
 use Symfony\Component\Cache\Adapter\ArrayAdapter;
@@ -136,14 +135,6 @@ class CacheAdapter
 
     private function getCacheAdapter(AdapterInterface $adapter): AdapterInterface
     {
-        if ($adapter instanceof CacheDecorator) {
-            // Do not declare function as static
-            // @phpstan-ignore-next-line
-            $func = \Closure::bind(fn () => $adapter->decorated, $adapter, $adapter::class);
-
-            return $this->getCacheAdapter($func());
-        }
-
         if ($adapter instanceof TagAwareAdapter || $adapter instanceof TraceableAdapter) {
             // Do not declare function as static
             $func = \Closure::bind(fn () => $adapter->pool, $adapter, $adapter::class);

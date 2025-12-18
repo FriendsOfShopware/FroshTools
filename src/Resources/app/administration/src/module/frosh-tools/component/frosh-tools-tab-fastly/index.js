@@ -121,7 +121,7 @@ Component.register('frosh-tools-tab-fastly', {
                 this.createNotificationSuccess({
                     message: this.$t('frosh-tools.tabs.fastly.purgeAllSuccess'),
                 });
-            } catch (e) {
+            } catch {
                 this.createNotificationError({
                     message: this.$t('frosh-tools.tabs.fastly.purgeAllError'),
                 });
@@ -140,7 +140,7 @@ Component.register('frosh-tools-tab-fastly', {
                     message: this.$t('frosh-tools.tabs.fastly.purgeSuccess'),
                 });
                 this.purgePath = '';
-            } catch (e) {
+            } catch {
                 this.createNotificationError({
                     message: this.$t('frosh-tools.tabs.fastly.purgeError'),
                 });
