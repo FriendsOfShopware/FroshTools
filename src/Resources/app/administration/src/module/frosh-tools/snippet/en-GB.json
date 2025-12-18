@@ -65,7 +65,7 @@
             "extensionFiles": {
                 "title": "Extension File Checker",
                 "allFilesOk": "No extensions were modified.",
-                "notOk": "There are errors or modified extensions.",
+                "notOk": "There are errors or modified extensions. JS, CSS, or snippet files may have been modified by deployment scripts without this posing a problem.",
                 "wrongExtensionVersion": "The checksum file was created for a different extension version.",
                 "checkFailed": "The extension could not be checked. Please check the logs.",
                 "newFiles": "New files",

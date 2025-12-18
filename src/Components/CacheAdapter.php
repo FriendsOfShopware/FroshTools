@@ -136,7 +136,7 @@ class CacheAdapter
 
     private function getCacheAdapter(AdapterInterface $adapter): AdapterInterface
     {
-        if ($adapter instanceof CacheDecorator) {
+        if (class_exists('Shopware\Core\Framework\Adapter\Cache\CacheDecorator') && $adapter instanceof CacheDecorator) {
             // Do not declare function as static
             // @phpstan-ignore-next-line
             $func = \Closure::bind(fn () => $adapter->decorated, $adapter, $adapter::class);
