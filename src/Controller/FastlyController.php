@@ -131,7 +131,7 @@ class FastlyController extends AbstractController
 
         $path = $request->request->get('path');
 
-        if (!is_string($path) || empty($path)) {
+        if (!\is_string($path) || empty($path)) {
             return new JsonResponse(['message' => 'Path is required'], Response::HTTP_BAD_REQUEST);
         }
 
