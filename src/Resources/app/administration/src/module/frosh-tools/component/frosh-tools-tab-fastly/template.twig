@@ -98,7 +98,6 @@
                 <sw-button
                     variant="primary"
                     @click="onPurge"
-                    style="margin-top: 30px"
                 >
                     {{ $t('frosh-tools.tabs.fastly.purge') }}
                 </sw-button>
@@ -115,7 +114,7 @@
         <sw-data-grid
             :dataSource="snippets"
             :columns="snippetColumns"
-            :showselection="false"
+            :showSelection="false"
         >
             <template #actions="{ item }">
                 <sw-context-menu-item @click="activeSnippet = item">
