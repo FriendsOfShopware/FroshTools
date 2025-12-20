@@ -73,6 +73,10 @@ class CacheHelper
 
     private static function getSizeFallback(string $path): int
     {
+        if (!is_dir($path)) {
+            return 0;
+        }
+
         $dirIterator = new \RecursiveDirectoryIterator($path, \RecursiveDirectoryIterator::SKIP_DOTS | \FilesystemIterator::SKIP_DOTS);
         $iterator = new \RecursiveIteratorIterator(
             $dirIterator,
