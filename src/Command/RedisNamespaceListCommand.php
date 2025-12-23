@@ -37,6 +37,7 @@ class RedisNamespaceListCommand extends Command
 
         $activeNamespaces = $this->cacheRegistry->getActiveNamespaces();
         $io->title('Redis Key Groupping by Namespace');
+        $io->writeln(\sprintf('Active namespaces: <info>%s</info>', implode(', ', $activeNamespaces)));
 
         // Group keys by first 10 characters
         $keyGroups = [];
@@ -66,13 +67,15 @@ class RedisNamespaceListCommand extends Command
         // Display results in a table
         $tableData = [];
         foreach ($keyGroups as $prefix => $count) {
-            $tableData[] = [$prefix, $count, \sprintf('%.1f%%', ($count / $totalKeys) * 100), \in_array($prefix, $activeNamespaces, true) ? 'Yes' : 'No'];
+            $isActive = $this->isActiveNamespace($prefix, $activeNamespaces);
+            $tableData[] = [$prefix, $count, \sprintf('%.1f%%', ($count / $totalKeys) * 100), $isActive ? 'Yes' : 'No'];
         }
 
         usort($tableData, function ($a, $b) {
             return $b[0] <=> $a[0];
         });
 
+        $io->section('Namespace Summary');
         $io->table(
             ['Prefix', 'Count', 'Percentage', 'Active'],
             $tableData
@@ -81,5 +84,16 @@ class RedisNamespaceListCommand extends Command
         $io->success(\sprintf('Total keys analyzed: %d', $totalKeys));
 
         return Command::SUCCESS;
+    }
+
+    private function isActiveNamespace(string $prefix, array $activeNamespaces): bool
+    {
+        foreach ($activeNamespaces as $activeNamespace) {
+            if (str_starts_with($activeNamespace, $prefix)) {
+                return true;
+            }
+        }
+
+        return false;
     }
 }
