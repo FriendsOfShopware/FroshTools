@@ -13,7 +13,6 @@ Component.register('frosh-tools-tab-cache', {
     data() {
         return {
             cacheInfo: null,
-            interfaceInfo: null,
             isLoading: true,
             numberFormater: null,
         };
@@ -71,8 +70,6 @@ Component.register('frosh-tools-tab-cache', {
         async createdComponent() {
             this.isLoading = true;
             this.cacheInfo = await this.froshToolsService.getCacheInfo();
-            this.interfaceInfo =
-                await this.froshToolsService.getInterfaceInfo();
             this.isLoading = false;
         },
 
@@ -118,6 +115,9 @@ Component.register('frosh-tools-tab-cache', {
         async clearOPcache() {
             this.isLoading = true;
             await this.froshToolsService.clearOPcache();
+            this.createNotificationSuccess({
+                message: this.$t('frosh-tools.clearedOpcache'),
+            });
             await this.createdComponent();
         },
     },

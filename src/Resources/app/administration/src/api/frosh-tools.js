@@ -16,17 +16,6 @@ class FroshTools extends ApiService {
             });
     }
 
-    getInterfaceInfo() {
-        const apiRoute = `${this.getApiBasePath()}/interface`;
-        return this.httpClient
-            .get(apiRoute, {
-                headers: this.getBasicHeaders(),
-            })
-            .then((response) => {
-                return ApiService.handleResponse(response);
-            });
-    }
-
     clearCache(folder) {
         const apiRoute = `${this.getApiBasePath()}/cache/${folder}`;
         return this.httpClient
@@ -202,6 +191,17 @@ class FroshTools extends ApiService {
             });
     }
 
+    getExtensionFiles() {
+        const apiRoute = `${this.getApiBasePath()}/extension-files`;
+        return this.httpClient
+            .get(apiRoute, {
+                headers: this.getBasicHeaders(),
+            })
+            .then((response) => {
+                return response;
+            });
+    }
+
     getFileContents(file) {
         const apiRoute = `${this.getApiBasePath()}/file-contents`;
         return this.httpClient
@@ -232,6 +232,70 @@ class FroshTools extends ApiService {
 
     stateMachines(id) {
         const apiRoute = `${this.getApiBasePath()}/state-machines/load/${id}`;
+        return this.httpClient
+            .get(apiRoute, {
+                headers: this.getBasicHeaders(),
+            })
+            .then((response) => {
+                return ApiService.handleResponse(response);
+            });
+    }
+
+    getFastlyStatus() {
+        const apiRoute = `${this.getApiBasePath()}/fastly/status`;
+        return this.httpClient
+            .get(apiRoute, {
+                headers: this.getBasicHeaders(),
+            })
+            .then((response) => {
+                return ApiService.handleResponse(response);
+            });
+    }
+
+    fastlyPurge(path) {
+        const apiRoute = `${this.getApiBasePath()}/fastly/purge`;
+        return this.httpClient
+            .post(
+                apiRoute,
+                { path },
+                {
+                    headers: this.getBasicHeaders(),
+                }
+            )
+            .then((response) => {
+                return ApiService.handleResponse(response);
+            });
+    }
+
+    fastlyPurgeAll() {
+        const apiRoute = `${this.getApiBasePath()}/fastly/purge-all`;
+        return this.httpClient
+            .post(
+                apiRoute,
+                {},
+                {
+                    headers: this.getBasicHeaders(),
+                }
+            )
+            .then((response) => {
+                return ApiService.handleResponse(response);
+            });
+    }
+
+    getFastlyStatistics(timeframe) {
+        const apiRoute = `${this.getApiBasePath()}/fastly/statistics`;
+        return this.httpClient
+            .get(apiRoute, {
+                headers: this.getBasicHeaders(),
+                params: { timeframe },
+            })
+            .then((response) => {
+                return ApiService.handleResponse(response);
+            });
+    }
+
+    getFastlySnippets() {
+        const apiRoute = `${this.getApiBasePath()}/fastly/snippets`;
         return this.httpClient
             .get(apiRoute, {
                 headers: this.getBasicHeaders(),

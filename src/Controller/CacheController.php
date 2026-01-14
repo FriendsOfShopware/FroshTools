@@ -72,18 +72,6 @@ class CacheController extends AbstractController
         return new JsonResponse($result);
     }
 
-    #[Route(path: '/interface', name: 'api.frosh.tools.cache.get_interface', methods: ['GET'])]
-    public function phpInterfaceInformation(): JsonResponse
-    {
-        $sapiName = \PHP_SAPI;
-
-        return new JsonResponse([
-            'isFPM' => \str_starts_with($sapiName, 'fpm'),
-            'isCLI' => \str_starts_with($sapiName, 'cli'),
-            'isCGI' => \str_starts_with($sapiName, 'cgi'),
-        ]);
-    }
-
     #[Route(path: '/cache/{folder}', name: 'api.frosh.tools.cache.clear', methods: ['DELETE'])]
     public function clearCache(string $folder): JsonResponse
     {

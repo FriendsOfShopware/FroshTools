@@ -84,6 +84,7 @@
     "compileTheme": "Compile theme",
     "themeCompiled": "Theme were compiled",
     "clearOpCache": "Clear OPcache",
+    "clearedOpcache": "OPcache has been cleared",
     "actions": "Actions",
     "scheduledTasks": "Scheduled Tasks",
     "interval": "Interval",
