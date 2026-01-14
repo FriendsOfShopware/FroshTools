@@ -79,6 +79,41 @@
                 "orderTitle": "Bestellstatus",
                 "transactionTitle": "Bezahlstatus",
                 "deliveryTitle": "Versandstatus"
+            },
+            "fastly": {
+                "title": "Fastly",
+                "statsTitle": "Fastly Statistiken",
+                "description": "Hier kannst du den Fastly Cache leeren. Dies ist entweder komplett möglich oder nur für eine bestimmte URL (Pfad).",
+                "purgeAll": "Kompletten Cache leeren",
+                "purgeAllSuccess": "Kompletter Fastly Cache wurde geleert",
+                "purgeAllError": "Konnte kompletten Fastly Cache nicht leeren",
+                "purge": "URL leeren",
+                "purgePathLabel": "URL / Pfad",
+                "purgeSuccess": "URL Cache wurde geleert",
+                "purgeError": "Konnte URL Cache nicht leeren",
+                "placeholderPath": "z.B. /mein-produkt",
+                "requests": "Anfragen",
+                "hitRate": "Hit Rate",
+                "bandwidth": "Bandbreite",
+                "hits": "Hits",
+                "snippets": {
+                    "title": "VCL Snippets",
+                    "name": "Name",
+                    "type": "Typ",
+                    "priority": "Priorität",
+                    "content": "Inhalt",
+                    "view": "Inhalt anzeigen"
+                },
+                "emptyStats": "Keine Statistiken verfügbar",
+                "timeframeLabel": "Zeitraum",
+                "timeframes": {
+                    "30m": "Letzte 30 Minuten",
+                    "1h": "Letzte Stunde",
+                    "2h": "Letzte 2 Stunden",
+                    "24h": "Letzte 24 Stunden",
+                    "7d": "Letzte 7 Tage",
+                    "30d": "Letzte 30 Tage"
+                }
             }
         },
         "clear": "Leeren",

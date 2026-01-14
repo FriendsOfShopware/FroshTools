@@ -229,6 +229,70 @@ class FroshTools extends ApiService {
                 return ApiService.handleResponse(response);
             });
     }
+
+    getFastlyStatus() {
+        const apiRoute = `${this.getApiBasePath()}/fastly/status`;
+        return this.httpClient
+            .get(apiRoute, {
+                headers: this.getBasicHeaders(),
+            })
+            .then((response) => {
+                return ApiService.handleResponse(response);
+            });
+    }
+
+    fastlyPurge(path) {
+        const apiRoute = `${this.getApiBasePath()}/fastly/purge`;
+        return this.httpClient
+            .post(
+                apiRoute,
+                { path },
+                {
+                    headers: this.getBasicHeaders(),
+                }
+            )
+            .then((response) => {
+                return ApiService.handleResponse(response);
+            });
+    }
+
+    fastlyPurgeAll() {
+        const apiRoute = `${this.getApiBasePath()}/fastly/purge-all`;
+        return this.httpClient
+            .post(
+                apiRoute,
+                {},
+                {
+                    headers: this.getBasicHeaders(),
+                }
+            )
+            .then((response) => {
+                return ApiService.handleResponse(response);
+            });
+    }
+
+    getFastlyStatistics(timeframe) {
+        const apiRoute = `${this.getApiBasePath()}/fastly/statistics`;
+        return this.httpClient
+            .get(apiRoute, {
+                headers: this.getBasicHeaders(),
+                params: { timeframe },
+            })
+            .then((response) => {
+                return ApiService.handleResponse(response);
+            });
+    }
+
+    getFastlySnippets() {
+        const apiRoute = `${this.getApiBasePath()}/fastly/snippets`;
+        return this.httpClient
+            .get(apiRoute, {
+                headers: this.getBasicHeaders(),
+            })
+            .then((response) => {
+                return ApiService.handleResponse(response);
+            });
+    }
 }
 
 export default FroshTools;

@@ -6,6 +6,7 @@ import './component/frosh-tools-tab-elasticsearch';
 import './component/frosh-tools-tab-logs';
 import './component/frosh-tools-tab-state-machines';
 import './component/frosh-tools-tab-files';
+import './component/frosh-tools-tab-fastly';
 import './page/index';
 import './acl';
 
@@ -82,6 +83,14 @@ Shopware.Module.register('frosh-tools', {
                 statemachines: {
                     component: 'frosh-tools-tab-state-machines',
                     path: 'state-machines',
+                    meta: {
+                        privilege: 'frosh_tools:read',
+                        parentPath: 'sw.settings.index.plugins',
+                    },
+                },
+                fastly: {
+                    component: 'frosh-tools-tab-fastly',
+                    path: 'fastly',
                     meta: {
                         privilege: 'frosh_tools:read',
                         parentPath: 'sw.settings.index.plugins',
