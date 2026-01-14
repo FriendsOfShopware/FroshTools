@@ -78,14 +78,44 @@ class SwagSecurityChecker implements HealthCheckerInterface, CheckerInterface
         });
     }
 
-    private function swagSecurityInstalled(): bool
+    private function swagSecurityUpdateVersion(): ?string
     {
-        $result = $this->connection->executeQuery(
-            'SELECT COUNT(*) FROM plugin WHERE active = 1 AND installed_at IS NOT NULL AND upgrade_version IS NULL AND name = :pluginName',
-            ['pluginName' => 'SwagPlatformSecurity'],
+        try {
+            $cacheKey = \sprintf('recent-security-plugin-version-%s', $this->shopwareVersion);
+
+            $recentVersion = $this->cacheObject->get($cacheKey, function (ItemInterface $cacheItem) {
+                $result = $this->httpClient->request('GET', \sprintf('https://api.shopware.com/pluginStore/pluginsByName?shopwareVersion=%s&technicalNames[]=SwagPlatformSecurity', $this->shopwareVersion))->getContent();
+
+                $data = \json_decode(trim($result), true, 512, \JSON_THROW_ON_ERROR);
+
+                if (!\is_array($data)) {
+                    throw new \RuntimeException('result is not decodeable');
+                }
+
+                $recentVersion = $data[0]['version'] ?? null;
+
+                if ($recentVersion === null) {
+                    throw new \RuntimeException('could not determine recent version of SwagPlatformSecurity');
+                }
+
+                $cacheItem->expiresAfter(3600 * 24);
+
+                return $recentVersion;
+            });
+        } catch (\Throwable $e) {
+            throw new \RuntimeException(\sprintf('Could not fetch https://api.shopware.com/pluginStore/pluginsByName: %s', $e->getMessage()));
+        }
+
+        $installedVersion = $this->connection->executeQuery(
+            'SELECT version FROM plugin WHERE active = 1 AND installed_at IS NOT NULL AND name = :pluginName',
+            ['pluginName' => 'SwagPlatformSecurity', 'recentVersion' => $recentVersion],
         )->fetchOne();
 
-        return !empty($result);
+        if (empty($installedVersion) || version_compare($installedVersion, $recentVersion, '<')) {
+            return $recentVersion;
+        }
+
+        return null;
     }
 
     private function determineSecurityIssue(HealthCollection $collection): void
@@ -106,19 +136,18 @@ class SwagSecurityChecker implements HealthCheckerInterface, CheckerInterface
             );
         }
 
-        if ($this->swagSecurityInstalled()) {
-            return;
+        $securityUpdateVersion = $this->swagSecurityUpdateVersion();
+        if ($securityUpdateVersion !== null) {
+            $collection->add(
+                SettingsResult::error(
+                    'security-update',
+                    'Security update',
+                    'Shopware outdated',
+                    \sprintf('Update Shopware to the latest version or install recent version of the plugin SwagPlatformSecurity %s', $securityUpdateVersion),
+                    'https://store.shopware.com/en/swag136939272659f/shopware-6-security-plugin.html',
+                ),
+            );
         }
-
-        $collection->add(
-            SettingsResult::error(
-                'security-update',
-                'Security update',
-                'Shopware outdated',
-                'Update Shopware to the latest version or install recent version of the plugin SwagPlatformSecurity',
-                'https://store.shopware.com/en/swag136939272659f/shopware-6-security-plugin.html',
-            ),
-        );
     }
 
     private function determineEolSupport(HealthCollection $collection): void

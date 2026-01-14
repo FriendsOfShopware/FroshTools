@@ -88,6 +88,41 @@
                 "orderTitle": "Order status",
                 "transactionTitle": "Transaction status",
                 "deliveryTitle": "Delivery status"
+            },
+            "fastly": {
+                "title": "Fastly",
+                "statsTitle": "Fastly Statistics",
+                "description": "Here you can clear the Fastly cache. You can either clear the entire cache or just a specific URL (path).",
+                "purgeAll": "Clear complete Cache",
+                "purgeAllSuccess": "Complete fastly cache was cleared",
+                "purgeAllError": "Could not clear complete fastly cache",
+                "purge": "Clear URL",
+                "purgePathLabel": "URL / Path",
+                "purgeSuccess": "URL was cleared",
+                "purgeError": "Could not clear URL",
+                "placeholderPath": "e.g. /my-product",
+                "requests": "Requests",
+                "hitRate": "Hit Rate",
+                "bandwidth": "Bandwidth",
+                "hits": "Hits",
+                "snippets": {
+                    "title": "VCL Snippets",
+                    "name": "Name",
+                    "type": "Type",
+                    "priority": "Priority",
+                    "content": "Content",
+                    "view": "View Content"
+                },
+                "emptyStats": "No statistics available",
+                "timeframeLabel": "Timeframe",
+                "timeframes": {
+                    "30m": "Last 30 Minutes",
+                    "1h": "Last Hour",
+                    "2h": "Last 2 Hours",
+                    "24h": "Last 24 Hours",
+                    "7d": "Last 7 Days",
+                    "30d": "Last 30 Days"
+                }
             }
         },
         "clear": "Clear",
@@ -101,6 +136,8 @@
         "used": "Used",
         "free": "Free",
         "compileTheme": "Compile theme",
+        "clearOpCache": "Clear OPcache",
+        "clearedOpcache": "OPcache has been cleared",
         "themeCompiled": "Theme were compiled",
         "actions": "Actions",
         "scheduledTasks": "Scheduled Tasks",
