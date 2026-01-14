@@ -5,15 +5,18 @@
         :isLoading="isLoading"
         :large="true"
         positionIdentifier="frosh-tools-tab-logs"
+        deprecated
     >
         <template #toolbar>
             <sw-button
                 variant="ghost"
+                deprecated
                 @click="refresh"
             >
                 <sw-icon
                     :small="true"
                     name="regular-undo"
+                    deprecated
                 ></sw-icon>
             </sw-button>
             <sw-single-select
@@ -26,26 +29,29 @@
                 @update:value="onFileSelected"
             ></sw-single-select>
         </template>
-        <sw-data-grid
-            :showSelection="false"
-            :showActions="false"
-            :dataSource="logEntries"
-            :columns="columns"
-        >
-            <template #column-date="{ item }">
-                {{ date(item.date, {hour: '2-digit', minute: '2-digit', second: '2-digit'}) }}
-            </template>
 
-            <template #column-message="{ item }">
-                <a @click="showInfoModal(item)">{{ item.message }}</a>
-            </template>
-        </sw-data-grid>
-        <sw-pagination
-            :total="totalLogEntries"
-            :limit="limit"
-            :page="page"
-            @page-change="onPageChange"
-        ></sw-pagination>
+        <template #grid>
+            <sw-data-grid
+                :showSelection="false"
+                :showActions="false"
+                :dataSource="logEntries"
+                :columns="columns"
+            >
+                <template #column-date="{ item }">
+                    {{ date(item.date, {hour: '2-digit', minute: '2-digit', second: '2-digit'}) }}
+                </template>
+
+                <template #column-message="{ item }">
+                    <a @click="showInfoModal(item)">{{ item.message }}</a>
+                </template>
+            </sw-data-grid>
+            <sw-pagination
+                :total="totalLogEntries"
+                :limit="limit"
+                :page="page"
+                @page-change="onPageChange"
+            ></sw-pagination>
+        </template>
     </sw-card>
     <sw-modal
         v-if="displayedLog"
@@ -71,9 +77,10 @@
                 <sw-icon
                     name="regular-times-s"
                     small
+                    deprecated
                 />
             </button>
         </template>
-        <div v-html="displayedLog.message"></div>
+        <div>{{ displayedLog.message }}</div>
     </sw-modal>
 </sw-card-view>

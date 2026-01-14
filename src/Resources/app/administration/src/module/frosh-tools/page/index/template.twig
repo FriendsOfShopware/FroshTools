@@ -1,53 +1,43 @@
 <sw-page class="frosh-tools">
     <template #content>
-        <sw-container>
-            <sw-tabs
-                :small="false"
-                positionIdentifier="frosh-tools-tabs"
+        <sw-tabs
+            :small="false"
+            positionIdentifier="frosh-tools-tabs"
+        >
+            <sw-tabs-item :route="{ name: 'frosh.tools.index.index' }">
+                {{ $t('frosh-tools.tabs.index.title') }}
+            </sw-tabs-item>
+            <sw-tabs-item :route="{ name: 'frosh.tools.index.cache' }">
+                {{ $t('frosh-tools.tabs.cache.title') }}
+            </sw-tabs-item>
+            <sw-tabs-item :route="{ name: 'frosh.tools.index.scheduled' }">
+                {{ $t('frosh-tools.tabs.scheduledTaskOverview.title') }}
+            </sw-tabs-item>
+            <sw-tabs-item :route="{ name: 'frosh.tools.index.queue' }">
+                {{ $t('frosh-tools.tabs.queue.title') }}
+            </sw-tabs-item>
+            <sw-tabs-item :route="{ name: 'frosh.tools.index.logs' }">
+                {{ $t('frosh-tools.tabs.logs.title') }}
+            </sw-tabs-item>
+            <sw-tabs-item
+                :route="{ name: 'frosh.tools.index.elasticsearch' }"
+                v-if="elasticsearchAvailable"
             >
-                <sw-tabs-item
-                    :route="{ name: 'frosh.tools.index.index' }"
-                >
-                    {{ $t('frosh-tools.tabs.index.title') }}
-                </sw-tabs-item>
-                <sw-tabs-item
-                    :route="{ name: 'frosh.tools.index.cache' }"
-                >
-                    {{ $t('frosh-tools.tabs.cache.title') }}
-                </sw-tabs-item>
-                <sw-tabs-item
-                    :route="{ name: 'frosh.tools.index.scheduled' }"
-                >
-                    {{ $t('frosh-tools.tabs.scheduledTaskOverview.title') }}
-                </sw-tabs-item>
-                <sw-tabs-item
-                    :route="{ name: 'frosh.tools.index.queue' }"
-                >
-                    {{ $t('frosh-tools.tabs.queue.title') }}
-                </sw-tabs-item>
-                <sw-tabs-item
-                    :route="{ name: 'frosh.tools.index.logs' }"
-                >
-                    {{ $t('frosh-tools.tabs.logs.title') }}
-                </sw-tabs-item>
-                <sw-tabs-item
-                    :route="{ name: 'frosh.tools.index.elasticsearch' }"
-                    v-if="elasticsearchAvailable"
-                >
-                    {{ $t('frosh-tools.tabs.elasticsearch.title') }}
-                </sw-tabs-item>
-                <sw-tabs-item
-                    :route="{ name: 'frosh.tools.index.files' }"
-                >
-                    {{ $t('frosh-tools.tabs.files.title') }}
-                </sw-tabs-item>
-                <sw-tabs-item
-                    :route="{ name: 'frosh.tools.index.statemachines' }"
-                >
-                    {{ $t('frosh-tools.tabs.state-machines.title') }}
-                </sw-tabs-item>
-            </sw-tabs>
-        </sw-container>
+                {{ $t('frosh-tools.tabs.elasticsearch.title') }}
+            </sw-tabs-item>
+            <sw-tabs-item :route="{ name: 'frosh.tools.index.files' }">
+                {{ $t('frosh-tools.tabs.files.title') }}
+            </sw-tabs-item>
+            <sw-tabs-item :route="{ name: 'frosh.tools.index.statemachines' }">
+                {{ $t('frosh-tools.tabs.state-machines.title') }}
+            </sw-tabs-item>
+            <sw-tabs-item
+                :route="{ name: 'frosh.tools.index.fastly' }"
+                v-if="fastlyEnabled"
+            >
+                {{ $t('frosh-tools.tabs.fastly.title') }}
+            </sw-tabs-item>
+        </sw-tabs>
         <router-view></router-view>
     </template>
 </sw-page>

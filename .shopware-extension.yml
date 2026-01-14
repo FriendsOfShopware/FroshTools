@@ -40,7 +40,7 @@ store:
             - Log viewer
     features:
         de:
-            - Task-Protokollierung
+            - Elasticsearch-Manager
             - System-Status
             - Cache-Verwaltung
             - Geplanter Task-Manager
@@ -51,7 +51,7 @@ store:
             - Cache manager
             - Scheduled Task Manager
             - Queue Manager
-            - Task Logging
+            - Elasticsearch-Manager
             - Log viewer
     faq:
         de: []

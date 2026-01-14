@@ -47,7 +47,6 @@ class ShopwareFilesController extends AbstractController
         private readonly LoggerInterface $froshToolsLogger,
         private readonly EntityRepository $userRepository,
         private readonly EntityRepository $integrationRepository,
-        #[Autowire(lazy: true)]
         private readonly HttpClientInterface $httpClient,
     ) {
         $this->isPlatform = !is_dir($this->projectDir . '/vendor/shopware/core') && is_dir($this->projectDir . '/src/Core');
@@ -64,7 +63,8 @@ class ShopwareFilesController extends AbstractController
         $data = $this->httpClient->request('GET', $url)->getContent(false);
         $data = trim((string) $data);
 
-        if (empty($data)) {
+        // Cloudflare fallbacks to index.html for 404 pages...
+        if (empty($data) || str_contains($data, '<!DOCTYPE html>')) {
             return new JsonResponse(['error' => 'No file information for this Shopware version']);
         }
 
@@ -163,6 +163,7 @@ class ShopwareFilesController extends AbstractController
             return new JsonResponse(['error' => 'File would be empty!']);
         }
 
+        /** @phpstan-ignore shopware.forbidLocalDiskWrite */
         file_put_contents($path, $content);
 
         if (\function_exists('opcache_reset')) {

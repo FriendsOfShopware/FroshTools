@@ -1,134 +1,179 @@
 {
-  "frosh-tools": {
-    "title": "Tools",
-    "tabs": {
-      "index": {
-        "title": "System-Status",
-        "performance": "Performance Empfehlungen",
-        "info": "Info"
-      },
-      "cache": {
-        "title": "Cache"
-      },
-      "scheduledTaskOverview": {
-        "title": "Geplante Aufgaben"
-      },
-      "queue": {
-        "title": "Warteschlange",
-        "reset": {
-          "modal": {
-            "title": "Warteschlange zurücksetzen",
-            "description": "Durch das Zurücksetzen der Warteschlange werden alle ausstehenden Aufgaben entfernt.",
-            "reset": "Zurücksetzen"
-          },
-          "success": "Die Warteschlange wurde geleert"
-        }
-      },
-      "logs": {
-        "title": "Log Viewer",
-        "logFileSelect": {
-          "placeholder": "Datei auswählen"
-        }
-      },
-      "elasticsearch": {
-        "title": "Elasticsearch",
-        "disabled": "Elasticsearch ist nicht aktiviert",
-        "version": "Elasticsearch version",
-        "nodes": "Nodes",
-        "status": "Cluster Status",
-        "indices": "Indizes",
-        "action": {
-          "reindex": "Neu indexieren",
-          "switchAlias": "\"Alias switching\" durchführen",
-          "flushAll": "Alle Indizes löschen",
-          "cleanup": "Ungenutzte Indizes löschen",
-          "reset": "Elasticsearch zurücksetzen"
+    "frosh-tools": {
+        "title": "Tools",
+        "tabs": {
+            "index": {
+                "title": "System-Status",
+                "performance": "Performance Empfehlungen",
+                "info": "Info"
+            },
+            "cache": {
+                "title": "Cache"
+            },
+            "scheduledTaskOverview": {
+                "title": "Geplante Aufgaben"
+            },
+            "queue": {
+                "title": "Warteschlange",
+                "reset": {
+                    "modal": {
+                        "title": "Warteschlange zurücksetzen",
+                        "description": "Durch das Zurücksetzen der Warteschlange werden alle ausstehenden Aufgaben entfernt.",
+                        "reset": "Zurücksetzen"
+                    },
+                    "success": "Die Warteschlange wurde geleert"
+                }
+            },
+            "logs": {
+                "title": "Log Viewer",
+                "logFileSelect": {
+                    "placeholder": "Datei auswählen"
+                }
+            },
+            "elasticsearch": {
+                "title": "Elasticsearch",
+                "disabled": "Elasticsearch ist nicht aktiviert",
+                "version": "Elasticsearch version",
+                "nodes": "Nodes",
+                "status": "Cluster Status",
+                "indices": "Indizes",
+                "action": {
+                    "reindex": "Neu indexieren",
+                    "switchAlias": "\"Alias switching\" durchführen",
+                    "flushAll": "Alle Indizes löschen",
+                    "cleanup": "Ungenutzte Indizes löschen",
+                    "reset": "Elasticsearch zurücksetzen"
+                },
+                "console": {
+                    "title": "Elasticsearch Konsole",
+                    "send": "Senden",
+                    "output": "Ausgabe"
+                }
+            },
+            "files": {
+                "title": "Shopware Dateien Checker",
+                "allFilesOk": "Alle Dateien entsprechen den Originalen, es wurden keine Manipulationen erkannt",
+                "notOk": "Es gibt Dateien, die manipuliert wurden",
+                "openOriginal": "Öffne Originaldatei auf GitHub",
+                "restore": {
+                    "diff": "Vergleiche Datei mit Original",
+                    "restoreFile": "Datei wiederherstellen"
+                },
+                "expectedAll": "Datei wurde manipuliert",
+                "expectedProject": "Datei wurde manipuliert, Fehler wird ignoriert durch Projekt Konfiguration"
+            },
+            "extensionFiles": {
+                "title": "Erweiterung Dateien Checker",
+                "allFilesOk": "Keine Erweiterung wurden manipuliert.",
+                "notOk": "Es gibt Fehler oder manipulierte Erweiterungen. JS, CSS oder Snippet Dateien können durch Deployment-Skripte verändert worden sein, ohne dass dies ein Problem darstellt.",
+                "wrongExtensionVersion": "Die Checksummen-Datei wurde für eine andere Erweiterungsversion erzeugt.",
+                "checkFailed": "Das oder konnte nicht geprüft werden. Bitte prüfe die Logs.",
+                "newFiles": "Neue Dateien",
+                "changedFiles": "Geänderte Dateien",
+                "missingFiles": "Fehlende Dateien"
+            },
+            "state-machines": {
+                "title": "State Machine Viewer",
+                "label": "State Machine",
+                "helpText": "Wähle eine State Machine. Das Bild wird mit Hilfe der plantuml.com API generiert. Dafür ist es notwendig, dass der Server auf plantuml.com zugreifen darf und nicht etwa von einer Firewall blockiert wird.",
+                "orderTitle": "Bestellstatus",
+                "transactionTitle": "Bezahlstatus",
+                "deliveryTitle": "Versandstatus"
+            },
+            "fastly": {
+                "title": "Fastly",
+                "statsTitle": "Fastly Statistiken",
+                "description": "Hier kannst du den Fastly Cache leeren. Dies ist entweder komplett möglich oder nur für eine bestimmte URL (Pfad).",
+                "purgeAll": "Kompletten Cache leeren",
+                "purgeAllSuccess": "Kompletter Fastly Cache wurde geleert",
+                "purgeAllError": "Konnte kompletten Fastly Cache nicht leeren",
+                "purge": "URL leeren",
+                "purgePathLabel": "URL / Pfad",
+                "purgeSuccess": "URL Cache wurde geleert",
+                "purgeError": "Konnte URL Cache nicht leeren",
+                "placeholderPath": "z.B. /mein-produkt",
+                "requests": "Anfragen",
+                "hitRate": "Hit Rate",
+                "bandwidth": "Bandbreite",
+                "hits": "Hits",
+                "snippets": {
+                    "title": "VCL Snippets",
+                    "name": "Name",
+                    "type": "Typ",
+                    "priority": "Priorität",
+                    "content": "Inhalt",
+                    "view": "Inhalt anzeigen"
+                },
+                "emptyStats": "Keine Statistiken verfügbar",
+                "timeframeLabel": "Zeitraum",
+                "timeframes": {
+                    "30m": "Letzte 30 Minuten",
+                    "1h": "Letzte Stunde",
+                    "2h": "Letzte 2 Stunden",
+                    "24h": "Letzte 24 Stunden",
+                    "7d": "Letzte 7 Tage",
+                    "30d": "Letzte 30 Tage"
+                }
+            }
         },
-        "console": {
-          "title": "Elasticsearch Konsole",
-          "send": "Senden",
-          "output": "Ausgabe"
-        }
-      },
-      "files": {
-        "title": "Shopware Dateien Checker",
-        "allFilesOk": "Alle Dateien entsprechen den Originalen, es wurden keine Manipulationen erkannt",
-        "notOk": "Es gibt Dateien, die manipuliert wurden",
-        "openOriginal": "Öffne Originaldatei auf GitHub",
-        "restore": {
-          "diff": "Vergleiche Datei mit Original",
-          "restoreFile": "Datei wiederherstellen"
-        },
-        "expectedAll": "Datei wurde manipuliert",
-        "expectedProject": "Datei wurde manipuliert, Fehler wird ignoriert durch Projekt Konfiguration"
-      },
-      "state-machines": {
-        "title": "State Machine Viewer",
-        "label": "State Machine",
-        "helpText": "Wähle eine State Machine. Das Bild wird mit Hilfe der plantuml.com API generiert. Dafür ist es notwendig, dass der Server auf plantuml.com zugreifen darf und nicht etwa von einer Firewall blockiert wird.",
-        "orderTitle": "Bestellstatus",
-        "transactionTitle": "Bezahlstatus",
-        "deliveryTitle": "Versandstatus"
-      }
+        "clear": "Leeren",
+        "status": "Status",
+        "name": "Name",
+        "good": "Gut",
+        "warning": "Warnung",
+        "error": "Fehler",
+        "info": "Info",
+        "active": "Aktiv",
+        "used": "Belegt",
+        "free": "Frei",
+        "compileTheme": "Theme kompilieren",
+        "clearOpCache": "OPcache leeren",
+        "clearedOpcache": "OPcache wurde geleert",
+        "themeCompiled": "Theme wurde kompiliert",
+        "actions": "Aktionen",
+        "scheduledTasks": "Geplante Aufgaben",
+        "interval": "Intervall",
+        "lastExecutionTime": "Letzte Ausführung",
+        "nextExecutionTime": "Nächste Ausführung",
+        "runManually": "Starte manuell",
+        "scheduledTaskStarted": "Die geplante Aufgabe für \"{name}\" wurde gestartet",
+        "scheduledTaskSucceed": "Die geplante Aufgabe für \"{name}\" war erfolgreich",
+        "scheduledTaskFailed": "Die geplante Aufgabe für \"{name}\" ist fehlgeschlagen",
+        "setToScheduled": "Auf \"Geplant\" setzen",
+        "setToScheduledImmediately": "Auf \"Sofort geplant\" setzen",
+        "setToInactive": "Auf \"Inaktiv\" setzen",
+        "scheduledTaskScheduleStarted": "Die geplante Aufgabe für \"{name}\" wird auf geplant gesetzt",
+        "scheduledTaskScheduleSucceed": "Die geplante Aufgabe für \"{name}\" wurde auf geplant gesetzt",
+        "scheduledTaskScheduleFailed": "Die geplante Aufgabe für \"{name}\" konnte nicht auf geplant gesetzt werden",
+        "scheduledTaskDeactivateStarted": "Die geplante Aufgabe für \"{name}\" wird auf inaktiv gesetzt",
+        "scheduledTaskDeactivateSucceed": "Die geplante Aufgabe für \"{name}\" wurde auf inaktiv gesetzt",
+        "scheduledTaskDeactivateFailed": "Die geplante Aufgabe für \"{name}\" konnte nicht auf inaktiv gesetzt werden",
+        "scheduledTasksRegisterStarted": "Registriere geplante Aufgaben",
+        "scheduledTasksRegisterSucceed": "Geplante Aufgaben registriert",
+        "scheduledTasksRegisterFailed": "Es ist ein Fehler beim Registrieren aufgetreten",
+        "size": "Größe",
+        "docs": "Dokumente",
+        "delete": "Löschen",
+        "resetQueue": "Warteschlange zurücksetzen",
+        "date": "Zeitpunkt",
+        "channel": "Kanal",
+        "level": "Level",
+        "message": "Nachricht",
+        "current": "Aktuell",
+        "recommended": "Empfohlen",
+        "noRecommendations": "Keine Empfehlungen",
+        "chooseStateMachine": "Wähle eine State Machine...",
+        "order": "Bestellung",
+        "transaction": "Bezahlung",
+        "delivery": "Versand",
+        "unknown": "Unbekannt"
     },
-    "clear": "Leeren",
-    "status": "Status",
-    "name": "Name",
-    "good": "Gut",
-    "warning": "Warnung",
-    "error": "Fehler",
-    "info": "Info",
-    "active": "Aktiv",
-    "used": "Belegt",
-    "free": "Frei",
-    "compileTheme": "Theme kompilieren",
-    "clearOpCache": "OPcache leeren",
-    "clearedOpcache": "OPcache wurde geleert",
-    "themeCompiled": "Theme wurde kompiliert",
-    "actions": "Aktionen",
-    "scheduledTasks": "Geplante Aufgaben",
-    "interval": "Intervall",
-    "lastExecutionTime": "Letzte Ausführung",
-    "nextExecutionTime": "Nächste Ausführung",
-    "runManually": "Starte manuell",
-    "scheduledTaskStarted": "Die geplante Aufgabe für \"{name}\" wurde gestartet",
-    "scheduledTaskSucceed": "Die geplante Aufgabe für \"{name}\" war erfolgreich",
-    "scheduledTaskFailed": "Die geplante Aufgabe für \"{name}\" ist fehlgeschlagen",
-    "setToScheduled": "Auf \"Geplant\" setzen",
-    "setToScheduledImmediately": "Auf \"Sofort geplant\" setzen",
-    "setToInactive": "Auf \"Inaktiv\" setzen",
-    "scheduledTaskScheduleStarted": "Die geplante Aufgabe für \"{name}\" wird auf geplant gesetzt",
-    "scheduledTaskScheduleSucceed": "Die geplante Aufgabe für \"{name}\" wurde auf geplant gesetzt",
-    "scheduledTaskScheduleFailed": "Die geplante Aufgabe für \"{name}\" konnte nicht auf geplant gesetzt werden",
-    "scheduledTaskDeactivateStarted": "Die geplante Aufgabe für \"{name}\" wird auf inaktiv gesetzt",
-    "scheduledTaskDeactivateSucceed": "Die geplante Aufgabe für \"{name}\" wurde auf inaktiv gesetzt",
-    "scheduledTaskDeactivateFailed": "Die geplante Aufgabe für \"{name}\" konnte nicht auf inaktiv gesetzt werden",
-    "scheduledTasksRegisterStarted": "Registriere geplante Aufgaben",
-    "scheduledTasksRegisterSucceed": "Geplante Aufgaben registriert",
-    "scheduledTasksRegisterFailed": "Es ist ein Fehler beim Registrieren aufgetreten",
-    "size": "Größe",
-    "docs": "Dokumente",
-    "delete": "Löschen",
-    "resetQueue": "Warteschlange zurücksetzen",
-    "date": "Zeitpunkt",
-    "channel": "Kanal",
-    "level": "Level",
-    "message": "Nachricht",
-    "current": "Aktuell",
-    "recommended": "Empfohlen",
-    "noRecommendations": "Keine Empfehlungen",
-    "chooseStateMachine": "Wähle eine State Machine...",
-    "order": "Bestellung",
-    "transaction": "Bezahlung",
-    "delivery": "Versand",
-    "unknown": "Unbekannt"
-  },
-  "sw-privileges": {
-    "additional_permissions": {
-      "frosh_tools": {
-        "frosh_tools": "Überwachung anzeigen",
-        "label": "Frosh tools"
-      }
+    "sw-privileges": {
+        "additional_permissions": {
+            "frosh_tools": {
+                "frosh_tools": "Überwachung anzeigen",
+                "label": "Frosh tools"
+            }
+        }
     }
-  }
 }

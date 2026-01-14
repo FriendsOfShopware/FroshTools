@@ -22,6 +22,7 @@ class CacheHelper
     {
         // If the given path is a file
         if (is_file($path)) {
+            /** @phpstan-ignore shopware.forbidLocalDiskWrite */
             unlink($path);
 
             return;
@@ -30,6 +31,7 @@ class CacheHelper
         if (self::rsyncAvailable()) {
             $blankDir = sys_get_temp_dir() . '/' . uniqid() . '/';
 
+            /** @phpstan-ignore shopware.forbidLocalDiskWrite */
             if (!mkdir($blankDir, 0o755, true) && !is_dir($blankDir)) {
                 throw new \RuntimeException(\sprintf('Directory "%s" was not created', $blankDir));
             }
@@ -41,6 +43,7 @@ class CacheHelper
                 throw new CannotClearCacheException($process->getErrorOutput());
             }
 
+            /** @phpstan-ignore shopware.forbidLocalDiskWrite */
             rmdir($blankDir);
         } else {
             $process = new Process(['find', $path . '/', '-delete']);
@@ -70,6 +73,10 @@ class CacheHelper
 
     private static function getSizeFallback(string $path): int
     {
+        if (!is_dir($path)) {
+            return 0;
+        }
+
         $dirIterator = new \RecursiveDirectoryIterator($path, \RecursiveDirectoryIterator::SKIP_DOTS | \FilesystemIterator::SKIP_DOTS);
         $iterator = new \RecursiveIteratorIterator(
             $dirIterator,

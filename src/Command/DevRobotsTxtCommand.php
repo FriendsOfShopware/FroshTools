@@ -50,6 +50,7 @@ class DevRobotsTxtCommand extends Command
             return self::SUCCESS;
         }
 
+        /** @phpstan-ignore shopware.forbidLocalDiskWrite */
         $robotsFile = fopen($robotsPath, 'wb');
         \assert($robotsFile !== false);
 
@@ -72,6 +73,7 @@ class DevRobotsTxtCommand extends Command
 
         // If only input from command is present
         if ($file === $createdString) {
+            /** @phpstan-ignore shopware.forbidLocalDiskWrite */
             unlink($robotsPath);
             $io->success('robots.txt file deleted :)');
 
@@ -81,6 +83,7 @@ class DevRobotsTxtCommand extends Command
         // removes everything between #soc & #eoc
         $content = preg_replace('/#soc[\s\S]+?#eoc/', '', $file);
 
+        /** @phpstan-ignore shopware.forbidLocalDiskWrite */
         file_put_contents($robotsPath, $content);
         $io->success('robots.txt reverted to original :)');
 
@@ -103,6 +106,7 @@ class DevRobotsTxtCommand extends Command
         }
 
         $content = "#soc\nUser-agent: *\nDisallow: /\n#eoc\n" . $file;
+        /** @phpstan-ignore shopware.forbidLocalDiskWrite */
         file_put_contents($robotsPath, $content);
 
         $io->success('robots.txt changed :)');

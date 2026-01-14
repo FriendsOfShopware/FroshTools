@@ -6,13 +6,16 @@
         :isLoading="isLoading"
         :large="true"
         positionIdentifier="frosh-tools-tab-files__files-card"
+        deprecated
     >
         <sw-alert
             variant="error"
+            deprecated
             v-if="items.error"
         >{{ items.error }}</sw-alert>
         <sw-alert
             variant="success"
+            deprecated
             v-if="items.ok"
         >
             {{ $t('frosh-tools.tabs.files.allFilesOk') }}
@@ -20,6 +23,7 @@
         <sw-alert
             variant="warning"
             v-else-if="items.files"
+            deprecated
         >
             {{ $t('frosh-tools.tabs.files.notOk') }}
         </sw-alert>
@@ -27,10 +31,12 @@
             <!-- @todo: Make the refresh button fancy -->
             <sw-button
                 variant="ghost"
+                deprecated
                 @click="refresh"
             >
                 <sw-icon
                     :small="true"
+                    deprecated
                     name="regular-undo"
                 ></sw-icon>
             </sw-button>
@@ -80,12 +86,86 @@
         <template #modal-footer>
             <sw-button
                 variant="ghost-danger"
+                deprecated
                 @click="restoreFile(diffData.file.name)"
                 :disabled="diffData.file.expected"
             >
-                <sw-icon name="regular-exclamation-triangle"></sw-icon>
+                <sw-icon
+                    name="regular-exclamation-triangle"
+                    deprecated
+                ></sw-icon>
                 {{ $t('frosh-tools.tabs.files.restore.restoreFile') }}
             </sw-button>
         </template>
     </sw-modal>
+    <sw-card
+        class="frosh-tools-tab-files__extension-files-card"
+        :class="isLoadingClass"
+        :title="$t('frosh-tools.tabs.extensionFiles.title')"
+        :isLoading="isLoading"
+        :large="true"
+        positionIdentifier="frosh-tools-tab-files__extension-files-card"
+    >
+        <sw-alert
+            variant="success"
+            v-if="extensionItems.success"
+        >
+            {{ $t('frosh-tools.tabs.extensionFiles.allFilesOk') }}
+        </sw-alert>
+        <sw-alert
+            variant="warning"
+            v-else
+        >
+            {{ $t('frosh-tools.tabs.extensionFiles.notOk') }}
+        </sw-alert>
+        <template #toolbar>
+            <!-- @todo: Make the refresh button fancy -->
+            <sw-button
+                variant="ghost"
+                @click="refresh"
+            >
+                <sw-icon
+                    :small="true"
+                    name="regular-undo"
+                ></sw-icon>
+            </sw-button>
+        </template>
+        <div
+            v-for="(extensionResult, extensionName) in extensionItems.extensionResults"
+        >
+            <h4>{{ extensionName }}</h4>
+            <sw-alert
+                variant="warning"
+                v-if="extensionResult.wrongExtensionVersion"
+            >
+                {{ $t('frosh-tools.tabs.extensionFiles.wrongExtensionVersion') }}
+            </sw-alert>
+            <sw-alert
+                variant="error"
+                v-if="extensionResult.checkFailed"
+            >
+                {{ $t('frosh-tools.tabs.extensionFiles.checkFailed') }}
+            </sw-alert>
+            <sw-description-list v-else>
+                <dt v-if="extensionResult.newFiles.length > 0">
+                    {{ $t('frosh-tools.tabs.extensionFiles.newFiles') }}
+                </dt>
+                <dd v-for="file in extensionResult.newFiles">
+                    {{ file }}
+                </dd>
+                <dt v-if="extensionResult.changedFiles.length > 0">
+                    {{ $t('frosh-tools.tabs.extensionFiles.changedFiles') }}
+                </dt>
+                <dd v-for="file in extensionResult.changedFiles">
+                    {{ file }}
+                </dd>
+                <dt v-if="extensionResult.missingFiles.length > 0">
+                    {{ $t('frosh-tools.tabs.extensionFiles.missingFiles') }}
+                </dt>
+                <dd v-for="file in extensionResult.missingFiles">
+                    {{ file }}
+                </dd>
+            </sw-description-list>
+        </div>
+    </sw-card>
 </sw-card-view>

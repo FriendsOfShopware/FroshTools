@@ -1,6 +1,6 @@
 {
     "name": "frosh/tools",
-    "version": "2.6.2",
+    "version": "3.2.5",
     "description": "Provides some basic things for managing the Shopware Installation",
     "type": "shopware-platform-plugin",
     "license": "MIT",
@@ -35,10 +35,10 @@
         }
     },
     "require": {
-        "shopware/core": "~6.6.0"
+        "shopware/core": "~6.6.0 || ~6.7.0"
     },
     "require-dev": {
-        "shopware/elasticsearch": "~6.6.0"
+        "shopware/elasticsearch": "~6.6.0 || ~6.7.0"
     },
     "config": {
         "allow-plugins": {
@@ -46,7 +46,7 @@
         }
     },
     "scripts": {
-        "format": "docker run --rm -v $(pwd):/ext ghcr.io/shopwarelabs/extension-verifier:latest format /ext",
-        "check": "docker run --rm -v $(pwd):/ext ghcr.io/shopwarelabs/extension-verifier:latest check /ext"
+        "format": "docker run --rm -v $(pwd):/ext shopware/shopware-cli:latest extension format /ext",
+        "check": "docker run --rm -v $(pwd):/ext shopware/shopware-cli:latest extension validate --full /ext"
     }
 }

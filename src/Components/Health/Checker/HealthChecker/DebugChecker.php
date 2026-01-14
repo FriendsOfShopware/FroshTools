@@ -13,7 +13,9 @@ use Symfony\Component\DependencyInjection\Attribute\Autowire;
 class DebugChecker implements HealthCheckerInterface, CheckerInterface
 {
     public function __construct(
-        /** @var array<string, string> $kernelBundles */
+        /**
+         * @var array<string, string> $kernelBundles
+         */
         #[Autowire(param: 'kernel.bundles')]
         private readonly array $kernelBundles,
         #[Autowire(param: 'kernel.debug')]

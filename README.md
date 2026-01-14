@@ -41,51 +41,15 @@ The current feature set consists of:
 
 ### Packagist
     composer require frosh/tools
+    bin/console plugin:refresh
+    bin/console plugin:install --activate FroshTools
 
 ### Store (Bearer token required from packages.shopware.com)
     composer require store.shopware.com/froshtools
+    bin/console plugin:refresh
+    bin/console plugin:install --activate FroshTools
 
 ## Commands
-
-### `frosh:env:list` - Listing of all environment variables
-```bash
-bin/console frosh:env:list
-```
-Lists as json output:
-```bash
-bin/console frosh:env:list --json
-```
-
-### `frosh:env:get` - Get environment variables
-
-```bash
-bin/console frosh:env:get APP_URL
-http://localhost
-```
-
-```bash
-bin/console frosh:env:get APP_URL --key-value
-APP_URL=http://localhost
-```
-
-```bash
-bin/console frosh:env:get APP_URL --json
-{
-    "APP_URL": "http:\/\/localhost"
-}
-```
-
-### `frosh:env:set` - Set environment variables
-
-```bash
-bin/console frosh:env:set VARIABLE VALUE
-```
-
-### `frosh:env:del` - Delete environment variables
-
-```bash
-bin/console frosh:env:del VARIABLE
-```
 
 ### `frosh:dev:robots-txt` - For testshops - add/change robots.txt to stop crawlers
 
@@ -99,25 +63,44 @@ bin/console frosh:dev:robots-txt
 bin/console frosh:dev:robots-txt -r
 ```
 
-### `frosh:plugin:update` - update plugins with available updates at once
-
-```bash
-bin/console frosh:plugin:update
-```
-
 ### `frosh:composer-plugin:update` - update plugins managed by composer
 ```bash
 bin/console frosh:composer-plugin:update
 ```
 
-### `frosh:user:change:password` - updates user password
-```bash
-bin/console frosh:user:change:password <username> [<password>]
-```
-
 ### `frosh:monitor` - Monitor your scheduled tasks and queue with this command and get notified via email.
 ```bash
 bin/console frosh:monitor <sales-channel-id>
+```
+
+### `frosh:es:delete-unused-indices` - Delete unused Elasticsearch indices
+```bash
+bin/console frosh:es:delete-unused-indices
+```
+
+### `frosh:extension:checksum:check` - Check extension file integrity
+```bash
+bin/console frosh:extension:checksum:check [extension-name]
+```
+
+### `frosh:extension:checksum:create` - Create extension checksums
+```bash
+bin/console frosh:extension:checksum:create [extension-name]
+```
+
+### `frosh:redis-namespace:cleanup` - Clean up Redis namespaces (experimental)
+```bash
+bin/console frosh:redis-namespace:cleanup [--dry-run]
+```
+
+### `frosh:redis-namespace:list` - List Redis namespaces (experimental)
+```bash
+bin/console frosh:redis-namespace:list
+```
+
+### `frosh:redis-tag:cleanup` - Clean up Redis tags
+```bash
+bin/console frosh:redis-tag:cleanup
 ```
 
 ## Suppress files from being restorable in FileChecker
@@ -129,44 +112,6 @@ frosh_tools:
         exclude_files:
             - vendor/shopware/core/FirstFile.php
             - vendor/shopware/core/SecondFile.php
-```
-
-## Override system_config with config files
-
-```yaml
-# config/packages/frosh_tools.yaml
-frosh_tools:
-    system_config:
-        default:
-            core.listing.allowBuyInListing: true
-```
-
-The key `default` is the sales channel scope, default is `null` which is the global scope. You can specify a specific salesChannelId to overwrite the value
-
-```yaml
-# config/packages/frosh_tools.yaml
-frosh_tools:
-    system_config:
-        default:
-            core.listing.allowBuyInListing: true
-        # Disable it for the specific sales channel
-        0188da12724970b9b4a708298259b171:
-            core.listing.allowBuyInListing: false
-```
-
-As it is a normal Symfony config, you can of course use also environment variables
-
-```yaml
-# config/packages/frosh_tools.yaml
-frosh_tools:
-    system_config:
-        default:
-            core.listing.allowBuyInListing: '%env(bool:ALLOW_BUY_IN_LISTING)%'
-```
-
-```
-# .env.local
-ALLOW_BUY_IN_LISTING=true
 ```
 
 ## Screenshots

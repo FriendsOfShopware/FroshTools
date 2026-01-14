@@ -110,9 +110,33 @@ class CacheAdapter
         };
     }
 
+    public function getNamespace(): string
+    {
+        return match (true) {
+            $this->adapter instanceof RedisTagAwareAdapter => $this->extractNamespace($this->adapter),
+            default => throw new \RuntimeException('This cache adapter is not supported. Only RedisTagAwareAdapter is supported.'),
+        };
+    }
+
+    public function getRedisOrFail(): \Redis
+    {
+        if (!$this->adapter instanceof RedisAdapter && !$this->adapter instanceof RedisTagAwareAdapter) {
+            throw new \RuntimeException('This cache adapter is not a Redis adapter');
+        }
+
+        return $this->getRedis($this->adapter);
+    }
+
+    private function extractNamespace(RedisTagAwareAdapter $adapter): string
+    {
+        $func = \Closure::bind(fn () => $adapter->namespace, $adapter, $adapter::class);
+
+        return $func();
+    }
+
     private function getCacheAdapter(AdapterInterface $adapter): AdapterInterface
     {
-        if ($adapter instanceof CacheDecorator) {
+        if (class_exists('Shopware\Core\Framework\Adapter\Cache\CacheDecorator') && $adapter instanceof CacheDecorator) {
             // Do not declare function as static
             // @phpstan-ignore-next-line
             $func = \Closure::bind(fn () => $adapter->decorated, $adapter, $adapter::class);

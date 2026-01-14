@@ -9,6 +9,7 @@ use Frosh\Tools\Components\Health\Checker\CheckerInterface;
 use Frosh\Tools\Components\Health\HealthCollection;
 use Frosh\Tools\Components\Health\SettingsResult;
 use Shopware\Core\DevOps\Environment\EnvironmentHelper;
+use Symfony\Component\DependencyInjection\Attribute\Autowire;
 
 class MysqlSettingsChecker implements PerformanceCheckerInterface, CheckerInterface
 {
@@ -23,8 +24,11 @@ class MysqlSettingsChecker implements PerformanceCheckerInterface, CheckerInterf
         'UTC',
     ];
 
-    public function __construct(private readonly Connection $connection)
-    {
+    public function __construct(
+        private readonly Connection $connection,
+        #[Autowire(param: 'kernel.shopware_version')]
+        private readonly string $shopwareVersion,
+    ) {
     }
 
     public function collect(HealthCollection $collection): void
@@ -86,6 +90,11 @@ class MysqlSettingsChecker implements PerformanceCheckerInterface, CheckerInterf
 
     private function checkCheckDefaultEnvironmentSessionVariables(HealthCollection $collection): void
     {
+        // https://github.com/shopware/shopware/commit/c0a162f11852130b34e7c725bd7429aeb89a7b75
+        if (\version_compare($this->shopwareVersion, '6.7.0', '>=')) {
+            return;
+        }
+
         $setSessionVariables = (bool) EnvironmentHelper::getVariable('SQL_SET_DEFAULT_SESSION_VARIABLES', true);
         if ($setSessionVariables) {
             $collection->add(

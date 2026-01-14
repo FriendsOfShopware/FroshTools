@@ -24,6 +24,10 @@ class FixCacheIdSetChecker implements PerformanceCheckerInterface, CheckerInterf
             return;
         }
 
+        if (\version_compare($this->shopwareVersion, '6.7.0.0', '>=')) {
+            return;
+        }
+
         $cacheId = (string) EnvironmentHelper::getVariable('SHOPWARE_CACHE_ID', '');
 
         if ($cacheId === '') {

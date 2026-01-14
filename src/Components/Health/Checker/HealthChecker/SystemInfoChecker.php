@@ -7,7 +7,7 @@ namespace Frosh\Tools\Components\Health\Checker\HealthChecker;
 use Frosh\Tools\Components\Health\Checker\CheckerInterface;
 use Frosh\Tools\Components\Health\HealthCollection;
 use Frosh\Tools\Components\Health\SettingsResult;
-use Shopware\Core\Maintenance\System\Struct\DatabaseConnectionInformation;
+use Shopware\Core\DevOps\Environment\EnvironmentHelper;
 use Symfony\Component\DependencyInjection\Attribute\Autowire;
 
 class SystemInfoChecker implements HealthCheckerInterface, CheckerInterface
@@ -37,8 +37,14 @@ class SystemInfoChecker implements HealthCheckerInterface, CheckerInterface
 
     private function getDatabaseInfo(HealthCollection $collection): void
     {
-        // @phpstan-ignore-next-line
-        $databaseConnectionInfo = (new DatabaseConnectionInformation())->fromEnv();
+        $dsn = trim((string) EnvironmentHelper::getVariable('DATABASE_URL', getenv('DATABASE_URL')));
+        $params = parse_url($dsn);
+
+        $port = $params['port'] ?? 3306;
+        $path = $params['path'] ?? '';
+        if ($path !== '' && $path[0] === '/') {
+            $path = substr($path, 1); // Remove leading slash
+        }
 
         $collection->add(
             SettingsResult::ok(
@@ -46,10 +52,10 @@ class SystemInfoChecker implements HealthCheckerInterface, CheckerInterface
                 'Database',
                 \sprintf(
                     '%s@%s:%d/%s',
-                    $databaseConnectionInfo->getUsername(),
-                    $databaseConnectionInfo->getHostname(),
-                    $databaseConnectionInfo->getPort(),
-                    $databaseConnectionInfo->getDatabaseName(),
+                    $params['user'] ?? '',
+                    $params['host'] ?? '',
+                    $port,
+                    $path,
                 ),
             ),
         );

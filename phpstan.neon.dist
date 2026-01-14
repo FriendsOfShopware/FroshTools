@@ -3,3 +3,8 @@ parameters:
     paths:
         - src
     reportUnmatchedIgnoredErrors: false
+    ignoreErrors:
+        -
+            message: "#no value type specified in iterable type array#"
+    excludePaths:
+        - vendor (?)

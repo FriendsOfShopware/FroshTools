@@ -1,7 +1,7 @@
-import template from './template.twig'
+import template from './template.twig';
 
-const { Component } = Shopware
+const { Component } = Shopware;
 
 Component.override('sw-data-grid-inline-edit', {
-  template,
-})
+    template,
+});
