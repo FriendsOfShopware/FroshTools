@@ -60,7 +60,7 @@ Component.register('frosh-tools-tab-logs', {
         async refresh() {
             this.isLoading = true;
             await this.createdComponent();
-            await this.onFileSelected();
+            await this.loadLogEntries();
         },
 
         async createdComponent() {
@@ -69,6 +69,12 @@ Component.register('frosh-tools-tab-logs', {
         },
 
         async onFileSelected() {
+            this.page = 1;
+
+            await this.loadLogEntries();
+        },
+
+        async loadLogEntries() {
             if (!this.selectedLogFile) {
                 return;
             }
@@ -89,7 +95,7 @@ Component.register('frosh-tools-tab-logs', {
         async onPageChange(page) {
             this.page = page.page;
             this.limit = page.limit;
-            await this.onFileSelected();
+            await this.loadLogEntries();
         },
 
         showInfoModal(entryContents) {
