@@ -127,6 +127,8 @@
         "used": "Used",
         "free": "Free",
         "compileTheme": "Compile theme",
+        "clearOpCache": "Clear OPcache",
+        "clearedOpcache": "OPcache has been cleared",
         "themeCompiled": "Theme were compiled",
         "actions": "Actions",
         "scheduledTasks": "Scheduled Tasks",

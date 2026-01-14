@@ -111,5 +111,14 @@ Component.register('frosh-tools-tab-cache', {
 
             this.isLoading = false;
         },
+
+        async clearOPcache() {
+            this.isLoading = true;
+            await this.froshToolsService.clearOPcache();
+            this.createNotificationSuccess({
+                message: this.$t('frosh-tools.clearedOpcache'),
+            });
+            await this.createdComponent();
+        },
     },
 });

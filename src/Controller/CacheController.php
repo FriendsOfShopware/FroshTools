@@ -83,4 +83,18 @@ class CacheController extends AbstractController
 
         return new JsonResponse(null, Response::HTTP_NO_CONTENT);
     }
+
+    #[Route(path: '/cache_clear_opcache', name: 'api.frosh.tools.cache.clear_opcache', methods: ['DELETE'])]
+    public function clearOpCache(): JsonResponse
+    {
+        if (\function_exists('opcache_reset')) {
+            opcache_reset();
+        }
+
+        if (\function_exists('apcu_clear_cache')) {
+            apcu_clear_cache();
+        }
+
+        return new JsonResponse(null, Response::HTTP_NO_CONTENT);
+    }
 }
