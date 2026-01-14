@@ -1,0 +1,74 @@
+<sw-card-view>
+    <sw-card
+        class="frosh-tools-tab-feature-flags__feature-flags-card"
+        :title="$tc('frosh-tools.tabs.feature-flags.title')"
+        :isLoading="isLoading"
+        :large="true"
+    >
+        <template #toolbar>
+            <!-- @todo: Make the refresh button fancy -->
+            <sw-button
+                variant="ghost"
+                deprecated
+                @click="createdComponent"
+            >
+                <sw-icon
+                    deprecated
+                    :small="true"
+                    name="regular-undo"
+                ></sw-icon>
+            </sw-button>
+        </template>
+        <sw-data-grid
+            :showSelection="false"
+            :dataSource="featureFlags"
+            :columns="columns"
+            :showActions="false"
+        >
+            <template #column-active="{ item }">
+                <sw-icon
+                    v-if="item.active"
+                    color="#37d046"
+                    name="regular-checkmark-s"
+                    small
+                />
+                <sw-icon
+                    v-else
+                    color="#de294c"
+                    name="regular-plus-xs"
+                    small
+                />
+            </template>
+
+            <template #column-major="{ item }">
+                <sw-icon
+                    v-if="item.major"
+                    color="#37d046"
+                    name="regular-checkmark-s"
+                    small
+                />
+                <sw-icon
+                    v-else
+                    color="#de294c"
+                    name="regular-plus-xs"
+                    small
+                />
+            </template>
+
+            <template #column-default="{ item }">
+                <sw-icon
+                    v-if="item.default"
+                    color="#37d046"
+                    name="regular-checkmark-s"
+                    small
+                />
+                <sw-icon
+                    v-else
+                    color="#de294c"
+                    name="regular-plus-xs"
+                    small
+                />
+            </template>
+        </sw-data-grid>
+    </sw-card>
+</sw-card-view>

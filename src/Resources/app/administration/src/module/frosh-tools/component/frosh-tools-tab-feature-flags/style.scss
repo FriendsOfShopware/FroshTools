@@ -1,0 +1,12 @@
+.frosh-tools-tab-feature-flags__feature-flags-card {
+    .sw-card__content {
+        padding: 0;
+
+        .sw-label {
+            text-align: center;
+        }
+    }
+    span.mt-icon.icon--regular-plus-xs.mt-icon--custom-size {
+        transform: rotate(45deg);
+    }
+}
