@@ -71,7 +71,7 @@ class RedisNamespaceCleanupCommand extends Command
                 if (!isset($namespaces[$namespace])) {
                     $namespaces[$namespace] = [
                         'count' => 0,
-                        'isActive' => $this->isActiveNamespace($namespace, $activeNamespaces)
+                        'isActive' => $this->isActiveNamespace($namespace, $activeNamespaces),
                     ];
                 }
                 ++$namespaces[$namespace]['count'];
