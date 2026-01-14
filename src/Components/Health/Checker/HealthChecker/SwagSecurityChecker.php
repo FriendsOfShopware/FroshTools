@@ -9,11 +9,11 @@ use Frosh\Tools\Components\Health\Checker\CheckerInterface;
 use Frosh\Tools\Components\Health\HealthCollection;
 use Frosh\Tools\Components\Health\SettingsResult;
 use Symfony\Bundle\FrameworkBundle\Console\Application;
-use Symfony\Contracts\Cache\CacheInterface;
 use Symfony\Component\Console\Input\ArrayInput;
 use Symfony\Component\Console\Output\NullOutput;
 use Symfony\Component\DependencyInjection\Attribute\Autowire;
 use Symfony\Component\HttpKernel\KernelInterface;
+use Symfony\Contracts\Cache\CacheInterface;
 use Symfony\Contracts\Cache\ItemInterface;
 use Symfony\Contracts\HttpClient\HttpClientInterface;
 
@@ -25,9 +25,9 @@ class SwagSecurityChecker implements HealthCheckerInterface, CheckerInterface
         #[Autowire(param: 'kernel.shopware_version')]
         private readonly string $shopwareVersion,
         private readonly CacheInterface $cacheObject,
-        #[Autowire(lazy: true)]
         private readonly HttpClientInterface $httpClient,
-    ) {}
+    ) {
+    }
 
     public function collect(HealthCollection $collection): void
     {
@@ -66,7 +66,7 @@ class SwagSecurityChecker implements HealthCheckerInterface, CheckerInterface
                 throw new \RuntimeException('Could not fetch security.json');
             }
 
-            $data = \json_decode(trim($securityJson), true, 512, JSON_THROW_ON_ERROR);
+            $data = \json_decode(trim($securityJson), true, 512, \JSON_THROW_ON_ERROR);
 
             if (!\is_array($data)) {
                 throw new \RuntimeException('Could not read security.json');
@@ -78,14 +78,44 @@ class SwagSecurityChecker implements HealthCheckerInterface, CheckerInterface
         });
     }
 
-    private function swagSecurityInstalled(): bool
+    private function swagSecurityUpdateVersion(): ?string
     {
-        $result = $this->connection->executeQuery(
-            'SELECT COUNT(*) FROM plugin WHERE active = 1 AND installed_at IS NOT NULL AND upgrade_version IS NULL AND name = :pluginName',
-            ['pluginName' => 'SwagPlatformSecurity'],
+        try {
+            $cacheKey = \sprintf('recent-security-plugin-version-%s', $this->shopwareVersion);
+
+            $recentVersion = $this->cacheObject->get($cacheKey, function (ItemInterface $cacheItem) {
+                $result = $this->httpClient->request('GET', \sprintf('https://api.shopware.com/pluginStore/pluginsByName?shopwareVersion=%s&technicalNames[]=SwagPlatformSecurity', $this->shopwareVersion))->getContent();
+
+                $data = \json_decode(trim($result), true, 512, \JSON_THROW_ON_ERROR);
+
+                if (!\is_array($data)) {
+                    throw new \RuntimeException('result is not decodeable');
+                }
+
+                $recentVersion = $data[0]['version'] ?? null;
+
+                if ($recentVersion === null) {
+                    throw new \RuntimeException('could not determine recent version of SwagPlatformSecurity');
+                }
+
+                $cacheItem->expiresAfter(3600 * 24);
+
+                return $recentVersion;
+            });
+        } catch (\Throwable $e) {
+            throw new \RuntimeException(\sprintf('Could not fetch https://api.shopware.com/pluginStore/pluginsByName: %s', $e->getMessage()));
+        }
+
+        $installedVersion = $this->connection->executeQuery(
+            'SELECT version FROM plugin WHERE active = 1 AND installed_at IS NOT NULL AND name = :pluginName',
+            ['pluginName' => 'SwagPlatformSecurity', 'recentVersion' => $recentVersion],
         )->fetchOne();
 
-        return !empty($result);
+        if (empty($installedVersion) || version_compare($installedVersion, $recentVersion, '<')) {
+            return $recentVersion;
+        }
+
+        return null;
     }
 
     private function determineSecurityIssue(HealthCollection $collection): void
@@ -106,24 +136,22 @@ class SwagSecurityChecker implements HealthCheckerInterface, CheckerInterface
             );
         }
 
-        if ($this->swagSecurityInstalled()) {
-            return;
+        $securityUpdateVersion = $this->swagSecurityUpdateVersion();
+        if ($securityUpdateVersion !== null) {
+            $collection->add(
+                SettingsResult::error(
+                    'security-update',
+                    'Security update',
+                    'Shopware outdated',
+                    \sprintf('Update Shopware to the latest version or install recent version of the plugin SwagPlatformSecurity %s', $securityUpdateVersion),
+                    'https://store.shopware.com/en/swag136939272659f/shopware-6-security-plugin.html',
+                ),
+            );
         }
-
-        $collection->add(
-            SettingsResult::error(
-                'security-update',
-                'Security update',
-                'Shopware outdated',
-                'Update Shopware to the latest version or install recent version of the plugin SwagPlatformSecurity',
-                'https://store.shopware.com/en/swag136939272659f/shopware-6-security-plugin.html',
-            ),
-        );
     }
 
     private function determineEolSupport(HealthCollection $collection): void
     {
-
         $id = 'security-eol-shopware';
         $snippet = 'Security updates';
 
@@ -222,7 +250,7 @@ class SwagSecurityChecker implements HealthCheckerInterface, CheckerInterface
                 throw new \RuntimeException('Could not fetch releases.json');
             }
 
-            $data = \json_decode(trim($releasesJson), true, 512, JSON_THROW_ON_ERROR);
+            $data = \json_decode(trim($releasesJson), true, 512, \JSON_THROW_ON_ERROR);
 
             if (!\is_array($data)) {
                 throw new \RuntimeException('Could not read releases.json');
@@ -238,11 +266,11 @@ class SwagSecurityChecker implements HealthCheckerInterface, CheckerInterface
                 }
 
                 if (!empty($entry['extended_eol'])
-                    && version_compare($entry['version'], ($result['extended_eol_version'] ?? ''), '>')) {
+                    && version_compare($entry['version'], $result['extended_eol_version'] ?? '', '>')) {
                     $result['extended_eol_version'] = $entry['version'];
                 }
 
-                if (version_compare($entry['version'], ($result['version'] ?? ''), '>')
+                if (version_compare($entry['version'], $result['version'] ?? '', '>')
                     && version_compare($entry['version'], $this->shopwareVersion, '<=')) {
                     $result = [...$result, ...$entry];
                 }

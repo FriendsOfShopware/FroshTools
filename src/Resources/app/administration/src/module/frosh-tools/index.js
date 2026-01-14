@@ -6,8 +6,9 @@ import './component/frosh-tools-tab-elasticsearch';
 import './component/frosh-tools-tab-logs';
 import './component/frosh-tools-tab-state-machines';
 import './component/frosh-tools-tab-files';
+import './component/frosh-tools-tab-fastly';
 import './page/index';
-import './acl'
+import './acl';
 
 Shopware.Module.register('frosh-tools', {
     type: 'plugin',
@@ -28,66 +29,74 @@ Shopware.Module.register('frosh-tools', {
                     path: 'index',
                     meta: {
                         privilege: 'frosh_tools:read',
-                        parentPath: 'sw.settings.index.plugins'
-                    }
+                        parentPath: 'sw.settings.index.plugins',
+                    },
                 },
                 cache: {
                     component: 'frosh-tools-tab-cache',
                     path: 'cache',
                     meta: {
                         privilege: 'frosh_tools:read',
-                        parentPath: 'sw.settings.index.plugins'
-                    }
+                        parentPath: 'sw.settings.index.plugins',
+                    },
                 },
                 queue: {
                     component: 'frosh-tools-tab-queue',
                     path: 'queue',
                     meta: {
                         privilege: 'frosh_tools:read',
-                        parentPath: 'sw.settings.index.plugins'
-                    }
+                        parentPath: 'sw.settings.index.plugins',
+                    },
                 },
                 scheduled: {
                     component: 'frosh-tools-tab-scheduled',
                     path: 'scheduled',
                     meta: {
                         privilege: 'frosh_tools:read',
-                        parentPath: 'sw.settings.index.plugins'
-                    }
+                        parentPath: 'sw.settings.index.plugins',
+                    },
                 },
                 elasticsearch: {
                     component: 'frosh-tools-tab-elasticsearch',
                     path: 'elasticsearch',
                     meta: {
                         privilege: 'frosh_tools:read',
-                        parentPath: 'sw.settings.index.plugins'
-                    }
+                        parentPath: 'sw.settings.index.plugins',
+                    },
                 },
                 logs: {
                     component: 'frosh-tools-tab-logs',
                     path: 'logs',
                     meta: {
                         privilege: 'frosh_tools:read',
-                        parentPath: 'sw.settings.index.plugins'
-                    }
+                        parentPath: 'sw.settings.index.plugins',
+                    },
                 },
                 files: {
                     component: 'frosh-tools-tab-files',
                     path: 'files',
                     meta: {
                         privilege: 'frosh_tools:read',
-                        parentPath: 'sw.settings.index.plugins'
-                    }
+                        parentPath: 'sw.settings.index.plugins',
+                    },
                 },
                 statemachines: {
                     component: 'frosh-tools-tab-state-machines',
                     path: 'state-machines',
                     meta: {
                         privilege: 'frosh_tools:read',
-                        parentPath: 'sw.settings.index.plugins'
-                    }
+                        parentPath: 'sw.settings.index.plugins',
+                    },
                 },
-            }
+                fastly: {
+                    component: 'frosh-tools-tab-fastly',
+                    path: 'fastly',
+                    meta: {
+                        privilege: 'frosh_tools:read',
+                        parentPath: 'sw.settings.index.plugins',
+                    },
+                },
+            },
         },
     },
 
@@ -98,7 +107,7 @@ Shopware.Module.register('frosh-tools', {
             icon: 'regular-cog',
             name: 'frosh-tools',
             label: 'frosh-tools.title',
-            privilege: 'frosh_tools:read'
-        }
-    ]
+            privilege: 'frosh_tools:read',
+        },
+    ],
 });

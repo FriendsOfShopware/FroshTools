@@ -7,7 +7,7 @@ Component.override('sw-version', {
     inject: ['froshToolsService', 'acl', 'loginService'],
 
     async created() {
-        if(!this.checkPermission()) {
+        if (!this.checkPermission()) {
             return;
         }
 
@@ -17,8 +17,8 @@ Component.override('sw-version', {
     data() {
         return {
             health: null,
-            hasPermission: false
-        }
+            hasPermission: false,
+        };
     },
 
     computed: {
@@ -52,33 +52,39 @@ Component.override('sw-version', {
                     continue;
                 }
 
-                if (health.state === 'STATE_WARNING' && msg === 'Shop Status: Ok') {
+                if (
+                    health.state === 'STATE_WARNING' &&
+                    msg === 'Shop Status: Ok'
+                ) {
                     msg = 'Shop Status: Issues, Check System Status';
                 }
             }
 
             return msg;
-        }
+        },
     },
 
     methods: {
         async checkHealth() {
             this.health = await this.froshToolsService.healthStatus(true);
 
-            this.checkInterval = setInterval(async() => {
+            this.checkInterval = setInterval(async () => {
                 try {
-                    this.health = await this.froshToolsService.healthStatus(true);
+                    this.health =
+                        await this.froshToolsService.healthStatus(true);
                 } catch (e) {
                     console.error(e);
                     clearInterval(this.checkInterval);
                 }
             }, 60000);
 
-            this.loginService.addOnLogoutListener(() => clearInterval(this.checkInterval));
+            this.loginService.addOnLogoutListener(() =>
+                clearInterval(this.checkInterval)
+            );
         },
 
-         checkPermission() {
-            return this.hasPermission = this.acl.can('frosh_tools:read');
-        }
-    }
-})
+        checkPermission() {
+            return (this.hasPermission = this.acl.can('frosh_tools:read'));
+        },
+    },
+});

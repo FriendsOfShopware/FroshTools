@@ -14,10 +14,18 @@ class ProductStreamIndexingChecker implements PerformanceCheckerInterface, Check
     public function __construct(
         #[Autowire(param: 'shopware.product_stream.indexing')]
         private readonly bool $productStreamIndexingEnabled,
-    ) {}
+        #[Autowire(param: 'kernel.shopware_version')]
+        private readonly string $shopwareVersion,
+    ) {
+    }
 
     public function collect(HealthCollection $collection): void
     {
+        // https://github.com/FriendsOfShopware/FroshTools/issues/342#issuecomment-2865874897
+        if (\version_compare('6.6.10.5', $this->shopwareVersion, '>')) {
+            return;
+        }
+
         if ($this->productStreamIndexingEnabled) {
             $collection->add(
                 SettingsResult::info(

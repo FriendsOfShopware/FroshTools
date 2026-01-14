@@ -1,0 +1,146 @@
+<div>
+    <sw-card
+        deprecated
+        :title="$t('frosh-tools.tabs.fastly.statsTitle')"
+        :large="true"
+        positionIdentifier="frosh-tools-fastly-stats"
+    >
+        <template #toolbar>
+            <sw-single-select
+                :placeholder="$t('frosh-tools.tabs.fastly.timeframeLabel')"
+                :options="timeframeOptions"
+                v-model:value="timeframe"
+                @update:value="loadStats"
+                :showSearch="false"
+                size="small"
+            ></sw-single-select>
+        </template>
+        <sw-card-section v-if="!stats">
+            <sw-empty-state
+                :title="$t('frosh-tools.tabs.fastly.emptyStats')"
+                icon="regular-chart-line"
+                :absolute="false"
+            ></sw-empty-state>
+        </sw-card-section>
+        <sw-card-section v-else>
+            <sw-container
+                columns="1fr 1fr 1fr 1fr"
+                gap="20px"
+            >
+                <div class="frosh-tools-stat">
+                    <div class="frosh-tools-stat__label">
+                        {{ $t('frosh-tools.tabs.fastly.requests') }}
+                    </div>
+                    <div class="frosh-tools-stat__value">
+                        {{ formatNumber(stats.requests) }}
+                    </div>
+                </div>
+                <div class="frosh-tools-stat">
+                    <div class="frosh-tools-stat__label">
+                        {{ $t('frosh-tools.tabs.fastly.hitRate') }}
+                    </div>
+                    <div class="frosh-tools-stat__value">
+                        {{ formatNumber(stats.hit_ratio * 100) }}
+                        %
+                    </div>
+                </div>
+                <div class="frosh-tools-stat">
+                    <div class="frosh-tools-stat__label">
+                        {{ $t('frosh-tools.tabs.fastly.bandwidth') }}
+                    </div>
+                    <div class="frosh-tools-stat__value">
+                        {{ formatSize(stats.bandwidth) }}
+                    </div>
+                </div>
+                <div class="frosh-tools-stat">
+                    <div class="frosh-tools-stat__label">
+                        {{ $t('frosh-tools.tabs.fastly.hits') }}
+                    </div>
+                    <div class="frosh-tools-stat__value">{{ formatNumber(stats.hits) }}</div>
+                </div>
+            </sw-container>
+        </sw-card-section>
+    </sw-card>
+    <sw-card
+        deprecated
+        :title="$t('frosh-tools.tabs.fastly.title')"
+        :large="true"
+        positionIdentifier="frosh-tools-fastly-purge"
+    >
+        <sw-card-section>
+            <sw-container
+                columns="1fr"
+                gap="20px"
+            >
+                <p>
+                    {{ $t('frosh-tools.tabs.fastly.description') }}
+                </p>
+                <sw-button
+                    variant="primary"
+                    @click="onPurgeAll"
+                >
+                    {{ $t('frosh-tools.tabs.fastly.purgeAll') }}
+                </sw-button>
+            </sw-container>
+        </sw-card-section>
+        <sw-card-section divider="top">
+            <sw-container
+                columns="1fr 150px"
+                gap="20px"
+                align="end"
+            >
+                <sw-text-field
+                    v-model="purgePath"
+                    :placeholder="$t('frosh-tools.tabs.fastly.placeholderPath')"
+                    :label="$t('frosh-tools.tabs.fastly.purgePathLabel')"
+                    class="fastly-purge-url-field"
+                ></sw-text-field>
+                <sw-button
+                    variant="primary"
+                    @click="onPurge"
+                >
+                    {{ $t('frosh-tools.tabs.fastly.purge') }}
+                </sw-button>
+            </sw-container>
+        </sw-card-section>
+    </sw-card>
+    <sw-card
+        deprecated
+        :title="$t('frosh-tools.tabs.fastly.snippets.title')"
+        v-if="snippets && snippets.length > 0"
+        :large="true"
+        positionIdentifier="frosh-tools-fastly-snippet"
+    >
+        <sw-data-grid
+            :dataSource="snippets"
+            :columns="snippetColumns"
+            :showSelection="false"
+        >
+            <template #actions="{ item }">
+                <sw-context-menu-item @click="activeSnippet = item">
+                    {{ $t('frosh-tools.tabs.fastly.snippets.view') }}
+                </sw-context-menu-item>
+            </template>
+        </sw-data-grid>
+    </sw-card>
+    <sw-modal
+        v-if="activeSnippet"
+        :title="activeSnippet.name"
+        @modal-close="activeSnippet = null"
+        variant="large"
+    >
+        <sw-code-editor
+            class="fastly-code-editor"
+            :value="activeSnippet.content"
+            :readonly="true"
+            mode="text"
+            :softwraps="true"
+            :setfocus="false"
+        ></sw-code-editor>
+        <template #modal-footer>
+            <sw-button @click="activeSnippet = null">
+                {{ $t('global.default.close') }}
+            </sw-button>
+        </template>
+    </sw-modal>
+</div>

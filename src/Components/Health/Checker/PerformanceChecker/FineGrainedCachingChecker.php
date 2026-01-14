@@ -1,4 +1,4 @@
-<?php
+<?php declare(strict_types=1);
 
 namespace Frosh\Tools\Components\Health\Checker\PerformanceChecker;
 
@@ -20,11 +20,17 @@ class FineGrainedCachingChecker implements PerformanceCheckerInterface, CheckerI
         public readonly bool $cacheTaggingEachSnippet,
         #[Autowire('%shopware.cache.tagging.each_theme_config%')]
         public readonly bool $cacheTaggingEachThemeConfig,
-    ) {}
+    ) {
+    }
 
     public function collect(HealthCollection $collection): void
     {
         if (\version_compare('6.5.4.0', $this->shopwareVersion, '>')) {
+            return;
+        }
+
+        // Fine-grained caching was removed in 6.7.0.0
+        if (\version_compare($this->shopwareVersion, '6.7.0.0', '>=')) {
             return;
         }
 

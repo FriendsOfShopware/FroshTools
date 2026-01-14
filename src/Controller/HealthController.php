@@ -8,6 +8,7 @@ use Frosh\Tools\Components\Health\Checker\CheckerInterface;
 use Frosh\Tools\Components\Health\HealthCollection;
 use Frosh\Tools\Components\Health\PerformanceCollection;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Component\DependencyInjection\Attribute\Autowire;
 use Symfony\Component\DependencyInjection\Attribute\AutowireIterator;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\Routing\Attribute\Route;
@@ -27,7 +28,10 @@ class HealthController extends AbstractController
         #[AutowireIterator('frosh_tools.performance_checker')]
         private readonly iterable $performanceCheckers,
         private readonly CacheInterface $cacheObject,
-    ) {}
+        #[Autowire(param: 'frosh_tools.checker.disabled_checks')]
+        private readonly array $ignoredChecks
+    ) {
+    }
 
     #[Route(path: '/health/status', name: 'api.frosh.tools.health.status', methods: ['GET'])]
     public function status(): JsonResponse
@@ -36,6 +40,9 @@ class HealthController extends AbstractController
         foreach ($this->healthCheckers as $checker) {
             $checker->collect($collection);
         }
+
+        $collection->sortByState();
+        $collection->removeByIds($this->ignoredChecks);
 
         return new JsonResponse($collection);
     }
@@ -47,6 +54,9 @@ class HealthController extends AbstractController
         foreach ($this->performanceCheckers as $checker) {
             $checker->collect($collection);
         }
+
+        $collection->sortByState();
+        $collection->removeByIds($this->ignoredChecks);
 
         return new JsonResponse($collection);
     }

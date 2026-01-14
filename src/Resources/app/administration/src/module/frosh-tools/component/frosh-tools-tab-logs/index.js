@@ -6,9 +6,7 @@ const { Component, Mixin } = Shopware;
 Component.register('frosh-tools-tab-logs', {
     template,
     inject: ['froshToolsService'],
-    mixins: [
-        Mixin.getByName('notification')
-    ],
+    mixins: [Mixin.getByName('notification')],
 
     data() {
         return {
@@ -19,7 +17,7 @@ Component.register('frosh-tools-tab-logs', {
             limit: 25,
             page: 1,
             isLoading: true,
-            displayedLog: null
+            displayedLog: null,
         };
     },
 
@@ -33,23 +31,23 @@ Component.register('frosh-tools-tab-logs', {
                 {
                     property: 'date',
                     label: 'frosh-tools.date',
-                    rawData: true
+                    rawData: true,
                 },
                 {
                     property: 'channel',
                     label: 'frosh-tools.channel',
-                    rawData: true
+                    rawData: true,
                 },
                 {
                     property: 'level',
                     label: 'frosh-tools.level',
-                    rawData: true
+                    rawData: true,
                 },
                 {
                     property: 'message',
                     label: 'frosh-tools.message',
-                    rawData: true
-                }
+                    rawData: true,
+                },
             ];
         },
 
@@ -62,7 +60,7 @@ Component.register('frosh-tools-tab-logs', {
         async refresh() {
             this.isLoading = true;
             await this.createdComponent();
-            await this.onFileSelected();
+            await this.loadLogEntries();
         },
 
         async createdComponent() {
@@ -71,6 +69,12 @@ Component.register('frosh-tools-tab-logs', {
         },
 
         async onFileSelected() {
+            this.page = 1;
+
+            await this.loadLogEntries();
+        },
+
+        async loadLogEntries() {
             if (!this.selectedLogFile) {
                 return;
             }
@@ -82,13 +86,16 @@ Component.register('frosh-tools-tab-logs', {
             );
 
             this.logEntries = logEntries.data;
-            this.totalLogEntries = parseInt(logEntries.headers['file-size'], 10);
+            this.totalLogEntries = parseInt(
+                logEntries.headers['file-size'],
+                10
+            );
         },
 
         async onPageChange(page) {
             this.page = page.page;
             this.limit = page.limit;
-            await this.onFileSelected();
+            await this.loadLogEntries();
         },
 
         showInfoModal(entryContents) {
@@ -98,5 +105,5 @@ Component.register('frosh-tools-tab-logs', {
         closeInfoModal() {
             this.displayedLog = null;
         },
-    }
+    },
 });

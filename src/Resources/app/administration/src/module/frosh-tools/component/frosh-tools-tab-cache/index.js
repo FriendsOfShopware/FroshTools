@@ -8,24 +8,25 @@ Component.register('frosh-tools-tab-cache', {
     template,
 
     inject: ['froshToolsService', 'repositoryFactory', 'themeService'],
-    mixins: [
-        Mixin.getByName('notification')
-    ],
+    mixins: [Mixin.getByName('notification')],
 
     data() {
         return {
             cacheInfo: null,
             isLoading: true,
-            numberFormater: null
-        }
+            numberFormater: null,
+        };
     },
 
     created() {
-        const language = Shopware.Application.getContainer('factory').locale.getLastKnownLocale();
-        this.numberFormater = new Intl.NumberFormat(
-            language,
-            { minimumFractionDigits: 2, maximumFractionDigits: 2 }
-        );
+        const language =
+            Shopware.Application.getContainer(
+                'factory'
+            ).locale.getLastKnownLocale();
+        this.numberFormater = new Intl.NumberFormat(language, {
+            minimumFractionDigits: 2,
+            maximumFractionDigits: 2,
+        });
 
         this.createdComponent();
     },
@@ -36,20 +37,20 @@ Component.register('frosh-tools-tab-cache', {
                 {
                     property: 'name',
                     label: 'frosh-tools.name',
-                    rawData: true
+                    rawData: true,
                 },
                 {
                     property: 'size',
                     label: 'frosh-tools.used',
                     rawData: true,
-                    align: 'right'
+                    align: 'right',
                 },
                 {
                     property: 'freeSpace',
                     label: 'frosh-tools.free',
                     rawData: true,
-                    align: 'right'
-                }
+                    align: 'right',
+                },
             ];
         },
         cacheFolders() {
@@ -62,7 +63,7 @@ Component.register('frosh-tools-tab-cache', {
 
         salesChannelRepository() {
             return this.repositoryFactory.create('sales_channel');
-        }
+        },
     },
 
     methods: {
@@ -89,20 +90,26 @@ Component.register('frosh-tools-tab-cache', {
             criteria.addAssociation('themes');
             this.isLoading = true;
 
-            let salesChannels = await this.salesChannelRepository.search(criteria, Shopware.Context.api);
+            let salesChannels = await this.salesChannelRepository.search(
+                criteria,
+                Shopware.Context.api
+            );
 
             for (let salesChannel of salesChannels) {
                 const theme = salesChannel.extensions.themes.first();
 
                 if (theme) {
-                    await this.themeService.assignTheme(theme.id, salesChannel.id);
+                    await this.themeService.assignTheme(
+                        theme.id,
+                        salesChannel.id
+                    );
                     this.createNotificationSuccess({
-                        message: `${salesChannel.translated.name}: ${this.$tc('frosh-tools.themeCompiled')}`
-                    })
+                        message: `${salesChannel.translated.name}: ${this.$t('frosh-tools.themeCompiled')}`,
+                    });
                 }
             }
 
             this.isLoading = false;
-        }
-    }
+        },
+    },
 });

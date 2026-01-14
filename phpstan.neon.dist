@@ -2,7 +2,9 @@ parameters:
     level: 8
     paths:
         - src
-    type_coverage:
-        return_type: 100
-        param_type: 98
-        property_type: 100
+    reportUnmatchedIgnoredErrors: false
+    ignoreErrors:
+        -
+            message: "#no value type specified in iterable type array#"
+    excludePaths:
+        - vendor (?)

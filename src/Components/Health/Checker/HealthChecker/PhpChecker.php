@@ -7,6 +7,7 @@ namespace Frosh\Tools\Components\Health\Checker\HealthChecker;
 use Frosh\Tools\Components\Health\Checker\CheckerInterface;
 use Frosh\Tools\Components\Health\HealthCollection;
 use Frosh\Tools\Components\Health\SettingsResult;
+use Frosh\Tools\FroshTools;
 
 class PhpChecker implements HealthCheckerInterface, CheckerInterface
 {
@@ -17,14 +18,6 @@ class PhpChecker implements HealthCheckerInterface, CheckerInterface
         $this->checkMemoryLimit($collection);
         $this->checkOpCacheActive($collection);
         $this->checkPcreJitActive($collection);
-    }
-
-    private function formatSize(float $size): string
-    {
-        $base = log($size) / log(1024);
-        $suffix = ['', 'k', 'M', 'G', 'T'][floor($base)];
-
-        return (1024 ** ($base - floor($base))) . $suffix;
     }
 
     private function checkPhp(HealthCollection $collection): void
@@ -90,8 +83,8 @@ class PhpChecker implements HealthCheckerInterface, CheckerInterface
                 SettingsResult::error(
                     'php-memory-limit',
                     'Memory-Limit',
-                    $this->formatSize($currentMemoryLimit),
-                    'min ' . $this->formatSize($minMemoryLimit),
+                    FroshTools::formatSize($currentMemoryLimit),
+                    'min ' . FroshTools::formatSize($minMemoryLimit),
                 ),
             );
 
@@ -101,8 +94,8 @@ class PhpChecker implements HealthCheckerInterface, CheckerInterface
         $collection->add(SettingsResult::ok(
             'php-memory-limit',
             'Memory-Limit',
-            $this->formatSize($currentMemoryLimit),
-            'min ' . $this->formatSize($minMemoryLimit),
+            FroshTools::formatSize($currentMemoryLimit),
+            'min ' . FroshTools::formatSize($minMemoryLimit),
         ));
     }
 
@@ -134,7 +127,7 @@ class PhpChecker implements HealthCheckerInterface, CheckerInterface
 
     private function parseQuantity(string $val): float
     {
-        //TODO: remove condition and own calculation when min php version is 8.2
+        // TODO: remove condition and own calculation when min php version is 8.2
         if (\function_exists('ini_parse_quantity')) {
             return (float) \ini_parse_quantity($val);
         }

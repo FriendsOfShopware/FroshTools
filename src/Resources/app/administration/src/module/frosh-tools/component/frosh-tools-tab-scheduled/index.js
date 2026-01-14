@@ -7,9 +7,7 @@ const { Criteria } = Shopware.Data;
 Component.register('frosh-tools-tab-scheduled', {
     template,
     inject: ['repositoryFactory', 'froshToolsService'],
-    mixins: [
-        Mixin.getByName('notification')
-    ],
+    mixins: [Mixin.getByName('notification')],
 
     data() {
         return {
@@ -18,7 +16,7 @@ Component.register('frosh-tools-tab-scheduled', {
             isLoading: true,
             page: 1,
             limit: 25,
-            taskError: null
+            taskError: null,
         };
     },
 
@@ -37,30 +35,30 @@ Component.register('frosh-tools-tab-scheduled', {
                     property: 'name',
                     label: 'frosh-tools.name',
                     rawData: true,
-                    primary: true
+                    primary: true,
                 },
                 {
                     property: 'runInterval',
                     label: 'frosh-tools.interval',
                     rawData: true,
-                    inlineEdit: 'number'
+                    inlineEdit: 'number',
                 },
                 {
                     property: 'lastExecutionTime',
                     label: 'frosh-tools.lastExecutionTime',
-                    rawData: true
+                    rawData: true,
                 },
                 {
                     property: 'nextExecutionTime',
                     label: 'frosh-tools.nextExecutionTime',
                     rawData: true,
-                    inlineEdit: 'datetime'
+                    inlineEdit: 'datetime',
                 },
                 {
                     property: 'status',
                     label: 'frosh-tools.status',
-                    rawData: true
-                }
+                    rawData: true,
+                },
             ];
         },
 
@@ -78,7 +76,10 @@ Component.register('frosh-tools-tab-scheduled', {
         async createdComponent() {
             const criteria = new Criteria(this.page, this.limit);
             criteria.addSorting(Criteria.sort('nextExecutionTime', 'ASC'));
-            this.items = await this.scheduledRepository.search(criteria, Shopware.Context.api);
+            this.items = await this.scheduledRepository.search(
+                criteria,
+                Shopware.Context.api
+            );
             this.isLoading = false;
         },
 
@@ -87,16 +88,22 @@ Component.register('frosh-tools-tab-scheduled', {
 
             try {
                 this.createNotificationInfo({
-                    message: this.$tc('frosh-tools.scheduledTaskStarted', 0, {'name': item.name})
-                })
+                    message: this.$t('frosh-tools.scheduledTaskStarted', {
+                        name: item.name,
+                    }),
+                });
                 await this.froshToolsService.runScheduledTask(item.id);
                 this.createNotificationSuccess({
-                    message: this.$tc('frosh-tools.scheduledTaskSucceed', 0, {'name': item.name})
-                })
+                    message: this.$t('frosh-tools.scheduledTaskSucceed', {
+                        name: item.name,
+                    }),
+                });
             } catch (e) {
                 this.createNotificationError({
-                    message: this.$tc('frosh-tools.scheduledTaskFailed', 0, {'name': item.name})
-                })
+                    message: this.$t('frosh-tools.scheduledTaskFailed', {
+                        name: item.name,
+                    }),
+                });
 
                 this.taskError = e.response.data;
             }
@@ -109,16 +116,71 @@ Component.register('frosh-tools-tab-scheduled', {
 
             try {
                 this.createNotificationInfo({
-                    message: this.$t('frosh-tools.scheduledTaskScheduleStarted', {'name': item.name})
-                })
-                await this.froshToolsService.scheduleScheduledTask(item.id, immediately);
+                    message: this.$t(
+                        'frosh-tools.scheduledTaskScheduleStarted',
+                        {
+                            name: item.name,
+                        }
+                    ),
+                });
+                await this.froshToolsService.scheduleScheduledTask(
+                    item.id,
+                    immediately
+                );
                 this.createNotificationSuccess({
-                    message: this.$t('frosh-tools.scheduledTaskScheduleSucceed', {'name': item.name})
-                })
+                    message: this.$t(
+                        'frosh-tools.scheduledTaskScheduleSucceed',
+                        {
+                            name: item.name,
+                        }
+                    ),
+                });
             } catch (e) {
                 this.createNotificationError({
-                    message: this.$t('frosh-tools.scheduledTaskScheduleFailed', {'name': item.name})
-                })
+                    message: this.$t(
+                        'frosh-tools.scheduledTaskScheduleFailed',
+                        {
+                            name: item.name,
+                        }
+                    ),
+                });
+
+                this.taskError = e.response.data;
+            }
+
+            this.createdComponent();
+        },
+
+        async deactivateTask(item) {
+            this.isLoading = true;
+
+            try {
+                this.createNotificationInfo({
+                    message: this.$t(
+                        'frosh-tools.scheduledTaskDeactivateStarted',
+                        {
+                            name: item.name,
+                        }
+                    ),
+                });
+                await this.froshToolsService.deactivateScheduledTask(item.id);
+                this.createNotificationSuccess({
+                    message: this.$t(
+                        'frosh-tools.scheduledTaskDeactivateSucceed',
+                        {
+                            name: item.name,
+                        }
+                    ),
+                });
+            } catch (e) {
+                this.createNotificationError({
+                    message: this.$t(
+                        'frosh-tools.scheduledTaskDeactivateFailed',
+                        {
+                            name: item.name,
+                        }
+                    ),
+                });
 
                 this.taskError = e.response.data;
             }
@@ -131,19 +193,27 @@ Component.register('frosh-tools-tab-scheduled', {
 
             try {
                 this.createNotificationInfo({
-                    message: this.$tc('frosh-tools.scheduledTasksRegisterStarted')
-                })
+                    message: this.$t(
+                        'frosh-tools.scheduledTasksRegisterStarted'
+                    ),
+                });
                 await this.froshToolsService.scheduledTasksRegister();
                 this.createNotificationSuccess({
-                    message: this.$tc('frosh-tools.scheduledTasksRegisterSucceed')
-                })
+                    message: this.$t(
+                        'frosh-tools.scheduledTasksRegisterSucceed'
+                    ),
+                });
             } catch (e) {
                 this.createNotificationError({
-                    message: this.$tc('frosh-tools.scheduledTasksRegisterFailed')
-                })
+                    message: this.$t(
+                        'frosh-tools.scheduledTasksRegisterFailed'
+                    ),
+                });
+
+                this.taskError = e.response.data;
             }
 
             this.createdComponent();
         },
-    }
+    },
 });

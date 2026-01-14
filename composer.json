@@ -1,6 +1,6 @@
 {
     "name": "frosh/tools",
-    "version": "2.6.0",
+    "version": "3.2.5",
     "description": "Provides some basic things for managing the Shopware Installation",
     "type": "shopware-platform-plugin",
     "license": "MIT",
@@ -35,7 +35,10 @@
         }
     },
     "require": {
-        "shopware/core": "~6.6.0"
+        "shopware/core": "~6.6.0 || ~6.7.0"
+    },
+    "require-dev": {
+        "shopware/elasticsearch": "~6.6.0 || ~6.7.0"
     },
     "config": {
         "allow-plugins": {
@@ -43,7 +46,7 @@
         }
     },
     "scripts": {
-        "cs-fix": "docker run --rm -v $(pwd):$(pwd) -w $(pwd) oskarstark/php-cs-fixer-ga --rules=@PER-CS2.0,no_unused_imports .",
-        "phpstan": "docker run --rm -v $(pwd):/app aragon999/phpstan-shopware:v6.6.0 analyse --level max ."
+        "format": "docker run --rm -v $(pwd):/ext shopware/shopware-cli:latest extension format /ext",
+        "check": "docker run --rm -v $(pwd):/ext shopware/shopware-cli:latest extension validate --full /ext"
     }
 }

@@ -28,7 +28,8 @@ class ScheduledTaskController extends AbstractController
         private readonly EntityRepository $scheduledTaskRepository,
         private readonly TaskRegistry $taskRegistry,
         private readonly TaskRunner $taskRunner,
-    ) {}
+    ) {
+    }
 
     #[Route(path: '/scheduled-task/{id}', name: 'api.frosh.tools.scheduled.task.run', methods: ['POST'])]
     public function runTask(string $id, Context $context): JsonResponse
@@ -71,6 +72,25 @@ class ScheduledTaskController extends AbstractController
         if ($immediately) {
             $data['nextExecutionTime'] = new \DateTime();
         }
+
+        $this->scheduledTaskRepository->update([$data], $context);
+
+        return new JsonResponse(null, Response::HTTP_NO_CONTENT);
+    }
+
+    #[Route(path: '/scheduled-task/deactivate/{id}', name: 'api.frosh.tools.scheduled.task.deactivate', methods: ['POST'])]
+    public function deactivateTask(string $id, Context $context): JsonResponse
+    {
+        $scheduledTask = $this->fetchTask($id, $context);
+
+        if (!$scheduledTask instanceof ScheduledTaskEntity) {
+            return new JsonResponse(null, Response::HTTP_NOT_FOUND);
+        }
+
+        $data = [
+            'id' => $id,
+            'status' => ScheduledTaskDefinition::STATUS_INACTIVE,
+        ];
 
         $this->scheduledTaskRepository->update([$data], $context);
 

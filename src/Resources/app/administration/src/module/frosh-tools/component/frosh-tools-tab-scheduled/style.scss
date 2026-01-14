@@ -14,14 +14,9 @@
             gap: 10px;
         }
 
-        &.is--compact {
-            .sw-field--datepicker {
-                input {
-                    padding-top: 10px;
-                    padding-bottom: 10px;
-                }
-            }
+        &.is--compact .sw-field--datepicker input {
+            padding-top: 10px;
+            padding-bottom: 10px;
         }
     }
 }
-

@@ -1,5 +1,3 @@
-/*global Shopware*/
-
 import './style.scss';
 import template from './template.html.twig';
 
@@ -10,16 +8,14 @@ Component.register('frosh-tools-tab-state-machines', {
 
     inject: ['froshToolsService'],
 
-    mixins: [
-        Mixin.getByName('notification')
-    ],
+    mixins: [Mixin.getByName('notification')],
 
     data() {
         return {
             selectedStateMachine: null,
             image: null,
             isLoading: true,
-        }
+        };
     },
 
     created() {
@@ -36,10 +32,13 @@ Component.register('frosh-tools-tab-state-machines', {
                 return;
             }
 
-            const response = await this.froshToolsService.stateMachines(stateMachineChangeId);
+            const response =
+                await this.froshToolsService.stateMachines(
+                    stateMachineChangeId
+                );
 
             const elem = document.getElementById('state_machine');
-            if ("svg" in response) {
+            if ('svg' in response) {
                 this.image = response.svg;
                 elem.src = this.image;
                 elem.style.opacity = '1';
@@ -48,6 +47,6 @@ Component.register('frosh-tools-tab-state-machines', {
             } else {
                 elem.style.opacity = '0';
             }
-        }
-    }
+        },
+    },
 });

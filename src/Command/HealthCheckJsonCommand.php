@@ -6,15 +6,15 @@ namespace Frosh\Tools\Command;
 
 use Frosh\Tools\Components\Health\Checker\CheckerInterface;
 use Frosh\Tools\Components\Health\HealthCollection;
+use Symfony\Component\Console\Attribute\AsCommand;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\DependencyInjection\Attribute\AutowireIterator;
 
+#[AsCommand('frosh-tools:health-check-json', 'Returns a JSON with all health check checkers result merged like with /health/status route')]
 class HealthCheckJsonCommand extends Command
 {
-    protected static $defaultName = 'frosh-tools:health-check-json';
-
     /**
      * @param CheckerInterface[] $healthCheckers
      */
@@ -25,12 +25,6 @@ class HealthCheckJsonCommand extends Command
         parent::__construct();
     }
 
-    protected function configure(): void
-    {
-        $this
-            ->setDescription('Returns a JSON with all health check checkers result merged like with /health/status route');
-    }
-
     protected function execute(InputInterface $input, OutputInterface $output): int
     {
         $collection = new HealthCollection();
@@ -38,7 +32,7 @@ class HealthCheckJsonCommand extends Command
             $checker->collect($collection);
         }
 
-        $output->writeln(json_encode($collection, JSON_PRETTY_PRINT));
+        $output->writeln(json_encode($collection, \JSON_PRETTY_PRINT | \JSON_THROW_ON_ERROR));
 
         return Command::SUCCESS;
     }
