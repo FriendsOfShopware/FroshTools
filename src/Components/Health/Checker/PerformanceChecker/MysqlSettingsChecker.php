@@ -55,7 +55,7 @@ class MysqlSettingsChecker implements PerformanceCheckerInterface, CheckerInterf
                 SettingsResult::ok(
                     'sql_group_concat_max_len',
                     'MySQL value group_concat_max_len',
-                    (string) $groupConcatMaxLen,
+                    '',
                     'min ' . self::MYSQL_GROUP_CONCAT_MAX_LEN,
                     self::DOCUMENTATION_URL,
                 ),
@@ -80,7 +80,7 @@ class MysqlSettingsChecker implements PerformanceCheckerInterface, CheckerInterf
                 SettingsResult::ok(
                     'sql_mode',
                     'MySQL value sql_mode',
-                    $sqlMode,
+                    (string) $sqlMode,
                     'No ' . self::MYSQL_SQL_MODE_PART,
                     self::DOCUMENTATION_URL,
                 ),
@@ -105,7 +105,7 @@ class MysqlSettingsChecker implements PerformanceCheckerInterface, CheckerInterf
                 SettingsResult::ok(
                     'sql_time_zone',
                     'MySQL value time_zone',
-                    $timeZone,
+                    (string) $timeZone,
                     implode(', ', self::MYSQL_TIME_ZONES),
                     self::DOCUMENTATION_URL,
                 ),
