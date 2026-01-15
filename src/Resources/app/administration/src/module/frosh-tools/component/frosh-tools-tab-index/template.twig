@@ -104,6 +104,13 @@
                     <template #column-current="{ item }">
                         <div>
                             <sw-label
+                                variant="success"
+                                appearance="pill"
+                                v-if="item.state === 'STATE_OK'"
+                            >
+                                {{ $t('frosh-tools.done') }}
+                            </sw-label>
+                            <sw-label
                                 variant="warning"
                                 appearance="pill"
                                 v-if="item.state === 'STATE_WARNING'"
