@@ -29,7 +29,7 @@ class DisableAppUrlExternalCheckChecker implements PerformanceCheckerInterface, 
                 SettingsResult::ok(
                     'app-url-check-disabled',
                     'App URL external check',
-                    'enabled',
+                    'disabled',
                     'disabled',
                     'https://developer.shopware.com/docs/guides/hosting/performance/performance-tweaks.html#disable-app-url-external-check',
                 ),
