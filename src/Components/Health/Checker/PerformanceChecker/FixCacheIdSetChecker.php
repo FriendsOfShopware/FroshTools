@@ -39,7 +39,7 @@ class FixCacheIdSetChecker implements PerformanceCheckerInterface, CheckerInterf
                     'set',
                 ),
             );
-        }else{
+        } else {
             $collection->add(
                 SettingsResult::ok(
                     'cache-id',

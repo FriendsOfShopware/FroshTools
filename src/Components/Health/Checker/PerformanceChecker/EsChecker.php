@@ -29,7 +29,7 @@ class EsChecker implements PerformanceCheckerInterface, CheckerInterface
                     'enabled',
                 ),
             );
-        }else{
+        } else {
             $collection->add(
                 SettingsResult::ok(
                     'elasticsearch',

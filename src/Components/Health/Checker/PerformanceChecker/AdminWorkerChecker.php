@@ -28,7 +28,7 @@ class AdminWorkerChecker implements PerformanceCheckerInterface, CheckerInterfac
                     'disabled',
                 ),
             );
-        }else{
+        } else {
             $collection->add(
                 SettingsResult::ok(
                     'admin-watcher',

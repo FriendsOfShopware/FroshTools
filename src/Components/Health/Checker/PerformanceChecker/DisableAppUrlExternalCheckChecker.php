@@ -23,7 +23,7 @@ class DisableAppUrlExternalCheckChecker implements PerformanceCheckerInterface, 
                     'disabled',
                 ),
             );
-        }else{
+        } else {
             $collection->add(
                 SettingsResult::ok(
                     'app-url-check-disabled',

@@ -32,7 +32,7 @@ class MessengerAutoSetupChecker implements PerformanceCheckerInterface, CheckerI
                     'disabled',
                 ),
             );
-        }else{
+        } else {
             $collection->add(
                 SettingsResult::ok(
                     'messenger-auto-setup',

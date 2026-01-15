@@ -28,7 +28,7 @@ class MailOverQueueChecker implements PerformanceCheckerInterface, CheckerInterf
                     'enabled',
                 ),
             );
-        }else{
+        } else {
             $collection->add(
                 SettingsResult::ok(
                     'mail',

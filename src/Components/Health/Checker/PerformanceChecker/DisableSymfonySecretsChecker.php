@@ -29,7 +29,7 @@ class DisableSymfonySecretsChecker implements PerformanceCheckerInterface, Check
                     'disabled',
                 ),
             );
-        }else{
+        } else {
             $collection->add(
                 SettingsResult::ok(
                     'symfony-secrets',

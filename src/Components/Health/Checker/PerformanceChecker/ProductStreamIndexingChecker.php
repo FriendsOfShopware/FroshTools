@@ -35,7 +35,7 @@ class ProductStreamIndexingChecker implements PerformanceCheckerInterface, Check
                     'disabled',
                 ),
             );
-        }else{
+        } else {
             $collection->add(
                 SettingsResult::ok(
                     'product-stream-indexing',

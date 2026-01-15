@@ -45,7 +45,7 @@ class PhpSettingsChecker implements PerformanceCheckerInterface, CheckerInterfac
                     '1',
                 ),
             );
-        }else{
+        } else {
             $collection->add(
                 SettingsResult::ok(
                     'php.opcache.enable_file_override',
@@ -55,7 +55,6 @@ class PhpSettingsChecker implements PerformanceCheckerInterface, CheckerInterfac
                     $url,
                 ),
             );
-
         }
     }
 

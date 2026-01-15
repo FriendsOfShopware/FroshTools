@@ -32,7 +32,7 @@ class IncrementStorageChecker implements PerformanceCheckerInterface, CheckerInt
                     $recommended,
                 ),
             );
-        }else{
+        } else {
             $collection->add(
                 SettingsResult::ok(
                     'increment-storage',

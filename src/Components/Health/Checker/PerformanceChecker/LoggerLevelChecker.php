@@ -32,7 +32,7 @@ class LoggerLevelChecker implements PerformanceCheckerInterface, CheckerInterfac
                 Logger::toMonologLevel($this->businessEventHandlerLevel)->getName(),
                 'min WARNING',
             ));
-        }else{
+        } else {
             $collection->add(SettingsResult::ok(
                 'business_logger',
                 'BusinessEventHandler logging',

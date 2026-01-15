@@ -33,6 +33,7 @@ class DisabledMailUpdatesChecker implements PerformanceCheckerInterface, Checker
                     'https://developer.shopware.com/docs/guides/hosting/performance/performance-tweaks#prevent-mail-data-updates'
                 )
             );
+
             return;
         }
 

@@ -47,7 +47,7 @@ class QueueConnectionChecker implements PerformanceCheckerInterface, CheckerInte
             );
         }
 
-        if($schema === 'redis' || $schema === 'rabiitmq'){
+        if ($schema === 'redis' || $schema === 'rabiitmq') {
             $collection->add(
                 SettingsResult::ok(
                     $id,
@@ -57,7 +57,6 @@ class QueueConnectionChecker implements PerformanceCheckerInterface, CheckerInte
                     $url,
                 ),
             );
-
         }
     }
 
