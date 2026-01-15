@@ -29,6 +29,16 @@ class MailOverQueueChecker implements PerformanceCheckerInterface, CheckerInterf
                     'https://developer.shopware.com/docs/guides/hosting/infrastructure/message-queue#sending-mails-over-the-message-queue',
                 ),
             );
+        }else{
+            $collection->add(
+                SettingsResult::ok(
+                    'mail',
+                    'Sending mails over queue',
+                    'enabled',
+                    'enabled',
+                    'https://developer.shopware.com/docs/guides/hosting/infrastructure/message-queue#sending-mails-over-the-message-queue',
+                ),
+            );
         }
     }
 }

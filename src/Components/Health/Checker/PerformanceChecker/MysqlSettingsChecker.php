@@ -53,6 +53,17 @@ class MysqlSettingsChecker implements PerformanceCheckerInterface, CheckerInterf
                     self::DOCUMENTATION_URL,
                 ),
             );
+        }else{
+            $collection->add(
+                SettingsResult::ok(
+                    'sql_group_concat_max_len',
+                    'MySQL value group_concat_max_len',
+                    (string) $groupConcatMaxLen,
+                    'min ' . self::MYSQL_GROUP_CONCAT_MAX_LEN,
+                    self::DOCUMENTATION_URL,
+                ),
+            );
+
         }
     }
 
@@ -69,6 +80,17 @@ class MysqlSettingsChecker implements PerformanceCheckerInterface, CheckerInterf
                     self::DOCUMENTATION_URL,
                 ),
             );
+        }else{
+            $collection->add(
+                SettingsResult::ok(
+                    'sql_mode',
+                    'MySQL value sql_mode',
+                    $sqlMode,
+                    'No ' . self::MYSQL_SQL_MODE_PART,
+                    self::DOCUMENTATION_URL,
+                ),
+            );
+
         }
     }
 
@@ -85,6 +107,17 @@ class MysqlSettingsChecker implements PerformanceCheckerInterface, CheckerInterf
                     self::DOCUMENTATION_URL,
                 ),
             );
+        }else{
+            $collection->add(
+                SettingsResult::ok(
+                    'sql_time_zone',
+                    'MySQL value time_zone',
+                    $timeZone,
+                    implode(', ', self::MYSQL_TIME_ZONES),
+                    self::DOCUMENTATION_URL,
+                ),
+            );
+
         }
     }
 
@@ -102,6 +135,16 @@ class MysqlSettingsChecker implements PerformanceCheckerInterface, CheckerInterf
                     'sql_set_default_session_variables',
                     'MySQL session vars are set on each connect',
                     'enabled',
+                    'disabled',
+                    self::DOCUMENTATION_URL,
+                ),
+            );
+        }else{
+            $collection->add(
+                SettingsResult::ok(
+                    'sql_set_default_session_variables',
+                    'MySQL session vars are set on each connect',
+                    'disabled',
                     'disabled',
                     self::DOCUMENTATION_URL,
                 ),
