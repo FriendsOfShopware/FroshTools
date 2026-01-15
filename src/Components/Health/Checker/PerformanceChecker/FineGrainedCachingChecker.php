@@ -44,6 +44,17 @@ class FineGrainedCachingChecker implements PerformanceCheckerInterface, CheckerI
                     'disabled',
                 ),
             );
+        }else{
+            $collection->add(
+                // only info, because it only affects redis, varnish etc.
+                SettingsResult::ok(
+                    'fine-grained-caching',
+                    'Fine-grained caching on Redis, Varnish etc.',
+                    'disabled',
+                    'disabled',
+                    self::DOCUMENTATION_URL,
+                ),
+            );
         }
     }
 }

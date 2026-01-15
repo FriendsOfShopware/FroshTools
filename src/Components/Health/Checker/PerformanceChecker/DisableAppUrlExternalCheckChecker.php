@@ -23,6 +23,16 @@ class DisableAppUrlExternalCheckChecker implements PerformanceCheckerInterface, 
                     'disabled',
                 ),
             );
+        }else{
+            $collection->add(
+                SettingsResult::ok(
+                    'app-url-check-disabled',
+                    'App URL external check',
+                    'enabled',
+                    'disabled',
+                    'https://developer.shopware.com/docs/guides/hosting/performance/performance-tweaks.html#disable-app-url-external-check',
+                ),
+            );
         }
     }
 }

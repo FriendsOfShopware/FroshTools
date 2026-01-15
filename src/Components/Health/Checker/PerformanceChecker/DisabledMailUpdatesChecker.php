@@ -24,11 +24,26 @@ class DisabledMailUpdatesChecker implements PerformanceCheckerInterface, Checker
         $setting = $this->params->get('shopware.mail.update_mail_variables_on_send');
 
         if (!$setting) {
+            $collection->add(
+                SettingsResult::ok(
+                    'mail_variables',
+                    'MailVariables updates',
+                    'disabled',
+                    'disabled',
+                    'https://developer.shopware.com/docs/guides/hosting/performance/performance-tweaks#prevent-mail-data-updates'
+                )
+            );
             return;
         }
 
-        $result = SettingsResult::warning('mail_variables', 'MailVariables updates', 'enabled', 'disabled');
-
-        $collection->add($result);
+        $collection->add(
+            SettingsResult::warning(
+                'mail_variables',
+                'MailVariables updates',
+                'enabled',
+                'disabled',
+                'https://developer.shopware.com/docs/guides/hosting/performance/performance-tweaks#prevent-mail-data-updates'
+            )
+        );
     }
 }

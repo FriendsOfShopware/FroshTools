@@ -29,6 +29,16 @@ class DisableSymfonySecretsChecker implements PerformanceCheckerInterface, Check
                     'disabled',
                 ),
             );
+        }else{
+            $collection->add(
+                SettingsResult::ok(
+                    'symfony-secrets',
+                    'Disable Symfony Secrets',
+                    'disabled',
+                    'disabled',
+                    'https://developer.shopware.com/docs/guides/hosting/performance/performance-tweaks.html#disable-symfony-secrets',
+                ),
+            );
         }
     }
 }

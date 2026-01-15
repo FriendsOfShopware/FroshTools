@@ -32,6 +32,16 @@ class IncrementStorageChecker implements PerformanceCheckerInterface, CheckerInt
                     $recommended,
                 ),
             );
+        }else{
+            $collection->add(
+                SettingsResult::ok(
+                    'increment-storage',
+                    'Increment storage',
+                    $this->userActivity,
+                    $recommended,
+                    'https://developer.shopware.com/docs/guides/hosting/performance/performance-tweaks#increment-storage',
+                ),
+            );
         }
     }
 }
