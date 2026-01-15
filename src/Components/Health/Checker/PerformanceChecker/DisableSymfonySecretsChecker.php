@@ -30,7 +30,7 @@ class DisableSymfonySecretsChecker implements PerformanceCheckerInterface, Check
                     'https://developer.shopware.com/docs/guides/hosting/performance/performance-tweaks.html#disable-symfony-secrets',
                 ),
             );
-        }else{
+        } else {
             $collection->add(
                 SettingsResult::ok(
                     'symfony-secrets',

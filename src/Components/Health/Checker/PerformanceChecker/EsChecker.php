@@ -30,7 +30,7 @@ class EsChecker implements PerformanceCheckerInterface, CheckerInterface
                     'https://developer.shopware.com/docs/guides/hosting/infrastructure/elasticsearch/elasticsearch-setup',
                 ),
             );
-        }else{
+        } else {
             $collection->add(
                 SettingsResult::ok(
                     'elasticsearch',

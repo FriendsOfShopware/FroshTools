@@ -53,7 +53,7 @@ class MysqlSettingsChecker implements PerformanceCheckerInterface, CheckerInterf
                     self::DOCUMENTATION_URL,
                 ),
             );
-        }else{
+        } else {
             $collection->add(
                 SettingsResult::ok(
                     'sql_group_concat_max_len',
@@ -63,7 +63,6 @@ class MysqlSettingsChecker implements PerformanceCheckerInterface, CheckerInterf
                     self::DOCUMENTATION_URL,
                 ),
             );
-
         }
     }
 
@@ -80,7 +79,7 @@ class MysqlSettingsChecker implements PerformanceCheckerInterface, CheckerInterf
                     self::DOCUMENTATION_URL,
                 ),
             );
-        }else{
+        } else {
             $collection->add(
                 SettingsResult::ok(
                     'sql_mode',
@@ -90,7 +89,6 @@ class MysqlSettingsChecker implements PerformanceCheckerInterface, CheckerInterf
                     self::DOCUMENTATION_URL,
                 ),
             );
-
         }
     }
 
@@ -107,7 +105,7 @@ class MysqlSettingsChecker implements PerformanceCheckerInterface, CheckerInterf
                     self::DOCUMENTATION_URL,
                 ),
             );
-        }else{
+        } else {
             $collection->add(
                 SettingsResult::ok(
                     'sql_time_zone',
@@ -117,7 +115,6 @@ class MysqlSettingsChecker implements PerformanceCheckerInterface, CheckerInterf
                     self::DOCUMENTATION_URL,
                 ),
             );
-
         }
     }
 
@@ -139,7 +136,7 @@ class MysqlSettingsChecker implements PerformanceCheckerInterface, CheckerInterf
                     self::DOCUMENTATION_URL,
                 ),
             );
-        }else{
+        } else {
             $collection->add(
                 SettingsResult::ok(
                     'sql_set_default_session_variables',

@@ -40,7 +40,7 @@ class FixCacheIdSetChecker implements PerformanceCheckerInterface, CheckerInterf
                     'https://developer.shopware.com/docs/guides/hosting/performance/performance-tweaks#cache-id',
                 ),
             );
-        }else{
+        } else {
             $collection->add(
                 SettingsResult::ok(
                     'cache-id',

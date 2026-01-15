@@ -45,7 +45,7 @@ class FineGrainedCachingChecker implements PerformanceCheckerInterface, CheckerI
                     self::DOCUMENTATION_URL,
                 ),
             );
-        }else{
+        } else {
             $collection->add(
                 // only info, because it only affects redis, varnish etc.
                 SettingsResult::ok(

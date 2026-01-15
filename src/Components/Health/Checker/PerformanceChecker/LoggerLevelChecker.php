@@ -35,7 +35,7 @@ class LoggerLevelChecker implements PerformanceCheckerInterface, CheckerInterfac
                 'min WARNING',
                 $this->url,
             ));
-        }else{
+        } else {
             $collection->add(SettingsResult::ok(
                 'business_logger',
                 'BusinessEventHandler logging',

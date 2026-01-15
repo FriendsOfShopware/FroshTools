@@ -45,8 +45,10 @@ Component.register('frosh-tools-tab-index', {
                 return this.performanceStatus;
             }
 
-            return this.performanceStatus.filter(item => item.state != 'STATE_OK');
-        }
+            return this.performanceStatus.filter(
+                (item) => item.state != 'STATE_OK'
+            );
+        },
     },
 
     methods: {
@@ -60,6 +62,6 @@ Component.register('frosh-tools-tab-index', {
             this.performanceStatus =
                 await this.froshToolsService.performanceStatus();
             this.isLoading = false;
-        }
+        },
     },
 });

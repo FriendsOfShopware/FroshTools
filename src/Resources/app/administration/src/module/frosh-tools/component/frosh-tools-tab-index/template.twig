@@ -82,12 +82,14 @@
             positionIdentifier="frosh-tools-tab-index-performance"
             deprecated
         >
-           <template v-slot:header-right>
-               <sw-switch-field 
-                   v-model:value="showDone"
-                   label="Erledigte anzeigen">
+            <template v-slot:header-right>
+                <sw-switch-field
+                    v-model:value="showDone"
+                    label="Erledigte anzeigen"
+                >
                </sw-switch-field>
-           </template>
+            </template>
+
             <template #grid>
                 <sw-card-section
                     divider="bottom"
@@ -138,7 +140,7 @@
                             >
                                 {{ $t('frosh-tools.info') }}
                             </sw-label>
-                                {{ item.current }}
+                            {{ item.current }}
                         </div>
                     </template>
 

@@ -36,7 +36,7 @@ class ProductStreamIndexingChecker implements PerformanceCheckerInterface, Check
                     'https://developer.shopware.com/docs/guides/hosting/performance/performance-tweaks.html#disable-product-stream-indexer',
                 ),
             );
-        }else{
+        } else {
             $collection->add(
                 SettingsResult::ok(
                     'product-stream-indexing',

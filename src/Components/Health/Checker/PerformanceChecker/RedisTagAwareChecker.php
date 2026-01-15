@@ -25,7 +25,7 @@ class RedisTagAwareChecker implements PerformanceCheckerInterface, CheckerInterf
         if (!\str_starts_with($httpCacheType, CacheAdapter::TYPE_REDIS)) {
             return;
         }
-        if(!\str_starts_with($httpCacheType, CacheAdapter::TYPE_REDIS_TAG_AWARE)){
+        if (!\str_starts_with($httpCacheType, CacheAdapter::TYPE_REDIS_TAG_AWARE)) {
             $collection->add(
                 SettingsResult::warning(
                     'redis-tag-aware',
@@ -35,7 +35,7 @@ class RedisTagAwareChecker implements PerformanceCheckerInterface, CheckerInterf
                     'https://developer.shopware.com/docs/guides/hosting/performance/caches.html#example-replace-some-cache-with-redis',
                 ),
             );
-        }else{
+        } else {
             $collection->add(
                 SettingsResult::ok(
                     'redis-tag-aware',

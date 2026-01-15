@@ -65,7 +65,7 @@ class CompressionMethodChecker implements PerformanceCheckerInterface, CheckerIn
                     self::DOCUMENTATION_URL,
                 ),
             );
-        }else{
+        } else {
             $collection->add(
                 SettingsResult::ok(
                     strtolower($functionality) . '-compression-method-extension-zstd',
