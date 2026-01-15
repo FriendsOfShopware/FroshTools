@@ -129,6 +129,7 @@
         "status": "Status",
         "name": "Name",
         "good": "Good",
+        "done": "Done",
         "warning": "Warning",
         "error": "Error",
         "info": "Info",
