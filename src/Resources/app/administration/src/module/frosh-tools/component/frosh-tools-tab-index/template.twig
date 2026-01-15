@@ -82,6 +82,14 @@
             positionIdentifier="frosh-tools-tab-index-performance"
             deprecated
         >
+            <template v-slot:header-right>
+                <sw-switch-field
+                    v-model:value="showDone"
+                    label="Erledigte anzeigen"
+                >
+               </sw-switch-field>
+            </template>
+
             <template #grid>
                 <sw-card-section
                     divider="bottom"
@@ -95,14 +103,22 @@
                     </sw-alert>
                 </sw-card-section>
                 <sw-data-grid
-                    v-if="performanceStatus && performanceStatus.length > 0"
+                    :key="showDone"
+                    v-if="filteredPerformanceStatus.length > 0"
                     :showSelection="false"
                     :showActions="false"
-                    :dataSource="performanceStatus"
+                    :dataSource="filteredPerformanceStatus"
                     :columns="columns"
                 >
                     <template #column-current="{ item }">
                         <div>
+                            <sw-label
+                                variant="success"
+                                appearance="pill"
+                                v-if="item.state === 'STATE_OK'"
+                            >
+                                {{ $t('frosh-tools.done') }}
+                            </sw-label>
                             <sw-label
                                 variant="warning"
                                 appearance="pill"
