@@ -66,7 +66,10 @@ class ExtensionFileHashService
         // If the checksum file format changes: Add a check for $checksumFileData->getVersion() here
         // Right now the version is always 1.0.0
 
-        if ($checksumFileData->getExtensionVersion() !== $extension->getVersion()) {
+        $checksumExtensionVersion = \ltrim($checksumFileData->getExtensionVersion(), 'v');
+        $extensionVersion = \ltrim($extension->getVersion(), 'v');
+
+        if ($checksumExtensionVersion !== $extensionVersion) {
             return new ExtensionChecksumCheckResult(wrongExtensionVersion: true);
         }
 
