@@ -11,6 +11,10 @@ use Frosh\Tools\DependencyInjection\SymfonyConfigCompilerPass;
 use Shopware\Core\Framework\Plugin;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
 
+
+
+
+
 class FroshTools extends Plugin
 {
     public function build(ContainerBuilder $container): void
