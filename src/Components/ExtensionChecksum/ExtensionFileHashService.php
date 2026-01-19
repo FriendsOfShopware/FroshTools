@@ -35,7 +35,7 @@ class ExtensionFileHashService
             'algorithm' => self::HASH_ALGORITHM,
             'hashes' => $this->getHashes($extension),
             'version' => ExtensionChecksumStruct::CURRENT_VERSION,
-            'extensionVersion' => $extension->getVersion(),
+            'extensionVersion' => $this->normalizeVersion($extension->getVersion()),
         ]);
     }
 
