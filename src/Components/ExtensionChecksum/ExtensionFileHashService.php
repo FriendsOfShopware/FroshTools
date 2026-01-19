@@ -35,7 +35,7 @@ class ExtensionFileHashService
             'algorithm' => self::HASH_ALGORITHM,
             'hashes' => $this->getHashes($extension),
             'version' => ExtensionChecksumStruct::CURRENT_VERSION,
-            'extensionVersion' => $extension->getVersion(),
+            'extensionVersion' => $this->normalizeVersion($extension->getVersion()),
         ]);
     }
 
@@ -66,7 +66,10 @@ class ExtensionFileHashService
         // If the checksum file format changes: Add a check for $checksumFileData->getVersion() here
         // Right now the version is always 1.0.0
 
-        if ($checksumFileData->getExtensionVersion() !== $extension->getVersion()) {
+        $checksumExtensionVersion = $this->normalizeVersion($checksumFileData->getExtensionVersion());
+        $extensionVersion = $this->normalizeVersion($extension->getVersion());
+
+        if ($checksumExtensionVersion !== $extensionVersion) {
             return new ExtensionChecksumCheckResult(wrongExtensionVersion: true);
         }
 
@@ -137,5 +140,10 @@ class ExtensionFileHashService
     private function getExtensionRootPath(PluginEntity $extension): string
     {
         return \rtrim($this->rootDir . '/' . $extension->getPath(), '/\\');
+    }
+
+    private function normalizeVersion(string $version): string
+    {
+        return \ltrim($version, 'v');
     }
 }
