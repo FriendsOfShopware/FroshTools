@@ -41,11 +41,15 @@ class CompressionMethodChecker implements PerformanceCheckerInterface, CheckerIn
             return;
         }
 
+        $id = strtolower($functionality) . '-compression-method';
+        $snippet = $functionality . ' compression method';
+
         if ($method === 'gzip') {
             $collection->add(
-                SettingsResult::info(
-                    strtolower($functionality) . '-compression-method',
-                    $functionality . ' compression method',
+                SettingsResult::create(
+                    'info',
+                    $id,
+                    $snippet,
                     'gzip',
                     'zstd',
                     self::DOCUMENTATION_URL,
@@ -55,12 +59,15 @@ class CompressionMethodChecker implements PerformanceCheckerInterface, CheckerIn
             return;
         }
 
-        if ($method === 'zstd' && !\extension_loaded('zstd')) {
+        if ($method === 'zstd') {
+            $extensionLoaded = \extension_loaded('zstd');
+
             $collection->add(
-                SettingsResult::error(
-                    strtolower($functionality) . '-compression-method-extension-zstd',
-                    'PHP extension zstd for ' . $functionality . ' compression method',
-                    'disabled',
+                SettingsResult::create(
+                    $extensionLoaded ? 'ok' : 'error',
+                    $id . '-extension-zstd',
+                    'PHP extension zstd for ' . $snippet,
+                    $extensionLoaded ? 'enabled' : 'disabled',
                     'enabled',
                     self::DOCUMENTATION_URL,
                 ),

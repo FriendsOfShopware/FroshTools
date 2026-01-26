@@ -19,16 +19,15 @@ class AdminWorkerChecker implements PerformanceCheckerInterface, CheckerInterfac
 
     public function collect(HealthCollection $collection): void
     {
-        if ($this->adminWorkerEnabled) {
-            $collection->add(
-                SettingsResult::warning(
-                    'admin-watcher',
-                    'Admin-Worker',
-                    'enabled',
-                    'disabled',
-                    'https://developer.shopware.com/docs/guides/plugins/plugins/framework/message-queue/add-message-handler#the-admin-worker',
-                ),
-            );
-        }
+        $collection->add(
+            SettingsResult::create(
+                $this->adminWorkerEnabled ? 'warning' : 'ok',
+                'admin-watcher',
+                'Admin-Worker',
+                $this->adminWorkerEnabled ? 'enabled' : 'disabled',
+                'disabled',
+                'https://developer.shopware.com/docs/guides/plugins/plugins/framework/message-queue/add-message-handler#the-admin-worker',
+            ),
+        );
     }
 }

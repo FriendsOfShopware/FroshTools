@@ -19,16 +19,15 @@ class MailOverQueueChecker implements PerformanceCheckerInterface, CheckerInterf
 
     public function collect(HealthCollection $collection): void
     {
-        if (!$this->mailerIsOverQueue) {
-            $collection->add(
-                SettingsResult::warning(
-                    'mail',
-                    'Sending mails over queue',
-                    'disabled',
-                    'enabled',
-                    'https://developer.shopware.com/docs/guides/hosting/infrastructure/message-queue#sending-mails-over-the-message-queue',
-                ),
-            );
-        }
+        $collection->add(
+            SettingsResult::create(
+                !$this->mailerIsOverQueue ? 'warning' : 'ok',
+                'mail',
+                'Sending mails over queue',
+                $this->mailerIsOverQueue ? 'enabled' : 'disabled',
+                'enabled',
+                'https://developer.shopware.com/docs/guides/hosting/infrastructure/message-queue#sending-mails-over-the-message-queue',
+            ),
+        );
     }
 }
