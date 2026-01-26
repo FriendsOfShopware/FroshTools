@@ -11,6 +11,8 @@ use Symfony\Component\DependencyInjection\Attribute\Autowire;
 
 class CompressionMethodChecker implements PerformanceCheckerInterface, CheckerInterface
 {
+    public const DOCUMENTATION_URL = 'https://developer.shopware.com/docs/guides/hosting/performance/performance-tweaks.html#using-zstd-instead-of-gzip-for-compression';
+
     public function __construct(
         #[Autowire(param: 'kernel.shopware_version')]
         public readonly string $shopwareVersion,
@@ -41,34 +43,33 @@ class CompressionMethodChecker implements PerformanceCheckerInterface, CheckerIn
             return;
         }
 
+        $id = strtolower($functionality) . '-compression-method';
+        $snippet = $functionality . ' compression method';
+
         if ($method === 'gzip' && \version_compare($this->shopwareVersion, '6.7.1.0', '<')) {
             $collection->add(
-                SettingsResult::info(
-                    strtolower($functionality) . '-compression-method',
-                    $functionality . ' compression method',
+                SettingsResult::create(
+                    'info',
+                    $id,
+                    $snippet,
                     'gzip',
                     'zstd',
+                    self::DOCUMENTATION_URL,
                 ),
             );
 
             return;
         }
 
-        if ($method === 'zstd' && !\extension_loaded('zstd')) {
+        if ($method === 'zstd') {
+            $extensionLoaded = \extension_loaded('zstd');
+
             $collection->add(
-                SettingsResult::error(
-                    strtolower($functionality) . '-compression-method-extension-zstd',
-                    'PHP extension zstd for ' . $functionality . ' compression method',
-                    'disabled',
-                    'enabled',
-                ),
-            );
-        } else {
-            $collection->add(
-                SettingsResult::ok(
-                    strtolower($functionality) . '-compression-method-extension-zstd',
-                    'PHP extension zstd for ' . $functionality . ' compression method',
-                    \extension_loaded('zstd') ? 'enabled' : 'disabled',
+                SettingsResult::create(
+                    $extensionLoaded ? 'ok' : 'error',
+                    $id . '-extension-zstd',
+                    'PHP extension zstd for ' . $snippet,
+                    $extensionLoaded ? 'enabled' : 'disabled',
                     'enabled',
                     self::DOCUMENTATION_URL,
                 ),
