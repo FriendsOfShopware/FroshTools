@@ -43,27 +43,18 @@ class MysqlSettingsChecker implements PerformanceCheckerInterface, CheckerInterf
     {
         /** @var string|false $groupConcatMaxLen */
         $groupConcatMaxLen = $this->connection->fetchOne('SELECT @@group_concat_max_len');
-        if (!$groupConcatMaxLen || (int) $groupConcatMaxLen < self::MYSQL_GROUP_CONCAT_MAX_LEN) {
-            $collection->add(
-                SettingsResult::error(
-                    'sql_group_concat_max_len',
-                    'MySQL value group_concat_max_len',
-                    (string) $groupConcatMaxLen,
-                    'min ' . self::MYSQL_GROUP_CONCAT_MAX_LEN,
-                    self::DOCUMENTATION_URL,
-                ),
-            );
-        } else {
-            $collection->add(
-                SettingsResult::ok(
-                    'sql_group_concat_max_len',
-                    'MySQL value group_concat_max_len',
-                    '',
-                    'min ' . self::MYSQL_GROUP_CONCAT_MAX_LEN,
-                    self::DOCUMENTATION_URL,
-                ),
-            );
-        }
+        $maxLenNotOk = (int) $groupConcatMaxLen < self::MYSQL_GROUP_CONCAT_MAX_LEN;
+
+        $collection->add(
+            SettingsResult::create(
+                $maxLenNotOk ? 'warning' : 'ok',
+                'sql_group_concat_max_len',
+                'MySQL value group_concat_max_len',
+                (string) $groupConcatMaxLen,
+                'min ' . self::MYSQL_GROUP_CONCAT_MAX_LEN,
+                self::DOCUMENTATION_URL,
+            ),
+        );
     }
 
     private function checkSqlMode(HealthCollection $collection): void

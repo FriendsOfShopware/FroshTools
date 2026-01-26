@@ -25,26 +25,17 @@ class RedisTagAwareChecker implements PerformanceCheckerInterface, CheckerInterf
         if (!\str_starts_with($httpCacheType, CacheAdapter::TYPE_REDIS)) {
             return;
         }
-        if (!\str_starts_with($httpCacheType, CacheAdapter::TYPE_REDIS_TAG_AWARE)) {
-            $collection->add(
-                SettingsResult::warning(
-                    'redis-tag-aware',
-                    'Redis adapter should be TagAware',
-                    CacheAdapter::TYPE_REDIS,
-                    CacheAdapter::TYPE_REDIS_TAG_AWARE,
-                    'https://developer.shopware.com/docs/guides/hosting/performance/caches.html#example-replace-some-cache-with-redis',
-                ),
-            );
-        } else {
-            $collection->add(
-                SettingsResult::ok(
-                    'redis-tag-aware',
-                    'Redis adapter is TagAware',
-                    CacheAdapter::TYPE_REDIS,
-                    CacheAdapter::TYPE_REDIS_TAG_AWARE,
-                    'https://developer.shopware.com/docs/guides/hosting/performance/caches.html#example-replace-some-cache-with-redis',
-                ),
-            );
-        }
+        $notTagAware =!\str_starts_with($httpCacheType, CacheAdapter::TYPE_REDIS_TAG_AWARE);
+
+        $collection->add(
+            SettingsResult::create(
+                $notTagAware ? 'warning': 'ok',
+                'redis-tag-aware',
+                'Redis adapter should be TagAware',
+                CacheAdapter::TYPE_REDIS,
+                CacheAdapter::TYPE_REDIS_TAG_AWARE,
+                'https://developer.shopware.com/docs/guides/hosting/performance/caches.html#example-replace-some-cache-with-redis',
+            ),
+        );
     }
 }

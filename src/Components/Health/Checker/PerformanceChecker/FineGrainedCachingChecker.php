@@ -33,29 +33,16 @@ class FineGrainedCachingChecker implements PerformanceCheckerInterface, CheckerI
         if (\version_compare($this->shopwareVersion, '6.7.0.0', '>=')) {
             return;
         }
-
-        if ($this->cacheTaggingEachConfig || $this->cacheTaggingEachSnippet || $this->cacheTaggingEachThemeConfig) {
-            $collection->add(
-                // only info, because it only affects redis, varnish etc.
-                SettingsResult::info(
-                    'fine-grained-caching',
-                    'Fine-grained caching on Redis, Varnish etc.',
-                    'enabled',
-                    'disabled',
-                    self::DOCUMENTATION_URL,
-                ),
-            );
-        } else {
-            $collection->add(
-                // only info, because it only affects redis, varnish etc.
-                SettingsResult::ok(
-                    'fine-grained-caching',
-                    'Fine-grained caching on Redis, Varnish etc.',
-                    'disabled',
-                    'disabled',
-                    self::DOCUMENTATION_URL,
-                ),
-            );
-        }
+        $collection->add(
+            // only info, because it only affects redis, varnish etc.
+            SettingsResult::create(
+                $this->cacheTaggingEachConfig || $this->cacheTaggingEachSnippet || $this->cacheTaggingEachThemeConfig ? 'info' : 'ok',
+                'fine-grained-caching',
+                'Fine-grained caching on Redis, Varnish etc.',
+                'enabled',
+                'disabled',
+                self::DOCUMENTATION_URL,
+            ),
+        );
     }
 }

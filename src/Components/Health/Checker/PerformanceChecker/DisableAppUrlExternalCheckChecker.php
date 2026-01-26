@@ -14,26 +14,15 @@ class DisableAppUrlExternalCheckChecker implements PerformanceCheckerInterface, 
     public function collect(HealthCollection $collection): void
     {
         $appUrlCheckDisabled = (bool) EnvironmentHelper::getVariable('APP_URL_CHECK_DISABLED', false);
-        if (!$appUrlCheckDisabled) {
-            $collection->add(
-                SettingsResult::warning(
-                    'app-url-check-disabled',
-                    'App URL external check',
-                    'enabled',
-                    'disabled',
-                    'https://developer.shopware.com/docs/guides/hosting/performance/performance-tweaks.html#disable-app-url-external-check',
-                ),
-            );
-        } else {
-            $collection->add(
-                SettingsResult::ok(
-                    'app-url-check-disabled',
-                    'App URL external check',
-                    'disabled',
-                    'disabled',
-                    'https://developer.shopware.com/docs/guides/hosting/performance/performance-tweaks.html#disable-app-url-external-check',
-                ),
-            );
-        }
+        $collection->add(
+            SettingsResult::create(
+                !$appUrlCheckDisabled ? 'warning' : 'ok',
+                'app-url-check-disabled',
+                'App URL external check',
+                !$appUrlCheckDisabled ? 'enabled':'disabled',
+                'disabled',
+                'https://developer.shopware.com/docs/guides/hosting/performance/performance-tweaks.html#disable-app-url-external-check',
+            )
+        );
     }
 }
