@@ -1,6 +1,4 @@
-<?php
-
-declare(strict_types=1);
+<?php declare(strict_types=1);
 
 namespace Frosh\Tools\Components\Health\Checker\PerformanceChecker;
 
@@ -11,6 +9,8 @@ use Symfony\Component\DependencyInjection\Attribute\Autowire;
 
 class FineGrainedCachingChecker implements PerformanceCheckerInterface, CheckerInterface
 {
+    public const DOCUMENTATION_URL = 'https://developer.shopware.com/docs/guides/hosting/performance/performance-tweaks.html#disable-fine-grained-caching';
+
     public function __construct(
         #[Autowire('%kernel.shopware_version%')]
         public readonly string $shopwareVersion,
@@ -33,28 +33,16 @@ class FineGrainedCachingChecker implements PerformanceCheckerInterface, CheckerI
         if (\version_compare($this->shopwareVersion, '6.7.0.0', '>=')) {
             return;
         }
-
-        if ($this->cacheTaggingEachConfig || $this->cacheTaggingEachSnippet || $this->cacheTaggingEachThemeConfig) {
-            $collection->add(
-                // only info, because it only affects redis, varnish etc.
-                SettingsResult::info(
-                    'fine-grained-caching',
-                    'Fine-grained caching on Redis, Varnish etc.',
-                    'enabled',
-                    'disabled',
-                ),
-            );
-        } else {
-            $collection->add(
-                // only info, because it only affects redis, varnish etc.
-                SettingsResult::ok(
-                    'fine-grained-caching',
-                    'Fine-grained caching on Redis, Varnish etc.',
-                    'disabled',
-                    'disabled',
-                    self::DOCUMENTATION_URL,
-                ),
-            );
-        }
+        $collection->add(
+            // only info, because it only affects redis, varnish etc.
+            SettingsResult::create(
+                $this->cacheTaggingEachConfig || $this->cacheTaggingEachSnippet || $this->cacheTaggingEachThemeConfig ? 'info' : 'ok',
+                'fine-grained-caching',
+                'Fine-grained caching on Redis, Varnish etc.',
+                'enabled',
+                'disabled',
+                self::DOCUMENTATION_URL,
+            ),
+        );
     }
 }
