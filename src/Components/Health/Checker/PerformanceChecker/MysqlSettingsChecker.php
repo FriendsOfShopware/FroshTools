@@ -63,7 +63,7 @@ class MysqlSettingsChecker implements PerformanceCheckerInterface, CheckerInterf
         $hasForbiddenMode = \is_string($sqlMode) && \str_contains($sqlMode, self::MYSQL_SQL_MODE_PART);
         $collection->add(
             SettingsResult::create(
-                $hasForbiddenMode ? 'error': 'ok',
+                $hasForbiddenMode ? 'error' : 'ok',
                 'sql_mode',
                 'MySQL value sql_mode',
                 $sqlMode,

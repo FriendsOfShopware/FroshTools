@@ -55,6 +55,7 @@ class CompressionMethodChecker implements PerformanceCheckerInterface, CheckerIn
                     self::DOCUMENTATION_URL,
                 ),
             );
+
             return;
         }
 

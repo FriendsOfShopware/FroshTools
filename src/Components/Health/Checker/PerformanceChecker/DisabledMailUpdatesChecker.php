@@ -23,7 +23,6 @@ class DisabledMailUpdatesChecker implements PerformanceCheckerInterface, Checker
 
         $setting = $this->params->get('shopware.mail.update_mail_variables_on_send');
 
-
         $collection->add(
             SettingsResult::create(
                 !$setting ? 'ok' : 'warning',

@@ -19,7 +19,7 @@ class DisableAppUrlExternalCheckChecker implements PerformanceCheckerInterface, 
                 !$appUrlCheckDisabled ? 'warning' : 'ok',
                 'app-url-check-disabled',
                 'App URL external check',
-                !$appUrlCheckDisabled ? 'enabled':'disabled',
+                !$appUrlCheckDisabled ? 'enabled' : 'disabled',
                 'disabled',
                 'https://developer.shopware.com/docs/guides/hosting/performance/performance-tweaks.html#disable-app-url-external-check',
             )

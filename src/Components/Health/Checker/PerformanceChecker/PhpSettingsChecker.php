@@ -25,7 +25,7 @@ class PhpSettingsChecker implements PerformanceCheckerInterface, CheckerInterfac
         $currentValue = $this->iniGetFailover('zend.assertions');
         $collection->add(
             SettingsResult::create(
-                $currentValue != '-1' ? 'warning' : 'ok',
+                $currentValue !== '-1' ? 'warning' : 'ok',
                 'zend.assertions',
                 'PHP value zend.assertions',
                 $currentValue,
@@ -86,7 +86,7 @@ class PhpSettingsChecker implements PerformanceCheckerInterface, CheckerInterfac
     private function checkRealpathCacheTtl(HealthCollection $collection, string $url): void
     {
         $currentValue = $this->iniGetFailover('realpath_cache_ttl');
-        $ttl =(int) $currentValue < 3600; 
+        $ttl = (int) $currentValue < 3600;
         $collection->add(
             SettingsResult::create(
                 $ttl < 3600 ? 'warning' : 'ok',
