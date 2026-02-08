@@ -10,11 +10,10 @@ class AdminInfoListener
 {
     public function __construct(
         #[Autowire('%frosh_tools.elasticsearch.enabled%')]
-        private bool             $elasticsearchEnabled,
+        private bool $elasticsearchEnabled,
         #[Autowire(param: 'shopware.http_cache.reverse_proxy.fastly.service_id')]
         private readonly ?string $fastlyServiceId = null,
-    )
-    {
+    ) {
     }
 
     #[AsEventListener('api.info.config.response')]
@@ -26,7 +25,7 @@ class AdminInfoListener
             return;
         }
 
-        $data = \json_decode($response->getContent(), true);
+        $data = \json_decode((string) $response->getContent(), true, 512, \JSON_THROW_ON_ERROR);
 
         $data['settings']['froshTools'] = [
             'elasticsearchEnabled' => $this->elasticsearchEnabled,
