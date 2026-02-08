@@ -1,0 +1,11 @@
+# 3.3.0
+- [chore: increase version](https://github.com/FriendsOfShopware/FroshTools/commit/631ae14)
+- [fix: make ci happy](https://github.com/FriendsOfShopware/FroshTools/commit/15ea47c)
+- [fix: some style issues](https://github.com/FriendsOfShopware/FroshTools/commit/26ea842)
+- [Normalize extension version checks for checksum validation (#387)](https://github.com/FriendsOfShopware/FroshTools/commit/d35f94b)
+- [feat: Feature Flags (#375)](https://github.com/FriendsOfShopware/FroshTools/commit/64da719)
+- [feat: Add clear OPcache button (#383)](https://github.com/FriendsOfShopware/FroshTools/commit/4a446a9)
+- [Add frosh-tools:health-check-json command (#312)](https://github.com/FriendsOfShopware/FroshTools/commit/809222c)
+- [Correctly reset the page on the log viewer page (#366)](https://github.com/FriendsOfShopware/FroshTools/commit/fa5b934)
+- [fix: Refactor namespace handling in Redis commands: (#367)](https://github.com/FriendsOfShopware/FroshTools/commit/9290766)
+- [feat: add fastly tab (#379)](https://github.com/FriendsOfShopware/FroshTools/commit/a56091c)
