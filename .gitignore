@@ -4,3 +4,4 @@
 /vendor
 /src/Resources/public/
 /src/Resources/app/administration/node_modules/
+/src/Resources/app/administration/.tmp/

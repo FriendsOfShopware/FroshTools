@@ -36,7 +36,7 @@
             </sw-tabs-item>
             <sw-tabs-item
                 :route="{ name: 'frosh.tools.index.fastly' }"
-                v-if="fastlyEnabled"
+                v-if="fastlyAvailable"
             >
                 {{ $t('frosh-tools.tabs.fastly.title') }}
             </sw-tabs-item>

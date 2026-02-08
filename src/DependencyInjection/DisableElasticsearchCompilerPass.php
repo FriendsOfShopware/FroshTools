@@ -15,7 +15,7 @@ class DisableElasticsearchCompilerPass implements CompilerPassInterface
     public function process(ContainerBuilder $container): void
     {
         if ($container->hasDefinition(Client::class)) {
-            $container->setParameter('frosh_tools.elasticsearch.enabled', true);
+            $container->setParameter('frosh_tools.elasticsearch.enabled', '%elasticsearch.enabled%');
 
             return;
         }
