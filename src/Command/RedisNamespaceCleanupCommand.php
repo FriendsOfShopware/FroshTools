@@ -90,7 +90,7 @@ class RedisNamespaceCleanupCommand extends Command
             $tableData[] = [$namespace, $data['count'], $status];
         }
 
-        usort($tableData, function ($a, $b) {
+        usort($tableData, static function ($a, $b) {
             return $b[0] <=> $a[0];
         });
 

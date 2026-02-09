@@ -25,6 +25,17 @@
         "system_config": {
           "type": "object",
           "additionalProperties": true
+        },
+        "twig_cache_warmer": {
+          "type": "object",
+          "properties": {
+            "enabled": {
+              "title": "Enable Twig cache warmer during cache:warmup",
+              "type": "boolean",
+              "default": false
+            }
+          },
+          "additionalProperties": false
         }
       },
       "additionalProperties": false

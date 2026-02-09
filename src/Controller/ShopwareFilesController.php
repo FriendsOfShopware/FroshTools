@@ -73,7 +73,7 @@ class ShopwareFilesController extends AbstractController
 
         foreach (explode("\n", $data) as $row) {
             if ($this->isPlatform) {
-                $row = preg_replace_callback('/vendor\/shopware\/(.)/', fn ($matches): string => 'src/' . strtoupper($matches[1]), $row);
+                $row = preg_replace_callback('/vendor\/shopware\/(.)/', static fn ($matches): string => 'src/' . strtoupper($matches[1]), $row);
             }
 
             [$expectedMd5Sum, $file] = explode('  ', trim((string) $row));

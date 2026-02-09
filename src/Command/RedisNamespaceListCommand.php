@@ -71,7 +71,7 @@ class RedisNamespaceListCommand extends Command
             $tableData[] = [$prefix, $count, \sprintf('%.1f%%', ($count / $totalKeys) * 100), $isActive ? 'Yes' : 'No'];
         }
 
-        usort($tableData, function ($a, $b) {
+        usort($tableData, static function ($a, $b) {
             return $b[0] <=> $a[0];
         });
 
