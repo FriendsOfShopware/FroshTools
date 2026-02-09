@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace Frosh\Tools\Components\Twig;
 
-use Symfony\Component\DependencyInjection\Attribute\Autowire;
 use Symfony\Component\HttpKernel\CacheWarmer\CacheWarmerInterface;
 
 class TwigCacheKernelWarmer implements CacheWarmerInterface
