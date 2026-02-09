@@ -129,7 +129,7 @@ class CacheAdapter
 
     private function extractNamespace(RedisTagAwareAdapter $adapter): string
     {
-        $func = \Closure::bind(fn () => $adapter->namespace, $adapter, $adapter::class);
+        $func = \Closure::bind(static fn () => $adapter->namespace, $adapter, $adapter::class);
 
         return $func();
     }
@@ -139,14 +139,14 @@ class CacheAdapter
         if (class_exists('Shopware\Core\Framework\Adapter\Cache\CacheDecorator') && $adapter instanceof CacheDecorator) {
             // Do not declare function as static
             // @phpstan-ignore-next-line
-            $func = \Closure::bind(fn () => $adapter->decorated, $adapter, $adapter::class);
+            $func = \Closure::bind(static fn () => $adapter->decorated, $adapter, $adapter::class);
 
             return $this->getCacheAdapter($func());
         }
 
         if ($adapter instanceof TagAwareAdapter || $adapter instanceof TraceableAdapter) {
             // Do not declare function as static
-            $func = \Closure::bind(fn () => $adapter->pool, $adapter, $adapter::class);
+            $func = \Closure::bind(static fn () => $adapter->pool, $adapter, $adapter::class);
 
             return $this->getCacheAdapter($func());
         }
@@ -157,10 +157,10 @@ class CacheAdapter
     private function getRedis(AdapterInterface $adapter): \Redis
     {
         if ($adapter instanceof RedisTagAwareAdapter) {
-            $redisProxyGetter = \Closure::bind(fn () => $adapter->redis, $adapter, RedisTagAwareAdapter::class);
+            $redisProxyGetter = \Closure::bind(static fn () => $adapter->redis, $adapter, RedisTagAwareAdapter::class);
         } else {
             // @phpstan-ignore-next-line
-            $redisProxyGetter = \Closure::bind(fn () => $adapter->redis, $adapter, RedisAdapter::class);
+            $redisProxyGetter = \Closure::bind(static fn () => $adapter->redis, $adapter, RedisAdapter::class);
         }
 
         return $redisProxyGetter();
@@ -168,14 +168,14 @@ class CacheAdapter
 
     private function getPathFromFilesystemAdapter(FilesystemAdapter $adapter): string
     {
-        $getter = \Closure::bind(fn () => $adapter->directory, $adapter, $adapter::class);
+        $getter = \Closure::bind(static fn () => $adapter->directory, $adapter, $adapter::class);
 
         return $getter();
     }
 
     private function getPathOfFilesAdapter(PhpFilesAdapter $adapter): string
     {
-        $getter = \Closure::bind(fn () => $adapter->directory, $adapter, $adapter::class);
+        $getter = \Closure::bind(static fn () => $adapter->directory, $adapter, $adapter::class);
 
         return $getter();
     }
