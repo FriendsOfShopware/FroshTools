@@ -10,9 +10,7 @@ use Symfony\Component\HttpKernel\CacheWarmer\CacheWarmerInterface;
 class TwigCacheKernelWarmer implements CacheWarmerInterface
 {
     public function __construct(
-        private readonly TwigCacheWarmer $twigCacheWarmer,
-        #[Autowire('%frosh_tools.twig_cache_warmer.enabled%')]
-        private bool $enabled
+        private readonly TwigCacheWarmer $twigCacheWarmer
     ) {
     }
 
@@ -21,11 +19,15 @@ class TwigCacheKernelWarmer implements CacheWarmerInterface
      */
     public function warmUp(string $cacheDir, ?string $buildDir = null): array
     {
-        if (!$this->enabled) {
+        try {
+            return $this->twigCacheWarmer->warmUp($cacheDir);
+        } catch (\Throwable $e) {
+            if (\defined('STDERR')) {
+                fwrite(STDERR, 'Twig cache warming failed: ' . $e->getMessage() . PHP_EOL);
+            }
+
             return [];
         }
-
-        return $this->twigCacheWarmer->warmUp($cacheDir);
     }
 
     public function isOptional(): bool

@@ -34,14 +34,6 @@ class Configuration implements ConfigurationInterface
                         ->end()
                     ->end()
                 ->end()
-                ->arrayNode('twig_cache_warmer')
-                    ->addDefaultsIfNotSet()
-                    ->children()
-                        ->booleanNode('enabled')
-                            ->defaultFalse()
-                        ->end()
-                    ->end()
-                ->end()
             ->end()
         ;
 
