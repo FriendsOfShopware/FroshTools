@@ -3,7 +3,8 @@
     "version": "1.0.0",
     "main": "index.js",
     "dependencies": {
-        "diff-match-patch": "^1.0.5"
+        "diff-match-patch": "^1.0.5",
+        "mermaid": "^10.9.5"
     },
     "license": "MIT"
 }

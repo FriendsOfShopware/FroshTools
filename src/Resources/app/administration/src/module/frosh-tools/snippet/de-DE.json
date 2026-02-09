@@ -84,7 +84,6 @@
             "state-machines": {
                 "title": "State Machine Viewer",
                 "label": "State Machine",
-                "helpText": "Wähle eine State Machine. Das Bild wird mit Hilfe der plantuml.com API generiert. Dafür ist es notwendig, dass der Server auf plantuml.com zugreifen darf und nicht etwa von einer Firewall blockiert wird.",
                 "orderTitle": "Bestellstatus",
                 "transactionTitle": "Bezahlstatus",
                 "deliveryTitle": "Versandstatus"
