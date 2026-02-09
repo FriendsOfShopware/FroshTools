@@ -28,6 +28,10 @@ class ElasticsearchManager
         private readonly Connection $connection,
         #[Autowire(service: 'shopware.increment.gateway.registry')]
         private readonly IncrementGatewayRegistry $gatewayRegistry,
+        #[Autowire('%elasticsearch.index_prefix%')]
+        private readonly string $indexPrefix = 'sw',
+        #[Autowire('%elasticsearch.administration.index_prefix%')]
+        private readonly string $adminIndexPrefix = 'sw-admin',
     ) {
     }
 
@@ -58,6 +62,10 @@ class ElasticsearchManager
         $list = [];
 
         foreach ($indices as $indexName => $config) {
+            if (!$this->matchesPrefix($indexName)) {
+                continue;
+            }
+
             $statCfg = $stats['indices'][$indexName];
 
             $list[] = [
@@ -76,6 +84,10 @@ class ElasticsearchManager
      */
     public function deleteIndex(string $name): array
     {
+        if (!$this->matchesPrefix($name)) {
+            throw new \InvalidArgumentException(\sprintf('Index "%s" does not match the configured prefix', $name));
+        }
+
         return $this->client->indices()->delete(['index' => $name]);
     }
 
@@ -142,5 +154,11 @@ class ElasticsearchManager
         }
 
         $this->connection->executeStatement('DELETE FROM messenger_messages WHERE body LIKE "%ElasticsearchIndexingMessage%"');
+    }
+
+    private function matchesPrefix(string $indexName): bool
+    {
+        return str_starts_with($indexName, $this->indexPrefix . '_')
+            || str_starts_with($indexName, $this->adminIndexPrefix . '_');
     }
 }
