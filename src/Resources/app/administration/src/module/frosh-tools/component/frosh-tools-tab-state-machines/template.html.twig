@@ -8,28 +8,18 @@
         positionIdentifier="frosh-tools-tab-state-machines"
     >
         <div
+            id="state_machine"
             class="frosh-tools-tab-state-machines__state-machines-card-image-wrapper"
-        >
-            <img
-                id="state_machine"
-                class="frosh-tools-tab-state-machines__state-machines-card-image"
-                type="image/svg+xml"
-                src="/bundles/administration/static/img/empty-states/media-empty-state.svg"
-                alt="State Machine"
-                width="100%"
-                height="auto"
-                style="text-align:center; display:inline-block; opacity:0;"
-            />
-        </div>
+        ></div>
         <template #toolbar>
-            <sw-entity-single-select
-                v-model="selectedStateMachine"
-                entity="state_machine"
+            <sw-single-select
+                v-model:value="selectedStateMachine"
+                :options="stateMachineOptions"
                 :aside="true"
+                :disable-search-function="true"
                 @update:value="onStateMachineChange"
                 :label="$t('frosh-tools.tabs.state-machines.label')"
                 :placeholder="$t('frosh-tools.chooseStateMachine')"
-                :helpText="$t('frosh-tools.tabs.state-machines.helpText')"
             />
         </template>
     </sw-card>

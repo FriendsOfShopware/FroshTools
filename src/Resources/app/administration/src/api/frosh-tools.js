@@ -241,17 +241,6 @@ class FroshTools extends ApiService {
             });
     }
 
-    stateMachines(id) {
-        const apiRoute = `${this.getApiBasePath()}/state-machines/load/${id}`;
-        return this.httpClient
-            .get(apiRoute, {
-                headers: this.getBasicHeaders(),
-            })
-            .then((response) => {
-                return ApiService.handleResponse(response);
-            });
-    }
-
     getFastlyStatus() {
         const apiRoute = `${this.getApiBasePath()}/fastly/status`;
         return this.httpClient
