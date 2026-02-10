@@ -43,49 +43,50 @@ class MysqlSettingsChecker implements PerformanceCheckerInterface, CheckerInterf
     {
         /** @var string|false $groupConcatMaxLen */
         $groupConcatMaxLen = $this->connection->fetchOne('SELECT @@group_concat_max_len');
-        if (!$groupConcatMaxLen || (int) $groupConcatMaxLen < self::MYSQL_GROUP_CONCAT_MAX_LEN) {
-            $collection->add(
-                SettingsResult::error(
-                    'sql_group_concat_max_len',
-                    'MySQL value group_concat_max_len',
-                    (string) $groupConcatMaxLen,
-                    'min ' . self::MYSQL_GROUP_CONCAT_MAX_LEN,
-                    self::DOCUMENTATION_URL,
-                ),
-            );
-        }
+        $maxLenNotOk = (int) $groupConcatMaxLen < self::MYSQL_GROUP_CONCAT_MAX_LEN;
+
+        $collection->add(
+            SettingsResult::create(
+                $maxLenNotOk ? 'warning' : 'ok',
+                'sql_group_concat_max_len',
+                'MySQL value group_concat_max_len',
+                (string) $groupConcatMaxLen,
+                'min ' . self::MYSQL_GROUP_CONCAT_MAX_LEN,
+                self::DOCUMENTATION_URL,
+            ),
+        );
     }
 
     private function checkSqlMode(HealthCollection $collection): void
     {
         $sqlMode = $this->connection->fetchOne('SELECT @@sql_mode');
-        if (\is_string($sqlMode) && \str_contains($sqlMode, self::MYSQL_SQL_MODE_PART)) {
-            $collection->add(
-                SettingsResult::error(
-                    'sql_mode',
-                    'MySQL value sql_mode',
-                    $sqlMode,
-                    'No ' . self::MYSQL_SQL_MODE_PART,
-                    self::DOCUMENTATION_URL,
-                ),
-            );
-        }
+        $hasForbiddenMode = \is_string($sqlMode) && \str_contains($sqlMode, self::MYSQL_SQL_MODE_PART);
+        $collection->add(
+            SettingsResult::create(
+                $hasForbiddenMode ? 'error' : 'ok',
+                'sql_mode',
+                'MySQL value sql_mode',
+                $sqlMode,
+                'No ' . self::MYSQL_SQL_MODE_PART,
+                self::DOCUMENTATION_URL,
+            ),
+        );
     }
 
     private function checkTimeZone(HealthCollection $collection): void
     {
         $timeZone = $this->connection->fetchOne('SELECT @@time_zone');
-        if (\is_string($timeZone) && !\in_array($timeZone, self::MYSQL_TIME_ZONES, true)) {
-            $collection->add(
-                SettingsResult::warning(
-                    'sql_time_zone',
-                    'MySQL value time_zone',
-                    $timeZone,
-                    implode(', ', self::MYSQL_TIME_ZONES),
-                    self::DOCUMENTATION_URL,
-                ),
-            );
-        }
+        $isInvalidTimeZone = \is_string($timeZone) && !\in_array($timeZone, self::MYSQL_TIME_ZONES, true);
+        $collection->add(
+            SettingsResult::create(
+                $isInvalidTimeZone ? 'warning' : 'ok',
+                'sql_time_zone',
+                'MySQL value time_zone',
+                $timeZone,
+                implode(', ', self::MYSQL_TIME_ZONES),
+                self::DOCUMENTATION_URL,
+            ),
+        );
     }
 
     private function checkCheckDefaultEnvironmentSessionVariables(HealthCollection $collection): void
@@ -96,16 +97,16 @@ class MysqlSettingsChecker implements PerformanceCheckerInterface, CheckerInterf
         }
 
         $setSessionVariables = (bool) EnvironmentHelper::getVariable('SQL_SET_DEFAULT_SESSION_VARIABLES', true);
-        if ($setSessionVariables) {
-            $collection->add(
-                SettingsResult::warning(
-                    'sql_set_default_session_variables',
-                    'MySQL session vars are set on each connect',
-                    'enabled',
-                    'disabled',
-                    self::DOCUMENTATION_URL,
-                ),
-            );
-        }
+
+        $collection->add(
+            SettingsResult::create(
+                $setSessionVariables ? 'warning' : 'ok',
+                'sql_set_default_session_variables',
+                'MySQL session vars are set on each connect',
+                'enabled',
+                'disabled',
+                self::DOCUMENTATION_URL,
+            ),
+        );
     }
 }

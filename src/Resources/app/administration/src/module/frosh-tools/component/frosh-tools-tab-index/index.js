@@ -10,8 +10,9 @@ Component.register('frosh-tools-tab-index', {
     data() {
         return {
             isLoading: true,
+            showDone: false,
             health: null,
-            performanceStatus: null,
+            performanceStatus: [],
         };
     },
 
@@ -38,6 +39,15 @@ Component.register('frosh-tools-tab-index', {
                     rawData: true,
                 },
             ];
+        },
+        filteredPerformanceStatus() {
+            if (this.showDone) {
+                return this.performanceStatus;
+            }
+
+            return this.performanceStatus.filter(
+                (item) => item.state != 'STATE_OK'
+            );
         },
     },
 

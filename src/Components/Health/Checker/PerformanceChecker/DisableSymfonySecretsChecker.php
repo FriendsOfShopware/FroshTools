@@ -20,16 +20,15 @@ class DisableSymfonySecretsChecker implements PerformanceCheckerInterface, Check
 
     public function collect(HealthCollection $collection): void
     {
-        if ($this->vault) {
-            $collection->add(
-                SettingsResult::info(
-                    'symfony-secrets',
-                    'Disable Symfony Secrets',
-                    'enabled',
-                    'disabled',
-                    'https://developer.shopware.com/docs/guides/hosting/performance/performance-tweaks.html#disable-symfony-secrets',
-                ),
-            );
-        }
+        $collection->add(
+            SettingsResult::create(
+                $this->vault ? 'info' : 'ok',
+                'symfony-secrets',
+                'Disable Symfony Secrets',
+                $this->vault ? 'enabled' : 'disabled',
+                'disabled',
+                'https://developer.shopware.com/docs/guides/hosting/performance/performance-tweaks.html#disable-symfony-secrets',
+            ),
+        );
     }
 }

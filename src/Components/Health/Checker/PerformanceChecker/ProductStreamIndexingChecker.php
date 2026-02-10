@@ -26,16 +26,15 @@ class ProductStreamIndexingChecker implements PerformanceCheckerInterface, Check
             return;
         }
 
-        if ($this->productStreamIndexingEnabled) {
-            $collection->add(
-                SettingsResult::info(
-                    'product-stream-indexing',
-                    'Product Stream Indexing',
-                    'enabled',
-                    'disabled',
-                    'https://developer.shopware.com/docs/guides/hosting/performance/performance-tweaks.html#disable-product-stream-indexer',
-                ),
-            );
-        }
+        $collection->add(
+            SettingsResult::create(
+                $this->productStreamIndexingEnabled ? 'info' : 'ok',
+                'product-stream-indexing',
+                'Product Stream Indexing',
+                'enabled',
+                'disabled',
+                'https://developer.shopware.com/docs/guides/hosting/performance/performance-tweaks.html#disable-product-stream-indexer',
+            ),
+        );
     }
 }

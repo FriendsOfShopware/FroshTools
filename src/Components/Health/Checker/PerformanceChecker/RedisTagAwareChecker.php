@@ -21,13 +21,15 @@ class RedisTagAwareChecker implements PerformanceCheckerInterface, CheckerInterf
     {
         $httpCacheType = $this->cacheRegistry->get('cache.http')->getType();
 
-        if (!\str_starts_with($httpCacheType, CacheAdapter::TYPE_REDIS)
-            || \str_starts_with($httpCacheType, CacheAdapter::TYPE_REDIS_TAG_AWARE)) {
+        // no redis
+        if (!\str_starts_with($httpCacheType, CacheAdapter::TYPE_REDIS)) {
             return;
         }
+        $notTagAware = !\str_starts_with($httpCacheType, CacheAdapter::TYPE_REDIS_TAG_AWARE);
 
         $collection->add(
-            SettingsResult::warning(
+            SettingsResult::create(
+                $notTagAware ? 'warning' : 'ok',
                 'redis-tag-aware',
                 'Redis adapter should be TagAware',
                 CacheAdapter::TYPE_REDIS,

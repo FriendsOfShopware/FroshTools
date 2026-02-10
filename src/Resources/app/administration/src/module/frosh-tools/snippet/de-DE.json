@@ -128,6 +128,7 @@
         "status": "Status",
         "name": "Name",
         "good": "Gut",
+        "done": "Erledigt",
         "warning": "Warnung",
         "error": "Fehler",
         "info": "Info",

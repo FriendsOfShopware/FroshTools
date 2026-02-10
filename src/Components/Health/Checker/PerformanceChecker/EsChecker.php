@@ -20,16 +20,15 @@ class EsChecker implements PerformanceCheckerInterface, CheckerInterface
 
     public function collect(HealthCollection $collection): void
     {
-        if (!$this->esEnabled) {
-            $collection->add(
-                SettingsResult::info(
-                    'elasticsearch',
-                    'Elasticsearch',
-                    'disabled',
-                    'enabled',
-                    'https://developer.shopware.com/docs/guides/hosting/infrastructure/elasticsearch/elasticsearch-setup',
-                ),
-            );
-        }
+        $collection->add(
+            SettingsResult::create(
+                !$this->esEnabled ? 'info' : 'ok',
+                'elasticsearch',
+                'Elasticsearch',
+                !$this->esEnabled ? 'disabled' : 'enabled',
+                'enabled',
+                'https://developer.shopware.com/docs/guides/hosting/infrastructure/elasticsearch/elasticsearch-setup',
+            )
+        );
     }
 }
