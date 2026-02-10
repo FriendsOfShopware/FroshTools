@@ -159,6 +159,6 @@ class ElasticsearchManager
     private function matchesPrefix(string $indexName): bool
     {
         return str_starts_with($indexName, $this->indexPrefix . '_')
-            || str_starts_with($indexName, $this->adminIndexPrefix . '_');
+            || str_starts_with($indexName, $this->adminIndexPrefix . '-');
     }
 }
