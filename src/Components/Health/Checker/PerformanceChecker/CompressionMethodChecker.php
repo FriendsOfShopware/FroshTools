@@ -41,7 +41,7 @@ class CompressionMethodChecker implements PerformanceCheckerInterface, CheckerIn
             return;
         }
 
-        if ($method === 'gzip') {
+        if ($method === 'gzip' && \version_compare($this->shopwareVersion, '6.7.1.0', '<')) {
             $collection->add(
                 SettingsResult::info(
                     strtolower($functionality) . '-compression-method',
