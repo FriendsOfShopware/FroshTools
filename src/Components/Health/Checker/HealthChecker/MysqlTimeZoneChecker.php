@@ -20,7 +20,7 @@ class MysqlTimeZoneChecker implements HealthCheckerInterface, CheckerInterface
         $snippet = 'MySQL Time Zone Support';
 
         try {
-            $result = $this->connection->fetchOne("SELECT CONVERT_TZ('2024-01-01 00:00:00', 'UTC', 'Europe/Berlin')");
+            $result = $this->connection->fetchOne('SELECT CONVERT_TZ(\'2024-01-01 00:00:00\', \'UTC\', \'Europe/Berlin\')');
         } catch (\Throwable) {
             $collection->add(SettingsResult::warning('mysql-timezone', $snippet, 'Query failed', 'Time zone tables available'));
 
