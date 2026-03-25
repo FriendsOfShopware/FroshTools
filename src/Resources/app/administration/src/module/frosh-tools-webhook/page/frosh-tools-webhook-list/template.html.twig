@@ -1,0 +1,150 @@
+<sw-page class="frosh-tools-webhook-list">
+    <template #search-bar>
+        <sw-search-bar
+            initial-search-type="webhook"
+            :initial-search="term"
+            @search="onSearch"
+        />
+    </template>
+
+    <template #smart-bar-header>
+        <h2>
+            {{ $tc('frosh-tools-webhook.list.title') }}
+            <span
+                v-if="!isLoading"
+                class="sw-page__smart-bar-amount"
+            >({{ total }})</span>
+        </h2>
+    </template>
+
+    <template #smart-bar-actions>
+        <sw-button
+            v-tooltip.bottom="{
+                message: $tc('sw-privileges.tooltip.warning'),
+                disabled: acl.can('frosh_tools_webhook.creator'),
+                showOnDisabledElements: true,
+            }"
+            :disabled="!acl.can('frosh_tools_webhook.creator') || undefined"
+            variant="primary"
+            @click="$router.push({ name: 'frosh.tools.webhook.create' })"
+        >
+            {{ $tc('frosh-tools-webhook.list.buttonAddWebhook') }}
+        </sw-button>
+    </template>
+
+    <template #sidebar>
+        <sw-sidebar class="frosh-tools-webhook-list__sidebar">
+            <sw-sidebar-item
+                icon="regular-undo"
+                :title="$tc('frosh-tools-webhook.list.titleSidebarRefresh')"
+                @click="getList"
+            />
+            <sw-sidebar-filter-panel
+                entity="webhook"
+                :store-key="storeKey"
+                :filters="listFilters"
+                :defaults="defaultFilters"
+                :active-filter-number="activeFilterNumber"
+                @criteria-changed="updateCriteria"
+            />
+        </sw-sidebar>
+    </template>
+
+    <template #content>
+        <sw-card-view>
+            <sw-empty-state
+                v-if="!isLoading && (!webhooks || webhooks.length === 0)"
+                :icon="$route.meta.$module.icon"
+                :title="$tc('frosh-tools-webhook.list.messageEmpty')"
+            >
+                <template #actions>
+                    <sw-button
+                        v-if="acl.can('frosh_tools_webhook.creator')"
+                        variant="primary"
+                        @click="$router.push({ name: 'frosh.tools.webhook.create' })"
+                    >
+                        {{ $tc('frosh-tools-webhook.list.buttonAddWebhook') }}
+                    </sw-button>
+                </template>
+            </sw-empty-state>
+            <sw-card
+                v-else
+                :is-loading="isLoading"
+                position-identifier="frosh-tools-webhook-list"
+            >
+                <template #grid>
+                    <sw-entity-listing
+                        detail-route="frosh.tools.webhook.detail"
+                        :data-source="webhooks"
+                        :columns="getWebhookColumns()"
+                        :repository="webhookRepository"
+                        :full-page="false"
+                        :show-selection="false"
+                        :allow-view="acl.can('frosh_tools_webhook.viewer')"
+                        :allow-edit="acl.can('frosh_tools_webhook.editor')"
+                        :allow-inline-edit="acl.can('frosh_tools_webhook.editor')"
+                        :allow-delete="acl.can('frosh_tools_webhook.deleter')"
+                        :disable-data-fetching="true"
+                        :sort-by="sortBy"
+                        :sort-direction="sortDirection"
+                        :is-loading="isLoading"
+                        @inline-edit-save="onInlineEditSave"
+                        @column-sort="onSortColumn"
+                        @page-change="onPageChange"
+                    >
+                        <template #column-active="{ item }">
+                            <sw-icon
+                                size="12px"
+                                :color="item.active ? '#37d046' : '#de294c'"
+                                :name="item.active ? 'regular-checkmark-xs' : 'regular-times-s'"
+                            />
+                        </template>
+
+                        <template #column-app.name="{ item }">
+                            {{ item.app ? item.app.name : $tc('frosh-tools-webhook.list.appNone') }}
+                        </template>
+
+                        <template #actions="{ item }">
+                            <sw-context-menu-item
+                                :disabled="!acl.can('frosh_tools_webhook.editor')"
+                                :router-link="{ name: 'frosh.tools.webhook.detail', params: { id: item.id } }"
+                            >
+                                {{ $tc('global.default.edit') }}
+                            </sw-context-menu-item>
+                            <sw-context-menu-item
+                                variant="danger"
+                                :disabled="!acl.can('frosh_tools_webhook.deleter')"
+                                @click="onDelete(item.id)"
+                            >
+                                {{ $tc('global.default.delete') }}
+                            </sw-context-menu-item>
+                        </template>
+
+                        <template #action-modals="{ item }">
+                            <sw-modal
+                                v-if="showDeleteModal === item.id"
+                                :title="$tc('frosh-tools-webhook.list.titleDeleteConfirm')"
+                                @modal-close="onCloseDeleteModal"
+                            >
+                                <p>
+                                    {{ $tc('frosh-tools-webhook.list.textDeleteConfirm', 0, { name: item.name }) }}
+                                </p>
+                                <template #modal-footer>
+                                    <sw-button @click="onCloseDeleteModal">
+                                        {{ $tc('global.default.cancel') }}
+                                    </sw-button>
+                                    <sw-button
+                                        variant="danger"
+                                        @click="onConfirmDelete(item.id)"
+                                    >
+                                        {{ $tc('global.default.delete') }}
+                                    </sw-button>
+                                </template>
+                            </sw-modal>
+                        </template>
+                    </sw-entity-listing>
+                </template>
+            </sw-card>
+        </sw-card-view>
+    </template>
+</sw-page>

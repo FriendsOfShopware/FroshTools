@@ -147,7 +147,7 @@ class ElasticsearchManager
         $this->connection->executeStatement('TRUNCATE elasticsearch_index_task');
 
         try {
-            $gateway = $this->gatewayRegistry->get(IncrementGatewayRegistry::MESSAGE_QUEUE_POOL);
+            $gateway = $this->gatewayRegistry->get('message_queue');
             $gateway->reset('message_queue_stats', ElasticsearchIndexingMessage::class);
         } catch (IncrementGatewayNotFoundException) {
             // In case message_queue pool is disabled
