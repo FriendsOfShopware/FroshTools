@@ -11,6 +11,6 @@ jobs:
         with:
             extensionName: ${{ github.event.repository.name }}
         secrets:
-            accountUser: ${{ secrets.ACCOUNT_USER }}
-            accountPassword: ${{ secrets.ACCOUNT_PASSWORD }}
+            clientId: ${{ secrets.SHOPWARE_CLI_ACCOUNT_CLIENT_ID }}
+            clientSecret: ${{ secrets.SHOPWARE_CLI_ACCOUNT_CLIENT_SECRET }}
             ghToken: ${{ secrets.GITHUB_TOKEN }}
