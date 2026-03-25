@@ -7,6 +7,12 @@ Component.register('frosh-tools-index', {
     template,
     inject: ['froshToolsService'],
 
+    metaInfo() {
+        return {
+            title: this.$createTitle(),
+        };
+    },
+
     computed: {
         fastlyAvailable() {
             try {

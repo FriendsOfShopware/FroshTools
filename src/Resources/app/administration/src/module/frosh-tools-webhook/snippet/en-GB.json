@@ -1,0 +1,69 @@
+{
+    "frosh-tools-webhook": {
+        "general": {
+            "title": "Webhooks",
+            "description": "Manage webhooks",
+            "placeholderSearchBar": "Search webhooks..."
+        },
+        "list": {
+            "title": "Webhooks",
+            "buttonAddWebhook": "Add webhook",
+            "columnName": "Name",
+            "columnEventName": "Event name",
+            "columnUrl": "URL",
+            "columnActive": "Active",
+            "columnErrorCount": "Error count",
+            "columnApp": "App",
+            "appNone": "None",
+            "textDeleteConfirm": "Are you sure you want to delete the webhook \"{name}\"?",
+            "titleDeleteConfirm": "Delete webhook",
+            "messageEmpty": "No webhooks yet",
+            "titleSidebarRefresh": "Refresh",
+            "filter": {
+                "active": {
+                    "label": "Active",
+                    "placeholder": "Select status..."
+                },
+                "app": {
+                    "label": "App",
+                    "placeholder": "Select app..."
+                }
+            }
+        },
+        "detail": {
+            "title": "New webhook",
+            "titleEdit": "Webhook",
+            "labelName": "Name",
+            "labelEventName": "Event name",
+            "labelUrl": "URL",
+            "labelActive": "Active",
+            "labelOnlyLiveVersion": "Only live version",
+            "labelErrorCount": "Error count",
+            "managedByApp": "This webhook is managed by the app \"{app}\" and cannot be edited.",
+            "messageSaveSuccess": "Webhook saved successfully.",
+            "messageSaveError": "Could not save webhook.",
+            "eventLog": {
+                "title": "Event log",
+                "columnStatus": "Status",
+                "columnEventName": "Event name",
+                "columnUrl": "URL",
+                "columnResponseStatusCode": "HTTP status",
+                "columnProcessingTime": "Processing time",
+                "columnTimestamp": "Timestamp",
+                "messageEmpty": "No event logs available for this webhook."
+            }
+        }
+    },
+    "global": {
+        "entities": {
+            "webhook": "Webhook | Webhooks"
+        }
+    },
+    "sw-privileges": {
+        "permissions": {
+            "frosh_tools_webhook": {
+                "label": "Webhooks (Frosh Tools)"
+            }
+        }
+    }
+}

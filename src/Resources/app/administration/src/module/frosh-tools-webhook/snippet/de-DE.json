@@ -1,0 +1,69 @@
+{
+    "frosh-tools-webhook": {
+        "general": {
+            "title": "Webhooks",
+            "description": "Webhooks verwalten",
+            "placeholderSearchBar": "Webhooks durchsuchen..."
+        },
+        "list": {
+            "title": "Webhooks",
+            "buttonAddWebhook": "Webhook hinzufügen",
+            "columnName": "Name",
+            "columnEventName": "Eventname",
+            "columnUrl": "URL",
+            "columnActive": "Aktiv",
+            "columnErrorCount": "Fehleranzahl",
+            "columnApp": "App",
+            "appNone": "Keine",
+            "textDeleteConfirm": "Sind Sie sicher, dass Sie den Webhook \"{name}\" löschen möchten?",
+            "titleDeleteConfirm": "Webhook löschen",
+            "messageEmpty": "Noch keine Webhooks vorhanden",
+            "titleSidebarRefresh": "Aktualisieren",
+            "filter": {
+                "active": {
+                    "label": "Aktiv",
+                    "placeholder": "Status wählen..."
+                },
+                "app": {
+                    "label": "App",
+                    "placeholder": "App wählen..."
+                }
+            }
+        },
+        "detail": {
+            "title": "Neuer Webhook",
+            "titleEdit": "Webhook",
+            "labelName": "Name",
+            "labelEventName": "Eventname",
+            "labelUrl": "URL",
+            "labelActive": "Aktiv",
+            "labelOnlyLiveVersion": "Nur Live-Version",
+            "labelErrorCount": "Fehleranzahl",
+            "managedByApp": "Dieser Webhook wird von der App \"{app}\" verwaltet und kann nicht bearbeitet werden.",
+            "messageSaveSuccess": "Webhook erfolgreich gespeichert.",
+            "messageSaveError": "Webhook konnte nicht gespeichert werden.",
+            "eventLog": {
+                "title": "Ereignisprotokoll",
+                "columnStatus": "Status",
+                "columnEventName": "Eventname",
+                "columnUrl": "URL",
+                "columnResponseStatusCode": "HTTP-Status",
+                "columnProcessingTime": "Verarbeitungszeit",
+                "columnTimestamp": "Zeitstempel",
+                "messageEmpty": "Keine Ereignisprotokolle für diesen Webhook vorhanden."
+            }
+        }
+    },
+    "global": {
+        "entities": {
+            "webhook": "Webhook | Webhooks"
+        }
+    },
+    "sw-privileges": {
+        "permissions": {
+            "frosh_tools_webhook": {
+                "label": "Webhooks (Frosh Tools)"
+            }
+        }
+    }
+}

@@ -1,0 +1,162 @@
+<sw-page class="frosh-tools-webhook-detail">
+    <template #smart-bar-header>
+        <h2 v-if="webhook && webhook.name">{{ webhook.name }}</h2>
+        <h2 v-else>
+            {{ $tc('frosh-tools-webhook.detail.title') }}
+        </h2>
+    </template>
+
+    <template #smart-bar-actions>
+        <sw-button
+            v-tooltip.bottom="{ message: 'ESC', appearance: 'light' }"
+            :disabled="isLoading"
+            variant="secondary"
+            @click="onCancel"
+        >
+            {{ $tc('global.default.cancel') }}
+        </sw-button>
+        <sw-button-process
+            v-model:process-success="isSaveSuccessful"
+            v-tooltip.bottom="tooltipSave"
+            variant="primary"
+            size="small"
+            :is-loading="isLoading"
+            :disabled="isLoading || !allowSave || undefined"
+            @click.prevent="onSave"
+        >
+            {{ $tc('global.default.save') }}
+        </sw-button-process>
+    </template>
+
+    <template #content>
+        <sw-card-view>
+            <template v-if="isLoading">
+                <sw-skeleton/>
+                <sw-skeleton/>
+            </template>
+
+            <template v-else>
+                <sw-alert
+                    v-if="isManagedByApp"
+                    variant="info"
+                >
+                    {{ $tc('frosh-tools-webhook.detail.managedByApp', 0, { app: webhook.app ? webhook.app.name : '' }) }}
+                </sw-alert>
+                <sw-card
+                    :title="$tc('frosh-tools-webhook.detail.titleEdit')"
+                    position-identifier="frosh-tools-webhook-detail"
+                >
+                    <sw-container
+                        columns="repeat(auto-fit, minmax(250px, 1fr))"
+                        gap="0px 30px"
+                    >
+                        <sw-text-field
+                            v-model:value="webhook.name"
+                            :label="$tc('frosh-tools-webhook.detail.labelName')"
+                            :disabled="!allowSave || undefined"
+                            :error="webhookNameError"
+                            required
+                        />
+                        <sw-text-field
+                            v-model:value="webhook.eventName"
+                            :label="$tc('frosh-tools-webhook.detail.labelEventName')"
+                            :disabled="!allowSave || undefined"
+                            :error="webhookEventNameError"
+                            required
+                        />
+                    </sw-container>
+                    <sw-container
+                        columns="repeat(auto-fit, minmax(250px, 1fr))"
+                        gap="0px 30px"
+                    >
+                        <sw-text-field
+                            v-model:value="webhook.url"
+                            :label="$tc('frosh-tools-webhook.detail.labelUrl')"
+                            :disabled="!allowSave || undefined"
+                            :error="webhookUrlError"
+                            required
+                        />
+                    </sw-container>
+                    <sw-container
+                        columns="repeat(auto-fit, minmax(250px, 1fr))"
+                        gap="0px 30px"
+                    >
+                        <sw-switch-field
+                            :value="webhook.active"
+                            :label="$tc('frosh-tools-webhook.detail.labelActive')"
+                            :disabled="!allowSave || undefined"
+                            @update:value="webhook.active = $event"
+                        />
+                        <sw-switch-field
+                            :value="webhook.onlyLiveVersion"
+                            :label="$tc('frosh-tools-webhook.detail.labelOnlyLiveVersion')"
+                            :disabled="!allowSave || undefined"
+                            @update:value="webhook.onlyLiveVersion = $event"
+                        />
+                    </sw-container>
+                    <sw-text-field
+                        v-if="!isNewWebhook"
+                        :value="String(webhook.errorCount)"
+                        :label="$tc('frosh-tools-webhook.detail.labelErrorCount')"
+                        disabled
+                    />
+                </sw-card>
+                <sw-card
+                    v-if="!isNewWebhook"
+                    :title="$tc('frosh-tools-webhook.detail.eventLog.title')"
+                    :is-loading="eventLogsLoading"
+                    position-identifier="frosh-tools-webhook-event-log"
+                >
+                    <template
+                        v-if="eventLogs && eventLogs.length > 0"
+                        #grid
+                    >
+                        <sw-data-grid
+                            :data-source="eventLogs"
+                            :columns="eventLogColumns"
+                            :full-page="false"
+                            :show-selection="false"
+                            :show-actions="false"
+                            :sort-by="'createdAt'"
+                            :sort-direction="'DESC'"
+                            :is-loading="eventLogsLoading"
+                        >
+                            <template #column-deliveryStatus="{ item }">
+                                <sw-label
+                                    :variant="item.deliveryStatus === 'success' ? 'success' : item.deliveryStatus === 'failed' ? 'danger' : 'info'"
+                                    size="small"
+                                    appearance="pill"
+                                >
+                                    {{ item.deliveryStatus }}
+                                </sw-label>
+                            </template>
+
+                            <template #column-processingTime="{ item }">
+                                {{ item.processingTime ? `${item.processingTime} ms` : '-' }}
+                            </template>
+
+                            <template #column-createdAt="{ item }">
+                                {{ date(item.createdAt, { hour: '2-digit', minute: '2-digit', second: '2-digit' }) }}
+                            </template>
+                        </sw-data-grid>
+                        <sw-pagination
+                            :total="eventLogsTotal"
+                            :limit="eventLogsLimit"
+                            :page="eventLogsPage"
+                            @page-change="onEventLogPageChange"
+                        />
+                    </template>
+
+                    <template
+                        v-if="!eventLogsLoading && (!eventLogs || eventLogs.length === 0)"
+                        #default
+                    >
+                        <p>
+                            {{ $tc('frosh-tools-webhook.detail.eventLog.messageEmpty') }}
+                        </p>
+                    </template>
+                </sw-card>
+            </template>
+        </sw-card-view>
+    </template>
+</sw-page>

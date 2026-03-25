@@ -33,7 +33,7 @@ class QueueController extends AbstractController
     #[Route(path: '/queue/list', name: 'api.frosh.tools.queue.list', methods: ['GET'])]
     public function list(): JsonResponse
     {
-        $incrementer = $this->incrementer->get(IncrementGatewayRegistry::MESSAGE_QUEUE_POOL);
+        $incrementer = $this->incrementer->get('message_queue');
 
         $list = $incrementer->list('message_queue_stats', -1);
         $queueData = array_map(static fn (array $entry) => [
@@ -49,7 +49,7 @@ class QueueController extends AbstractController
     #[Route(path: '/queue', name: 'api.frosh.tools.queue.clear', methods: ['DELETE'])]
     public function resetQueue(): JsonResponse
     {
-        $incrementer = $this->incrementer->get(IncrementGatewayRegistry::MESSAGE_QUEUE_POOL);
+        $incrementer = $this->incrementer->get('message_queue');
         $incrementer->reset('message_queue_stats');
 
         $this->connection->executeStatement('TRUNCATE `messenger_messages`');
