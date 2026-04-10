@@ -1,0 +1,25 @@
+.frosh-tools-tab-statistics {
+    &__metrics {
+        margin-bottom: 16px;
+
+        &:last-child {
+            margin-bottom: 0;
+        }
+    }
+}
+
+.frosh-tools-stat {
+    &__value {
+        &--success {
+            color: #37d046;
+        }
+
+        &--warning {
+            color: #ffab22;
+        }
+
+        &--danger {
+            color: #de294c;
+        }
+    }
+}
