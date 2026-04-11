@@ -21,7 +21,28 @@ class DeleteUnusedIndicesCommand extends Command
 
     protected function execute(InputInterface $input, OutputInterface $output): int
     {
-        $this->elasticsearchManager->deleteUnusedIndices();
+        $result = $this->elasticsearchManager->deleteUnusedIndices();
+
+        $deleted = $result['deleted'] ?? [];
+        $errors = $result['errors'] ?? [];
+
+        if ($deleted === []) {
+            $output->writeln('No unused indices found.');
+        } else {
+            $output->writeln(\sprintf('Deleted %d unused index/indices:', \count($deleted)));
+            foreach ($deleted as $index) {
+                $output->writeln(' - ' . $index);
+            }
+        }
+
+        if ($errors !== []) {
+            $output->writeln(\sprintf('<error>Encountered %d error(s) while deleting:</error>', \count($errors)));
+            foreach ($errors as $index => $message) {
+                $output->writeln(\sprintf(' - %s: %s', $index, $message));
+            }
+
+            return Command::FAILURE;
+        }
 
         return Command::SUCCESS;
     }
