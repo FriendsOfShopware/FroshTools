@@ -38,7 +38,6 @@ class QueueChecker implements HealthCheckerInterface, CheckerInterface
     {
         $maxDiff = $this->configService->getInt('FroshTools.config.monitorQueueGraceTime') ?: 15;
         $snippet = 'Open Queues';
-        $recommended = \sprintf('max %d mins', $maxDiff);
 
         [$transportCount, $hasCountableTransport, $hasDoctrineTransport] = $this->inspectTransports();
         $incrementerCount = $this->countPendingFromIncrementer();
@@ -48,7 +47,7 @@ class QueueChecker implements HealthCheckerInterface, CheckerInterface
         //    display. The table is the source of truth while Doctrine is live; processed
         //    messages get deleted, so any row we find is actually pending.
         if ($hasDoctrineTransport) {
-            $result = $this->doctrineAgeBasedResult($snippet, $recommended, $maxDiff);
+            $result = $this->doctrineAgeBasedResult($snippet, $maxDiff);
             $result->url = self::URL;
             $collection->add($result);
 
@@ -58,7 +57,7 @@ class QueueChecker implements HealthCheckerInterface, CheckerInterface
         // 2) No Doctrine transport is active, but some count-capable transport is (Redis,
         //    …) — or the Shopware increment gateway has data. Use a count-based display.
         if ($hasCountableTransport || $incrementerCount > 0) {
-            $result = $this->countBasedResult($snippet, $recommended, $transportCount, $incrementerCount);
+            $result = $this->countBasedResult($snippet, $transportCount, $incrementerCount);
             $result->url = self::URL;
             $collection->add($result);
 
@@ -69,7 +68,7 @@ class QueueChecker implements HealthCheckerInterface, CheckerInterface
         //    deliberately do NOT fall back to messenger_messages here, because without an
         //    active Doctrine transport any rows we find there are almost certainly stale
         //    leftovers from a previous configuration.
-        $result = SettingsResult::info('queue', $snippet, 'not monitorable', $recommended);
+        $result = SettingsResult::info('queue', $snippet, 'not monitorable', 'n/a');
         $result->url = self::URL;
         $collection->add($result);
     }
@@ -143,13 +142,15 @@ class QueueChecker implements HealthCheckerInterface, CheckerInterface
         return $total;
     }
 
-    private function doctrineAgeBasedResult(string $snippet, string $recommended, int $maxDiff): SettingsResult
+    private function doctrineAgeBasedResult(string $snippet, int $maxDiff): SettingsResult
     {
+        $recommended = \sprintf('max %d mins', $maxDiff);
+
         try {
             /** @var string|false $oldestMessageAt */
             $oldestMessageAt = $this->connection->fetchOne('SELECT available_at FROM messenger_messages WHERE available_at < UTC_TIMESTAMP() ORDER BY available_at ASC LIMIT 1');
         } catch (\Doctrine\DBAL\Exception) {
-            return SettingsResult::info('queue', $snippet, 'not monitorable', $recommended);
+            return SettingsResult::info('queue', $snippet, 'not monitorable', 'n/a');
         }
 
         if (!\is_string($oldestMessageAt)) {
@@ -168,8 +169,10 @@ class QueueChecker implements HealthCheckerInterface, CheckerInterface
         return SettingsResult::ok('queue', $snippet, $diff . ' mins', $recommended);
     }
 
-    private function countBasedResult(string $snippet, string $recommended, int $transportCount, int $incrementerCount): SettingsResult
+    private function countBasedResult(string $snippet, int $transportCount, int $incrementerCount): SettingsResult
     {
+        $recommended = '0 pending';
+
         // Both sources agree there's nothing pending → healthy.
         if ($transportCount === 0 && $incrementerCount === 0) {
             return SettingsResult::ok('queue', $snippet, '0 pending', $recommended);
