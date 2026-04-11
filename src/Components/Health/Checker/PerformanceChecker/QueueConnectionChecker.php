@@ -48,7 +48,19 @@ class QueueConnectionChecker implements PerformanceCheckerInterface, CheckerInte
                     $url,
                 ),
             );
+
+            return;
         }
+
+        $collection->add(
+            SettingsResult::ok(
+                $id,
+                'Queue adapter',
+                $schema,
+                'redis or rabbitmq',
+                $url,
+            ),
+        );
     }
 
     private function getSchema(): string

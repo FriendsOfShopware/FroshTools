@@ -153,7 +153,11 @@ class ElasticsearchManager
             // In case message_queue pool is disabled
         }
 
-        $this->connection->executeStatement('DELETE FROM messenger_messages WHERE body LIKE "%ElasticsearchIndexingMessage%"');
+        try {
+            $this->connection->executeStatement('DELETE FROM messenger_messages WHERE body LIKE "%ElasticsearchIndexingMessage%"');
+        } catch (\Doctrine\DBAL\Exception) {
+            // messenger_messages table is not present when the configured transport is not Doctrine
+        }
     }
 
     private function matchesPrefix(string $indexName): bool

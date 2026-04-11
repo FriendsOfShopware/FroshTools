@@ -54,14 +54,14 @@ class TaskChecker implements HealthCheckerInterface, CheckerInterface
             return;
         }
 
-        $maxTaskNextExecTime = 0;
+        $oldestTaskNextExecTime = \PHP_INT_MAX;
 
         foreach ($tasks as $task) {
-            $maxTaskNextExecTime = max((new \DateTimeImmutable($task['next_execution_time']))->getTimestamp(), $maxTaskNextExecTime);
+            $oldestTaskNextExecTime = min((new \DateTimeImmutable($task['next_execution_time']))->getTimestamp(), $oldestTaskNextExecTime);
         }
 
         $diff = round(abs(
-            ($maxTaskNextExecTime - $taskDateLimit->getTimestamp()) / 60,
+            ($oldestTaskNextExecTime - $taskDateLimit->getTimestamp()) / 60,
         ));
 
         $collection->add(SettingsResult::warning('scheduled_task', 'Scheduled tasks overdue', \sprintf('%d mins', $diff + $maxDiff), $recommended));
