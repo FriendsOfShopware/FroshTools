@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Frosh\Tools\Components\Health\Checker\HealthChecker;
 
+use Doctrine\DBAL\Connection;
 use Frosh\Tools\Components\Health\Checker\CheckerInterface;
 use Frosh\Tools\Components\Health\HealthCollection;
 use Frosh\Tools\Components\Health\SettingsResult;
@@ -18,6 +19,8 @@ class QueueChecker implements HealthCheckerInterface, CheckerInterface
 {
     private const URL = 'https://developer.shopware.com/docs/guides/hosting/infrastructure/message-queue';
 
+    private const DOCTRINE_TRANSPORT_CLASS = 'Symfony\\Component\\Messenger\\Bridge\\Doctrine\\Transport\\DoctrineTransport';
+
     /**
      * @param ServiceLocator<ReceiverInterface> $transportLocator
      */
@@ -27,6 +30,7 @@ class QueueChecker implements HealthCheckerInterface, CheckerInterface
         private readonly ServiceLocator $transportLocator,
         #[Autowire(service: 'shopware.increment.gateway.registry')]
         private readonly IncrementGatewayRegistry $incrementGatewayRegistry,
+        private readonly Connection $connection,
     ) {
     }
 
@@ -36,58 +40,53 @@ class QueueChecker implements HealthCheckerInterface, CheckerInterface
         $snippet = 'Open Queues';
         $recommended = \sprintf('max %d mins', $maxDiff);
 
-        // Two sources for "how much is pending":
-        //
-        //  1) messenger.receiver_locator → MessageCountAwareInterface. Source of truth
-        //     for the actual state of the configured transport backend(s) (Doctrine,
-        //     Redis, …).
-        //  2) shopware.increment.gateway.registry → "message_queue" pool, key
-        //     "message_queue_stats". Shopware increments this on dispatch and
-        //     decrements on handle. A stuck counter here (handler crashed before
-        //     decrement) is exactly the state the queue list tab surfaces but the
-        //     transport backend no longer reflects.
-        //
-        // Using the maximum of both makes the Open Queues row agree with the queue
-        // list tab: a stuck counter shows up as pending and can be cleared via the
-        // "Reset Queue" button in the admin.
-        [$transportCount, $hasCountableTransport] = $this->countPendingFromTransports();
+        [$transportCount, $hasCountableTransport, $hasDoctrineTransport] = $this->inspectTransports();
         $incrementerCount = $this->countPendingFromIncrementer();
-        $displayCount = max($transportCount, $incrementerCount);
 
-        if ($hasCountableTransport || $incrementerCount > 0) {
-            if ($displayCount === 0) {
-                $result = SettingsResult::ok('queue', $snippet, '0 pending', $recommended);
-            } else {
-                // We know the count but not the age of individual messages. A
-                // persistently non-zero count is the real stuck-queue signal; drill
-                // down via the queue list tab for per-message details.
-                $result = SettingsResult::ok('queue', $snippet, $displayCount . ' pending', $recommended);
-            }
-        } else {
-            // Neither the transport locator nor the incrementer gave us anything
-            // usable (e.g. pure AMQP setup with the increment pool disabled). We do
-            // NOT fall back to reading messenger_messages, because any rows there are
-            // almost certainly leftovers from a previous configuration and would
-            // produce a misleading warning.
-            $result = SettingsResult::info('queue', $snippet, 'not monitorable', $recommended);
+        // 1) Doctrine is the active transport → we can reliably query messenger_messages
+        //    for the oldest pending message and restore the original "age in minutes"
+        //    display. The table is the source of truth while Doctrine is live; processed
+        //    messages get deleted, so any row we find is actually pending.
+        if ($hasDoctrineTransport) {
+            $result = $this->doctrineAgeBasedResult($snippet, $recommended, $maxDiff);
+            $result->url = self::URL;
+            $collection->add($result);
+
+            return;
         }
 
+        // 2) No Doctrine transport is active, but some count-capable transport is (Redis,
+        //    …) — or the Shopware increment gateway has data. Use a count-based display.
+        if ($hasCountableTransport || $incrementerCount > 0) {
+            $result = $this->countBasedResult($snippet, $recommended, $transportCount, $incrementerCount);
+            $result->url = self::URL;
+            $collection->add($result);
+
+            return;
+        }
+
+        // 3) Nothing usable (e.g. pure AMQP setup with the increment pool disabled). We
+        //    deliberately do NOT fall back to messenger_messages here, because without an
+        //    active Doctrine transport any rows we find there are almost certainly stale
+        //    leftovers from a previous configuration.
+        $result = SettingsResult::info('queue', $snippet, 'not monitorable', $recommended);
         $result->url = self::URL;
         $collection->add($result);
     }
 
     /**
-     * @return array{int, bool} [totalCount, hasCountableTransport]
+     * @return array{int, bool, bool} [transportCount, hasCountableTransport, hasDoctrineTransport]
      */
-    private function countPendingFromTransports(): array
+    private function inspectTransports(): array
     {
         $totalCount = 0;
         $hasCountableTransport = false;
+        $hasDoctrineTransport = false;
 
         try {
             $providedServices = array_keys($this->transportLocator->getProvidedServices());
         } catch (\Throwable) {
-            return [0, false];
+            return [0, false, false];
         }
 
         foreach ($providedServices as $name) {
@@ -98,9 +97,14 @@ class QueueChecker implements HealthCheckerInterface, CheckerInterface
             try {
                 $transport = $this->transportLocator->get($name);
             } catch (\Throwable) {
-                // A transport might fail to instantiate if its backend is temporarily
-                // unreachable — don't let that kill the whole health check.
+                // Backend unreachable or misconfigured transport — ignore and keep going.
                 continue;
+            }
+
+            // is_a() with a string class name returns false if the class isn't loaded,
+            // so this is safe even when symfony/doctrine-messenger isn't installed.
+            if (\is_a($transport, self::DOCTRINE_TRANSPORT_CLASS)) {
+                $hasDoctrineTransport = true;
             }
 
             if (!$transport instanceof MessageCountAwareInterface) {
@@ -116,7 +120,7 @@ class QueueChecker implements HealthCheckerInterface, CheckerInterface
             }
         }
 
-        return [$totalCount, $hasCountableTransport];
+        return [$totalCount, $hasCountableTransport, $hasDoctrineTransport];
     }
 
     private function countPendingFromIncrementer(): int
@@ -137,5 +141,54 @@ class QueueChecker implements HealthCheckerInterface, CheckerInterface
         }
 
         return $total;
+    }
+
+    private function doctrineAgeBasedResult(string $snippet, string $recommended, int $maxDiff): SettingsResult
+    {
+        try {
+            /** @var string|false $oldestMessageAt */
+            $oldestMessageAt = $this->connection->fetchOne('SELECT available_at FROM messenger_messages WHERE available_at < UTC_TIMESTAMP() ORDER BY available_at ASC LIMIT 1');
+        } catch (\Doctrine\DBAL\Exception) {
+            return SettingsResult::info('queue', $snippet, 'not monitorable', $recommended);
+        }
+
+        if (!\is_string($oldestMessageAt)) {
+            return SettingsResult::ok('queue', $snippet, '0 mins', $recommended);
+        }
+
+        $oldMessageLimit = (new \DateTimeImmutable())->modify(\sprintf('-%d minutes', $maxDiff));
+        $diff = round(abs(
+            ((new \DateTime($oldestMessageAt . ' UTC'))->getTimestamp() - $oldMessageLimit->getTimestamp()) / 60,
+        ));
+
+        if ($diff > $maxDiff) {
+            return SettingsResult::warning('queue', $snippet, $diff . ' mins', $recommended);
+        }
+
+        return SettingsResult::ok('queue', $snippet, $diff . ' mins', $recommended);
+    }
+
+    private function countBasedResult(string $snippet, string $recommended, int $transportCount, int $incrementerCount): SettingsResult
+    {
+        // Both sources agree there's nothing pending → healthy.
+        if ($transportCount === 0 && $incrementerCount === 0) {
+            return SettingsResult::ok('queue', $snippet, '0 pending', $recommended);
+        }
+
+        // Transport backend is empty but the Shopware incrementer still tracks something.
+        // This is the "stuck / in flight" state: a handler crashed before decrementing,
+        // or a long-running handler is currently holding the message. Surface it as INFO
+        // so the user knows it's not a clean "pending" state — they can investigate via
+        // the queue list tab (which uses the same incrementer) and clear it with the
+        // Reset Queue button.
+        if ($transportCount === 0 && $incrementerCount > 0) {
+            return SettingsResult::info('queue', $snippet, $incrementerCount . ' in flight', $recommended);
+        }
+
+        // Transport backend has messages → actively processing. A persistently non-zero
+        // count is the real stuck-worker signal; use the queue list tab for details.
+        $displayCount = max($transportCount, $incrementerCount);
+
+        return SettingsResult::ok('queue', $snippet, $displayCount . ' pending', $recommended);
     }
 }
