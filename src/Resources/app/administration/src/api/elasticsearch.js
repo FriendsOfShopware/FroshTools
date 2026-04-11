@@ -119,6 +119,43 @@ class Elasticsearch extends ApiService {
             });
     }
 
+    getUnusedIndices() {
+        const apiRoute = `${this.getApiBasePath()}/unused_indices`;
+        return this.httpClient
+            .get(apiRoute, {
+                headers: this.getBasicHeaders(),
+            })
+            .then((response) => {
+                return ApiService.handleResponse(response);
+            });
+    }
+
+    getOrphanedIndices() {
+        const apiRoute = `${this.getApiBasePath()}/orphaned_indices`;
+        return this.httpClient
+            .get(apiRoute, {
+                headers: this.getBasicHeaders(),
+            })
+            .then((response) => {
+                return ApiService.handleResponse(response);
+            });
+    }
+
+    cleanupOrphaned() {
+        const apiRoute = `${this.getApiBasePath()}/cleanup_orphaned`;
+        return this.httpClient
+            .post(
+                apiRoute,
+                {},
+                {
+                    headers: this.getBasicHeaders(),
+                }
+            )
+            .then((response) => {
+                return ApiService.handleResponse(response);
+            });
+    }
+
     reset() {
         const apiRoute = `${this.getApiBasePath()}/reset`;
         return this.httpClient
