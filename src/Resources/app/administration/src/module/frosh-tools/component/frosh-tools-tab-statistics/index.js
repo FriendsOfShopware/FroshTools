@@ -137,6 +137,10 @@ Component.register('frosh-tools-tab-statistics', {
             return this.percentFormatter.format(value) + ' %';
         },
 
+        formatDecimal(value) {
+            return this.percentFormatter.format(value);
+        },
+
         formatUptime(seconds) {
             const days = Math.floor(seconds / 86400);
             const hours = Math.floor((seconds % 86400) / 3600);

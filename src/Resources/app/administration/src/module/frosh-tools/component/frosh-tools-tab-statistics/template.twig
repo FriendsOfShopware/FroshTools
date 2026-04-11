@@ -280,7 +280,7 @@
                     {{ $t('frosh-tools.tabs.statistics.queriesPerSecond') }}
                 </div>
                 <div class="frosh-tools-stat__value">
-                    {{ formatPercent(dbStats.server.queriesPerSecond) }}
+                    {{ formatDecimal(dbStats.server.queriesPerSecond) }}
                 </div>
             </div>
         </sw-container>
