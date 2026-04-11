@@ -27,7 +27,16 @@ class QueueChecker implements HealthCheckerInterface, CheckerInterface
         $recommended = \sprintf('max %d mins', $maxDiff);
 
         /** @var string|false $oldestMessageAt */
-        $oldestMessageAt = $this->connection->fetchOne('SELECT available_at FROM messenger_messages WHERE available_at < UTC_TIMESTAMP() ORDER BY available_at ASC LIMIT 1');
+        try {
+            $oldestMessageAt = $this->connection->fetchOne('SELECT available_at FROM messenger_messages WHERE available_at < UTC_TIMESTAMP() ORDER BY available_at ASC LIMIT 1');
+        } catch (\Doctrine\DBAL\Exception) {
+            // messenger_messages table is not present when the configured transport is not Doctrine
+            $result = SettingsResult::info('queue', $snippet, 'not monitorable', $recommended);
+            $result->url = 'https://developer.shopware.com/docs/guides/hosting/infrastructure/message-queue';
+            $collection->add($result);
+
+            return;
+        }
 
         if (\is_string($oldestMessageAt)) {
             $diff = round(abs(

@@ -52,7 +52,12 @@ class QueueController extends AbstractController
         $incrementer = $this->incrementer->get('message_queue');
         $incrementer->reset('message_queue_stats');
 
-        $this->connection->executeStatement('TRUNCATE `messenger_messages`');
+        try {
+            $this->connection->executeStatement('TRUNCATE `messenger_messages`');
+        } catch (\Doctrine\DBAL\Exception) {
+            // messenger_messages table is not present when the configured transport is not Doctrine
+        }
+
         $this->connection->executeStatement('UPDATE product_export SET is_running = 0');
 
         return new JsonResponse(null, Response::HTTP_NO_CONTENT);
