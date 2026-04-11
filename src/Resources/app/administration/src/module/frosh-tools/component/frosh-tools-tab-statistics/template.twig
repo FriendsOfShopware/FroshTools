@@ -1,0 +1,399 @@
+<sw-card-view>
+    <!-- Refresh Toolbar -->
+    <sw-card
+        class="frosh-tools-tab-statistics__header-card"
+        deprecated
+        :title="$t('frosh-tools.tabs.statistics.title')"
+        :isLoading="isLoading"
+        :large="true"
+        positionIdentifier="frosh-tools-statistics-header"
+    >
+        <template #toolbar>
+            <sw-button
+                variant="ghost"
+                deprecated
+                @click="loadData"
+            >
+                <sw-icon
+                    deprecated
+                    :small="true"
+                    name="regular-undo"
+                ></sw-icon>
+            </sw-button>
+        </template>
+
+        <!-- OPcache Card -->
+        <template v-if="cacheStats && cacheStats.opcache">
+            <h3>OPcache</h3>
+            <sw-container
+                columns="1fr 1fr 1fr 1fr"
+                gap="20px"
+                class="frosh-tools-tab-statistics__metrics"
+            >
+                <div class="frosh-tools-stat">
+                    <div class="frosh-tools-stat__label">
+                        {{ $t('frosh-tools.tabs.statistics.hitRate') }}
+                    </div>
+                    <div :class="['frosh-tools-stat__value', 'frosh-tools-stat__value--' + hitRateVariant(cacheStats.opcache.hitRate)]">
+                        {{ formatPercent(cacheStats.opcache.hitRate) }}
+                    </div>
+                </div>
+                <div class="frosh-tools-stat">
+                    <div class="frosh-tools-stat__label">
+                        {{ $t('frosh-tools.tabs.statistics.hits') }} / {{ $t('frosh-tools.tabs.statistics.misses') }}
+                    </div>
+                    <div class="frosh-tools-stat__value">
+                        {{ formatNumber(cacheStats.opcache.hits) }} / {{ formatNumber(cacheStats.opcache.misses) }}
+                    </div>
+                </div>
+                <div class="frosh-tools-stat">
+                    <div class="frosh-tools-stat__label">
+                        {{ $t('frosh-tools.tabs.statistics.usedMemory') }} / {{ $t('frosh-tools.tabs.statistics.freeMemory') }}
+                    </div>
+                    <div class="frosh-tools-stat__value">
+                        {{ formatSize(cacheStats.opcache.usedMemory) }} / {{ formatSize(cacheStats.opcache.freeMemory) }}
+                    </div>
+                </div>
+                <div class="frosh-tools-stat">
+                    <div class="frosh-tools-stat__label">
+                        {{ $t('frosh-tools.tabs.statistics.cachedScripts') }}
+                    </div>
+                    <div class="frosh-tools-stat__value">
+                        {{ formatNumber(cacheStats.opcache.cachedScripts) }}
+                        <template v-if="cacheStats.opcache.maxCachedScripts > 0">
+                            / {{ formatNumber(cacheStats.opcache.maxCachedScripts) }}
+                        </template>
+                    </div>
+                </div>
+            </sw-container>
+            <sw-container
+                columns="1fr 1fr 1fr"
+                gap="20px"
+                class="frosh-tools-tab-statistics__metrics"
+            >
+                <div class="frosh-tools-stat">
+                    <div class="frosh-tools-stat__label">
+                        {{ $t('frosh-tools.tabs.statistics.wastedMemory') }}
+                    </div>
+                    <div class="frosh-tools-stat__value">
+                        {{ formatSize(cacheStats.opcache.wastedMemory) }} ({{ formatPercent(cacheStats.opcache.wastedPercentage) }})
+                    </div>
+                </div>
+                <div class="frosh-tools-stat">
+                    <div class="frosh-tools-stat__label">
+                        {{ $t('frosh-tools.tabs.statistics.internedStrings') }}
+                    </div>
+                    <div class="frosh-tools-stat__value">
+                        {{ formatSize(cacheStats.opcache.internedStringsUsedMemory) }} / {{ formatSize(cacheStats.opcache.internedStringsFreeMemory) }}
+                    </div>
+                </div>
+                <div class="frosh-tools-stat">
+                    <div class="frosh-tools-stat__label">
+                        {{ $t('frosh-tools.tabs.statistics.lastRestart') }}
+                    </div>
+                    <div class="frosh-tools-stat__value">
+                        {{ cacheStats.opcache.lastRestart || $t('frosh-tools.tabs.statistics.never') }}
+                    </div>
+                </div>
+            </sw-container>
+        </template>
+        <sw-alert
+            v-else-if="cacheStats && !cacheStats.opcache"
+            variant="info"
+        >
+            OPcache: {{ $t('frosh-tools.tabs.statistics.notAvailable') }}
+        </sw-alert>
+    </sw-card>
+
+    <!-- Redis Cards -->
+    <sw-card
+        v-for="redis in (cacheStats ? cacheStats.redis : [])"
+        :key="redis.name"
+        deprecated
+        :title="'Redis: ' + redis.name"
+        :isLoading="isLoadingCache"
+        :large="true"
+        positionIdentifier="frosh-tools-statistics-redis"
+    >
+        <sw-container
+            columns="1fr 1fr 1fr 1fr"
+            gap="20px"
+            class="frosh-tools-tab-statistics__metrics"
+        >
+            <div class="frosh-tools-stat">
+                <div class="frosh-tools-stat__label">
+                    {{ $t('frosh-tools.tabs.statistics.hitRate') }}
+                </div>
+                <div :class="['frosh-tools-stat__value', 'frosh-tools-stat__value--' + hitRateVariant(redis.hitRate)]">
+                    {{ formatPercent(redis.hitRate) }}
+                </div>
+            </div>
+            <div class="frosh-tools-stat">
+                <div class="frosh-tools-stat__label">
+                    {{ $t('frosh-tools.tabs.statistics.hits') }} / {{ $t('frosh-tools.tabs.statistics.misses') }}
+                </div>
+                <div class="frosh-tools-stat__value">
+                    {{ formatNumber(redis.hits) }} / {{ formatNumber(redis.misses) }}
+                </div>
+            </div>
+            <div class="frosh-tools-stat">
+                <div class="frosh-tools-stat__label">
+                    {{ $t('frosh-tools.tabs.statistics.usedMemory') }} / {{ $t('frosh-tools.tabs.statistics.maxMemory') }}
+                </div>
+                <div class="frosh-tools-stat__value">
+                    {{ formatSize(redis.usedMemory) }}
+                    <template v-if="redis.maxMemory > 0">
+                        / {{ formatSize(redis.maxMemory) }}
+                    </template>
+                </div>
+            </div>
+            <div class="frosh-tools-stat">
+                <div class="frosh-tools-stat__label">
+                    {{ $t('frosh-tools.tabs.statistics.peakMemory') }}
+                </div>
+                <div class="frosh-tools-stat__value">
+                    {{ formatSize(redis.peakMemory) }}
+                </div>
+            </div>
+        </sw-container>
+        <sw-container
+            columns="1fr 1fr 1fr 1fr"
+            gap="20px"
+            class="frosh-tools-tab-statistics__metrics"
+        >
+            <div class="frosh-tools-stat">
+                <div class="frosh-tools-stat__label">
+                    {{ $t('frosh-tools.tabs.statistics.totalKeys') }}
+                </div>
+                <div class="frosh-tools-stat__value">
+                    {{ formatNumber(redis.totalKeys) }}
+                </div>
+            </div>
+            <div class="frosh-tools-stat">
+                <div class="frosh-tools-stat__label">
+                    {{ $t('frosh-tools.tabs.statistics.evictedKeys') }} / {{ $t('frosh-tools.tabs.statistics.expiredKeys') }}
+                </div>
+                <div class="frosh-tools-stat__value">
+                    {{ formatNumber(redis.evictedKeys) }} / {{ formatNumber(redis.expiredKeys) }}
+                </div>
+            </div>
+            <div class="frosh-tools-stat">
+                <div class="frosh-tools-stat__label">
+                    {{ $t('frosh-tools.tabs.statistics.opsPerSec') }} / {{ $t('frosh-tools.tabs.statistics.connectedClients') }}
+                </div>
+                <div class="frosh-tools-stat__value">
+                    {{ formatNumber(redis.opsPerSec) }} / {{ formatNumber(redis.connectedClients) }}
+                </div>
+            </div>
+            <div class="frosh-tools-stat">
+                <div class="frosh-tools-stat__label">
+                    {{ $t('frosh-tools.tabs.statistics.version') }} / {{ $t('frosh-tools.tabs.statistics.uptime') }}
+                </div>
+                <div class="frosh-tools-stat__value">
+                    {{ redis.version }} / {{ formatUptime(redis.uptime) }}
+                </div>
+            </div>
+        </sw-container>
+    </sw-card>
+
+    <!-- APCu Card -->
+    <sw-card
+        v-if="cacheStats && cacheStats.apcu"
+        deprecated
+        title="APCu"
+        :isLoading="isLoadingCache"
+        :large="true"
+        positionIdentifier="frosh-tools-statistics-apcu"
+    >
+        <sw-container
+            columns="1fr 1fr 1fr 1fr"
+            gap="20px"
+            class="frosh-tools-tab-statistics__metrics"
+        >
+            <div class="frosh-tools-stat">
+                <div class="frosh-tools-stat__label">
+                    {{ $t('frosh-tools.tabs.statistics.hitRate') }}
+                </div>
+                <div :class="['frosh-tools-stat__value', 'frosh-tools-stat__value--' + hitRateVariant(cacheStats.apcu.hitRate)]">
+                    {{ formatPercent(cacheStats.apcu.hitRate) }}
+                </div>
+            </div>
+            <div class="frosh-tools-stat">
+                <div class="frosh-tools-stat__label">
+                    {{ $t('frosh-tools.tabs.statistics.hits') }} / {{ $t('frosh-tools.tabs.statistics.misses') }}
+                </div>
+                <div class="frosh-tools-stat__value">
+                    {{ formatNumber(cacheStats.apcu.hits) }} / {{ formatNumber(cacheStats.apcu.misses) }}
+                </div>
+            </div>
+            <div class="frosh-tools-stat">
+                <div class="frosh-tools-stat__label">
+                    {{ $t('frosh-tools.tabs.statistics.usedMemory') }} / {{ $t('frosh-tools.tabs.statistics.availableMemory') }}
+                </div>
+                <div class="frosh-tools-stat__value">
+                    {{ formatSize(cacheStats.apcu.usedMemory) }} / {{ formatSize(cacheStats.apcu.availableMemory) }}
+                </div>
+            </div>
+            <div class="frosh-tools-stat">
+                <div class="frosh-tools-stat__label">
+                    {{ $t('frosh-tools.tabs.statistics.entries') }} / {{ $t('frosh-tools.tabs.statistics.fragmentation') }}
+                </div>
+                <div class="frosh-tools-stat__value">
+                    {{ formatNumber(cacheStats.apcu.entries) }} / {{ formatPercent(cacheStats.apcu.fragmentation) }}
+                </div>
+            </div>
+        </sw-container>
+    </sw-card>
+
+    <!-- Database Server Info -->
+    <sw-card
+        v-if="dbStats"
+        deprecated
+        :title="$t('frosh-tools.tabs.statistics.serverInfo')"
+        :isLoading="isLoadingDb"
+        :large="true"
+        positionIdentifier="frosh-tools-statistics-db-server"
+    >
+        <sw-container
+            columns="1fr 1fr 1fr"
+            gap="20px"
+            class="frosh-tools-tab-statistics__metrics"
+        >
+            <div class="frosh-tools-stat">
+                <div class="frosh-tools-stat__label">
+                    {{ $t('frosh-tools.tabs.statistics.version') }}
+                </div>
+                <div class="frosh-tools-stat__value">
+                    {{ dbStats.server.version }}
+                </div>
+            </div>
+            <div class="frosh-tools-stat">
+                <div class="frosh-tools-stat__label">
+                    {{ $t('frosh-tools.tabs.statistics.uptime') }}
+                </div>
+                <div class="frosh-tools-stat__value">
+                    {{ formatUptime(dbStats.server.uptime) }}
+                </div>
+            </div>
+            <div class="frosh-tools-stat">
+                <div class="frosh-tools-stat__label">
+                    {{ $t('frosh-tools.tabs.statistics.queriesPerSecond') }}
+                </div>
+                <div class="frosh-tools-stat__value">
+                    {{ formatDecimal(dbStats.server.queriesPerSecond) }}
+                </div>
+            </div>
+        </sw-container>
+        <sw-container
+            columns="1fr 1fr 1fr"
+            gap="20px"
+            class="frosh-tools-tab-statistics__metrics"
+        >
+            <div class="frosh-tools-stat">
+                <div class="frosh-tools-stat__label">
+                    {{ $t('frosh-tools.tabs.statistics.threads') }}
+                </div>
+                <div class="frosh-tools-stat__value">
+                    {{ formatNumber(dbStats.server.threads) }}
+                </div>
+            </div>
+            <div class="frosh-tools-stat">
+                <div class="frosh-tools-stat__label">
+                    {{ $t('frosh-tools.tabs.statistics.slowQueries') }}
+                </div>
+                <div class="frosh-tools-stat__value">
+                    {{ formatNumber(dbStats.server.slowQueries) }}
+                </div>
+            </div>
+            <div class="frosh-tools-stat">
+                <div class="frosh-tools-stat__label">
+                    {{ $t('frosh-tools.tabs.statistics.totalQueries') }}
+                </div>
+                <div class="frosh-tools-stat__value">
+                    {{ formatNumber(dbStats.server.questions) }}
+                </div>
+            </div>
+        </sw-container>
+    </sw-card>
+
+    <!-- InnoDB Buffer Pool -->
+    <sw-card
+        v-if="dbStats && dbStats.globalStatus"
+        deprecated
+        :title="$t('frosh-tools.tabs.statistics.bufferPool')"
+        :isLoading="isLoadingDb"
+        :large="true"
+        positionIdentifier="frosh-tools-statistics-db-buffer"
+    >
+        <sw-container
+            columns="1fr 1fr 1fr 1fr"
+            gap="20px"
+            class="frosh-tools-tab-statistics__metrics"
+        >
+            <div class="frosh-tools-stat">
+                <div class="frosh-tools-stat__label">
+                    {{ $t('frosh-tools.tabs.statistics.bufferPoolHitRate') }}
+                </div>
+                <div :class="['frosh-tools-stat__value', 'frosh-tools-stat__value--' + hitRateVariant(dbStats.globalStatus.bufferPoolHitRate)]">
+                    {{ formatPercent(dbStats.globalStatus.bufferPoolHitRate) }}
+                </div>
+            </div>
+            <div class="frosh-tools-stat">
+                <div class="frosh-tools-stat__label">
+                    {{ $t('frosh-tools.tabs.statistics.usedMemory') }} / {{ $t('frosh-tools.tabs.statistics.totalMemory') }}
+                </div>
+                <div class="frosh-tools-stat__value">
+                    {{ formatSize(dbStats.globalStatus.bufferPoolUsed) }} / {{ formatSize(dbStats.globalStatus.bufferPoolSize) }}
+                </div>
+            </div>
+            <div class="frosh-tools-stat">
+                <div class="frosh-tools-stat__label">
+                    {{ $t('frosh-tools.tabs.statistics.threadsConnected') }} / {{ $t('frosh-tools.tabs.statistics.threadsRunning') }}
+                </div>
+                <div class="frosh-tools-stat__value">
+                    {{ formatNumber(dbStats.globalStatus.threadsConnected) }} / {{ formatNumber(dbStats.globalStatus.threadsRunning) }}
+                </div>
+            </div>
+            <div class="frosh-tools-stat">
+                <div class="frosh-tools-stat__label">
+                    {{ $t('frosh-tools.tabs.statistics.tmpDiskTables') }} / {{ $t('frosh-tools.tabs.statistics.tmpTables') }}
+                </div>
+                <div class="frosh-tools-stat__value">
+                    {{ formatNumber(dbStats.globalStatus.tmpDiskTables) }} / {{ formatNumber(dbStats.globalStatus.tmpTables) }}
+                </div>
+            </div>
+        </sw-container>
+    </sw-card>
+
+    <!-- Table Sizes -->
+    <sw-card
+        v-if="dbStats && dbStats.tables"
+        deprecated
+        :title="$t('frosh-tools.tabs.statistics.tableStatistics')"
+        :isLoading="isLoadingDb"
+        :large="true"
+        positionIdentifier="frosh-tools-statistics-db-tables"
+    >
+        <template #grid>
+            <sw-data-grid
+                :showSelection="false"
+                :showActions="false"
+                :dataSource="dbStats.tables"
+                :columns="tableColumns"
+            >
+                <template #column-rows="{ item }">
+                    {{ formatNumber(item.rows) }}
+                </template>
+                <template #column-dataSize="{ item }">
+                    {{ formatSize(item.dataSize) }}
+                </template>
+                <template #column-indexSize="{ item }">
+                    {{ formatSize(item.indexSize) }}
+                </template>
+                <template #column-totalSize="{ item }">
+                    {{ formatSize(item.totalSize) }}
+                </template>
+            </sw-data-grid>
+        </template>
+    </sw-card>
+</sw-card-view>
