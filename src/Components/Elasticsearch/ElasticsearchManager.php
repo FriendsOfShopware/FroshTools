@@ -127,13 +127,113 @@ class ElasticsearchManager
         $this->createAliasTaskHandler->run();
     }
 
-    public function deleteUnusedIndices(): void
+    /**
+     * @return array{indices: array<string>, error: string|null}
+     */
+    public function getUnusedIndices(): array
     {
-        $indices = $this->outdatedIndexDetector->get() ?? [];
+        try {
+            $indices = $this->outdatedIndexDetector->get() ?? [];
+        } catch (\Throwable $e) {
+            return ['indices' => [], 'error' => $e->getMessage()];
+        }
+
+        return ['indices' => array_values($indices), 'error' => null];
+    }
+
+    /**
+     * @return array{deleted: array<string>, errors: array<string, string>}
+     */
+    public function deleteUnusedIndices(): array
+    {
+        $result = ['deleted' => [], 'errors' => []];
+
+        try {
+            $indices = $this->outdatedIndexDetector->get() ?? [];
+        } catch (\Throwable $e) {
+            $result['errors']['__detector__'] = $e->getMessage();
+
+            return $result;
+        }
 
         foreach ($indices as $index) {
-            $this->client->indices()->delete(['index' => $index]);
+            try {
+                $this->client->indices()->delete(['index' => $index]);
+                $result['deleted'][] = $index;
+            } catch (\Throwable $e) {
+                $result['errors'][$index] = $e->getMessage();
+            }
         }
+
+        return $result;
+    }
+
+    /**
+     * Aggressive detection: lists all indices that match the configured prefix
+     * but are NOT attached to any alias. This catches orphaned indices from
+     * removed entity definitions or older Shopware versions that the strict
+     * ElasticsearchOutdatedIndexDetector::get() does not consider "outdated".
+     *
+     * Safety net: any index that has at least one alias is excluded — Shopware
+     * relies on aliases to route to the live indices.
+     *
+     * @return array{indices: array<string>, error: string|null}
+     */
+    public function getOrphanedIndices(): array
+    {
+        try {
+            $indices = $this->client->indices()->get(['index' => '*']);
+        } catch (\Throwable $e) {
+            return ['indices' => [], 'error' => $e->getMessage()];
+        }
+
+        $orphaned = [];
+        foreach ($indices as $indexName => $config) {
+            if (!$this->matchesPrefix($indexName)) {
+                continue;
+            }
+
+            $aliases = $config['aliases'] ?? [];
+            if ($aliases !== []) {
+                continue;
+            }
+
+            $orphaned[] = $indexName;
+        }
+
+        return ['indices' => $orphaned, 'error' => null];
+    }
+
+    /**
+     * @return array{deleted: array<string>, errors: array<string, string>}
+     */
+    public function deleteOrphanedIndices(): array
+    {
+        $result = ['deleted' => [], 'errors' => []];
+
+        $orphaned = $this->getOrphanedIndices();
+        if ($orphaned['error'] !== null) {
+            $result['errors']['__detector__'] = $orphaned['error'];
+
+            return $result;
+        }
+
+        foreach ($orphaned['indices'] as $index) {
+            // Defensive double-check: never delete anything outside the
+            // configured prefix, even if upstream lookups regress.
+            if (!$this->matchesPrefix($index)) {
+                continue;
+            }
+
+            try {
+                $this->client->indices()->delete(['index' => $index]);
+                $result['deleted'][] = $index;
+            } catch (\Throwable $e) {
+                $result['errors'][$index] = $e->getMessage();
+            }
+        }
+
+        return $result;
     }
 
     public function reset(): void
