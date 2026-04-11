@@ -41,8 +41,24 @@
                     "reindex": "Neu indexieren",
                     "switchAlias": "\"Alias switching\" durchführen",
                     "flushAll": "Alle Indizes löschen",
+                    "showUnused": "Ungenutzte Indizes anzeigen",
                     "cleanup": "Ungenutzte Indizes löschen",
+                    "cleanupOrphaned": "Verwaiste Indizes löschen",
                     "reset": "Elasticsearch zurücksetzen"
+                },
+                "notification": {
+                    "cleanup": {
+                        "empty": "Keine ungenutzten Indizes gefunden.",
+                        "success": "{count} Index/Indizes gelöscht.",
+                        "partialError": "Beim Löschen sind {count} Fehler aufgetreten. Bitte Logs prüfen."
+                    },
+                    "unused": {
+                        "list": "Ungenutzte Indizes ({count}): {list}"
+                    },
+                    "orphaned": {
+                        "empty": "Keine verwaisten Indizes gefunden.",
+                        "confirm": "Folgende {count} verwaisten Indizes werden gelöscht:\n\n{list}\n\nFortfahren?"
+                    }
                 },
                 "console": {
                     "title": "Elasticsearch Konsole",
