@@ -56,24 +56,27 @@ class ElasticsearchManager
      */
     public function indices(): array
     {
-        $indices = $this->client->indices()->get(['index' => '*']);
-        $stats = $this->client->indices()->stats(['index' => '*']);
+        $patterns = [
+            $this->indexPrefix . '_*',
+            $this->adminIndexPrefix . '-*',
+        ];
 
         $list = [];
 
-        foreach ($indices as $indexName => $config) {
-            if (!$this->matchesPrefix($indexName)) {
-                continue;
+        foreach ($patterns as $pattern) {
+            $indices = $this->client->indices()->get(['index' => $pattern]);
+            $stats = $this->client->indices()->stats(['index' => $pattern]);
+
+            foreach ($indices as $indexName => $config) {
+                $statCfg = $stats['indices'][$indexName];
+
+                $list[] = [
+                    'name' => $indexName,
+                    'aliases' => array_keys($config['aliases']),
+                    'indexSize' => $statCfg['total']['store']['size_in_bytes'],
+                    'docs' => $statCfg['primaries']['docs']['count'],
+                ];
             }
-
-            $statCfg = $stats['indices'][$indexName];
-
-            $list[] = [
-                'name' => $indexName,
-                'aliases' => array_keys($config['aliases']),
-                'indexSize' => $statCfg['total']['store']['size_in_bytes'],
-                'docs' => $statCfg['primaries']['docs']['count'],
-            ];
         }
 
         return $list;
