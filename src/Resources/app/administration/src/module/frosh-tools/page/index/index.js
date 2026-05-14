@@ -27,6 +27,19 @@ Component.register('frosh-tools-index', {
                 );
             }
         },
+        logsAvailable() {
+            try {
+                return (
+                    Shopware.Store.get('context').app.config.settings
+                        ?.froshTools.logsEnabled || false
+                );
+            } catch {
+                return (
+                    Shopware.State.get('context').app.config.settings
+                        ?.froshTools.logsEnabled || false
+                );
+            }
+        },
         elasticsearchAvailable() {
             try {
                 return (
