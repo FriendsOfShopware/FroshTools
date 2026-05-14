@@ -32,12 +32,12 @@ class ScheduledTaskController extends AbstractController
     }
 
     #[Route(path: '/scheduled-task/{id}', name: 'api.frosh.tools.scheduled.task.run', methods: ['POST'])]
-    public function runTask(string $id, Context $context): JsonResponse
+    public function runTask(string $id, Context $context): Response
     {
         $scheduledTask = $this->fetchTask($id, $context);
 
         if (!$scheduledTask instanceof ScheduledTaskEntity) {
-            return new JsonResponse(null, Response::HTTP_NOT_FOUND);
+            return new JsonResponse(['error' => 'Scheduled task not found'], Response::HTTP_NOT_FOUND);
         }
 
         // Set status to allow running it
@@ -51,16 +51,16 @@ class ScheduledTaskController extends AbstractController
 
         $this->taskRunner->runSingleTask($scheduledTask->getName(), $context);
 
-        return new JsonResponse(null, Response::HTTP_NO_CONTENT);
+        return new Response('', Response::HTTP_NO_CONTENT);
     }
 
     #[Route(path: '/scheduled-task/schedule/{id}', name: 'api.frosh.tools.scheduled.task.schedule', methods: ['POST'])]
-    public function scheduleTask(Request $request, string $id, Context $context): JsonResponse
+    public function scheduleTask(Request $request, string $id, Context $context): Response
     {
         $scheduledTask = $this->fetchTask($id, $context);
 
         if (!$scheduledTask instanceof ScheduledTaskEntity) {
-            return new JsonResponse(null, Response::HTTP_NOT_FOUND);
+            return new JsonResponse(['error' => 'Scheduled task not found'], Response::HTTP_NOT_FOUND);
         }
 
         $data = [
@@ -75,16 +75,16 @@ class ScheduledTaskController extends AbstractController
 
         $this->scheduledTaskRepository->update([$data], $context);
 
-        return new JsonResponse(null, Response::HTTP_NO_CONTENT);
+        return new Response('', Response::HTTP_NO_CONTENT);
     }
 
     #[Route(path: '/scheduled-task/deactivate/{id}', name: 'api.frosh.tools.scheduled.task.deactivate', methods: ['POST'])]
-    public function deactivateTask(string $id, Context $context): JsonResponse
+    public function deactivateTask(string $id, Context $context): Response
     {
         $scheduledTask = $this->fetchTask($id, $context);
 
         if (!$scheduledTask instanceof ScheduledTaskEntity) {
-            return new JsonResponse(null, Response::HTTP_NOT_FOUND);
+            return new JsonResponse(['error' => 'Scheduled task not found'], Response::HTTP_NOT_FOUND);
         }
 
         $data = [
@@ -94,15 +94,15 @@ class ScheduledTaskController extends AbstractController
 
         $this->scheduledTaskRepository->update([$data], $context);
 
-        return new JsonResponse(null, Response::HTTP_NO_CONTENT);
+        return new Response('', Response::HTTP_NO_CONTENT);
     }
 
     #[Route(path: '/scheduled-tasks/register', name: 'api.frosh.tools.scheduled.tasks.register', methods: ['POST'])]
-    public function registerTasks(): JsonResponse
+    public function registerTasks(): Response
     {
         $this->taskRegistry->registerTasks();
 
-        return new JsonResponse(null, Response::HTTP_NO_CONTENT);
+        return new Response('', Response::HTTP_NO_CONTENT);
     }
 
     private function fetchTask(string $id, Context $context): ?ScheduledTaskEntity

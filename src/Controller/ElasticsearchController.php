@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Frosh\Tools\Controller;
 
 use Frosh\Tools\Components\Elasticsearch\ElasticsearchManager;
+use Frosh\Tools\Components\Exception\FroshToolsException;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
@@ -22,7 +23,7 @@ class ElasticsearchController extends AbstractController
     public function status(): Response
     {
         if (!$this->manager->isEnabled()) {
-            return new Response('', Response::HTTP_PRECONDITION_FAILED);
+            throw FroshToolsException::elasticsearchDisabled();
         }
 
         return new JsonResponse($this->manager->info());
@@ -32,7 +33,7 @@ class ElasticsearchController extends AbstractController
     public function indices(): Response
     {
         if (!$this->manager->isEnabled()) {
-            return new Response('', Response::HTTP_PRECONDITION_FAILED);
+            throw FroshToolsException::elasticsearchDisabled();
         }
 
         return new JsonResponse($this->manager->indices());
@@ -42,7 +43,7 @@ class ElasticsearchController extends AbstractController
     public function deleteIndex(string $indexName): Response
     {
         if (!$this->manager->isEnabled()) {
-            return new Response('', Response::HTTP_PRECONDITION_FAILED);
+            throw FroshToolsException::elasticsearchDisabled();
         }
 
         return new JsonResponse($this->manager->deleteIndex($indexName));
@@ -52,7 +53,7 @@ class ElasticsearchController extends AbstractController
     public function console(Request $request, string $path): Response
     {
         if (!$this->manager->isEnabled()) {
-            return new Response('', Response::HTTP_PRECONDITION_FAILED);
+            throw FroshToolsException::elasticsearchDisabled();
         }
 
         $data = $this->manager->proxy($request->getMethod(), '/' . $path, $request->query->all(), $request->request->all());
