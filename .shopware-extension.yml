@@ -1,3 +1,4 @@
+compatibility_date: '2026-02-11'
 store:
     availabilities:
         - German
@@ -106,3 +107,15 @@ build:
 
 changelog:
     enabled: true
+
+validation:
+  ignore:
+    - identifier: 'phpstan/classConstant.deprecatedClass'
+      path: src/Components/Twig/TwigCacheWarmer.php
+    - identifier: 'phpstan/method.deprecatedClass'
+      path: src/Components/Twig/TwigCacheWarmer.php
+    - identifier: 'phpstan/new.deprecatedClass'
+      path: src/Components/Twig/TwigCacheWarmer.php
+    # old versions of symfony
+    - identifier: 'phpstan/missingType.generics'
+      path: src/DependencyInjection/Configuration.php
