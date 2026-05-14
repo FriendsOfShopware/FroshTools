@@ -5,9 +5,7 @@ const { Component, Mixin } = Shopware;
 
 Component.register('frosh-tools-tab-fastly', {
     template,
-
     inject: ['froshToolsService'],
-
     mixins: [Mixin.getByName('notification')],
 
     data() {
@@ -25,73 +23,37 @@ Component.register('frosh-tools-tab-fastly', {
     computed: {
         timeframeOptions() {
             return [
-                {
-                    value: '30m',
-                    label: this.$t('frosh-tools.tabs.fastly.timeframes.30m'),
-                },
-                {
-                    value: '1h',
-                    label: this.$t('frosh-tools.tabs.fastly.timeframes.1h'),
-                },
-                {
-                    value: '2h',
-                    label: this.$t('frosh-tools.tabs.fastly.timeframes.2h'),
-                },
-                {
-                    value: '24h',
-                    label: this.$t('frosh-tools.tabs.fastly.timeframes.24h'),
-                },
-                {
-                    value: '7d',
-                    label: this.$t('frosh-tools.tabs.fastly.timeframes.7d'),
-                },
-                {
-                    value: '30d',
-                    label: this.$t('frosh-tools.tabs.fastly.timeframes.30d'),
-                },
+                { value: '30m', label: this.$t('frosh-tools.tabs.fastly.timeframes.30m') },
+                { value: '1h',  label: this.$t('frosh-tools.tabs.fastly.timeframes.1h') },
+                { value: '2h',  label: this.$t('frosh-tools.tabs.fastly.timeframes.2h') },
+                { value: '24h', label: this.$t('frosh-tools.tabs.fastly.timeframes.24h') },
+                { value: '7d',  label: this.$t('frosh-tools.tabs.fastly.timeframes.7d') },
+                { value: '30d', label: this.$t('frosh-tools.tabs.fastly.timeframes.30d') },
             ];
         },
 
-        snippetColumns() {
-            return [
-                {
-                    property: 'name',
-                    label: this.$t('frosh-tools.tabs.fastly.snippets.name'),
-                    allowResize: true,
-                },
-                {
-                    property: 'type',
-                    label: this.$t('frosh-tools.tabs.fastly.snippets.type'),
-                    allowResize: true,
-                },
-                {
-                    property: 'priority',
-                    label: this.$t('frosh-tools.tabs.fastly.snippets.priority'),
-                    allowResize: true,
-                },
-            ];
+        hitRateClass() {
+            if (!this.stats) return '';
+            const pct = (this.stats.hit_ratio || 0) * 100;
+            if (pct >= 90) return 'ft-stat--success';
+            if (pct >= 70) return 'ft-stat--warning';
+            return 'ft-stat--danger';
         },
     },
 
     created() {
-        const language =
-            Shopware.Application.getContainer(
-                'factory'
-            ).locale.getLastKnownLocale();
+        const language = Shopware.Application.getContainer('factory').locale.getLastKnownLocale();
         this.numberFormater = new Intl.NumberFormat(language, {
             minimumFractionDigits: 2,
             maximumFractionDigits: 2,
         });
-
         this.loadStats();
         this.loadSnippets();
     },
 
     methods: {
         async loadStats() {
-            this.stats = await this.froshToolsService.getFastlyStatistics(
-                this.timeframe
-            );
+            this.stats = await this.froshToolsService.getFastlyStatistics(this.timeframe);
         },
 
         async loadSnippets() {
@@ -103,9 +65,7 @@ Component.register('frosh-tools-tab-fastly', {
                 const formatted = bytes / (1024 * 1024 * 1024);
                 return this.numberFormater.format(formatted) + ' GiB';
             }
-
             const formatted = bytes / (1024 * 1024);
-
             return this.numberFormater.format(formatted) + ' MiB';
         },
 
@@ -117,14 +77,9 @@ Component.register('frosh-tools-tab-fastly', {
             this.isLoading = true;
             try {
                 await this.froshToolsService.fastlyPurgeAll();
-
-                this.createNotificationSuccess({
-                    message: this.$t('frosh-tools.tabs.fastly.purgeAllSuccess'),
-                });
+                this.createNotificationSuccess({ message: this.$t('frosh-tools.tabs.fastly.purgeAllSuccess') });
             } catch {
-                this.createNotificationError({
-                    message: this.$t('frosh-tools.tabs.fastly.purgeAllError'),
-                });
+                this.createNotificationError({ message: this.$t('frosh-tools.tabs.fastly.purgeAllError') });
             } finally {
                 this.isLoading = false;
             }
@@ -135,15 +90,10 @@ Component.register('frosh-tools-tab-fastly', {
             this.isLoading = true;
             try {
                 await this.froshToolsService.fastlyPurge(this.purgePath);
-
-                this.createNotificationSuccess({
-                    message: this.$t('frosh-tools.tabs.fastly.purgeSuccess'),
-                });
+                this.createNotificationSuccess({ message: this.$t('frosh-tools.tabs.fastly.purgeSuccess') });
                 this.purgePath = '';
             } catch {
-                this.createNotificationError({
-                    message: this.$t('frosh-tools.tabs.fastly.purgeError'),
-                });
+                this.createNotificationError({ message: this.$t('frosh-tools.tabs.fastly.purgeError') });
             } finally {
                 this.isLoading = false;
             }

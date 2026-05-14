@@ -1,63 +1,86 @@
-<sw-card-view>
-    <sw-card
-        class="frosh-tools-tab-queue__manager-card"
-        :title="$t('frosh-tools.tabs.queue.title')"
-        :isLoading="isLoading"
-        :large="true"
-        positionIdentifier="frosh-tools-tab-queue"
-        deprecated
-    >
-        <template #toolbar>
-            <sw-button
-                variant="ghost"
-                deprecated
-                @click="refresh"
-            >
-                <sw-icon
-                    :small="true"
-                    deprecated
-                    name="regular-undo"
-                ></sw-icon>
-            </sw-button>
-            <sw-button
-                deprecated
-                @click="showResetModal = true"
-            >
-                {{ $t('frosh-tools.resetQueue') }}
-            </sw-button>
-        </template>
+<div class="ft frosh-tab-queue">
+    <div class="ft-page-head">
+        <div>
+            <h1 class="ft-page-head__title">{{ $t('frosh-tools.tabs.queue.title') }}</h1>
+            <div class="ft-page-head__sub">Pending messages waiting to be processed.</div>
+        </div>
+        <div class="ft-page-head__actions">
+            <button class="ft-btn" :disabled="isLoading" @click="refresh">
+                <span v-if="isLoading" class="ft-spinner"></span>
+                <ft-icon v-else name="refresh" />
+                <span>Refresh</span>
+            </button>
+            <button class="ft-btn ft-btn--danger" @click="showResetModal = true">
+                <ft-icon name="trash" />
+                <span>{{ $t('frosh-tools.resetQueue') }}</span>
+            </button>
+        </div>
+    </div>
 
-        <template #grid>
-            <sw-data-grid
-                :showSelection="false"
-                :dataSource="queueEntries"
-                :columns="columns"
-                :showActions="false"
-            >
-            </sw-data-grid>
-        </template>
-    </sw-card>
-    <sw-modal
+    <div class="ft-stat-grid">
+        <div class="ft-stat" :class="totalMessages > 0 ? 'ft-stat--warning' : 'ft-stat--success'">
+            <div class="ft-stat__label">Total messages</div>
+            <div class="ft-stat__value">{{ totalMessages.toLocaleString() }}</div>
+            <div class="ft-stat__hint">Across {{ queueEntries.length }} queue{{ queueEntries.length === 1 ? '' : 's' }}</div>
+        </div>
+        <div class="ft-stat ft-stat--accent">
+            <div class="ft-stat__label">Largest queue</div>
+            <div class="ft-stat__value">{{ largestQueue.size.toLocaleString() }}</div>
+            <div class="ft-stat__hint">{{ largestQueue.name || '—' }}</div>
+        </div>
+    </div>
+
+    <section class="ft-panel">
+        <div class="ft-panel__head">
+            <h2 class="ft-panel__title">
+                Active queues
+                <span class="ft-panel__count">{{ queueEntries.length }}</span>
+            </h2>
+        </div>
+        <div class="ft-panel__body ft-panel__body--flush">
+            <div v-if="isLoading && !queueEntries.length" class="ft-empty">
+                <span class="ft-spinner"></span>
+            </div>
+            <div v-else-if="!queueEntries.length" class="ft-empty">
+                <div class="ft-empty__icon">
+                    <ft-icon name="check" :size="22" />
+                </div>
+                <div class="ft-empty__title">No pending messages</div>
+                <div class="ft-empty__sub">All workers are caught up.</div>
+            </div>
+            <div v-else class="ft-table-wrap">
+                <table class="ft-table">
+                    <thead>
+                        <tr>
+                            <th>{{ $t('frosh-tools.name') }}</th>
+                            <th class="ft-table__num">{{ $t('frosh-tools.size') }}</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr v-for="(item, idx) in queueEntries" :key="idx">
+                            <td class="ft-table__name">{{ item.name }}</td>
+                            <td class="ft-table__num">{{ Number(item.size).toLocaleString() }}</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </section>
+
+    <ft-modal
         v-if="showResetModal"
         :title="$t('frosh-tools.tabs.queue.reset.modal.title')"
         variant="small"
-        @modal-close="showResetModal = false"
+        @close="showResetModal = false"
     >
         {{ $t('frosh-tools.tabs.queue.reset.modal.description') }}
-        <template #modal-footer>
-            <sw-button
-                deprecated
-                @click="showResetModal = false"
-            >
+        <template #footer>
+            <button class="ft-btn" @click="showResetModal = false">
                 {{ $t('global.default.cancel') }}
-            </sw-button>
-            <sw-button
-                deprecated
-                @click="resetQueue"
-                variant="primary"
-            >
+            </button>
+            <button class="ft-btn ft-btn--primary" @click="resetQueue">
                 {{ $t('frosh-tools.tabs.queue.reset.modal.reset') }}
-            </sw-button>
+            </button>
         </template>
-    </sw-modal>
-</sw-card-view>
+    </ft-modal>
+</div>

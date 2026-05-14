@@ -1,49 +1,35 @@
 <sw-page class="frosh-tools">
     <template #content>
-        <sw-tabs
-            :small="false"
-            positionIdentifier="frosh-tools-tabs"
-        >
-            <sw-tabs-item :route="{ name: 'frosh.tools.index.index' }">
-                {{ $t('frosh-tools.tabs.index.title') }}
-            </sw-tabs-item>
-            <sw-tabs-item :route="{ name: 'frosh.tools.index.cache' }">
-                {{ $t('frosh-tools.tabs.cache.title') }}
-            </sw-tabs-item>
-            <sw-tabs-item :route="{ name: 'frosh.tools.index.scheduled' }">
-                {{ $t('frosh-tools.tabs.scheduledTaskOverview.title') }}
-            </sw-tabs-item>
-            <sw-tabs-item :route="{ name: 'frosh.tools.index.queue' }">
-                {{ $t('frosh-tools.tabs.queue.title') }}
-            </sw-tabs-item>
-            <sw-tabs-item
-                :route="{ name: 'frosh.tools.index.logs' }"
-                v-if="logsAvailable"
-            >
-                {{ $t('frosh-tools.tabs.logs.title') }}
-            </sw-tabs-item>
-            <sw-tabs-item
-                :route="{ name: 'frosh.tools.index.elasticsearch' }"
-                v-if="elasticsearchAvailable"
-            >
-                {{ $t('frosh-tools.tabs.elasticsearch.title') }}
-            </sw-tabs-item>
-            <sw-tabs-item :route="{ name: 'frosh.tools.index.featureflags' }">
-                {{ $t('frosh-tools.tabs.feature-flags.title') }}
-            </sw-tabs-item>
-            <sw-tabs-item :route="{ name: 'frosh.tools.index.files' }">
-                {{ $t('frosh-tools.tabs.files.title') }}
-            </sw-tabs-item>
-            <sw-tabs-item :route="{ name: 'frosh.tools.index.statemachines' }">
-                {{ $t('frosh-tools.tabs.state-machines.title') }}
-            </sw-tabs-item>
-            <sw-tabs-item
-                :route="{ name: 'frosh.tools.index.fastly' }"
-                v-if="fastlyAvailable"
-            >
-                {{ $t('frosh-tools.tabs.fastly.title') }}
-            </sw-tabs-item>
-        </sw-tabs>
-        <router-view></router-view>
+        <div class="ft ft-shell">
+            <aside class="ft-sidebar">
+                <div class="ft-sidebar__brand">
+                    <div class="ft-sidebar__brand-mark">FT</div>
+                    <div>
+                        <div class="ft-sidebar__brand-title">{{ $t('frosh-tools.title') }}</div>
+                        <div class="ft-sidebar__brand-sub">Developer Console</div>
+                    </div>
+                </div>
+
+                <template v-for="group in navGroups" :key="group.label">
+                    <div class="ft-sidebar__group" v-if="group.items.length">
+                        <div class="ft-sidebar__group-label">{{ group.label }}</div>
+                        <router-link
+                            v-for="item in group.items"
+                            :key="item.route"
+                            :to="{ name: item.route }"
+                            class="ft-sidebar__item"
+                            active-class="is-active"
+                        >
+                            <span class="ft-sidebar__item-dot"></span>
+                            <span>{{ $t(item.labelKey) }}</span>
+                        </router-link>
+                    </div>
+                </template>
+            </aside>
+
+            <main class="ft-main">
+                <router-view></router-view>
+            </main>
+        </div>
     </template>
 </sw-page>

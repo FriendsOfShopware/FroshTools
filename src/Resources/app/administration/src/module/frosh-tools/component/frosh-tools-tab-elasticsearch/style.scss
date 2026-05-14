@@ -1,0 +1,33 @@
+.frosh-tab-es {
+    &__name {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        flex-wrap: wrap;
+    }
+
+    &__editor {
+        border: 1px solid var(--ft-border);
+        border-radius: var(--ft-radius-md);
+        overflow: hidden;
+        margin-bottom: 16px;
+
+        .sw-code-editor .sw-code-editor__editor {
+            min-height: 140px;
+        }
+    }
+
+    &__output-label {
+        font-size: 11px;
+        text-transform: uppercase;
+        letter-spacing: 0.06em;
+        color: var(--ft-text-muted);
+        margin-bottom: 6px;
+        font-weight: 600;
+    }
+
+    &__output {
+        max-height: 320px;
+        margin: 0;
+    }
+}

@@ -1,4 +1,5 @@
 import template from './template.twig';
+import './style.scss';
 
 const { Mixin, Component } = Shopware;
 
@@ -20,27 +21,12 @@ Component.register('frosh-tools-tab-elasticsearch', {
     },
 
     computed: {
-        columns() {
-            return [
-                {
-                    property: 'name',
-                    label: 'frosh-tools.name',
-                    rawData: true,
-                    primary: true,
-                },
-                {
-                    property: 'indexSize',
-                    label: 'frosh-tools.size',
-                    rawData: true,
-                    primary: true,
-                },
-                {
-                    property: 'docs',
-                    label: 'frosh-tools.docs',
-                    rawData: true,
-                    primary: true,
-                },
-            ];
+        statusStatClass() {
+            const s = (this.statusInfo?.health?.status || '').toLowerCase();
+            if (s === 'green')  return 'ft-stat--success';
+            if (s === 'yellow') return 'ft-stat--warning';
+            if (s === 'red')    return 'ft-stat--danger';
+            return '';
         },
     },
 
@@ -51,18 +37,15 @@ Component.register('frosh-tools-tab-elasticsearch', {
     methods: {
         async createdComponent() {
             this.isLoading = true;
-
             try {
                 this.statusInfo = await this.froshElasticSearch.status();
             } catch {
                 this.isActive = false;
                 this.isLoading = false;
-
                 return;
             } finally {
                 this.isLoading = false;
             }
-
             this.indices = await this.froshElasticSearch.indices();
         },
 
@@ -70,32 +53,14 @@ Component.register('frosh-tools-tab-elasticsearch', {
             const thresh = 1024;
             const dp = 1;
             let formatted = bytes;
-
-            if (Math.abs(bytes) < thresh) {
-                return bytes + ' B';
-            }
-
-            const units = [
-                'KiB',
-                'MiB',
-                'GiB',
-                'TiB',
-                'PiB',
-                'EiB',
-                'ZiB',
-                'YiB',
-            ];
+            if (Math.abs(bytes) < thresh) return bytes + ' B';
+            const units = ['KiB', 'MiB', 'GiB', 'TiB', 'PiB', 'EiB', 'ZiB', 'YiB'];
             let index = -1;
             const reach = 10 ** dp;
-
             do {
                 formatted /= thresh;
                 ++index;
-            } while (
-                Math.round(Math.abs(formatted) * reach) / reach >= thresh &&
-                index < units.length - 1
-            );
-
+            } while (Math.round(Math.abs(formatted) * reach) / reach >= thresh && index < units.length - 1);
             return formatted.toFixed(dp) + ' ' + units[index];
         },
 
@@ -109,13 +74,8 @@ Component.register('frosh-tools-tab-elasticsearch', {
             const requestLine = lines.shift();
             const payload = lines.join('\n').trim();
             const [method, uri] = requestLine.split(' ');
-
             try {
-                this.consoleOutput = await this.froshElasticSearch.console(
-                    method,
-                    uri,
-                    payload
-                );
+                this.consoleOutput = await this.froshElasticSearch.console(method, uri, payload);
             } catch (e) {
                 this.consoleOutput = e.response.data;
             }
@@ -123,51 +83,31 @@ Component.register('frosh-tools-tab-elasticsearch', {
 
         async reindex() {
             await this.froshElasticSearch.reindex();
-
-            this.createNotificationSuccess({
-                message: this.$t('global.default.success'),
-            });
-
+            this.createNotificationSuccess({ message: this.$t('global.default.success') });
             await this.createdComponent();
         },
 
         async switchAlias() {
             await this.froshElasticSearch.switchAlias();
-
-            this.createNotificationSuccess({
-                message: this.$t('global.default.success'),
-            });
-
+            this.createNotificationSuccess({ message: this.$t('global.default.success') });
             await this.createdComponent();
         },
 
         async flushAll() {
             await this.froshElasticSearch.flushAll();
-
-            this.createNotificationSuccess({
-                message: this.$t('global.default.success'),
-            });
-
+            this.createNotificationSuccess({ message: this.$t('global.default.success') });
             await this.createdComponent();
         },
 
         async resetElasticsearch() {
             await this.froshElasticSearch.reset();
-
-            this.createNotificationSuccess({
-                message: this.$t('global.default.success'),
-            });
-
+            this.createNotificationSuccess({ message: this.$t('global.default.success') });
             await this.createdComponent();
         },
 
         async cleanup() {
             await this.froshElasticSearch.cleanup();
-
-            this.createNotificationSuccess({
-                message: this.$t('global.default.success'),
-            });
-
+            this.createNotificationSuccess({ message: this.$t('global.default.success') });
             await this.createdComponent();
         },
     },

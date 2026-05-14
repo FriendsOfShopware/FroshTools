@@ -1,23 +1,24 @@
+// Override the default sw-page chrome so the FroshTools shell takes the full width.
 .frosh-tools {
-    .sw-tabs {
-        width: calc(100% - 175px);
-        margin: 0 auto;
-    }
-
-    .sw-card.sw-card--large {
-        max-width: calc(100% - 100px);
-    }
-
-    .sw-card-view__content {
-        padding-top: 0;
-        width: calc(100% - 100px);
-        margin: 0 auto;
+    .sw-page__main-content,
+    .sw-page__main-content-inner {
+        padding: 0;
     }
 
     .sw-card-view {
-        position: initial;
-        height: initial;
-        width: initial;
+        padding: 0;
+        background: transparent;
+    }
+
+    .ft-main {
+        min-width: 0;
+
+        > .sw-card-view,
+        > .ft-card-view {
+            display: flex;
+            flex-direction: column;
+            gap: 18px;
+        }
     }
 }
 

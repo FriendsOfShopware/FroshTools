@@ -1,0 +1,64 @@
+.frosh-tab-files {
+    &__ext {
+        padding: 14px 0;
+        border-bottom: 1px solid var(--ft-divider);
+
+        &:last-child { border-bottom: none; padding-bottom: 0; }
+        &:first-of-type { padding-top: 18px; }
+    }
+
+    &__ext-head {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        margin-bottom: 10px;
+    }
+
+    &__ext-name {
+        font-size: 14px;
+        font-weight: 600;
+        font-family: var(--ft-mono);
+        margin: 0;
+    }
+
+    &__ext-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+        gap: 16px;
+    }
+
+    &__ext-group {
+        background: var(--ft-surface-2);
+        border: 1px solid var(--ft-border);
+        border-radius: var(--ft-radius-md);
+        padding: 12px 14px;
+    }
+
+    &__ext-label {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        font-size: 12.5px;
+        font-weight: 600;
+        color: var(--ft-text);
+        margin-bottom: 8px;
+    }
+
+    &__ext-list {
+        list-style: none;
+        margin: 0;
+        padding: 0;
+        font-size: 12px;
+        color: var(--ft-text-soft);
+        max-height: 220px;
+        overflow-y: auto;
+
+        li {
+            padding: 4px 0;
+            border-bottom: 1px dashed var(--ft-divider);
+            word-break: break-all;
+
+            &:last-child { border-bottom: none; }
+        }
+    }
+}

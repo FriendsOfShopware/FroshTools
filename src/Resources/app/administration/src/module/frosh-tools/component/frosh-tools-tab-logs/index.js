@@ -26,37 +26,27 @@ Component.register('frosh-tools-tab-logs', {
     },
 
     computed: {
-        columns() {
-            return [
-                {
-                    property: 'date',
-                    label: 'frosh-tools.date',
-                    rawData: true,
-                },
-                {
-                    property: 'channel',
-                    label: 'frosh-tools.channel',
-                    rawData: true,
-                },
-                {
-                    property: 'level',
-                    label: 'frosh-tools.level',
-                    rawData: true,
-                },
-                {
-                    property: 'message',
-                    label: 'frosh-tools.message',
-                    rawData: true,
-                },
-            ];
-        },
-
         date() {
             return Shopware.Filter.getByName('date');
         },
     },
 
     methods: {
+        levelPill(level) {
+            const l = (level || '').toLowerCase();
+            if (['emergency', 'alert', 'critical'].includes(l)) return 'ft-pill--danger';
+            if (l === 'error') return 'ft-pill--danger';
+            if (l === 'warning' || l === 'notice') return 'ft-pill--warning';
+            if (l === 'info') return 'ft-pill--info';
+            if (l === 'debug') return 'ft-pill--muted';
+            return 'ft-pill--muted';
+        },
+
+        truncate(text) {
+            if (!text) return '';
+            return text.length > 220 ? `${text.slice(0, 220)}…` : text;
+        },
+
         async refresh() {
             this.isLoading = true;
             await this.createdComponent();
@@ -70,7 +60,6 @@ Component.register('frosh-tools-tab-logs', {
 
         async onFileSelected() {
             this.page = 1;
-
             await this.loadLogEntries();
         },
 
@@ -78,18 +67,13 @@ Component.register('frosh-tools-tab-logs', {
             if (!this.selectedLogFile) {
                 return;
             }
-
             const logEntries = await this.froshToolsService.getLogFile(
                 this.selectedLogFile,
                 (this.page - 1) * this.limit,
-                this.limit
+                this.limit,
             );
-
             this.logEntries = logEntries.data;
-            this.totalLogEntries = parseInt(
-                logEntries.headers['file-size'],
-                10
-            );
+            this.totalLogEntries = parseInt(logEntries.headers['file-size'], 10);
         },
 
         async onPageChange(page) {

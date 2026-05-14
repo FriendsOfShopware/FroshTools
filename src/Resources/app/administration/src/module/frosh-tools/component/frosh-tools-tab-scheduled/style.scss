@@ -1,22 +1,72 @@
-.frosh-tools-tab-scheduled__tasks-card {
-    .sw-card__toolbar {
+.frosh-tab-scheduled {
+    &__menu-wrap {
+        position: relative;
+        display: inline-block;
+    }
+
+    &__menu {
+        position: absolute;
+        right: 0;
+        top: calc(100% + 4px);
+        min-width: 240px;
+        background: var(--ft-surface);
+        border: 1px solid var(--ft-border);
+        border-radius: var(--ft-radius-md);
+        box-shadow: var(--ft-shadow-lg);
+        padding: 6px;
+        z-index: 50;
         display: flex;
-        justify-content: space-between;
+        flex-direction: column;
+        gap: 1px;
     }
 
-    .sw-card__content {
-        padding: 0;
-    }
+    &__menu-item {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        padding: 8px 10px;
+        border-radius: var(--ft-radius-sm);
+        background: transparent;
+        border: none;
+        color: var(--ft-text);
+        font-size: 13px;
+        text-align: left;
+        cursor: pointer;
+        width: 100%;
+        transition: background var(--ft-transition);
 
-    .sw-data-grid__cell--nextExecutionTime {
-        .sw-field--datepicker {
-            display: flex;
-            gap: 10px;
+        &:hover {
+            background: var(--ft-surface-hover);
         }
 
-        &.is--compact .sw-field--datepicker input {
-            padding-top: 10px;
-            padding-bottom: 10px;
+        .mt-icon, .sw-icon {
+            width: 14px;
+            height: 14px;
+            color: var(--ft-text-muted);
+        }
+
+        &--danger {
+            color: var(--ft-danger);
+
+            &:hover {
+                background: var(--ft-danger-soft);
+            }
+        }
+    }
+
+    &__menu-sep {
+        height: 1px;
+        background: var(--ft-divider);
+        margin: 4px 2px;
+    }
+
+    &__edit {
+        display: flex;
+        flex-direction: column;
+        gap: 12px;
+
+        .sw-field {
+            margin: 0;
         }
     }
 }

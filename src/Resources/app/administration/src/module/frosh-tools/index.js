@@ -1,3 +1,5 @@
+import './component/ft-icon';
+import './component/ft-modal';
 import './component/frosh-tools-tab-index';
 import './component/frosh-tools-tab-cache';
 import './component/frosh-tools-tab-queue';

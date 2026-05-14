@@ -1,0 +1,103 @@
+.ft-modal {
+    position: fixed;
+    inset: 0;
+    z-index: 1000;
+    background: rgba(15, 23, 42, 0.55);
+    backdrop-filter: blur(2px);
+    display: flex;
+    align-items: flex-start;
+    justify-content: center;
+    padding: 8vh 16px 24px;
+    overflow-y: auto;
+    animation: ft-modal-fade 160ms ease-out;
+
+    &__dialog {
+        background: var(--ft-surface);
+        color: var(--ft-text);
+        border: 1px solid var(--ft-border);
+        border-radius: var(--ft-radius-lg);
+        box-shadow: var(--ft-shadow-lg);
+        width: 100%;
+        max-width: 720px;
+        display: flex;
+        flex-direction: column;
+        max-height: calc(100vh - 16vh);
+        animation: ft-modal-pop 180ms cubic-bezier(0.16, 1, 0.3, 1);
+        overflow: hidden;
+
+        &--small { max-width: 440px; }
+        &--large { max-width: 1080px; }
+    }
+
+    &__head {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        padding: 14px 18px;
+        border-bottom: 1px solid var(--ft-divider);
+        flex-shrink: 0;
+    }
+
+    &__title {
+        font-size: 15px;
+        font-weight: 600;
+        margin: 0;
+        flex: 1;
+        min-width: 0;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+    }
+
+    &__close {
+        background: transparent;
+        border: none;
+        border-radius: var(--ft-radius-sm);
+        padding: 6px;
+        color: var(--ft-text-muted);
+        cursor: pointer;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        transition: background var(--ft-transition), color var(--ft-transition);
+
+        &:hover {
+            background: var(--ft-surface-hover);
+            color: var(--ft-text);
+        }
+    }
+
+    &__body {
+        padding: 18px;
+        overflow-y: auto;
+        flex: 1;
+        min-height: 0;
+    }
+
+    &__foot {
+        padding: 12px 18px;
+        border-top: 1px solid var(--ft-divider);
+        display: flex;
+        justify-content: flex-end;
+        gap: 8px;
+        flex-shrink: 0;
+        background: var(--ft-surface-2);
+    }
+}
+
+@keyframes ft-modal-fade {
+    from { opacity: 0; }
+    to   { opacity: 1; }
+}
+
+@keyframes ft-modal-pop {
+    from { opacity: 0; transform: translateY(-8px) scale(0.98); }
+    to   { opacity: 1; transform: translateY(0)    scale(1); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .ft-modal,
+    .ft-modal__dialog {
+        animation: none;
+    }
+}

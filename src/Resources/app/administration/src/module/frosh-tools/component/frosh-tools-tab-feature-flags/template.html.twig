@@ -1,75 +1,73 @@
-<sw-card-view>
-    <sw-card
-        class="frosh-tools-tab-feature-flags__feature-flags-card"
-        :title="$tc('frosh-tools.tabs.feature-flags.title')"
-        :isLoading="isLoading"
-        :large="true"
-        :deprecated="true"
-    >
-        <template #toolbar>
-            <!-- @todo: Make the refresh button fancy -->
-            <sw-button
-                variant="ghost"
-                deprecated
-                @click="createdComponent"
-            >
-                <sw-icon
-                    deprecated
-                    :small="true"
-                    name="regular-undo"
-                ></sw-icon>
-            </sw-button>
-        </template>
-        <sw-data-grid
-            :showSelection="false"
-            :dataSource="featureFlags"
-            :columns="columns"
-            :showActions="false"
-        >
-            <template #column-active="{ item }">
-                <sw-icon
-                    v-if="item.active"
-                    color="#37d046"
-                    name="regular-checkmark-s"
-                    small
-                />
-                <sw-icon
-                    v-else
-                    color="#de294c"
-                    name="regular-plus-xs"
-                    small
-                />
-            </template>
+<div class="ft frosh-tab-flags">
+    <div class="ft-page-head">
+        <div>
+            <h1 class="ft-page-head__title">{{ $tc('frosh-tools.tabs.feature-flags.title') }}</h1>
+            <div class="ft-page-head__sub">Feature flags exposed by Shopware core and registered extensions.</div>
+        </div>
+        <div class="ft-page-head__actions">
+            <button class="ft-btn" :disabled="isLoading" @click="createdComponent">
+                <span v-if="isLoading" class="ft-spinner"></span>
+                <ft-icon v-else name="refresh" />
+                <span>Refresh</span>
+            </button>
+        </div>
+    </div>
 
-            <template #column-major="{ item }">
-                <sw-icon
-                    v-if="item.major"
-                    color="#37d046"
-                    name="regular-checkmark-s"
-                    small
-                />
-                <sw-icon
-                    v-else
-                    color="#de294c"
-                    name="regular-plus-xs"
-                    small
-                />
-            </template>
+    <div class="ft-stat-grid">
+        <div class="ft-stat ft-stat--success">
+            <div class="ft-stat__label">Active</div>
+            <div class="ft-stat__value">{{ activeCount }}</div>
+        </div>
+        <div class="ft-stat ft-stat--accent">
+            <div class="ft-stat__label">Major</div>
+            <div class="ft-stat__value">{{ majorCount }}</div>
+        </div>
+        <div class="ft-stat ft-stat--info">
+            <div class="ft-stat__label">Default-on</div>
+            <div class="ft-stat__value">{{ defaultCount }}</div>
+        </div>
+        <div class="ft-stat">
+            <div class="ft-stat__label">Total</div>
+            <div class="ft-stat__value">{{ featureFlags ? featureFlags.length : 0 }}</div>
+        </div>
+    </div>
 
-            <template #column-default="{ item }">
-                <sw-icon
-                    v-if="item.default"
-                    color="#37d046"
-                    name="regular-checkmark-s"
-                    small
-                />
-                <sw-icon
-                    v-else
-                    color="#de294c"
-                    name="regular-plus-xs"
-                    small
-                />
-            </template>
-        </sw-data-grid>
-    </sw-card>
-</sw-card-view>
+    <section class="ft-panel">
+        <div class="ft-panel__head">
+            <h2 class="ft-panel__title">
+                Flags
+                <span class="ft-panel__count">{{ featureFlags ? featureFlags.length : 0 }}</span>
+            </h2>
+        </div>
+        <div class="ft-panel__body ft-panel__body--flush">
+            <div v-if="isLoading && !featureFlags" class="ft-empty">
+                <span class="ft-spinner"></span>
+            </div>
+            <div v-else-if="!featureFlags || !featureFlags.length" class="ft-empty">
+                <div class="ft-empty__title">No feature flags registered</div>
+            </div>
+            <div v-else class="ft-table-wrap">
+                <table class="ft-table">
+                    <thead>
+                        <tr>
+                            <th>{{ $t('frosh-tools.tabs.feature-flags.flag') }}</th>
+                            <th>{{ $t('frosh-tools.tabs.feature-flags.description') }}</th>
+                            <th style="width: 110px;">{{ $t('frosh-tools.active') }}</th>
+                            <th style="width: 110px;">{{ $t('frosh-tools.tabs.feature-flags.major') }}</th>
+                            <th style="width: 110px;">{{ $t('frosh-tools.tabs.feature-flags.default') }}</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr v-for="item in featureFlags" :key="item.flag">
+                            <td class="ft-table__name ft-mono">{{ item.flag }}</td>
+                            <td>{{ item.description }}</td>
+                            <td><span class="ft-pill" :class="item.active ? 'ft-pill--success' : 'ft-pill--muted'">{{ item.active ? 'on' : 'off' }}</span></td>
+                            <td><span class="ft-pill" :class="item.major ? 'ft-pill--accent' : 'ft-pill--muted'">{{ item.major ? 'yes' : 'no' }}</span></td>
+                            <td><span class="ft-pill" :class="item.default ? 'ft-pill--info' : 'ft-pill--muted'">{{ item.default ? 'yes' : 'no' }}</span></td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </section>
+</div>
