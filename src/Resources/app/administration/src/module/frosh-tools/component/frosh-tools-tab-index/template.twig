@@ -1,147 +1,135 @@
-<sw-card-view>
-    <sw-card
-        class="frosh-tools-tab-index__health-card"
-        :isLoading="isLoading"
-        :large="true"
-        positionIdentifier="frosh-tools-tab-index"
-        deprecated
-    >
-        <template #toolbar>
-            <!-- @todo: Make the refresh button fancy -->
-            <sw-button
-                variant="ghost"
-                deprecated
+<div class="ft frosh-tab-index">
+    <div class="ft-page-head">
+        <div>
+            <h1 class="ft-page-head__title">{{ $t('frosh-tools.tabs.index.title') }}</h1>
+            <div class="ft-page-head__sub">Live health and performance checks for this Shopware instance.</div>
+        </div>
+        <div class="ft-page-head__actions">
+            <button
+                class="ft-btn"
+                :disabled="isLoading"
                 @click="refresh"
             >
-                <sw-icon
-                    deprecated
-                    :small="true"
-                    name="regular-undo"
-                ></sw-icon>
-            </sw-button>
-        </template>
-        <sw-card
-            class="frosh-tools-tab-index__health-card"
-            :title="$t('frosh-tools.tabs.index.title')"
-            deprecated
-            :large="true"
-            positionIdentifier="frosh-tools-tab-index-health"
-        >
-            <template #grid>
-                <sw-data-grid
-                    v-if="health"
-                    :showSelection="false"
-                    :showActions="false"
-                    :dataSource="health"
-                    :columns="columns"
-                >
-                    <template #column-current="{ item }">
-                        <div>
-                            <sw-label
-                                variant="warning"
-                                appearance="pill"
-                                v-if="item.state === 'STATE_WARNING'"
-                            >
-                                {{ $t('frosh-tools.warning') }}
-                            </sw-label>
-                            <sw-label
-                                variant="danger"
-                                appearance="pill"
-                                v-if="item.state === 'STATE_ERROR'"
-                            >
-                                {{ $t('frosh-tools.error') }}
-                            </sw-label>
-                            <sw-label
-                                variant="info"
-                                appearance="pill"
-                                v-if="item.state === 'STATE_INFO'"
-                            >
-                                {{ $t('frosh-tools.info') }}
-                            </sw-label>
-                        </div>
-                        {{ item.current }}
-                    </template>
+                <span v-if="isLoading" class="ft-spinner"></span>
+                <ft-icon v-else name="refresh" />
+                <span>Refresh</span>
+            </button>
+        </div>
+    </div>
 
-                    <template #column-name="{ item }">
-                        {{ item.snippet }}
-                        <template v-if="item.url">
-                            &nbsp;
-                            <a
-                                :href="item.url"
-                                target="_blank"
-                            >Info</a>
-                        </template>
-                    </template>
-                </sw-data-grid>
-            </template>
-        </sw-card>
-        <sw-card
-            class="frosh-tools-tab-index__performance-card"
-            :title="$t('frosh-tools.tabs.index.performance')"
-            :large="true"
-            positionIdentifier="frosh-tools-tab-index-performance"
-            deprecated
-        >
-            <template #grid>
-                <sw-card-section
-                    divider="bottom"
-                    v-if="performanceStatus && performanceStatus.length === 0"
-                >
-                    <sw-alert
-                        variant="success"
-                        deprecated
-                    >
-                        {{ $t('frosh-tools.noRecommendations') }}
-                    </sw-alert>
-                </sw-card-section>
-                <sw-data-grid
-                    v-if="performanceStatus && performanceStatus.length > 0"
-                    :showSelection="false"
-                    :showActions="false"
-                    :dataSource="performanceStatus"
-                    :columns="columns"
-                >
-                    <template #column-current="{ item }">
-                        <div>
-                            <sw-label
-                                variant="warning"
-                                appearance="pill"
-                                v-if="item.state === 'STATE_WARNING'"
-                            >
-                                {{ $t('frosh-tools.warning') }}
-                            </sw-label>
-                            <sw-label
-                                variant="danger"
-                                appearance="pill"
-                                v-if="item.state === 'STATE_ERROR'"
-                            >
-                                {{ $t('frosh-tools.error') }}
-                            </sw-label>
-                            <sw-label
-                                variant="info"
-                                appearance="pill"
-                                v-if="item.state === 'STATE_INFO'"
-                            >
-                                {{ $t('frosh-tools.info') }}
-                            </sw-label>
-                            {{ item.current }}
-                        </div>
-                    </template>
+    <div class="ft-stat-grid">
+        <div class="ft-stat" :class="errorCount > 0 ? 'ft-stat--danger' : 'ft-stat--success'">
+            <div class="ft-stat__label">Errors</div>
+            <div class="ft-stat__value">{{ errorCount }}</div>
+            <div class="ft-stat__hint">Critical issues to resolve</div>
+        </div>
+        <div class="ft-stat" :class="warningCount > 0 ? 'ft-stat--warning' : 'ft-stat--success'">
+            <div class="ft-stat__label">Warnings</div>
+            <div class="ft-stat__value">{{ warningCount }}</div>
+            <div class="ft-stat__hint">Should be reviewed</div>
+        </div>
+        <div class="ft-stat ft-stat--info">
+            <div class="ft-stat__label">Info</div>
+            <div class="ft-stat__value">{{ infoCount }}</div>
+            <div class="ft-stat__hint">Informational signals</div>
+        </div>
+        <div class="ft-stat ft-stat--accent">
+            <div class="ft-stat__label">Recommendations</div>
+            <div class="ft-stat__value">{{ recommendationCount }}</div>
+            <div class="ft-stat__hint">Performance tips</div>
+        </div>
+    </div>
 
-                    <template #column-name="{ item }">
-                        {{ item.snippet }}
-                        <template v-if="item.url">
-                            &nbsp;
-                            <a
-                                :href="item.url"
-                                target="_blank"
-                            >
-                                {{ $t('frosh-tools.tabs.index.info') }}
-                            </a>
-                        </template>
-                    </template>
-                </sw-data-grid>
-            </template>
-        </sw-card>
-    </sw-card>
-</sw-card-view>
+    <section class="ft-panel">
+        <div class="ft-panel__head">
+            <h2 class="ft-panel__title">
+                System Health
+                <span class="ft-panel__count">{{ health ? health.length : 0 }}</span>
+            </h2>
+        </div>
+        <div class="ft-panel__body ft-panel__body--flush">
+            <div v-if="isLoading && !health" class="ft-empty">
+                <span class="ft-spinner"></span>
+            </div>
+            <div v-else-if="!health || health.length === 0" class="ft-empty">
+                <div class="ft-empty__title">No health checks reported</div>
+            </div>
+            <div v-else class="ft-table-wrap">
+                <table class="ft-table">
+                    <thead>
+                        <tr>
+                            <th style="width: 110px;">Status</th>
+                            <th>{{ $t('frosh-tools.name') }}</th>
+                            <th>{{ $t('frosh-tools.current') }}</th>
+                            <th>{{ $t('frosh-tools.recommended') }}</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr v-for="(item, idx) in health" :key="`h-${idx}`">
+                            <td>
+                                <span class="ft-pill" :class="pillClass(item.state)">{{ stateLabel(item.state) }}</span>
+                            </td>
+                            <td class="ft-table__name">
+                                {{ item.snippet }}
+                                <a v-if="item.url" class="ft-link" :href="item.url" target="_blank" rel="noopener">
+                                    {{ $t('frosh-tools.tabs.index.info') }}
+                                </a>
+                            </td>
+                            <td class="ft-mono">{{ item.current }}</td>
+                            <td class="ft-mono">{{ item.recommended }}</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </section>
+
+    <section class="ft-panel">
+        <div class="ft-panel__head">
+            <h2 class="ft-panel__title">
+                {{ $t('frosh-tools.tabs.index.performance') }}
+                <span class="ft-panel__count">{{ performanceStatus ? performanceStatus.length : 0 }}</span>
+            </h2>
+        </div>
+        <div class="ft-panel__body" v-if="!isLoading && performanceStatus && performanceStatus.length === 0">
+            <div class="ft-hero-state ft-hero-state--success">
+                <div class="ft-hero-state__icon">
+                    <ft-icon name="check" :size="20" />
+                </div>
+                <div>
+                    <div class="ft-hero-state__title">All clear</div>
+                    <div class="ft-hero-state__body">{{ $t('frosh-tools.noRecommendations') }}</div>
+                </div>
+            </div>
+        </div>
+        <div class="ft-panel__body ft-panel__body--flush" v-else-if="performanceStatus && performanceStatus.length > 0">
+            <div class="ft-table-wrap">
+                <table class="ft-table">
+                    <thead>
+                        <tr>
+                            <th style="width: 110px;">Status</th>
+                            <th>{{ $t('frosh-tools.name') }}</th>
+                            <th>{{ $t('frosh-tools.current') }}</th>
+                            <th>{{ $t('frosh-tools.recommended') }}</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr v-for="(item, idx) in performanceStatus" :key="`p-${idx}`">
+                            <td>
+                                <span class="ft-pill" :class="pillClass(item.state)">{{ stateLabel(item.state) }}</span>
+                            </td>
+                            <td class="ft-table__name">
+                                {{ item.snippet }}
+                                <a v-if="item.url" class="ft-link" :href="item.url" target="_blank" rel="noopener">
+                                    {{ $t('frosh-tools.tabs.index.info') }}
+                                </a>
+                            </td>
+                            <td class="ft-mono">{{ item.current }}</td>
+                            <td class="ft-mono">{{ item.recommended }}</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </section>
+</div>

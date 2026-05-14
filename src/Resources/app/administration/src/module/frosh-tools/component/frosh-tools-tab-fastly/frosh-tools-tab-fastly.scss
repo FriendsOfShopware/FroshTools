@@ -1,28 +1,53 @@
-.frosh-tools-stat {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    border: 1px solid #d1d9e0;
-    border-radius: 4px;
-    padding: 10px;
+.frosh-tab-fastly {
+    &__select {
+        min-width: 200px;
+        .sw-single-select { margin: 0; }
+    }
 
-    &__label {
+    &__desc {
+        margin: 0 0 16px;
+        font-size: 13.5px;
+        color: var(--ft-text-soft);
+    }
+
+    &__row {
+        display: flex;
+        gap: 12px;
+        align-items: flex-end;
+        flex-wrap: wrap;
+
+        &-grow {
+            flex: 1;
+            min-width: 240px;
+
+            .sw-field { margin: 0; }
+        }
+
+        &-actions {
+            display: flex;
+            gap: 8px;
+            padding-bottom: 2px;
+        }
+    }
+
+    &__danger-title {
+        font-weight: 600;
         font-size: 14px;
-        color: #52667a;
-        margin-bottom: 5px;
+        margin-bottom: 2px;
     }
 
-    &__value {
-        font-size: 24px;
-        font-weight: bold;
-        color: #2c3e50;
+    &__danger-sub {
+        font-size: 12.5px;
+        color: var(--ft-text-muted);
     }
-}
 
-.fastly-purge-url-field {
-    margin-bottom: 0;
-}
+    &__editor {
+        border: 1px solid var(--ft-border);
+        border-radius: var(--ft-radius-md);
+        overflow: hidden;
 
-.sw-code-editor.fastly-code-editor .sw-code-editor__editor {
-    height: 800px;
+        .sw-code-editor .sw-code-editor__editor {
+            height: 60vh;
+        }
+    }
 }

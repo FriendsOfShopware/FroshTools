@@ -5,9 +5,7 @@ const { Component, Mixin } = Shopware;
 
 Component.register('frosh-tools-tab-feature-flags', {
     template,
-
     inject: ['froshToolsService'],
-
     mixins: [Mixin.getByName('notification')],
 
     data() {
@@ -22,38 +20,17 @@ Component.register('frosh-tools-tab-feature-flags', {
     },
 
     computed: {
-        columns() {
-            return [
-                {
-                    property: 'flag',
-                    label: 'frosh-tools.tabs.feature-flags.flag',
-                    rawData: true,
-                },
-                {
-                    property: 'active',
-                    label: 'frosh-tools.active',
-                    rawData: true,
-                },
-                {
-                    property: 'description',
-                    label: 'frosh-tools.tabs.feature-flags.description',
-                    rawData: true,
-                },
-                {
-                    property: 'major',
-                    label: 'frosh-tools.tabs.feature-flags.major',
-                    rawData: true,
-                },
-                {
-                    property: 'default',
-                    label: 'frosh-tools.tabs.feature-flags.default',
-                    rawData: true,
-                },
-            ];
-        },
+        activeCount()  { return this.countWhere('active'); },
+        majorCount()   { return this.countWhere('major'); },
+        defaultCount() { return this.countWhere('default'); },
     },
 
     methods: {
+        countWhere(field) {
+            if (!this.featureFlags) return 0;
+            return this.featureFlags.filter((f) => !!f[field]).length;
+        },
+
         async refresh() {
             await this.createdComponent();
         },

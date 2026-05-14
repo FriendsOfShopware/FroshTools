@@ -1,15 +1,35 @@
-.frosh-tools-tab-logs__logs-card {
-    .sw-card__content {
-        padding: 0;
+.frosh-tab-logs {
+    &__select {
+        min-width: 280px;
+        .sw-single-select { margin: 0; }
     }
 
-    .sw-card__toolbar {
-        display: grid;
-        grid-template-columns: auto 1fr;
-        gap: 20px;
+    &__pagination {
+        padding: 8px 12px;
+        border-top: 1px solid var(--ft-divider);
     }
 
-    .sw-single-select {
-        margin: 0;
+    &__modal-head {
+        display: flex;
+        flex-direction: column;
+        gap: 4px;
+        flex: 1;
+    }
+
+    &__modal-title {
+        display: flex;
+        gap: 8px;
+        align-items: center;
+    }
+
+    &__modal-date {
+        font-size: 12px;
+        color: var(--ft-text-muted);
+    }
+
+    &__message {
+        white-space: pre-wrap;
+        word-break: break-word;
+        max-height: 50vh;
     }
 }
