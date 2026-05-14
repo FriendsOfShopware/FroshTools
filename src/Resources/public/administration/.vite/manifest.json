@@ -1,0 +1,11 @@
+{
+  "main.js": {
+    "file": "js/frosh-tools.js",
+    "name": "frosh-tools",
+    "src": "main.js",
+    "isEntry": true,
+    "css": [
+      "css/frosh-tools.css"
+    ]
+  }
+}
