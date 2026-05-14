@@ -8,8 +8,12 @@ import './component/frosh-tools-tab-logs';
 import './component/frosh-tools-tab-state-machines';
 import './component/frosh-tools-tab-files';
 import './component/frosh-tools-tab-fastly';
+import './component/frosh-tools-tab-statistics';
 import './page/index';
 import './acl';
+
+import enGB from './snippet/en-GB.json';
+import deDE from './snippet/de-DE.json';
 
 Shopware.Module.register('frosh-tools', {
     type: 'plugin',
@@ -19,6 +23,11 @@ Shopware.Module.register('frosh-tools', {
     color: '#303A4F',
 
     icon: 'regular-cog',
+
+    snippets: {
+        'de-DE': deDE,
+        'en-GB': enGB,
+    },
 
     routes: {
         index: {
@@ -100,6 +109,14 @@ Shopware.Module.register('frosh-tools', {
                 fastly: {
                     component: 'frosh-tools-tab-fastly',
                     path: 'fastly',
+                    meta: {
+                        privilege: 'frosh_tools:read',
+                        parentPath: 'sw.settings.index.plugins',
+                    },
+                },
+                statistics: {
+                    component: 'frosh-tools-tab-statistics',
+                    path: 'statistics',
                     meta: {
                         privilege: 'frosh_tools:read',
                         parentPath: 'sw.settings.index.plugins',
