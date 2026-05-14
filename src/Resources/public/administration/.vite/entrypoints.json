@@ -1,0 +1,25 @@
+{
+  "base": "/bundles/froshtools/administration/",
+  "entryPoints": {
+    "frosh-tools": {
+      "css": [
+        "/bundles/froshtools/administration/css/frosh-tools.css"
+      ],
+      "dynamic": [],
+      "js": [
+        "/bundles/froshtools/administration/js/frosh-tools.js"
+      ],
+      "legacy": false,
+      "preload": []
+    }
+  },
+  "legacy": false,
+  "metadatas": {},
+  "version": [
+    "7.0.4",
+    7,
+    0,
+    4
+  ],
+  "viteServer": null
+}
