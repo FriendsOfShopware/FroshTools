@@ -7,10 +7,15 @@ on:
 
 jobs:
     build:
-        uses: shopware/github-actions/.github/workflows/store-release.yml@main
-        with:
-            extensionName: ${{ github.event.repository.name }}
-        secrets:
-            clientId: ${{ secrets.SHOPWARE_CLI_ACCOUNT_CLIENT_ID }}
-            clientSecret: ${{ secrets.SHOPWARE_CLI_ACCOUNT_CLIENT_SECRET }}
-            ghToken: ${{ secrets.GITHUB_TOKEN }}
+        runs-on: ubuntu-latest
+        steps:
+            - name: Checkout
+              uses: actions/checkout@v4
+
+            - name: Release Extension to Store
+              uses: shopware/github-actions/store-release@main
+              with:
+                  extensionName: ${{ github.event.repository.name }}
+                  clientId: ${{ secrets.SHOPWARE_CLI_ACCOUNT_CLIENT_ID }}
+                  clientSecret: ${{ secrets.SHOPWARE_CLI_ACCOUNT_CLIENT_SECRET }}
+                  ghToken: ${{ secrets.GITHUB_TOKEN }}
