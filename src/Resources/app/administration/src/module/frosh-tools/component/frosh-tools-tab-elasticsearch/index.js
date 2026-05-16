@@ -20,16 +20,6 @@ Component.register('frosh-tools-tab-elasticsearch', {
         };
     },
 
-    computed: {
-        statusStatVariant() {
-            const s = (this.statusInfo?.health?.status || '').toLowerCase();
-            if (s === 'green') return 'success';
-            if (s === 'yellow') return 'warning';
-            if (s === 'red') return 'danger';
-            return null;
-        },
-    },
-
     created() {
         this.createdComponent();
     },

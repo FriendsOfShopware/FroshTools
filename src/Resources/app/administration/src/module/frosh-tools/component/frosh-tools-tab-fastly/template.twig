@@ -21,31 +21,19 @@
             icon="chart"
             :title="$t('frosh-tools.tabs.fastly.emptyStats')"
         />
-        <div
+        <dl
             v-else
-            class="ft-stat-grid"
+            class="ft-kv frosh-tab-fastly__metrics"
         >
-            <ft-stat
-                :label="$t('frosh-tools.tabs.fastly.requests')"
-                :value="formatNumber(stats.requests)"
-                variant="accent"
-            />
-            <ft-stat
-                :label="$t('frosh-tools.tabs.fastly.hitRate')"
-                :value="formatNumber(stats.hit_ratio * 100) + '%'"
-                :variant="hitRateVariant"
-            />
-            <ft-stat
-                :label="$t('frosh-tools.tabs.fastly.bandwidth')"
-                :value="formatSize(stats.bandwidth)"
-                variant="info"
-            />
-            <ft-stat
-                :label="$t('frosh-tools.tabs.fastly.hits')"
-                :value="formatNumber(stats.hits)"
-                variant="success"
-            />
-        </div>
+            <dt>{{ $t('frosh-tools.tabs.fastly.requests') }}</dt>
+            <dd>{{ formatNumber(stats.requests) }}</dd>
+            <dt>{{ $t('frosh-tools.tabs.fastly.hitRate') }}</dt>
+            <dd>{{ formatNumber(stats.hit_ratio * 100) }}%</dd>
+            <dt>{{ $t('frosh-tools.tabs.fastly.bandwidth') }}</dt>
+            <dd>{{ formatSize(stats.bandwidth) }}</dd>
+            <dt>{{ $t('frosh-tools.tabs.fastly.hits') }}</dt>
+            <dd>{{ formatNumber(stats.hits) }}</dd>
+        </dl>
     </ft-panel>
     <ft-panel title="Purge controls">
         <p class="frosh-tab-fastly__desc">

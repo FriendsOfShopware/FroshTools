@@ -20,20 +20,6 @@
             </button>
         </template>
     </ft-page-head>
-    <div class="ft-stat-grid">
-        <ft-stat
-            label="Total messages"
-            :value="totalMessages.toLocaleString()"
-            :variant="totalMessages > 0 ? 'warning' : 'success'"
-            :hint="`Across ${queueEntries.length} queue${queueEntries.length === 1 ? '' : 's'}`"
-        />
-        <ft-stat
-            label="Largest queue"
-            :value="largestQueue.size.toLocaleString()"
-            variant="accent"
-            :hint="largestQueue.name || '—'"
-        />
-    </div>
     <ft-panel
         title="Active queues"
         :count="queueEntries.length"

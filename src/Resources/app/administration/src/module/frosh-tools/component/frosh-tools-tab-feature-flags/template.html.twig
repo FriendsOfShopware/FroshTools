@@ -11,27 +11,6 @@
             />
         </template>
     </ft-page-head>
-    <div class="ft-stat-grid">
-        <ft-stat
-            label="Active"
-            :value="activeCount"
-            variant="success"
-        />
-        <ft-stat
-            label="Major"
-            :value="majorCount"
-            variant="accent"
-        />
-        <ft-stat
-            label="Default-on"
-            :value="defaultCount"
-            variant="info"
-        />
-        <ft-stat
-            label="Total"
-            :value="featureFlags ? featureFlags.length : 0"
-        />
-    </div>
     <ft-panel
         title="Flags"
         :count="featureFlags ? featureFlags.length : 0"

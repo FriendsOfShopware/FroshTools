@@ -20,25 +20,6 @@ Component.register('frosh-tools-tab-queue', {
         this.createdComponent();
     },
 
-    computed: {
-        totalMessages() {
-            return this.queueEntries.reduce(
-                (s, q) => s + Number(q.size || 0),
-                0
-            );
-        },
-        largestQueue() {
-            if (!this.queueEntries.length) return { name: '', size: 0 };
-            return this.queueEntries.reduce(
-                (max, q) =>
-                    Number(q.size) > max.size
-                        ? { name: q.name, size: Number(q.size) }
-                        : max,
-                { name: '', size: 0 }
-            );
-        },
-    },
-
     methods: {
         async refresh() {
             this.isLoading = true;

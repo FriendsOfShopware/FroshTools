@@ -11,32 +11,6 @@
             />
         </template>
     </ft-page-head>
-    <div class="ft-stat-grid">
-        <ft-stat
-            :label="$t('frosh-tools.error')"
-            :value="errorCount"
-            :variant="errorCount > 0 ? 'danger' : 'success'"
-            hint="Critical issues to resolve"
-        />
-        <ft-stat
-            :label="$t('frosh-tools.warning')"
-            :value="warningCount"
-            :variant="warningCount > 0 ? 'warning' : 'success'"
-            hint="Should be reviewed"
-        />
-        <ft-stat
-            :label="$t('frosh-tools.info')"
-            :value="infoCount"
-            variant="info"
-            hint="Informational signals"
-        />
-        <ft-stat
-            label="Recommendations"
-            :value="recommendationCount"
-            variant="accent"
-            hint="Performance tips"
-        />
-    </div>
     <ft-panel
         title="System Health"
         :count="health ? health.length : 0"

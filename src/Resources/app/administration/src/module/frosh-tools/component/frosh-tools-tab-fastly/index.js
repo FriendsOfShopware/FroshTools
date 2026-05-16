@@ -50,13 +50,6 @@ Component.register('frosh-tools-tab-fastly', {
             ];
         },
 
-        hitRateVariant() {
-            if (!this.stats) return null;
-            const pct = (this.stats.hit_ratio || 0) * 100;
-            if (pct >= 90) return 'success';
-            if (pct >= 70) return 'warning';
-            return 'danger';
-        },
     },
 
     created() {

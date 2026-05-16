@@ -6,6 +6,15 @@
         }
     }
 
+    &__metrics {
+        margin: 0;
+        grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+        gap: 4px 24px;
+
+        dt { font-size: 12px; text-transform: uppercase; letter-spacing: 0.06em; }
+        dd { font-size: 20px; font-weight: 600; }
+    }
+
     &__desc {
         margin: 0 0 16px;
         font-size: 13.5px;

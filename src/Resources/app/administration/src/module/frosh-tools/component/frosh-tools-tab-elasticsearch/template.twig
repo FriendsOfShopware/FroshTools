@@ -28,27 +28,6 @@
     </template>
 
     <template v-else>
-        <div class="ft-stat-grid">
-            <ft-stat
-                :label="$t('frosh-tools.tabs.elasticsearch.status')"
-                :value="statusInfo.health.status"
-                :variant="statusStatVariant"
-            />
-            <ft-stat
-                :label="$t('frosh-tools.tabs.elasticsearch.version')"
-                :value="statusInfo.info.version.number"
-                variant="info"
-            />
-            <ft-stat
-                :label="$t('frosh-tools.tabs.elasticsearch.nodes')"
-                :value="statusInfo.health.number_of_nodes"
-                variant="accent"
-            />
-            <ft-stat
-                label="Indices"
-                :value="indices ? indices.length : 0"
-            />
-        </div>
         <ft-panel
             :title="$t('frosh-tools.tabs.elasticsearch.indices')"
             :count="indices ? indices.length : 0"

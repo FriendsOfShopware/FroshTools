@@ -19,24 +19,7 @@ Component.register('frosh-tools-tab-feature-flags', {
         this.createdComponent();
     },
 
-    computed: {
-        activeCount() {
-            return this.countWhere('active');
-        },
-        majorCount() {
-            return this.countWhere('major');
-        },
-        defaultCount() {
-            return this.countWhere('default');
-        },
-    },
-
     methods: {
-        countWhere(field) {
-            if (!this.featureFlags) return 0;
-            return this.featureFlags.filter((f) => !!f[field]).length;
-        },
-
         async refresh() {
             await this.createdComponent();
         },

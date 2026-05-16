@@ -72,13 +72,6 @@ Component.register('frosh-tools-tab-scheduled', {
             }
         },
 
-        countByStatus(status) {
-            if (!this.items) return 0;
-            return this.items.filter(
-                (i) => (i.status || '').toLowerCase() === status
-            ).length;
-        },
-
         toggleMenu(id) {
             this.openMenuId = this.openMenuId === id ? null : id;
         },

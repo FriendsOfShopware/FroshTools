@@ -19,27 +19,7 @@ Component.register('frosh-tools-tab-index', {
         this.createdComponent();
     },
 
-    computed: {
-        errorCount() {
-            return this.countByState('STATE_ERROR', this.health);
-        },
-        warningCount() {
-            return this.countByState('STATE_WARNING', this.health);
-        },
-        infoCount() {
-            return this.countByState('STATE_INFO', this.health);
-        },
-        recommendationCount() {
-            return this.performanceStatus ? this.performanceStatus.length : 0;
-        },
-    },
-
     methods: {
-        countByState(state, source) {
-            if (!source) return 0;
-            return source.filter((i) => i.state === state).length;
-        },
-
         pillVariant(state) {
             switch (state) {
                 case 'STATE_ERROR':

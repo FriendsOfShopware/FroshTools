@@ -21,27 +21,6 @@
             </button>
         </template>
     </ft-page-head>
-    <div class="ft-stat-grid">
-        <ft-stat
-            label="Scheduled"
-            :value="countByStatus('scheduled')"
-            variant="success"
-        />
-        <ft-stat
-            label="Queued"
-            :value="countByStatus('queued')"
-            variant="warning"
-        />
-        <ft-stat
-            label="Running"
-            :value="countByStatus('running')"
-            variant="info"
-        />
-        <ft-stat
-            label="Inactive"
-            :value="countByStatus('inactive')"
-        />
-    </div>
     <ft-panel
         title="Tasks"
         :count="items ? items.length : null"

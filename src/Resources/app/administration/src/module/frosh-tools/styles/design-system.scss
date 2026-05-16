@@ -216,17 +216,6 @@ body.dark .ft {
 }
 
 // ============================================================
-// Stat grid layout (used in combination with <ft-stat>)
-// ============================================================
-
-.ft-stat-grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
-    gap: 14px;
-    margin-bottom: 22px;
-}
-
-// ============================================================
 // Buttons
 // ============================================================
 
