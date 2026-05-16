@@ -122,9 +122,22 @@
         </sw-button>
         <sw-button
             deprecated
+            @click="showUnusedIndices"
+        >
+            {{ $t('frosh-tools.tabs.elasticsearch.action.showUnused') }}
+        </sw-button>
+        <sw-button
+            deprecated
             @click="cleanup"
         >
             {{ $t('frosh-tools.tabs.elasticsearch.action.cleanup') }}
+        </sw-button>
+        <sw-button
+            deprecated
+            @click="cleanupOrphaned"
+            variant="danger"
+        >
+            {{ $t('frosh-tools.tabs.elasticsearch.action.cleanupOrphaned') }}
         </sw-button>
         <sw-button
             deprecated

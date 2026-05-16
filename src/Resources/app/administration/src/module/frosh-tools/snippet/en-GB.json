@@ -41,8 +41,24 @@
                     "reindex": "Reindex",
                     "switchAlias": "Trigger \"Alias switching\"",
                     "flushAll": "Delete all indices",
+                    "showUnused": "Show unused indices",
                     "cleanup": "Delete unused indices",
+                    "cleanupOrphaned": "Delete orphaned indices",
                     "reset": "Reset Elasticsearch"
+                },
+                "notification": {
+                    "cleanup": {
+                        "empty": "No unused indices found.",
+                        "success": "{count} index/indices deleted.",
+                        "partialError": "{count} error(s) occurred while deleting. Please check the logs."
+                    },
+                    "unused": {
+                        "list": "Unused indices ({count}): {list}"
+                    },
+                    "orphaned": {
+                        "empty": "No orphaned indices found.",
+                        "confirm": "The following {count} orphaned indices will be deleted:\n\n{list}\n\nProceed?"
+                    }
                 },
                 "console": {
                     "title": "Elasticsearch Console",

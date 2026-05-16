@@ -85,12 +85,44 @@ class ElasticsearchController extends AbstractController
         return new Response('', Response::HTTP_NO_CONTENT);
     }
 
+    #[Route(path: '/unused_indices', name: 'api.frosh.tools.elasticsearch.unused_indices', methods: ['GET'])]
+    public function unusedIndices(): Response
+    {
+        if (!$this->manager->isEnabled()) {
+            return new Response('', Response::HTTP_PRECONDITION_FAILED);
+        }
+
+        return new JsonResponse($this->manager->getUnusedIndices());
+    }
+
+    #[Route(path: '/orphaned_indices', name: 'api.frosh.tools.elasticsearch.orphaned_indices', methods: ['GET'])]
+    public function orphanedIndices(): Response
+    {
+        if (!$this->manager->isEnabled()) {
+            return new Response('', Response::HTTP_PRECONDITION_FAILED);
+        }
+
+        return new JsonResponse($this->manager->getOrphanedIndices());
+    }
+
     #[Route(path: '/cleanup', name: 'api.frosh.tools.elasticsearch.cleanup', methods: ['POST'])]
     public function deleteUnusedIndices(): Response
     {
-        $this->manager->deleteUnusedIndices();
+        if (!$this->manager->isEnabled()) {
+            return new Response('', Response::HTTP_PRECONDITION_FAILED);
+        }
 
-        return new Response('', Response::HTTP_NO_CONTENT);
+        return new JsonResponse($this->manager->deleteUnusedIndices());
+    }
+
+    #[Route(path: '/cleanup_orphaned', name: 'api.frosh.tools.elasticsearch.cleanup_orphaned', methods: ['POST'])]
+    public function deleteOrphanedIndices(): Response
+    {
+        if (!$this->manager->isEnabled()) {
+            return new Response('', Response::HTTP_PRECONDITION_FAILED);
+        }
+
+        return new JsonResponse($this->manager->deleteOrphanedIndices());
     }
 
     #[Route(path: '/reset', name: 'api.frosh.tools.elasticsearch.reset', methods: ['POST'])]

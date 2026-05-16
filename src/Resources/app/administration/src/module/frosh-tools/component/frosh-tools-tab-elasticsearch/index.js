@@ -161,12 +161,122 @@ Component.register('frosh-tools-tab-elasticsearch', {
             await this.createdComponent();
         },
 
-        async cleanup() {
-            await this.froshElasticSearch.cleanup();
+        notifyCleanupResult(result) {
+            const deleted = result?.deleted ?? [];
+            const errors = result?.errors ?? {};
+            const errorKeys = Object.keys(errors);
 
-            this.createNotificationSuccess({
-                message: this.$t('global.default.success'),
-            });
+            if (deleted.length === 0 && errorKeys.length === 0) {
+                this.createNotificationInfo({
+                    message: this.$t('frosh-tools.tabs.elasticsearch.notification.cleanup.empty'),
+                });
+            } else if (deleted.length > 0) {
+                this.createNotificationSuccess({
+                    message: this.$t(
+                        'frosh-tools.tabs.elasticsearch.notification.cleanup.success',
+                        { count: deleted.length }
+                    ),
+                });
+            }
+
+            if (errorKeys.length > 0) {
+                this.createNotificationError({
+                    message: this.$t(
+                        'frosh-tools.tabs.elasticsearch.notification.cleanup.partialError',
+                        { count: errorKeys.length }
+                    ),
+                });
+            }
+        },
+
+        async cleanup() {
+            try {
+                const result = await this.froshElasticSearch.cleanup();
+                this.notifyCleanupResult(result);
+            } catch (e) {
+                this.createNotificationError({
+                    message: e?.message ?? this.$t('global.default.error'),
+                });
+            }
+
+            await this.createdComponent();
+        },
+
+        async showUnusedIndices() {
+            try {
+                const result = await this.froshElasticSearch.getUnusedIndices();
+                const indices = result?.indices ?? [];
+                const error = result?.error ?? null;
+
+                if (error) {
+                    this.createNotificationError({ message: error });
+                    return;
+                }
+
+                if (indices.length === 0) {
+                    this.createNotificationInfo({
+                        message: this.$t('frosh-tools.tabs.elasticsearch.notification.cleanup.empty'),
+                    });
+                    return;
+                }
+
+                this.createNotificationInfo({
+                    message: this.$t(
+                        'frosh-tools.tabs.elasticsearch.notification.unused.list',
+                        { count: indices.length, list: indices.join(', ') }
+                    ),
+                });
+            } catch (e) {
+                this.createNotificationError({
+                    message: e?.message ?? this.$t('global.default.error'),
+                });
+            }
+        },
+
+        async cleanupOrphaned() {
+            let preview;
+            try {
+                preview = await this.froshElasticSearch.getOrphanedIndices();
+            } catch (e) {
+                this.createNotificationError({
+                    message: e?.message ?? this.$t('global.default.error'),
+                });
+                return;
+            }
+
+            const indices = preview?.indices ?? [];
+            const previewError = preview?.error ?? null;
+
+            if (previewError) {
+                this.createNotificationError({ message: previewError });
+                return;
+            }
+
+            if (indices.length === 0) {
+                this.createNotificationInfo({
+                    message: this.$t('frosh-tools.tabs.elasticsearch.notification.orphaned.empty'),
+                });
+                return;
+            }
+
+            const confirmMessage = this.$t(
+                'frosh-tools.tabs.elasticsearch.notification.orphaned.confirm',
+                { count: indices.length, list: indices.join('\n') }
+            );
+
+            // eslint-disable-next-line no-alert
+            if (!window.confirm(confirmMessage)) {
+                return;
+            }
+
+            try {
+                const result = await this.froshElasticSearch.cleanupOrphaned();
+                this.notifyCleanupResult(result);
+            } catch (e) {
+                this.createNotificationError({
+                    message: e?.message ?? this.$t('global.default.error'),
+                });
+            }
 
             await this.createdComponent();
         },
