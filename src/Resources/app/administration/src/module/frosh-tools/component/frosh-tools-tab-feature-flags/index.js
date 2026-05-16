@@ -20,9 +20,15 @@ Component.register('frosh-tools-tab-feature-flags', {
     },
 
     computed: {
-        activeCount()  { return this.countWhere('active'); },
-        majorCount()   { return this.countWhere('major'); },
-        defaultCount() { return this.countWhere('default'); },
+        activeCount() {
+            return this.countWhere('active');
+        },
+        majorCount() {
+            return this.countWhere('major');
+        },
+        defaultCount() {
+            return this.countWhere('default');
+        },
     },
 
     methods: {

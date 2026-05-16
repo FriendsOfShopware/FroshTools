@@ -1,10 +1,20 @@
 .frosh-tab-files {
+    &__table {
+        margin: 16px -20px -20px;
+        border-top: 1px solid var(--ft-divider);
+    }
+
     &__ext {
         padding: 14px 0;
         border-bottom: 1px solid var(--ft-divider);
 
-        &:last-child { border-bottom: none; padding-bottom: 0; }
-        &:first-of-type { padding-top: 18px; }
+        &:last-child {
+            border-bottom: none;
+            padding-bottom: 0;
+        }
+        &:first-of-type {
+            padding-top: 18px;
+        }
     }
 
     &__ext-head {
@@ -58,7 +68,9 @@
             border-bottom: 1px dashed var(--ft-divider);
             word-break: break-all;
 
-            &:last-child { border-bottom: none; }
+            &:last-child {
+                border-bottom: none;
+            }
         }
     }
 }

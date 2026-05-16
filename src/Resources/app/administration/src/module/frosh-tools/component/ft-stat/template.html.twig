@@ -1,0 +1,10 @@
+<div :class="rootClass">
+    <div class="ft-stat__label">{{ label }}</div>
+    <div class="ft-stat__value">{{ value }}</div>
+    <div
+        class="ft-stat__hint"
+        v-if="hint || $slots.hint"
+    >
+        <slot name="hint">{{ hint }}</slot>
+    </div>
+</div>

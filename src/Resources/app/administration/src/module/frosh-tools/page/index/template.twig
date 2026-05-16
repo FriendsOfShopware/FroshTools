@@ -9,9 +9,14 @@
                         <div class="ft-sidebar__brand-sub">Developer Console</div>
                     </div>
                 </div>
-
-                <template v-for="group in navGroups" :key="group.label">
-                    <div class="ft-sidebar__group" v-if="group.items.length">
+                <template
+                    v-for="group in navGroups"
+                    :key="group.label"
+                >
+                    <div
+                        class="ft-sidebar__group"
+                        v-if="group.items.length"
+                    >
                         <div class="ft-sidebar__group-label">{{ group.label }}</div>
                         <router-link
                             v-for="item in group.items"
@@ -26,7 +31,6 @@
                     </div>
                 </template>
             </aside>
-
             <main class="ft-main">
                 <router-view></router-view>
             </main>

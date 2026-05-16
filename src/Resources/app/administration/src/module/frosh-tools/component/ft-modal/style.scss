@@ -25,8 +25,12 @@
         animation: ft-modal-pop 180ms cubic-bezier(0.16, 1, 0.3, 1);
         overflow: hidden;
 
-        &--small { max-width: 440px; }
-        &--large { max-width: 1080px; }
+        &--small {
+            max-width: 440px;
+        }
+        &--large {
+            max-width: 1080px;
+        }
     }
 
     &__head {
@@ -59,7 +63,9 @@
         display: inline-flex;
         align-items: center;
         justify-content: center;
-        transition: background var(--ft-transition), color var(--ft-transition);
+        transition:
+            background var(--ft-transition),
+            color var(--ft-transition);
 
         &:hover {
             background: var(--ft-surface-hover);
@@ -86,13 +92,23 @@
 }
 
 @keyframes ft-modal-fade {
-    from { opacity: 0; }
-    to   { opacity: 1; }
+    from {
+        opacity: 0;
+    }
+    to {
+        opacity: 1;
+    }
 }
 
 @keyframes ft-modal-pop {
-    from { opacity: 0; transform: translateY(-8px) scale(0.98); }
-    to   { opacity: 1; transform: translateY(0)    scale(1); }
+    from {
+        opacity: 0;
+        transform: translateY(-8px) scale(0.98);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0) scale(1);
+    }
 }
 
 @media (prefers-reduced-motion: reduce) {

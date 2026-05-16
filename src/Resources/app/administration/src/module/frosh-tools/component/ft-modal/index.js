@@ -1,4 +1,5 @@
 import './style.scss';
+import template from './template.html.twig';
 
 const { Component } = Shopware;
 
@@ -37,26 +38,5 @@ Component.register('ft-modal', {
         },
     },
 
-    template: `
-        <teleport to="body">
-            <div class="ft ft-modal" @mousedown.self="onBackdrop">
-                <div class="ft-modal__dialog" :class="\`ft-modal__dialog--\${variant}\`" role="dialog" aria-modal="true">
-                    <header class="ft-modal__head" v-if="$slots.header || title">
-                        <slot name="header">
-                            <h2 class="ft-modal__title">{{ title }}</h2>
-                        </slot>
-                        <button class="ft-modal__close" @click="close" aria-label="Close">
-                            <ft-icon name="close" />
-                        </button>
-                    </header>
-                    <div class="ft-modal__body">
-                        <slot />
-                    </div>
-                    <footer class="ft-modal__foot" v-if="$slots.footer">
-                        <slot name="footer" />
-                    </footer>
-                </div>
-            </div>
-        </teleport>
-    `,
+    template,
 });

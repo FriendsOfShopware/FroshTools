@@ -32,14 +32,13 @@ Component.register('frosh-tools-tab-logs', {
     },
 
     methods: {
-        levelPill(level) {
+        levelVariant(level) {
             const l = (level || '').toLowerCase();
-            if (['emergency', 'alert', 'critical'].includes(l)) return 'ft-pill--danger';
-            if (l === 'error') return 'ft-pill--danger';
-            if (l === 'warning' || l === 'notice') return 'ft-pill--warning';
-            if (l === 'info') return 'ft-pill--info';
-            if (l === 'debug') return 'ft-pill--muted';
-            return 'ft-pill--muted';
+            if (['emergency', 'alert', 'critical', 'error'].includes(l))
+                return 'danger';
+            if (l === 'warning' || l === 'notice') return 'warning';
+            if (l === 'info') return 'info';
+            return 'muted';
         },
 
         truncate(text) {
@@ -70,10 +69,13 @@ Component.register('frosh-tools-tab-logs', {
             const logEntries = await this.froshToolsService.getLogFile(
                 this.selectedLogFile,
                 (this.page - 1) * this.limit,
-                this.limit,
+                this.limit
             );
             this.logEntries = logEntries.data;
-            this.totalLogEntries = parseInt(logEntries.headers['file-size'], 10);
+            this.totalLogEntries = parseInt(
+                logEntries.headers['file-size'],
+                10
+            );
         },
 
         async onPageChange(page) {

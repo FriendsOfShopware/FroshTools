@@ -40,21 +40,29 @@ Component.register('frosh-tools-tab-index', {
             return source.filter((i) => i.state === state).length;
         },
 
-        pillClass(state) {
+        pillVariant(state) {
             switch (state) {
-                case 'STATE_ERROR':   return 'ft-pill--danger';
-                case 'STATE_WARNING': return 'ft-pill--warning';
-                case 'STATE_INFO':    return 'ft-pill--info';
-                default:              return 'ft-pill--success';
+                case 'STATE_ERROR':
+                    return 'danger';
+                case 'STATE_WARNING':
+                    return 'warning';
+                case 'STATE_INFO':
+                    return 'info';
+                default:
+                    return 'success';
             }
         },
 
         stateLabel(state) {
             switch (state) {
-                case 'STATE_ERROR':   return this.$t('frosh-tools.error');
-                case 'STATE_WARNING': return this.$t('frosh-tools.warning');
-                case 'STATE_INFO':    return this.$t('frosh-tools.info');
-                default:              return this.$t('frosh-tools.good');
+                case 'STATE_ERROR':
+                    return this.$t('frosh-tools.error');
+                case 'STATE_WARNING':
+                    return this.$t('frosh-tools.warning');
+                case 'STATE_INFO':
+                    return this.$t('frosh-tools.info');
+                default:
+                    return this.$t('frosh-tools.good');
             }
         },
 
@@ -65,7 +73,8 @@ Component.register('frosh-tools-tab-index', {
 
         async createdComponent() {
             this.health = await this.froshToolsService.healthStatus();
-            this.performanceStatus = await this.froshToolsService.performanceStatus();
+            this.performanceStatus =
+                await this.froshToolsService.performanceStatus();
             this.isLoading = false;
         },
     },

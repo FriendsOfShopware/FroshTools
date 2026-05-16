@@ -1,0 +1,23 @@
+<section class="ft-panel">
+    <header
+        class="ft-panel__head"
+        v-if="hasHead"
+    >
+        <h2 class="ft-panel__title">
+            <slot name="title">{{ title }}</slot>
+            <span
+                class="ft-panel__count"
+                v-if="count !== null"
+            >{{ count }}</span>
+        </h2>
+        <div
+            class="ft-panel__actions"
+            v-if="$slots.actions"
+        >
+            <slot name="actions"/>
+        </div>
+    </header>
+    <div :class="bodyClass">
+        <slot/>
+    </div>
+</section>

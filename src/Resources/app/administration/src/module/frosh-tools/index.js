@@ -1,5 +1,12 @@
 import './component/ft-icon';
 import './component/ft-modal';
+import './component/ft-page-head';
+import './component/ft-panel';
+import './component/ft-stat';
+import './component/ft-pill';
+import './component/ft-empty';
+import './component/ft-hero-state';
+import './component/ft-refresh-button';
 import './component/frosh-tools-tab-index';
 import './component/frosh-tools-tab-cache';
 import './component/frosh-tools-tab-queue';

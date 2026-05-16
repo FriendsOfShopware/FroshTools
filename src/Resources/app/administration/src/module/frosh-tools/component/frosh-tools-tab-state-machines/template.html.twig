@@ -1,15 +1,11 @@
 <div class="ft frosh-tab-sm">
-    <div class="ft-page-head">
-        <div>
-            <h1 class="ft-page-head__title">{{ $t('frosh-tools.tabs.state-machines.title') }}</h1>
-            <div class="ft-page-head__sub">Visualize states, transitions and actions for any registered state machine.</div>
-        </div>
-    </div>
-
-    <section class="ft-panel">
-        <div class="ft-panel__head">
-            <h2 class="ft-panel__title">{{ $t('frosh-tools.tabs.state-machines.label') }}</h2>
-            <div class="ft-panel__actions frosh-tab-sm__select">
+    <ft-page-head
+        :title="$t('frosh-tools.tabs.state-machines.title')"
+        subtitle="Visualize states, transitions and actions for any registered state machine."
+    />
+    <ft-panel :title="$t('frosh-tools.tabs.state-machines.label')">
+        <template #actions>
+            <div class="frosh-tab-sm__select">
                 <sw-single-select
                     v-model:value="selectedStateMachine"
                     :options="stateMachineOptions"
@@ -19,14 +15,19 @@
                     :placeholder="$t('frosh-tools.chooseStateMachine')"
                 />
             </div>
+        </template>
+        <div class="frosh-tab-sm__body">
+            <ft-empty
+                v-if="!selectedStateMachine"
+                icon="flow"
+                title="No state machine selected"
+                sub="Pick one from the dropdown above to render its diagram."
+            />
+            <div
+                id="state_machine"
+                class="frosh-tab-sm__canvas"
+                v-show="selectedStateMachine"
+            ></div>
         </div>
-        <div class="ft-panel__body frosh-tab-sm__body">
-            <div v-if="!selectedStateMachine" class="ft-empty">
-                <div class="ft-empty__icon"><ft-icon name="flow" :size="22" /></div>
-                <div class="ft-empty__title">No state machine selected</div>
-                <div class="ft-empty__sub">Pick one from the dropdown above to render its diagram.</div>
-            </div>
-            <div id="state_machine" class="frosh-tab-sm__canvas" v-show="selectedStateMachine"></div>
-        </div>
-    </section>
+    </ft-panel>
 </div>

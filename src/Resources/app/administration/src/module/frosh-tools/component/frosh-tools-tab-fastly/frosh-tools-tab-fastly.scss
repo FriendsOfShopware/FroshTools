@@ -1,7 +1,9 @@
 .frosh-tab-fastly {
     &__select {
         min-width: 200px;
-        .sw-single-select { margin: 0; }
+        .sw-single-select {
+            margin: 0;
+        }
     }
 
     &__desc {
@@ -20,7 +22,9 @@
             flex: 1;
             min-width: 240px;
 
-            .sw-field { margin: 0; }
+            .sw-field {
+                margin: 0;
+            }
         }
 
         &-actions {
