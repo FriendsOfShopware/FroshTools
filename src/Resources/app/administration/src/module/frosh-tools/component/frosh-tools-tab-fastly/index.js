@@ -1,5 +1,5 @@
 import template from './template.twig';
-import './frosh-tools-tab-fastly.scss';
+import './frosh-tools-tab-fastly.css';
 
 const { Component, Mixin } = Shopware;
 
@@ -49,7 +49,6 @@ Component.register('frosh-tools-tab-fastly', {
                 },
             ];
         },
-
     },
 
     created() {

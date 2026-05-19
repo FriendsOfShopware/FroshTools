@@ -255,9 +255,9 @@ body.dark .ft {
         cursor: not-allowed;
     }
 
-    .mt-icon,
-    .sw-icon,
-    svg {
+    & .mt-icon,
+    & .sw-icon,
+    & svg {
         width: 14px;
         height: 14px;
     }
@@ -314,15 +314,15 @@ body.dark .ft {
     font-size: 13.5px;
     color: var(--ft-text);
 
-    th,
-    td {
+    & th,
+    & td {
         text-align: left;
         padding: 12px 16px;
         border-bottom: 1px solid var(--ft-divider);
         vertical-align: middle;
     }
 
-    thead th {
+    & thead th {
         font-size: 11px;
         font-weight: 600;
         text-transform: uppercase;
@@ -335,7 +335,7 @@ body.dark .ft {
         z-index: 1;
     }
 
-    tbody tr {
+    & tbody tr {
         transition: background var(--ft-transition);
 
         &:hover {
@@ -419,10 +419,10 @@ body.dark .ft {
     gap: 4px 16px;
     font-size: 13px;
 
-    dt {
+    & dt {
         color: var(--ft-text-muted);
     }
-    dd {
+    & dd {
         margin: 0;
         color: var(--ft-text);
         font-family: var(--ft-mono);

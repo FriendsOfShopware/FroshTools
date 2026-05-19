@@ -25,13 +25,28 @@
             v-else
             class="ft-kv frosh-tab-fastly__metrics"
         >
-            <dt>{{ $t('frosh-tools.tabs.fastly.requests') }}</dt>
-            <dd>{{ formatNumber(stats.requests) }}</dd>
-            <dt>{{ $t('frosh-tools.tabs.fastly.hitRate') }}</dt>
-            <dd>{{ formatNumber(stats.hit_ratio * 100) }}%</dd>
-            <dt>{{ $t('frosh-tools.tabs.fastly.bandwidth') }}</dt>
-            <dd>{{ formatSize(stats.bandwidth) }}</dd>
-            <dt>{{ $t('frosh-tools.tabs.fastly.hits') }}</dt>
+            <dt>
+                {{ $t('frosh-tools.tabs.fastly.requests') }}
+            </dt>
+            <dd>
+                {{ formatNumber(stats.requests) }}
+            </dd>
+            <dt>
+                {{ $t('frosh-tools.tabs.fastly.hitRate') }}
+            </dt>
+            <dd>
+                {{ formatNumber(stats.hit_ratio * 100) }}
+                %
+            </dd>
+            <dt>
+                {{ $t('frosh-tools.tabs.fastly.bandwidth') }}
+            </dt>
+            <dd>
+                {{ formatSize(stats.bandwidth) }}
+            </dd>
+            <dt>
+                {{ $t('frosh-tools.tabs.fastly.hits') }}
+            </dt>
             <dd>{{ formatNumber(stats.hits) }}</dd>
         </dl>
     </ft-panel>

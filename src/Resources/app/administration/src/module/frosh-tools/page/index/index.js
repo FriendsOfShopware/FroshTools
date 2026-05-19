@@ -1,5 +1,5 @@
-import '../../styles/design-system.scss';
-import './frosh-tools.scss';
+import '../../styles/design-system.css';
+import './frosh-tools.css';
 import template from './template.twig';
 
 const { Component } = Shopware;
