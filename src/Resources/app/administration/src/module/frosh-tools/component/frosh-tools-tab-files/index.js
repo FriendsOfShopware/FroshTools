@@ -1,5 +1,5 @@
 import template from './template.twig';
-import './style.css';
+import './style.scss';
 import DiffMatchPatch from 'diff-match-patch';
 
 const { Component, Mixin } = Shopware;

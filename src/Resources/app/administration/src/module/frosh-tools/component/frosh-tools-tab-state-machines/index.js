@@ -1,4 +1,4 @@
-import './style.css';
+import './style.scss';
 import template from './template.html.twig';
 import mermaid from 'mermaid';
 

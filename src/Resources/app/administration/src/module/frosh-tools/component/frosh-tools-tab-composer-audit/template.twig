@@ -1,0 +1,114 @@
+<div class="ft frosh-tab-composer-audit">
+    <ft-page-head
+        :title="$t('frosh-tools.tabs.composerAudit.title')"
+        :subtitle="cachedAtLabel() ? $t('frosh-tools.tabs.composerAudit.cachedAt', { at: cachedAtLabel() }) : $t('frosh-tools.tabs.composerAudit.subtitle')"
+    >
+        <template #actions>
+            <ft-refresh-button
+                :loading="isLoading"
+                label="Refresh"
+                @click="refresh"
+            />
+        </template>
+    </ft-page-head>
+    <ft-panel
+        :title="$t('frosh-tools.tabs.composerAudit.title')"
+        :count="result.advisories ? result.advisories.length : null"
+    >
+        <ft-hero-state
+            v-if="hasError"
+            variant="danger"
+            icon="alert"
+            :title="$t('frosh-tools.tabs.composerAudit.checkFailed')"
+            :body="result.error"
+        />
+        <ft-hero-state
+            v-else-if="!hasAdvisories && !isLoading"
+            variant="success"
+            icon="check"
+            :title="$t('frosh-tools.tabs.composerAudit.allOk')"
+            :body="$t('frosh-tools.tabs.composerAudit.scannedPackages', { count: result.packages })"
+        />
+        <ft-hero-state
+            v-else-if="hasAdvisories"
+            variant="danger"
+            icon="alert"
+            :title="$t('frosh-tools.tabs.composerAudit.vulnerableTitle', { count: result.advisories.length })"
+            :body="$t('frosh-tools.tabs.composerAudit.vulnerableBody', { vulnerable: result.vulnerable, total: result.packages })"
+        />
+        <div
+            v-if="hasAdvisories"
+            class="frosh-tab-composer-audit__list"
+        >
+            <div
+                v-for="group in groupedAdvisories"
+                :key="group.packageName"
+                class="frosh-tab-composer-audit__group"
+            >
+                <div class="frosh-tab-composer-audit__group-head">
+                    <div class="frosh-tab-composer-audit__group-pkg">
+                        <ft-pill
+                            variant="accent"
+                            bare
+                        >package</ft-pill>
+                        <span class="ft-mono frosh-tab-composer-audit__group-name">{{ group.packageName }}</span>
+                        <span
+                            v-if="group.installedVersion"
+                            class="frosh-tab-composer-audit__group-version ft-mono"
+                        >{{ group.installedVersion }}</span>
+                    </div>
+                    <span class="ft-panel__count">
+                        {{ group.advisories.length }}
+                    </span>
+                </div>
+                <ul class="frosh-tab-composer-audit__advisories">
+                    <li
+                        v-for="adv in group.advisories"
+                        :key="adv.advisoryId || `${group.packageName}-${adv.title}`"
+                        class="frosh-tab-composer-audit__advisory"
+                    >
+                        <div class="frosh-tab-composer-audit__advisory-head">
+                            <ft-pill :variant="severityVariant(adv.severity)">
+                                {{ severityLabel(adv.severity) }}
+                            </ft-pill>
+                            <span
+                                v-if="adv.cve"
+                                class="ft-mono frosh-tab-composer-audit__cve"
+                            >{{ adv.cve }}</span>
+                            <span
+                                v-else-if="adv.advisoryId"
+                                class="ft-mono frosh-tab-composer-audit__cve"
+                            >{{ adv.advisoryId }}</span>
+                            <a
+                                v-if="adv.link"
+                                class="ft-link"
+                                @click="openUrl(adv.link)"
+                            >
+                                <ft-icon name="external-link"/>
+                            </a>
+                        </div>
+                        <div class="frosh-tab-composer-audit__advisory-title">
+                            {{ adv.title }}
+                        </div>
+                        <div class="frosh-tab-composer-audit__advisory-meta">
+                            <span v-if="adv.affectedVersions">
+                                <strong>
+                                    {{ $t('frosh-tools.tabs.composerAudit.affected') }}
+                                    :
+                                </strong>
+                                <span class="ft-mono">{{ adv.affectedVersions }}</span>
+                            </span>
+                            <span v-if="adv.reportedAt">
+                                <strong>
+                                    {{ $t('frosh-tools.tabs.composerAudit.reportedAt') }}
+                                    :
+                                </strong>
+                                {{ adv.reportedAt }}
+                            </span>
+                        </div>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </ft-panel>
+</div>

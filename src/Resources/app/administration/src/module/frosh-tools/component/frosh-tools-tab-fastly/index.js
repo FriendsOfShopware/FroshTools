@@ -1,5 +1,5 @@
 import template from './template.twig';
-import './frosh-tools-tab-fastly.css';
+import './frosh-tools-tab-fastly.scss';
 
 const { Component, Mixin } = Shopware;
 

@@ -1,5 +1,5 @@
-import '../../styles/design-system.css';
-import './frosh-tools.css';
+import '../../styles/design-system.scss';
+import './frosh-tools.scss';
 import template from './template.twig';
 
 const { Component } = Shopware;
@@ -93,13 +93,20 @@ Component.register('frosh-tools-index', {
                 });
             }
             diagnostics.push({
-                route: 'frosh.tools.index.files',
-                labelKey: 'frosh-tools.tabs.files.title',
-            });
-            diagnostics.push({
                 route: 'frosh.tools.index.featureflags',
                 labelKey: 'frosh-tools.tabs.feature-flags.title',
             });
+
+            const security = [
+                {
+                    route: 'frosh.tools.index.files',
+                    labelKey: 'frosh-tools.tabs.files.title',
+                },
+                {
+                    route: 'frosh.tools.index.composeraudit',
+                    labelKey: 'frosh-tools.tabs.composerAudit.title',
+                },
+            ];
 
             const cdn = [];
             if (this.fastlyAvailable) {
@@ -113,6 +120,7 @@ Component.register('frosh-tools-index', {
                 { label: 'Overview', items: overview },
                 { label: 'Performance', items: performance },
                 { label: 'Operations', items: operations },
+                { label: 'Security', items: security },
                 { label: 'Diagnostics', items: diagnostics },
                 { label: 'CDN', items: cdn },
             ];

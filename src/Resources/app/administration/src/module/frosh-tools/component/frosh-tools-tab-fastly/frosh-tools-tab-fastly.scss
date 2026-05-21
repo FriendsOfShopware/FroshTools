@@ -11,12 +11,12 @@
         grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
         gap: 4px 24px;
 
-        & dt {
+        dt {
             font-size: 12px;
             text-transform: uppercase;
             letter-spacing: 0.06em;
         }
-        & dd {
+        dd {
             font-size: 20px;
             font-weight: 600;
         }

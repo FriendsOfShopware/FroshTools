@@ -1,4 +1,4 @@
-import './style.css';
+import './style.scss';
 import template from './template.html.twig';
 
 // Curated import set — only the icons we actually use, so tree-shaking keeps the bundle tiny.

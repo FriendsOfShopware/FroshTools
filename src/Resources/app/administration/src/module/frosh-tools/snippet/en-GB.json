@@ -81,6 +81,19 @@
                 "changedFiles": "Changed files",
                 "missingFiles": "Missing files"
             },
+            "composerAudit": {
+                "title": "Composer Audit",
+                "subtitle": "Check installed Composer packages against the Packagist security advisories database.",
+                "cachedAt": "Cached at {at}. Click Refresh for a fresh check.",
+                "checkFailed": "Audit failed",
+                "allOk": "No known vulnerabilities",
+                "scannedPackages": "{count} installed packages checked against Packagist advisories.",
+                "vulnerableTitle": "{count} advisories found",
+                "vulnerableBody": "{vulnerable} of {total} installed packages have security advisories.",
+                "affected": "Affected versions",
+                "reportedAt": "Reported",
+                "severityUnknown": "Unknown"
+            },
             "state-machines": {
                 "title": "State Machine Viewer",
                 "label": "State Machine",
