@@ -6,6 +6,8 @@ namespace Frosh\Tools\Components\ComposerAudit;
 
 use Composer\InstalledVersions;
 use Composer\Semver\Semver;
+use Doctrine\DBAL\Connection;
+use Symfony\Component\DependencyInjection\Attribute\Autowire;
 use Symfony\Contracts\Cache\CacheInterface;
 use Symfony\Contracts\Cache\ItemInterface;
 use Symfony\Contracts\HttpClient\Exception\ExceptionInterface;
@@ -18,10 +20,19 @@ class ComposerAuditService
 
     private const PACKAGIST_AUDIT_URL = 'https://packagist.org/api/security-advisories/';
     private const CHUNK_SIZE = 20;
+    private const SHOPWARE_CORE_PACKAGES = [
+        'shopware/core',
+        'shopware/administration',
+        'shopware/storefront',
+        'shopware/elasticsearch',
+    ];
 
     public function __construct(
         private readonly HttpClientInterface $httpClient,
         private readonly CacheInterface $cacheObject,
+        private readonly Connection $connection,
+        #[Autowire(param: 'kernel.shopware_version')]
+        private readonly string $shopwareVersion,
     ) {
     }
 
@@ -68,6 +79,7 @@ class ComposerAuditService
         }
 
         $advisories = [];
+        $suppressShopwareAdvisories = $this->hasUpToDateSecurityPlugin();
 
         try {
             foreach (array_chunk(array_keys($packages), self::CHUNK_SIZE) as $chunk) {
@@ -83,6 +95,10 @@ class ComposerAuditService
 
                 foreach ($data['advisories'] as $packageName => $packageAdvisories) {
                     if (!\is_array($packageAdvisories) || $packageAdvisories === []) {
+                        continue;
+                    }
+
+                    if ($suppressShopwareAdvisories && \in_array((string) $packageName, self::SHOPWARE_CORE_PACKAGES, true)) {
                         continue;
                     }
 
@@ -171,6 +187,61 @@ class ComposerAuditService
         }
 
         return $packages;
+    }
+
+    private function hasUpToDateSecurityPlugin(): bool
+    {
+        try {
+            $installedVersion = $this->connection->executeQuery(
+                'SELECT version FROM plugin WHERE active = 1 AND installed_at IS NOT NULL AND name = :pluginName',
+                ['pluginName' => 'SwagPlatformSecurity'],
+            )->fetchOne();
+        } catch (\Throwable) {
+            return false;
+        }
+
+        if (!\is_string($installedVersion) || $installedVersion === '') {
+            return false;
+        }
+
+        try {
+            $recentVersion = $this->fetchLatestSecurityPluginVersion();
+        } catch (\Throwable) {
+            return false;
+        }
+
+        if ($recentVersion === null) {
+            return false;
+        }
+
+        return version_compare($installedVersion, $recentVersion, '>=');
+    }
+
+    private function fetchLatestSecurityPluginVersion(): ?string
+    {
+        $cacheKey = \sprintf('recent-security-plugin-version-%s', $this->shopwareVersion);
+
+        return $this->cacheObject->get($cacheKey, function (ItemInterface $cacheItem): ?string {
+            $cacheItem->expiresAfter(3600 * 24);
+
+            $result = $this->httpClient->request(
+                'GET',
+                \sprintf(
+                    'https://api.shopware.com/pluginStore/pluginsByName?shopwareVersion=%s&technicalNames[]=SwagPlatformSecurity',
+                    $this->shopwareVersion,
+                ),
+            )->getContent();
+
+            $data = \json_decode(trim($result), true, 512, \JSON_THROW_ON_ERROR);
+
+            if (!\is_array($data)) {
+                return null;
+            }
+
+            $version = $data[0]['version'] ?? null;
+
+            return \is_string($version) && $version !== '' ? $version : null;
+        });
     }
 
     /**

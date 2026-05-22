@@ -2,23 +2,25 @@ import './style.scss';
 import template from './template.html.twig';
 
 // Curated import set — only the icons we actually use, so tree-shaking keeps the bundle tiny.
-// Names match the kebab-case file names in lucide-static; the resolver in ft-icon maps them to the SVG strings here.
-import RefreshCw from 'lucide-static/icons/refresh-cw.svg?raw';
-import MoreHorizontal from 'lucide-static/icons/more-horizontal.svg?raw';
-import Pencil from 'lucide-static/icons/pencil.svg?raw';
-import Play from 'lucide-static/icons/play.svg?raw';
-import Trash2 from 'lucide-static/icons/trash-2.svg?raw';
-import ExternalLink from 'lucide-static/icons/external-link.svg?raw';
-import Check from 'lucide-static/icons/check.svg?raw';
-import AlertTriangle from 'lucide-static/icons/triangle-alert.svg?raw';
-import Zap from 'lucide-static/icons/zap.svg?raw';
-import Paintbrush from 'lucide-static/icons/paintbrush.svg?raw';
-import Send from 'lucide-static/icons/send.svg?raw';
-import Settings from 'lucide-static/icons/settings.svg?raw';
-import FileText from 'lucide-static/icons/file-text.svg?raw';
-import Workflow from 'lucide-static/icons/workflow.svg?raw';
-import LineChart from 'lucide-static/icons/chart-line.svg?raw';
-import X from 'lucide-static/icons/x.svg?raw';
+// lucide-static ships SVG strings as ES modules, so we do not need Vite-specific asset imports.
+import {
+    AlertTriangle,
+    Check,
+    ExternalLink,
+    FileText,
+    LineChart,
+    MoreHorizontal,
+    Paintbrush,
+    Pencil,
+    Play,
+    RefreshCw,
+    Send,
+    Settings,
+    Trash2,
+    Workflow,
+    X,
+    Zap,
+} from 'lucide-static';
 
 const ICONS = {
     refresh: RefreshCw,
