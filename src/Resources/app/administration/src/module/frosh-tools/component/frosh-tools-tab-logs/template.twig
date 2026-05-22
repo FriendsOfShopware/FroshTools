@@ -1,86 +1,115 @@
-<sw-card-view>
-    <sw-card
-        class="frosh-tools-tab-logs__logs-card"
+<div class="ft frosh-tab-logs">
+    <ft-page-head
         :title="$t('frosh-tools.tabs.logs.title')"
-        :isLoading="isLoading"
-        :large="true"
-        positionIdentifier="frosh-tools-tab-logs"
-        deprecated
+        subtitle="Stream and inspect entries from any log file on disk."
     >
-        <template #toolbar>
-            <sw-button
-                variant="ghost"
-                deprecated
+        <template #actions>
+            <ft-refresh-button
+                :loading="isLoading"
+                label="Refresh"
                 @click="refresh"
-            >
-                <sw-icon
-                    :small="true"
-                    name="regular-undo"
-                    deprecated
-                ></sw-icon>
-            </sw-button>
-            <sw-single-select
-                :options="logFiles"
-                :isLoading="isLoading"
-                :placeholder="$t('frosh-tools.tabs.logs.logFileSelect.placeholder')"
-                labelProperty="name"
-                valueProperty="name"
-                v-model:value="selectedLogFile"
-                @update:value="onFileSelected"
-            ></sw-single-select>
+            />
         </template>
-
-        <template #grid>
-            <sw-data-grid
-                :showSelection="false"
-                :showActions="false"
-                :dataSource="logEntries"
-                :columns="columns"
-            >
-                <template #column-date="{ item }">
-                    {{ date(item.date, {hour: '2-digit', minute: '2-digit', second: '2-digit'}) }}
-                </template>
-
-                <template #column-message="{ item }">
-                    <a @click="showInfoModal(item)">{{ item.message }}</a>
-                </template>
-            </sw-data-grid>
-            <sw-pagination
-                :total="totalLogEntries"
-                :limit="limit"
-                :page="page"
-                @page-change="onPageChange"
-            ></sw-pagination>
+    </ft-page-head>
+    <ft-panel
+        title="Log file"
+        flush
+    >
+        <template #actions>
+            <div class="frosh-tab-logs__select">
+                <sw-single-select
+                    :options="logFiles"
+                    :isLoading="isLoading"
+                    :placeholder="$t('frosh-tools.tabs.logs.logFileSelect.placeholder')"
+                    labelProperty="name"
+                    valueProperty="name"
+                    v-model:value="selectedLogFile"
+                    @update:value="onFileSelected"
+                />
+            </div>
         </template>
-    </sw-card>
-    <sw-modal
+        <ft-empty
+            v-if="!selectedLogFile"
+            icon="file"
+            title="Select a log file"
+            sub="Choose a file above to view its entries."
+        />
+        <ft-empty
+            v-else-if="!logEntries.length"
+            title="No entries in this file"
+        />
+        <div
+            v-else
+            class="ft-table-wrap"
+        >
+            <table class="ft-table">
+                <thead>
+                    <tr>
+                        <th style="width: 170px;">{{ $t('frosh-tools.date') }}</th>
+                        <th style="width: 130px;">
+                            {{ $t('frosh-tools.channel') }}
+                        </th>
+                        <th style="width: 110px;">{{ $t('frosh-tools.level') }}</th>
+                        <th>
+                            {{ $t('frosh-tools.message') }}
+                        </th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr
+                        v-for="(item, idx) in logEntries"
+                        :key="idx"
+                    >
+                        <td class="ft-mono">
+                            {{ date(item.date, {hour: '2-digit', minute: '2-digit', second: '2-digit'}) }}
+                        </td>
+                        <td>
+                            <ft-pill
+                                variant="muted"
+                                bare
+                            >{{ item.channel }}</ft-pill>
+                        </td>
+                        <td>
+                            <ft-pill :variant="levelVariant(item.level)">{{ item.level }}</ft-pill>
+                        </td>
+                        <td>
+                            <a
+                                class="ft-link"
+                                @click="showInfoModal(item)"
+                            >{{ truncate(item.message) }}</a>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+            <div class="frosh-tab-logs__pagination">
+                <sw-pagination
+                    :total="totalLogEntries"
+                    :limit="limit"
+                    :page="page"
+                    @page-change="onPageChange"
+                />
+            </div>
+        </div>
+    </ft-panel>
+    <ft-modal
         v-if="displayedLog"
         variant="large"
+        @close="closeInfoModal"
     >
-        <template #modal-header>
-            <div class="sw-modal__titles">
-                <h4 class="sw-modal__title">
-                    {{ displayedLog.channel }}
-                    -
-                    {{ displayedLog.level }}
-                </h4>
-                <h5 class="sw-modal__subtitle">
+        <template #header>
+            <div class="frosh-tab-logs__modal-head">
+                <div class="frosh-tab-logs__modal-title">
+                    <ft-pill
+                        variant="muted"
+                        bare
+                    >{{ displayedLog.channel }}</ft-pill>
+                    <ft-pill :variant="levelVariant(displayedLog.level)">{{ displayedLog.level }}</ft-pill>
+                </div>
+                <div class="frosh-tab-logs__modal-date ft-mono">
                     {{ date(displayedLog.date, {hour: '2-digit', minute: '2-digit', second: '2-digit'}) }}
-                </h5>
+                </div>
             </div>
-            <button
-                class="sw-modal__close"
-                :title="$t('global.sw-modal.labelClose')"
-                :aria-label="$t('global.sw-modal.labelClose')"
-                @click="closeInfoModal"
-            >
-                <sw-icon
-                    name="regular-times-s"
-                    small
-                    deprecated
-                />
-            </button>
         </template>
-        <div>{{ displayedLog.message }}</div>
-    </sw-modal>
-</sw-card-view>
+        <pre class="ft-diff frosh-tab-logs__message">{{ displayedLog.message }}</pre>
+    </ft-modal>
+</div>

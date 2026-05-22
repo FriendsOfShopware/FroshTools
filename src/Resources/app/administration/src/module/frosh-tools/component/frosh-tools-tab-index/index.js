@@ -19,29 +19,33 @@ Component.register('frosh-tools-tab-index', {
         this.createdComponent();
     },
 
-    computed: {
-        columns() {
-            return [
-                {
-                    property: 'name',
-                    label: 'frosh-tools.name',
-                    rawData: true,
-                },
-                {
-                    property: 'current',
-                    label: 'frosh-tools.current',
-                    rawData: true,
-                },
-                {
-                    property: 'recommended',
-                    label: 'frosh-tools.recommended',
-                    rawData: true,
-                },
-            ];
-        },
-    },
-
     methods: {
+        pillVariant(state) {
+            switch (state) {
+                case 'STATE_ERROR':
+                    return 'danger';
+                case 'STATE_WARNING':
+                    return 'warning';
+                case 'STATE_INFO':
+                    return 'info';
+                default:
+                    return 'success';
+            }
+        },
+
+        stateLabel(state) {
+            switch (state) {
+                case 'STATE_ERROR':
+                    return this.$t('frosh-tools.error');
+                case 'STATE_WARNING':
+                    return this.$t('frosh-tools.warning');
+                case 'STATE_INFO':
+                    return this.$t('frosh-tools.info');
+                default:
+                    return this.$t('frosh-tools.good');
+            }
+        },
+
         async refresh() {
             this.isLoading = true;
             await this.createdComponent();

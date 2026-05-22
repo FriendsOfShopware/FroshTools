@@ -1,172 +1,226 @@
-<sw-card-view>
-    <sw-card
-        class="frosh-tools-tab-files__files-card"
-        :class="isLoadingClass"
+<div class="ft frosh-tab-files">
+    <ft-page-head
         :title="$t('frosh-tools.tabs.files.title')"
-        :isLoading="isLoading"
-        :large="true"
-        positionIdentifier="frosh-tools-tab-files__files-card"
-        deprecated
+        subtitle="Detect drift between shipped Shopware files and what's on disk."
     >
-        <sw-alert
-            variant="error"
-            deprecated
-            v-if="items.error"
-        >{{ items.error }}</sw-alert>
-        <sw-alert
-            variant="success"
-            deprecated
-            v-if="items.ok"
-        >
-            {{ $t('frosh-tools.tabs.files.allFilesOk') }}
-        </sw-alert>
-        <sw-alert
-            variant="warning"
-            v-else-if="items.files"
-            deprecated
-        >
-            {{ $t('frosh-tools.tabs.files.notOk') }}
-        </sw-alert>
-        <template #toolbar>
-            <!-- @todo: Make the refresh button fancy -->
-            <sw-button
-                variant="ghost"
-                deprecated
+        <template #actions>
+            <ft-refresh-button
+                :loading="isLoading"
+                label="Refresh"
                 @click="refresh"
-            >
-                <sw-icon
-                    :small="true"
-                    deprecated
-                    name="regular-undo"
-                ></sw-icon>
-            </sw-button>
+            />
         </template>
-        <sw-data-grid
+    </ft-page-head>
+    <ft-panel
+        title="Core"
+        :count="items.files ? items.files.length : null"
+    >
+        <ft-hero-state
+            v-if="items.error"
+            variant="danger"
+            icon="alert"
+            title="Check failed"
+            :body="items.error"
+        />
+        <ft-hero-state
+            v-else-if="items.ok"
+            variant="success"
+            icon="check"
+            :title="$t('frosh-tools.tabs.files.allFilesOk')"
+            body="Every shipped file matches its expected checksum."
+        />
+        <ft-hero-state
+            v-else-if="items.files && items.files.length"
+            variant="warning"
+            icon="alert"
+            :title="$t('frosh-tools.tabs.files.notOk')"
+            :body="`${items.files.length} file${items.files.length === 1 ? '' : 's'} differ from the original.`"
+        />
+        <div
             v-if="items.files && items.files.length"
-            :showSelection="false"
-            :dataSource="items.files"
-            :columns="columns"
+            class="ft-table-wrap frosh-tab-files__table"
         >
-            <template #column-name="{ item }">
-                <a
-                    @click="diff(item)"
-                    :title="$t('frosh-tools.tabs.files.restore.diff')"
-                >{{ item.name }}</a>
-            </template>
-
-            <template #column-expected="{ item }">
-                <span v-if="item.expected">
-                    {{ $t('frosh-tools.tabs.files.expectedProject') }}
-                </span>
-                <span v-else>
-                    {{ $t('frosh-tools.tabs.files.expectedAll') }}
-                </span>
-            </template>
-
-            <template #actions="{ item }">
-                <sw-context-menu-item @click="openUrl(item.shopwareUrl)">
-                    {{ $t('frosh-tools.tabs.files.openOriginal') }}
-                </sw-context-menu-item>
-                <sw-context-menu-item @click="diff(item)">
-                    {{ $t('frosh-tools.tabs.files.restore.diff') }}
-                </sw-context-menu-item>
-            </template>
-        </sw-data-grid>
-    </sw-card>
-    <sw-modal
+            <table class="ft-table">
+                <thead>
+                    <tr>
+                        <th>{{ $t('frosh-tools.name') }}</th>
+                        <th>{{ $t('frosh-tools.status') }}</th>
+                        <th class="ft-table__actions">
+                            {{ $t('frosh-tools.actions') }}
+                        </th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr
+                        v-for="item in items.files"
+                        :key="item.name"
+                    >
+                        <td>
+                            <a
+                                class="ft-link ft-mono"
+                                @click="diff(item)"
+                                :title="$t('frosh-tools.tabs.files.restore.diff')"
+                            >{{ item.name }}</a>
+                        </td>
+                        <td>
+                            <ft-pill :variant="item.expected ? 'muted' : 'warning'">
+                                {{ item.expected ? $t('frosh-tools.tabs.files.expectedProject') : $t('frosh-tools.tabs.files.expectedAll') }}
+                            </ft-pill>
+                        </td>
+                        <td class="ft-table__actions">
+                            <button
+                                class="ft-btn ft-btn--ghost"
+                                @click="openUrl(item.shopwareUrl)"
+                            >
+                                <ft-icon name="external-link"/>
+                            </button>
+                            <button
+                                class="ft-btn"
+                                @click="diff(item)"
+                            >
+                                {{ $t('frosh-tools.tabs.files.restore.diff') }}
+                            </button>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </ft-panel>
+    <ft-modal
         v-if="showModal"
         variant="large"
-        @modal-close="closeModal"
+        @close="closeModal"
         :title="diffData.file.name"
     >
-        <span
-            style="white-space: pre"
+        <pre
+            class="ft-diff"
             v-html="diffData.html"
-        ></span>
-        <template #modal-footer>
-            <sw-button
-                variant="ghost-danger"
-                deprecated
+        ></pre>
+        <template #footer>
+            <button
+                class="ft-btn"
+                @click="closeModal"
+            >
+                {{ $t('global.default.close') }}
+            </button>
+            <button
+                class="ft-btn ft-btn--danger"
                 @click="restoreFile(diffData.file.name)"
                 :disabled="diffData.file.expected"
             >
-                <sw-icon
-                    name="regular-exclamation-triangle"
-                    deprecated
-                ></sw-icon>
+                <ft-icon name="alert"/>
                 {{ $t('frosh-tools.tabs.files.restore.restoreFile') }}
-            </sw-button>
+            </button>
         </template>
-    </sw-modal>
-    <sw-card
-        class="frosh-tools-tab-files__extension-files-card"
-        :class="isLoadingClass"
-        :title="$t('frosh-tools.tabs.extensionFiles.title')"
-        :isLoading="isLoading"
-        :large="true"
-        :deprecated="true"
-        positionIdentifier="frosh-tools-tab-files__extension-files-card"
-    >
-        <sw-alert
-            variant="success"
+    </ft-modal>
+    <ft-panel :title="$t('frosh-tools.tabs.extensionFiles.title')">
+        <ft-hero-state
             v-if="extensionItems.success"
-        >
-            {{ $t('frosh-tools.tabs.extensionFiles.allFilesOk') }}
-        </sw-alert>
-        <sw-alert
-            variant="warning"
+            variant="success"
+            icon="check"
+            :title="$t('frosh-tools.tabs.extensionFiles.allFilesOk')"
+        />
+        <ft-hero-state
             v-else
-        >
-            {{ $t('frosh-tools.tabs.extensionFiles.notOk') }}
-        </sw-alert>
-        <template #toolbar>
-            <!-- @todo: Make the refresh button fancy -->
-            <sw-button
-                variant="ghost"
-                @click="refresh"
-            >
-                <sw-icon
-                    :small="true"
-                    name="regular-undo"
-                ></sw-icon>
-            </sw-button>
-        </template>
+            variant="warning"
+            icon="alert"
+            :title="$t('frosh-tools.tabs.extensionFiles.notOk')"
+        />
         <div
             v-for="(extensionResult, extensionName) in extensionItems.extensionResults"
+            :key="extensionName"
+            class="frosh-tab-files__ext"
         >
-            <h4>{{ extensionName }}</h4>
-            <sw-alert
-                variant="warning"
+            <div class="frosh-tab-files__ext-head">
+                <ft-pill
+                    variant="accent"
+                    bare
+                >extension</ft-pill>
+                <h3 class="frosh-tab-files__ext-name">{{ extensionName }}</h3>
+            </div>
+            <ft-hero-state
                 v-if="extensionResult.wrongExtensionVersion"
+                variant="warning"
+                icon="alert"
+                :title="$t('frosh-tools.tabs.extensionFiles.wrongExtensionVersion')"
+            />
+            <ft-hero-state
+                v-else-if="extensionResult.checkFailed"
+                variant="danger"
+                icon="alert"
+                :title="$t('frosh-tools.tabs.extensionFiles.checkFailed')"
+            />
+            <div
+                v-else
+                class="frosh-tab-files__ext-grid"
             >
-                {{ $t('frosh-tools.tabs.extensionFiles.wrongExtensionVersion') }}
-            </sw-alert>
-            <sw-alert
-                variant="error"
-                v-if="extensionResult.checkFailed"
-            >
-                {{ $t('frosh-tools.tabs.extensionFiles.checkFailed') }}
-            </sw-alert>
-            <sw-description-list v-else>
-                <dt v-if="extensionResult.newFiles.length > 0">
-                    {{ $t('frosh-tools.tabs.extensionFiles.newFiles') }}
-                </dt>
-                <dd v-for="file in extensionResult.newFiles">
-                    {{ file }}
-                </dd>
-                <dt v-if="extensionResult.changedFiles.length > 0">
-                    {{ $t('frosh-tools.tabs.extensionFiles.changedFiles') }}
-                </dt>
-                <dd v-for="file in extensionResult.changedFiles">
-                    {{ file }}
-                </dd>
-                <dt v-if="extensionResult.missingFiles.length > 0">
-                    {{ $t('frosh-tools.tabs.extensionFiles.missingFiles') }}
-                </dt>
-                <dd v-for="file in extensionResult.missingFiles">
-                    {{ file }}
-                </dd>
-            </sw-description-list>
+                <div
+                    v-if="extensionResult.newFiles.length > 0"
+                    class="frosh-tab-files__ext-group"
+                >
+                    <div class="frosh-tab-files__ext-label">
+                        <ft-pill
+                            variant="info"
+                            bare
+                        >new</ft-pill>
+                        {{ $t('frosh-tools.tabs.extensionFiles.newFiles') }}
+                        <span class="ft-panel__count">
+                            {{ extensionResult.newFiles.length }}
+                        </span>
+                    </div>
+                    <ul class="frosh-tab-files__ext-list">
+                        <li
+                            v-for="f in extensionResult.newFiles"
+                            :key="`n-${f}`"
+                            class="ft-mono"
+                        >{{ f }}</li>
+                    </ul>
+                </div>
+                <div
+                    v-if="extensionResult.changedFiles.length > 0"
+                    class="frosh-tab-files__ext-group"
+                >
+                    <div class="frosh-tab-files__ext-label">
+                        <ft-pill
+                            variant="warning"
+                            bare
+                        >changed</ft-pill>
+                        {{ $t('frosh-tools.tabs.extensionFiles.changedFiles') }}
+                        <span class="ft-panel__count">
+                            {{ extensionResult.changedFiles.length }}
+                        </span>
+                    </div>
+                    <ul class="frosh-tab-files__ext-list">
+                        <li
+                            v-for="f in extensionResult.changedFiles"
+                            :key="`c-${f}`"
+                            class="ft-mono"
+                        >{{ f }}</li>
+                    </ul>
+                </div>
+                <div
+                    v-if="extensionResult.missingFiles.length > 0"
+                    class="frosh-tab-files__ext-group"
+                >
+                    <div class="frosh-tab-files__ext-label">
+                        <ft-pill
+                            variant="danger"
+                            bare
+                        >missing</ft-pill>
+                        {{ $t('frosh-tools.tabs.extensionFiles.missingFiles') }}
+                        <span class="ft-panel__count">
+                            {{ extensionResult.missingFiles.length }}
+                        </span>
+                    </div>
+                    <ul class="frosh-tab-files__ext-list">
+                        <li
+                            v-for="f in extensionResult.missingFiles"
+                            :key="`m-${f}`"
+                            class="ft-mono"
+                        >{{ f }}</li>
+                    </ul>
+                </div>
+            </div>
         </div>
-    </sw-card>
-</sw-card-view>
+    </ft-panel>
+</div>

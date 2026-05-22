@@ -1,0 +1,29 @@
+<div class="ft-empty">
+    <template v-if="loading">
+        <span class="ft-spinner"></span>
+    </template>
+
+    <template v-else>
+        <div
+            class="ft-empty__icon"
+            v-if="icon"
+        >
+            <ft-icon
+                :name="icon"
+                :size="22"
+            />
+        </div>
+        <div
+            class="ft-empty__title"
+            v-if="title || $slots.title"
+        >
+            <slot name="title">{{ title }}</slot>
+        </div>
+        <div
+            class="ft-empty__sub"
+            v-if="sub || $slots.default"
+        >
+            <slot>{{ sub }}</slot>
+        </div>
+    </template>
+</div>

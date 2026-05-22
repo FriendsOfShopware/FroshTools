@@ -81,6 +81,19 @@
                 "changedFiles": "Geänderte Dateien",
                 "missingFiles": "Fehlende Dateien"
             },
+            "composerAudit": {
+                "title": "Composer Audit",
+                "subtitle": "Prüfe installierte Composer-Pakete gegen die Packagist Security Advisories.",
+                "cachedAt": "Zwischengespeichert um {at}. Klicke auf Aktualisieren für eine neue Prüfung.",
+                "checkFailed": "Audit fehlgeschlagen",
+                "allOk": "Keine bekannten Sicherheitslücken",
+                "scannedPackages": "{count} installierte Pakete gegen Packagist-Advisories geprüft.",
+                "vulnerableTitle": "{count} Sicherheitsmeldungen gefunden",
+                "vulnerableBody": "{vulnerable} von {total} installierten Paketen haben Sicherheitsmeldungen.",
+                "affected": "Betroffene Versionen",
+                "reportedAt": "Gemeldet am",
+                "severityUnknown": "Unbekannt"
+            },
             "state-machines": {
                 "title": "State Machine Viewer",
                 "label": "State Machine",

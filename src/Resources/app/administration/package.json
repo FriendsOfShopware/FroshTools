@@ -4,6 +4,7 @@
     "main": "index.js",
     "dependencies": {
         "diff-match-patch": "^1.0.5",
+        "lucide-static": "^1.14.0",
         "mermaid": "^10.9.5"
     },
     "license": "MIT"

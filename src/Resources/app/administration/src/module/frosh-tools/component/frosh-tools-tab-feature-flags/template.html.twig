@@ -1,75 +1,76 @@
-<sw-card-view>
-    <sw-card
-        class="frosh-tools-tab-feature-flags__feature-flags-card"
+<div class="ft frosh-tab-flags">
+    <ft-page-head
         :title="$tc('frosh-tools.tabs.feature-flags.title')"
-        :isLoading="isLoading"
-        :large="true"
-        :deprecated="true"
+        subtitle="Feature flags exposed by Shopware core and registered extensions."
     >
-        <template #toolbar>
-            <!-- @todo: Make the refresh button fancy -->
-            <sw-button
-                variant="ghost"
-                deprecated
+        <template #actions>
+            <ft-refresh-button
+                :loading="isLoading"
+                label="Refresh"
                 @click="createdComponent"
-            >
-                <sw-icon
-                    deprecated
-                    :small="true"
-                    name="regular-undo"
-                ></sw-icon>
-            </sw-button>
+            />
         </template>
-        <sw-data-grid
-            :showSelection="false"
-            :dataSource="featureFlags"
-            :columns="columns"
-            :showActions="false"
+    </ft-page-head>
+    <ft-panel
+        title="Flags"
+        :count="featureFlags ? featureFlags.length : 0"
+        flush
+    >
+        <ft-empty
+            v-if="isLoading && !featureFlags"
+            loading
+        />
+        <ft-empty
+            v-else-if="!featureFlags || !featureFlags.length"
+            title="No feature flags registered"
+        />
+        <div
+            v-else
+            class="ft-table-wrap"
         >
-            <template #column-active="{ item }">
-                <sw-icon
-                    v-if="item.active"
-                    color="#37d046"
-                    name="regular-checkmark-s"
-                    small
-                />
-                <sw-icon
-                    v-else
-                    color="#de294c"
-                    name="regular-plus-xs"
-                    small
-                />
-            </template>
-
-            <template #column-major="{ item }">
-                <sw-icon
-                    v-if="item.major"
-                    color="#37d046"
-                    name="regular-checkmark-s"
-                    small
-                />
-                <sw-icon
-                    v-else
-                    color="#de294c"
-                    name="regular-plus-xs"
-                    small
-                />
-            </template>
-
-            <template #column-default="{ item }">
-                <sw-icon
-                    v-if="item.default"
-                    color="#37d046"
-                    name="regular-checkmark-s"
-                    small
-                />
-                <sw-icon
-                    v-else
-                    color="#de294c"
-                    name="regular-plus-xs"
-                    small
-                />
-            </template>
-        </sw-data-grid>
-    </sw-card>
-</sw-card-view>
+            <table class="ft-table">
+                <thead>
+                    <tr>
+                        <th>
+                            {{ $t('frosh-tools.tabs.feature-flags.flag') }}
+                        </th>
+                        <th>
+                            {{ $t('frosh-tools.tabs.feature-flags.description') }}
+                        </th>
+                        <th style="width: 110px;">{{ $t('frosh-tools.active') }}</th>
+                        <th style="width: 110px;">
+                            {{ $t('frosh-tools.tabs.feature-flags.major') }}
+                        </th>
+                        <th style="width: 110px;">
+                            {{ $t('frosh-tools.tabs.feature-flags.default') }}
+                        </th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr
+                        v-for="item in featureFlags"
+                        :key="item.flag"
+                    >
+                        <td class="ft-table__name ft-mono">{{ item.flag }}</td>
+                        <td>{{ item.description }}</td>
+                        <td>
+                            <ft-pill :variant="item.active ? 'success' : 'muted'">
+                                {{ item.active ? 'on' : 'off' }}
+                            </ft-pill>
+                        </td>
+                        <td>
+                            <ft-pill :variant="item.major ? 'accent' : 'muted'">
+                                {{ item.major ? 'yes' : 'no' }}
+                            </ft-pill>
+                        </td>
+                        <td>
+                            <ft-pill :variant="item.default ? 'info' : 'muted'">
+                                {{ item.default ? 'yes' : 'no' }}
+                            </ft-pill>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </ft-panel>
+</div>

@@ -1,0 +1,56 @@
+.ft-panel {
+    background: var(--ft-surface);
+    border: 1px solid var(--ft-border);
+    border-radius: var(--ft-radius-lg);
+    box-shadow: var(--ft-shadow-sm);
+    overflow: hidden;
+
+    & + & {
+        margin-top: 18px;
+    }
+
+    &__head {
+        display: flex;
+        flex-wrap: wrap;
+        align-items: center;
+        gap: 12px;
+        padding: 16px 20px;
+        border-bottom: 1px solid var(--ft-divider);
+    }
+
+    &__title {
+        font-size: 15px;
+        font-weight: 600;
+        margin: 0;
+        flex: 1;
+        min-width: 0;
+        display: flex;
+        align-items: center;
+        gap: 8px;
+    }
+
+    &__count {
+        background: var(--ft-surface-2);
+        color: var(--ft-text-soft);
+        padding: 2px 8px;
+        border-radius: 999px;
+        font-size: 11.5px;
+        font-weight: 600;
+        font-variant-numeric: tabular-nums;
+    }
+
+    &__actions {
+        display: flex;
+        gap: 8px;
+        align-items: center;
+        flex-wrap: wrap;
+    }
+
+    &__body {
+        padding: 20px;
+
+        &--flush {
+            padding: 0;
+        }
+    }
+}

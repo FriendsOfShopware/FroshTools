@@ -1,0 +1,15 @@
+<button
+    class="ft-btn"
+    :disabled="loading"
+    @click="$emit('click', $event)"
+>
+    <span
+        v-if="loading"
+        class="ft-spinner"
+    ></span>
+    <ft-icon
+        v-else
+        name="refresh"
+    />
+    <span>{{ label }}</span>
+</button>
