@@ -163,9 +163,10 @@ class ComposerAuditService
     private function collectInstalledPackages(): array
     {
         $packages = [];
+        $rootPackageName = InstalledVersions::getRootPackage()['name'];
 
         foreach (InstalledVersions::getInstalledPackages() as $package) {
-            if ($package === '') {
+            if ($package === '' || $package === $rootPackageName) {
                 continue;
             }
 
