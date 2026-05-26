@@ -1,4 +1,6 @@
+{% block frosh_tools_tab_logs %}
 <div class="ft frosh-tab-logs">
+    {% block frosh_tools_tab_logs_head %}
     <ft-page-head
         :title="$t('frosh-tools.tabs.logs.title')"
         subtitle="Stream and inspect entries from any log file on disk."
@@ -11,6 +13,8 @@
             />
         </template>
     </ft-page-head>
+    {% endblock %}
+    {% block frosh_tools_tab_logs_panel %}
     <ft-panel
         title="Log file"
         flush
@@ -91,12 +95,15 @@
             </div>
         </div>
     </ft-panel>
+    {% endblock %}
+    {% block frosh_tools_tab_logs_modal %}
     <ft-modal
         v-if="displayedLog"
         variant="large"
         @close="closeInfoModal"
     >
         <template #header>
+            {% block frosh_tools_tab_logs_modal_header %}
             <div class="frosh-tab-logs__modal-head">
                 <div class="frosh-tab-logs__modal-title">
                     <ft-pill
@@ -109,7 +116,12 @@
                     {{ date(displayedLog.date, {hour: '2-digit', minute: '2-digit', second: '2-digit'}) }}
                 </div>
             </div>
+            {% endblock %}
         </template>
-        <pre class="ft-diff frosh-tab-logs__message">{{ displayedLog.message }}</pre>
+        {% block frosh_tools_tab_logs_modal_message %}
+        <pre class="ft-diff frosh-tab-logs__message">{{ formatMessage(displayedLog.message) }}</pre>
+        {% endblock %}
     </ft-modal>
+    {% endblock %}
 </div>
+{% endblock %}

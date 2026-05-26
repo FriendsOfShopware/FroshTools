@@ -84,6 +84,51 @@ Component.register('frosh-tools-tab-logs', {
             await this.loadLogEntries();
         },
 
+        formatMessage(message) {
+            if (!message) return '';
+            const parts = [];
+            let i = 0;
+            let textStart = 0;
+            const s = message;
+            while (i < s.length) {
+                const c = s[i];
+                if (c !== '{' && c !== '[') {
+                    i++;
+                    continue;
+                }
+                let depth = 0;
+                let inString = false;
+                let escape = false;
+                let end = -1;
+                for (let j = i; j < s.length; j++) {
+                    const ch = s[j];
+                    if (escape) { escape = false; continue; }
+                    if (ch === '\\' && inString) { escape = true; continue; }
+                    if (ch === '"') { inString = !inString; continue; }
+                    if (!inString) {
+                        if (ch === '{' || ch === '[') depth++;
+                        else if (ch === '}' || ch === ']') {
+                            depth--;
+                            if (depth === 0) { end = j; break; }
+                        }
+                    }
+                }
+                if (end < 0) { i++; continue; }
+                const candidate = s.slice(i, end + 1);
+                try {
+                    const parsed = JSON.parse(candidate);
+                    parts.push(s.slice(textStart, i));
+                    parts.push('\n' + JSON.stringify(parsed, null, 2) + '\n');
+                    textStart = end + 1;
+                    i = end + 1;
+                } catch {
+                    i++;
+                }
+            }
+            parts.push(s.slice(textStart));
+            return parts.join('');
+        },
+
         showInfoModal(entryContents) {
             this.displayedLog = entryContents;
         },
