@@ -1,0 +1,124 @@
+.ft-severity-bar {
+    display: flex;
+    flex-direction: column;
+    gap: 14px;
+    transition: opacity 0.2s ease;
+
+    &--loading {
+        opacity: 0.55;
+    }
+}
+
+.ft-severity-bar__verdict {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.ft-severity-bar__verdict-text {
+    font-size: 16px;
+    font-weight: 600;
+    color: var(--ft-text);
+}
+
+.ft-severity-bar__dot {
+    width: 12px;
+    height: 12px;
+    border-radius: 50%;
+    flex-shrink: 0;
+
+    &--danger {
+        background: var(--ft-danger);
+        box-shadow: 0 0 0 4px var(--ft-danger-soft);
+    }
+    &--warning {
+        background: var(--ft-warning);
+        box-shadow: 0 0 0 4px var(--ft-warning-soft);
+    }
+    &--info {
+        background: var(--ft-info);
+        box-shadow: 0 0 0 4px var(--ft-info-soft);
+    }
+    &--success {
+        background: var(--ft-success);
+        box-shadow: 0 0 0 4px var(--ft-success-soft);
+    }
+}
+
+.ft-severity-bar__track {
+    display: flex;
+    width: 100%;
+    height: 10px;
+    border-radius: 999px;
+    overflow: hidden;
+    background: var(--ft-surface-2);
+    gap: 2px;
+}
+
+.ft-severity-bar__seg {
+    height: 100%;
+    min-width: 4px;
+    transition: width 0.3s ease;
+
+    &--danger {
+        background: var(--ft-danger);
+    }
+    &--warning {
+        background: var(--ft-warning);
+    }
+    &--info {
+        background: var(--ft-info);
+    }
+    &--success {
+        background: var(--ft-success);
+    }
+    &--muted {
+        background: var(--ft-border-strong);
+    }
+    &--empty {
+        background: var(--ft-success);
+        opacity: 0.4;
+    }
+}
+
+.ft-severity-bar__counts {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 16px;
+}
+
+.ft-severity-bar__count {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    font-size: 12.5px;
+    color: var(--ft-text-soft);
+}
+
+.ft-severity-bar__count-dot {
+    width: 8px;
+    height: 8px;
+    border-radius: 2px;
+    flex-shrink: 0;
+
+    &--danger {
+        background: var(--ft-danger);
+    }
+    &--warning {
+        background: var(--ft-warning);
+    }
+    &--info {
+        background: var(--ft-info);
+    }
+    &--success {
+        background: var(--ft-success);
+    }
+    &--muted {
+        background: var(--ft-border-strong);
+    }
+}
+
+.ft-severity-bar__count-num {
+    font-weight: 700;
+    color: var(--ft-text);
+}

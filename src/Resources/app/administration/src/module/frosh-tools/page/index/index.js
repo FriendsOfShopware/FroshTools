@@ -55,6 +55,10 @@ Component.register('frosh-tools-index', {
                     route: 'frosh.tools.index.index',
                     labelKey: 'frosh-tools.tabs.index.title',
                 },
+                {
+                    route: 'frosh.tools.index.security',
+                    labelKey: 'frosh-tools.tabs.security.title',
+                },
             ];
 
             const performance = [
@@ -97,17 +101,6 @@ Component.register('frosh-tools-index', {
                 labelKey: 'frosh-tools.tabs.feature-flags.title',
             });
 
-            const security = [
-                {
-                    route: 'frosh.tools.index.files',
-                    labelKey: 'frosh-tools.tabs.files.title',
-                },
-                {
-                    route: 'frosh.tools.index.composeraudit',
-                    labelKey: 'frosh-tools.tabs.composerAudit.title',
-                },
-            ];
-
             const cdn = [];
             if (this.fastlyAvailable) {
                 cdn.push({
@@ -120,7 +113,6 @@ Component.register('frosh-tools-index', {
                 { label: 'Overview', items: overview },
                 { label: 'Performance', items: performance },
                 { label: 'Operations', items: operations },
-                { label: 'Security', items: security },
                 { label: 'Diagnostics', items: diagnostics },
                 { label: 'CDN', items: cdn },
             ];

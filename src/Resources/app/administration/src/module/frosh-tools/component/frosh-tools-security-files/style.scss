@@ -1,4 +1,8 @@
-.frosh-tab-files {
+.frosh-security-files {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+
     &__table {
         margin: 16px -20px -20px;
         border-top: 1px solid var(--ft-divider);
