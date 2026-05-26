@@ -13,6 +13,8 @@ class EolFindingFactory
 {
     /**
      * @param array{cycle: string, eol: \DateTimeImmutable|null, eolUnknown: bool, supportEnded: bool, latest: string|null}|null $cycle
+     * @param string|null $upgradeHint custom recommendation for actionable findings (e.g. "update Shopware"
+     *                                  when the version cannot be upgraded directly). Falls back to a generic hint.
      */
     public static function fromCycle(
         string $id,
@@ -20,6 +22,7 @@ class EolFindingFactory
         string $currentVersion,
         ?array $cycle,
         string $docUrl,
+        ?string $upgradeHint = null,
     ): SecurityFinding {
         if ($cycle === null) {
             return SecurityFinding::unknown(
@@ -52,7 +55,7 @@ class EolFindingFactory
                 SecurityFinding::CATEGORY_RUNTIME,
                 $title,
                 \sprintf('%s (end-of-life since %s)', $currentVersion, $eol->format('Y-m-d')),
-                'Upgrade to a supported release that still receives security fixes',
+                $upgradeHint ?? 'Upgrade to a supported release that still receives security fixes',
                 $docUrl,
             );
         }
@@ -63,7 +66,7 @@ class EolFindingFactory
                 SecurityFinding::CATEGORY_RUNTIME,
                 $title,
                 \sprintf('%s (end-of-life on %s, less than 3 months)', $currentVersion, $eol->format('Y-m-d')),
-                'Plan an upgrade before this release reaches end-of-life',
+                $upgradeHint ?? 'Plan an upgrade before this release reaches end-of-life',
                 $docUrl,
             );
         }
@@ -74,7 +77,7 @@ class EolFindingFactory
                 SecurityFinding::CATEGORY_RUNTIME,
                 $title,
                 \sprintf('%s (active support ended, security fixes only)', $currentVersion),
-                'Consider upgrading to a release with active support',
+                $upgradeHint ?? 'Consider upgrading to a release with active support',
                 $docUrl,
             );
         }
