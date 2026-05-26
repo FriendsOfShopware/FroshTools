@@ -14,7 +14,7 @@ class EolFindingFactory
     /**
      * @param array{cycle: string, eol: \DateTimeImmutable|null, eolUnknown: bool, supportEnded: bool, latest: string|null}|null $cycle
      * @param string|null $upgradeHint custom recommendation for actionable findings (e.g. "update Shopware"
-     *                                  when the version cannot be upgraded directly). Falls back to a generic hint.
+     *                                 when the version cannot be upgraded directly). Falls back to a generic hint.
      */
     public static function fromCycle(
         string $id,
