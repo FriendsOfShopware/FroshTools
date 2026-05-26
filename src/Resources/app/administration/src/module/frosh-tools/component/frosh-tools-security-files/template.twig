@@ -1,7 +1,7 @@
-<div class="ft frosh-tab-files">
-    <ft-page-head
-        :title="$t('frosh-tools.tabs.files.title')"
-        subtitle="Detect drift between shipped Shopware files and what's on disk."
+<div class="frosh-security-files">
+    <ft-panel
+        title="Core"
+        :count="items.files ? items.files.length : null"
     >
         <template #actions>
             <ft-refresh-button
@@ -10,11 +10,6 @@
                 @click="refresh"
             />
         </template>
-    </ft-page-head>
-    <ft-panel
-        title="Core"
-        :count="items.files ? items.files.length : null"
-    >
         <ft-hero-state
             v-if="items.error"
             variant="danger"
@@ -38,7 +33,7 @@
         />
         <div
             v-if="items.files && items.files.length"
-            class="ft-table-wrap frosh-tab-files__table"
+            class="ft-table-wrap frosh-security-files__table"
         >
             <table class="ft-table">
                 <thead>
@@ -129,14 +124,14 @@
         <div
             v-for="(extensionResult, extensionName) in extensionItems.extensionResults"
             :key="extensionName"
-            class="frosh-tab-files__ext"
+            class="frosh-security-files__ext"
         >
-            <div class="frosh-tab-files__ext-head">
+            <div class="frosh-security-files__ext-head">
                 <ft-pill
                     variant="accent"
                     bare
                 >extension</ft-pill>
-                <h3 class="frosh-tab-files__ext-name">{{ extensionName }}</h3>
+                <h3 class="frosh-security-files__ext-name">{{ extensionName }}</h3>
             </div>
             <ft-hero-state
                 v-if="extensionResult.wrongExtensionVersion"
@@ -152,13 +147,13 @@
             />
             <div
                 v-else
-                class="frosh-tab-files__ext-grid"
+                class="frosh-security-files__ext-grid"
             >
                 <div
                     v-if="extensionResult.newFiles.length > 0"
-                    class="frosh-tab-files__ext-group"
+                    class="frosh-security-files__ext-group"
                 >
-                    <div class="frosh-tab-files__ext-label">
+                    <div class="frosh-security-files__ext-label">
                         <ft-pill
                             variant="info"
                             bare
@@ -168,7 +163,7 @@
                             {{ extensionResult.newFiles.length }}
                         </span>
                     </div>
-                    <ul class="frosh-tab-files__ext-list">
+                    <ul class="frosh-security-files__ext-list">
                         <li
                             v-for="f in extensionResult.newFiles"
                             :key="`n-${f}`"
@@ -178,9 +173,9 @@
                 </div>
                 <div
                     v-if="extensionResult.changedFiles.length > 0"
-                    class="frosh-tab-files__ext-group"
+                    class="frosh-security-files__ext-group"
                 >
-                    <div class="frosh-tab-files__ext-label">
+                    <div class="frosh-security-files__ext-label">
                         <ft-pill
                             variant="warning"
                             bare
@@ -190,7 +185,7 @@
                             {{ extensionResult.changedFiles.length }}
                         </span>
                     </div>
-                    <ul class="frosh-tab-files__ext-list">
+                    <ul class="frosh-security-files__ext-list">
                         <li
                             v-for="f in extensionResult.changedFiles"
                             :key="`c-${f}`"
@@ -200,9 +195,9 @@
                 </div>
                 <div
                     v-if="extensionResult.missingFiles.length > 0"
-                    class="frosh-tab-files__ext-group"
+                    class="frosh-security-files__ext-group"
                 >
-                    <div class="frosh-tab-files__ext-label">
+                    <div class="frosh-security-files__ext-label">
                         <ft-pill
                             variant="danger"
                             bare
@@ -212,7 +207,7 @@
                             {{ extensionResult.missingFiles.length }}
                         </span>
                     </div>
-                    <ul class="frosh-tab-files__ext-list">
+                    <ul class="frosh-security-files__ext-list">
                         <li
                             v-for="f in extensionResult.missingFiles"
                             :key="`m-${f}`"

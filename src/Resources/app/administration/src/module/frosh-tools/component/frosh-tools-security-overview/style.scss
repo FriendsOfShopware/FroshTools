@@ -1,0 +1,69 @@
+.frosh-security-overview {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+}
+
+.frosh-security-overview__list {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.frosh-security-overview__finding {
+    padding: 12px 14px;
+    background: var(--ft-surface);
+    border: 1px solid var(--ft-border);
+    border-left: 3px solid var(--ft-border);
+    border-radius: var(--ft-radius-sm);
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+
+    &--danger {
+        border-left-color: var(--ft-danger);
+    }
+    &--warning {
+        border-left-color: var(--ft-warning);
+    }
+    &--info {
+        border-left-color: var(--ft-info);
+    }
+    &--success {
+        border-left-color: var(--ft-success);
+    }
+}
+
+.frosh-security-overview__finding-head {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    flex-wrap: wrap;
+}
+
+.frosh-security-overview__finding-title {
+    font-size: 13.5px;
+    font-weight: 600;
+    color: var(--ft-text);
+    line-height: 1.4;
+}
+
+.frosh-security-overview__finding-current {
+    font-size: 12px;
+    color: var(--ft-text-soft);
+}
+
+.frosh-security-overview__finding-recommended {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    font-size: 12.5px;
+    color: var(--ft-text-soft);
+
+    svg {
+        flex-shrink: 0;
+    }
+}

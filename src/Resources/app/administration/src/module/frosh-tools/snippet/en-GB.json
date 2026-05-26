@@ -81,6 +81,41 @@
                 "changedFiles": "Changed files",
                 "missingFiles": "Missing files"
             },
+            "security": {
+                "title": "Security Center",
+                "subtitle": "Continuous security overview: dependency advisories, runtime end-of-life, and risky configuration.",
+                "notice": "Security matters for every publicly reachable shop — not only production. Staging, preview, and test environments are frequently exposed and targeted, so run these checks there too.",
+                "sections": {
+                    "overview": "Overview",
+                    "dependencies": "Dependencies",
+                    "files": "File Integrity"
+                },
+                "verdict": {
+                    "critical": "Action needed — {count} critical issue(s)",
+                    "atRisk": "At risk — {count} issue(s) to review",
+                    "unknown": "Some checks could not be completed",
+                    "healthy": "Healthy — no issues found"
+                },
+                "checkFailed": "Security check failed",
+                "allClear": "No security issues found",
+                "noIssues": "No actionable issues",
+                "issuesFound": "{count} security issues found",
+                "allChecksPassed": "All security checks passed.",
+                "categories": {
+                    "dependencies": "Dependencies",
+                    "runtime": "Runtime",
+                    "updates": "Updates",
+                    "configuration": "Configuration"
+                },
+                "severity": {
+                    "critical": "Critical",
+                    "high": "High",
+                    "medium": "Medium",
+                    "low": "Low",
+                    "unknown": "Unknown",
+                    "ok": "OK"
+                }
+            },
             "composerAudit": {
                 "title": "Composer Audit",
                 "subtitle": "Check installed Composer packages against the Packagist security advisories database.",
@@ -92,7 +127,17 @@
                 "vulnerableBody": "{vulnerable} of {total} installed packages have security advisories.",
                 "affected": "Affected versions",
                 "reportedAt": "Reported",
-                "severityUnknown": "Unknown"
+                "severityUnknown": "Unknown",
+                "howto": {
+                    "title": "How to fix these advisories",
+                    "backup": "Always create a full backup (database and files) before updating dependencies, so you can roll back if an update breaks your shop.",
+                    "step1": "On your local or CI environment, update the affected packages with Composer:",
+                    "step2": "Review the changes (especially major version bumps) and run your test suite to catch regressions.",
+                    "step3": "Confirm no advisories remain:",
+                    "step4": "Commit the updated composer.lock and deploy. The check above re-runs automatically (cached up to 1 hour — use Refresh to force it).",
+                    "copy": "Copy to clipboard",
+                    "note": "Some advisories are fixed only in a newer major version. If a constraint in your composer.json blocks the update, you may need to raise it (e.g. \"^2.0\") before Composer can install the patched release."
+                }
             },
             "state-machines": {
                 "title": "State Machine Viewer",

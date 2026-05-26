@@ -81,6 +81,41 @@
                 "changedFiles": "Geänderte Dateien",
                 "missingFiles": "Fehlende Dateien"
             },
+            "security": {
+                "title": "Security Center",
+                "subtitle": "Laufende Sicherheitsübersicht: Abhängigkeits-Advisories, Laufzeit-End-of-Life und riskante Konfiguration.",
+                "notice": "Sicherheit ist für jeden öffentlich erreichbaren Shop wichtig — nicht nur für die Produktion. Staging-, Vorschau- und Testumgebungen sind oft erreichbar und werden angegriffen; führen Sie diese Prüfungen daher auch dort aus.",
+                "sections": {
+                    "overview": "Übersicht",
+                    "dependencies": "Abhängigkeiten",
+                    "files": "Dateiintegrität"
+                },
+                "verdict": {
+                    "critical": "Handlungsbedarf — {count} kritische(s) Problem(e)",
+                    "atRisk": "Risiko — {count} zu prüfende(s) Problem(e)",
+                    "unknown": "Einige Prüfungen konnten nicht abgeschlossen werden",
+                    "healthy": "Alles in Ordnung — keine Probleme gefunden"
+                },
+                "checkFailed": "Sicherheitsprüfung fehlgeschlagen",
+                "allClear": "Keine Sicherheitsprobleme gefunden",
+                "noIssues": "Keine zu behebenden Probleme",
+                "issuesFound": "{count} Sicherheitsprobleme gefunden",
+                "allChecksPassed": "Alle Sicherheitsprüfungen bestanden.",
+                "categories": {
+                    "dependencies": "Abhängigkeiten",
+                    "runtime": "Laufzeit",
+                    "updates": "Updates",
+                    "configuration": "Konfiguration"
+                },
+                "severity": {
+                    "critical": "Kritisch",
+                    "high": "Hoch",
+                    "medium": "Mittel",
+                    "low": "Niedrig",
+                    "unknown": "Unbekannt",
+                    "ok": "OK"
+                }
+            },
             "composerAudit": {
                 "title": "Composer Audit",
                 "subtitle": "Prüfe installierte Composer-Pakete gegen die Packagist Security Advisories.",
@@ -92,7 +127,17 @@
                 "vulnerableBody": "{vulnerable} von {total} installierten Paketen haben Sicherheitsmeldungen.",
                 "affected": "Betroffene Versionen",
                 "reportedAt": "Gemeldet am",
-                "severityUnknown": "Unbekannt"
+                "severityUnknown": "Unbekannt",
+                "howto": {
+                    "title": "So beheben Sie diese Advisories",
+                    "backup": "Erstellen Sie immer ein vollständiges Backup (Datenbank und Dateien), bevor Sie Abhängigkeiten aktualisieren, damit Sie zurückrollen können, falls ein Update Ihren Shop beschädigt.",
+                    "step1": "Aktualisieren Sie die betroffenen Pakete in Ihrer lokalen oder CI-Umgebung mit Composer:",
+                    "step2": "Prüfen Sie die Änderungen (insbesondere Major-Versionssprünge) und führen Sie Ihre Tests aus, um Regressionen zu erkennen.",
+                    "step3": "Stellen Sie sicher, dass keine Advisories mehr bestehen:",
+                    "step4": "Committen Sie die aktualisierte composer.lock und deployen Sie. Die obige Prüfung läuft automatisch erneut (bis zu 1 Stunde zwischengespeichert — nutzen Sie Aktualisieren, um sie zu erzwingen).",
+                    "copy": "In die Zwischenablage kopieren",
+                    "note": "Manche Advisories werden erst in einer neueren Major-Version behoben. Falls eine Einschränkung in Ihrer composer.json das Update blockiert, müssen Sie diese ggf. anheben (z. B. \"^2.0\"), bevor Composer das gepatchte Release installieren kann."
+                }
             },
             "state-machines": {
                 "title": "State Machine Viewer",

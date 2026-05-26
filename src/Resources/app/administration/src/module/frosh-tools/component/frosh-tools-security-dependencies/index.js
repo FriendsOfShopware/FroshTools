@@ -1,16 +1,18 @@
 import template from './template.twig';
 import './style.scss';
 
-const { Component, Mixin } = Shopware;
+const { Component } = Shopware;
 
-Component.register('frosh-tools-tab-composer-audit', {
+// Composer dependency advisories, grouped by package. Owns its own fetch because
+// the package-grouped detail is richer than the flattened findings on Overview.
+Component.register('frosh-tools-security-dependencies', {
     template,
     inject: ['froshToolsService'],
-    mixins: [Mixin.getByName('notification')],
 
     data() {
         return {
             isLoading: true,
+            copiedCommand: null,
             result: {
                 packages: 0,
                 vulnerable: 0,
@@ -48,6 +50,18 @@ Component.register('frosh-tools-tab-composer-audit', {
                 groups[advisory.packageName].advisories.push(advisory);
             }
             return Object.values(groups);
+        },
+
+        affectedPackages() {
+            return this.groupedAdvisories.map((g) => g.packageName);
+        },
+
+        updateCommand() {
+            const pkgs = this.affectedPackages;
+            if (pkgs.length === 0 || pkgs.length > 5) {
+                return 'composer update --with-dependencies';
+            }
+            return `composer update ${pkgs.join(' ')} --with-dependencies`;
         },
     },
 
@@ -95,7 +109,6 @@ Component.register('frosh-tools-tab-composer-audit', {
         severityVariant(severity) {
             switch ((severity || '').toLowerCase()) {
                 case 'critical':
-                    return 'danger';
                 case 'high':
                     return 'danger';
                 case 'medium':
@@ -120,6 +133,22 @@ Component.register('frosh-tools-tab-composer-audit', {
         openUrl(url) {
             if (!url) return;
             window.open(url, '_blank', 'noopener');
+        },
+
+        async copyCommand(command) {
+            try {
+                await navigator.clipboard.writeText(command);
+                this.copiedCommand = command;
+                setTimeout(() => {
+                    if (this.copiedCommand === command) {
+                        this.copiedCommand = null;
+                    }
+                }, 2000);
+            } catch {
+                this.createNotificationError({
+                    message: command,
+                });
+            }
         },
     },
 });

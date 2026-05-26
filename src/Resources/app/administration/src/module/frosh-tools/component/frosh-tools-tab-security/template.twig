@@ -1,0 +1,84 @@
+<div class="ft frosh-tab-security">
+    <ft-page-head
+        :title="$t('frosh-tools.tabs.security.title')"
+        :subtitle="$t('frosh-tools.tabs.security.subtitle')"
+    >
+        <template #actions>
+            <ft-refresh-button
+                :loading="isLoading"
+                label="Refresh"
+                @click="refresh"
+            />
+        </template>
+    </ft-page-head>
+    <ft-panel class="frosh-tab-security__hero">
+        <ft-hero-state
+            v-if="error"
+            variant="danger"
+            icon="alert"
+            :title="$t('frosh-tools.tabs.security.checkFailed')"
+            :body="error"
+        />
+        <ft-severity-bar
+            v-else
+            :summary="summary"
+            :loading="isLoading"
+        />
+    </ft-panel>
+    <div
+        v-if="!noticeDismissed"
+        class="frosh-tab-security__notice"
+        role="note"
+    >
+        <ft-icon
+            name="info"
+            :size="16"
+        />
+        <span class="frosh-tab-security__notice-text">
+            {{ $t('frosh-tools.tabs.security.notice') }}
+        </span>
+        <button
+            type="button"
+            class="frosh-tab-security__notice-close"
+            :aria-label="$t('global.default.close')"
+            @click="dismissNotice"
+        >
+            <ft-icon
+                name="close"
+                :size="14"
+            />
+        </button>
+    </div>
+    <nav
+        class="frosh-tab-security__subnav"
+        role="tablist"
+    >
+        <button
+            v-for="tab in tabs"
+            :key="tab.key"
+            type="button"
+            role="tab"
+            class="frosh-tab-security__subnav-item"
+            :class="{ 'is-active': activeTab === tab.key }"
+            :aria-selected="activeTab === tab.key ? 'true' : 'false'"
+            @click="selectTab(tab.key)"
+        >
+            <span>{{ tab.label }}</span>
+            <span
+                v-if="tab.badge"
+                class="frosh-tab-security__subnav-badge"
+                :class="`frosh-tab-security__subnav-badge--${tab.badgeVariant}`"
+            >{{ tab.badge }}</span>
+        </button>
+    </nav>
+    <div class="frosh-tab-security__body">
+        <frosh-tools-security-overview
+            v-if="activeTab === 'overview'"
+            :findings="findings"
+            :loading="isLoading"
+            :error="error"
+        />
+        <frosh-tools-security-dependencies v-else-if="activeTab === 'dependencies'"/>
+        <frosh-tools-security-files v-else-if="activeTab === 'files'"/>
+    </div>
+</div>

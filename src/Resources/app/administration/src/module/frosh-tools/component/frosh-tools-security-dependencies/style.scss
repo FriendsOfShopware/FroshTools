@@ -1,0 +1,206 @@
+.frosh-security-dependencies__cached {
+    font-size: 12px;
+    color: var(--ft-text-muted);
+    margin-right: 4px;
+}
+
+.frosh-security-dependencies__list {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+    margin-top: 16px;
+}
+
+.frosh-security-dependencies__group {
+    background: var(--ft-surface-2);
+    border: 1px solid var(--ft-border);
+    border-radius: var(--ft-radius-md);
+    padding: 14px 16px;
+}
+
+.frosh-security-dependencies__group-head {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+    margin-bottom: 12px;
+    padding-bottom: 10px;
+    border-bottom: 1px solid var(--ft-divider);
+}
+
+.frosh-security-dependencies__group-pkg {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    flex-wrap: wrap;
+}
+
+.frosh-security-dependencies__group-name {
+    font-size: 14px;
+    font-weight: 600;
+}
+
+.frosh-security-dependencies__group-version {
+    font-size: 12px;
+    color: var(--ft-text-soft);
+    padding: 2px 8px;
+    background: var(--ft-surface);
+    border: 1px solid var(--ft-border);
+    border-radius: var(--ft-radius-sm);
+}
+
+.frosh-security-dependencies__advisories {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.frosh-security-dependencies__advisory {
+    padding: 10px 12px;
+    background: var(--ft-surface);
+    border: 1px solid var(--ft-border);
+    border-radius: var(--ft-radius-sm);
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+}
+
+.frosh-security-dependencies__advisory-head {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.frosh-security-dependencies__cve {
+    font-size: 12px;
+    color: var(--ft-text-soft);
+}
+
+.frosh-security-dependencies__advisory-title {
+    font-size: 13.5px;
+    font-weight: 500;
+    color: var(--ft-text);
+    line-height: 1.4;
+}
+
+.frosh-security-dependencies__advisory-meta {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 16px;
+    font-size: 12px;
+    color: var(--ft-text-soft);
+
+    strong {
+        font-weight: 600;
+        color: var(--ft-text);
+        margin-right: 4px;
+    }
+}
+
+.frosh-security-dependencies__howto-warning {
+    display: flex;
+    align-items: flex-start;
+    gap: 8px;
+    margin: 0 0 16px;
+    padding: 10px 12px;
+    background: var(--ft-warning-soft);
+    border: 1px solid var(--ft-warning);
+    border-radius: var(--ft-radius-sm);
+    font-size: 12.5px;
+    font-weight: 600;
+    line-height: 1.5;
+    color: var(--ft-text);
+
+    svg {
+        flex-shrink: 0;
+        margin-top: 1px;
+        color: var(--ft-warning);
+    }
+}
+
+.frosh-security-dependencies__howto {
+    list-style: none;
+    counter-reset: howto;
+    margin: 0;
+    padding: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 14px;
+}
+
+.frosh-security-dependencies__howto-step {
+    counter-increment: howto;
+    position: relative;
+    padding-left: 34px;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+
+    &::before {
+        content: counter(howto);
+        position: absolute;
+        left: 0;
+        top: 0;
+        width: 22px;
+        height: 22px;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 12px;
+        font-weight: 700;
+        color: var(--ft-text-inverse);
+        background: var(--ft-accent);
+        border-radius: 50%;
+    }
+}
+
+.frosh-security-dependencies__howto-text {
+    font-size: 13px;
+    line-height: 1.5;
+    color: var(--ft-text);
+    padding-top: 2px;
+}
+
+.frosh-security-dependencies__cmd {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    background: var(--ft-surface-2);
+    border: 1px solid var(--ft-border);
+    border-radius: var(--ft-radius-sm);
+    padding: 8px 10px;
+
+    code {
+        flex: 1;
+        font-size: 12.5px;
+        color: var(--ft-text);
+        white-space: pre-wrap;
+        word-break: break-all;
+    }
+}
+
+.frosh-security-dependencies__cmd-copy {
+    flex-shrink: 0;
+    padding: 4px;
+}
+
+.frosh-security-dependencies__howto-note {
+    display: flex;
+    align-items: flex-start;
+    gap: 8px;
+    margin: 16px 0 0;
+    padding-top: 14px;
+    border-top: 1px solid var(--ft-divider);
+    font-size: 12px;
+    line-height: 1.5;
+    color: var(--ft-text-soft);
+
+    svg {
+        flex-shrink: 0;
+        margin-top: 1px;
+        color: var(--ft-text-muted);
+    }
+}

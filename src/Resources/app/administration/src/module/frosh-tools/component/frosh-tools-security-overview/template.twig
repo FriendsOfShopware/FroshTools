@@ -1,0 +1,58 @@
+<div class="frosh-security-overview">
+    <ft-panel v-if="error">
+        <ft-hero-state
+            variant="danger"
+            icon="alert"
+            :title="$t('frosh-tools.tabs.security.checkFailed')"
+            :body="error"
+        />
+    </ft-panel>
+    <ft-panel v-else-if="!hasFindings && !loading">
+        <ft-hero-state
+            variant="success"
+            icon="check"
+            :title="$t('frosh-tools.tabs.security.allClear')"
+            :body="$t('frosh-tools.tabs.security.allChecksPassed')"
+        />
+    </ft-panel>
+    <ft-panel
+        v-for="group in groupedFindings"
+        :key="group.category"
+        :title="categoryLabel(group.category)"
+        :count="group.findings.length"
+    >
+        <ul class="frosh-security-overview__list">
+            <li
+                v-for="finding in group.findings"
+                :key="finding.id"
+                class="frosh-security-overview__finding"
+                :class="`frosh-security-overview__finding--${severityVariant(finding.severity)}`"
+            >
+                <div class="frosh-security-overview__finding-head">
+                    <ft-pill :variant="severityVariant(finding.severity)">
+                        {{ severityLabel(finding.severity) }}
+                    </ft-pill>
+                    <span class="frosh-security-overview__finding-title">{{ finding.title }}</span>
+                    <a
+                        v-if="finding.url"
+                        class="ft-link"
+                        @click="openUrl(finding.url)"
+                    >
+                        <ft-icon name="external-link"/>
+                    </a>
+                </div>
+                <div
+                    v-if="finding.current"
+                    class="frosh-security-overview__finding-current ft-mono"
+                >{{ finding.current }}</div>
+                <div
+                    v-if="finding.recommended"
+                    class="frosh-security-overview__finding-recommended"
+                >
+                    <ft-icon name="arrow-right"/>
+                    <span>{{ finding.recommended }}</span>
+                </div>
+            </li>
+        </ul>
+    </ft-panel>
+</div>

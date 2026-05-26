@@ -1,0 +1,47 @@
+<div
+    class="ft-severity-bar"
+    :class="{ 'ft-severity-bar--loading': loading }"
+>
+    <div class="ft-severity-bar__verdict">
+        <span
+            class="ft-severity-bar__dot"
+            :class="`ft-severity-bar__dot--${verdictVariant}`"
+        ></span>
+        <span class="ft-severity-bar__verdict-text">{{ verdictLabel }}</span>
+    </div>
+    <div
+        class="ft-severity-bar__track"
+        role="img"
+        :aria-label="verdictLabel"
+    >
+        <template v-if="total > 0">
+            <span
+                v-for="seg in segments"
+                :key="seg.key"
+                class="ft-severity-bar__seg"
+                :class="`ft-severity-bar__seg--${seg.variant}`"
+                :style="{ width: seg.pct + '%' }"
+                :title="segmentLabel(seg)"
+            ></span>
+        </template>
+        <span
+            v-else
+            class="ft-severity-bar__seg ft-severity-bar__seg--empty"
+            style="width: 100%"
+        ></span>
+    </div>
+    <div class="ft-severity-bar__counts">
+        <span
+            v-for="part in countParts"
+            :key="part.key"
+            class="ft-severity-bar__count"
+        >
+            <span
+                class="ft-severity-bar__count-dot"
+                :class="`ft-severity-bar__count-dot--${part.variant}`"
+            ></span>
+            <span class="ft-severity-bar__count-num ft-mono">{{ part.count }}</span>
+            <span class="ft-severity-bar__count-label">{{ part.label }}</span>
+        </span>
+    </div>
+</div>
