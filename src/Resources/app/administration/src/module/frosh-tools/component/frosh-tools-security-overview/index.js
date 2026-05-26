@@ -3,7 +3,9 @@ import './style.scss';
 
 const { Component } = Shopware;
 
-const CATEGORY_ORDER = ['dependencies', 'runtime', 'updates', 'configuration'];
+// Dependencies are summarised here and detailed on their own tab, so they are
+// excluded from the per-finding list below.
+const CATEGORY_ORDER = ['runtime', 'updates', 'configuration'];
 
 const SEVERITY_RANK = {
     critical: 0,
@@ -13,6 +15,8 @@ const SEVERITY_RANK = {
     unknown: 4,
     ok: 5,
 };
+
+const SUMMARY_SEVERITIES = ['critical', 'high', 'medium', 'low'];
 
 // Read-only findings list grouped by category. Receives findings from the parent
 // Security Center so the data is fetched once.
@@ -37,6 +41,9 @@ Component.register('frosh-tools-security-overview', {
             const groups = {};
             for (const finding of this.findings || []) {
                 const cat = finding.category || 'configuration';
+                if (cat === 'dependencies') {
+                    continue;
+                }
                 (groups[cat] = groups[cat] || []).push(finding);
             }
 
@@ -60,6 +67,31 @@ Component.register('frosh-tools-security-overview', {
                 }
             }
             return ordered;
+        },
+
+        dependencyFindings() {
+            return (this.findings || []).filter(
+                (f) => f.category === 'dependencies'
+            );
+        },
+
+        // Severity counts for the dependency advisories, e.g. [{severity, count}].
+        // Only actionable severities are returned; an "ok"/"unknown"-only result is empty.
+        dependencySummary() {
+            const counts = {};
+            for (const finding of this.dependencyFindings) {
+                const sev = (finding.severity || '').toLowerCase();
+                if (SUMMARY_SEVERITIES.includes(sev)) {
+                    counts[sev] = (counts[sev] || 0) + 1;
+                }
+            }
+            return SUMMARY_SEVERITIES.filter((sev) => counts[sev] > 0).map(
+                (sev) => ({ severity: sev, count: counts[sev] })
+            );
+        },
+
+        dependencyIssueCount() {
+            return this.dependencySummary.reduce((sum, s) => sum + s.count, 0);
         },
 
         hasFindings() {
@@ -104,6 +136,10 @@ Component.register('frosh-tools-security-overview', {
         openUrl(url) {
             if (!url) return;
             window.open(url, '_blank', 'noopener');
+        },
+
+        goToDependencies() {
+            this.$emit('navigate', 'dependencies');
         },
     },
 });

@@ -101,6 +101,7 @@
                 "noIssues": "Keine zu behebenden Probleme",
                 "issuesFound": "{count} Sicherheitsprobleme gefunden",
                 "allChecksPassed": "Alle Sicherheitsprüfungen bestanden.",
+                "viewDependencies": "In Abhängigkeiten anzeigen",
                 "categories": {
                     "dependencies": "Abhängigkeiten",
                     "runtime": "Laufzeit",
@@ -119,6 +120,15 @@
             "composerAudit": {
                 "title": "Composer Audit",
                 "subtitle": "Prüfe installierte Composer-Pakete gegen die Packagist Security Advisories.",
+                "explainer": {
+                    "title": "Was ist das?",
+                    "whatTitle": "Was diese Seite prüft",
+                    "what": "Ihr Shop besteht aus vielen kleineren Software-Bausteinen (sogenannten „Abhängigkeiten“) — sowohl Shopware selbst als auch die verwendeten Plugins und Bibliotheken. Diese Seite gleicht die genau installierten Versionen Ihres Shops mit einer öffentlichen Datenbank bekannter Sicherheitsprobleme ab.",
+                    "whyTitle": "Warum es wichtig ist",
+                    "why": "Wird ein Problem (ein „Advisory“) gefunden, bedeutet das: Ein Baustein, auf den Ihr Shop angewiesen ist, hat eine bekannte Schwachstelle, die Angreifer ausnutzen könnten. Die gute Nachricht: Fast alle sind in einer neueren Version bereits behoben — Ihr Shop muss nur darauf aktualisiert werden.",
+                    "whoTitle": "Wer es beheben sollte",
+                    "who": "Das Aktualisieren dieser Bausteine ist eine technische Aufgabe. Falls Sie den Code Ihres Shops nicht selbst verwalten, senden Sie diese Liste (oder einen Screenshot) an Ihren Entwickler oder Ihre Agentur und bitten Sie um die Aktualisierung — die Schritt-für-Schritt-Anleitung unten ist für sie gedacht."
+                },
                 "cachedAt": "Zwischengespeichert um {at}. Klicke auf Aktualisieren für eine neue Prüfung.",
                 "checkFailed": "Audit fehlgeschlagen",
                 "allOk": "Keine bekannten Sicherheitslücken",
@@ -131,7 +141,7 @@
                 "howto": {
                     "title": "So beheben Sie diese Advisories",
                     "backup": "Erstellen Sie immer ein vollständiges Backup (Datenbank und Dateien), bevor Sie Abhängigkeiten aktualisieren, damit Sie zurückrollen können, falls ein Update Ihren Shop beschädigt.",
-                    "step1": "Aktualisieren Sie die betroffenen Pakete in Ihrer lokalen oder CI-Umgebung mit Composer:",
+                    "step1": "Aktualisieren Sie die betroffenen Pakete in Ihrer lokalen oder CI-Umgebung mit Composer. Der folgende Befehl nennt genau die Pakete mit Advisories; „--with-dependencies“ erlaubt Composer, bei Bedarf auch deren benötigte Unterabhängigkeiten zu aktualisieren, lässt den Rest Ihres Projekts aber unberührt:",
                     "step2": "Prüfen Sie die Änderungen (insbesondere Major-Versionssprünge) und führen Sie Ihre Tests aus, um Regressionen zu erkennen.",
                     "step3": "Stellen Sie sicher, dass keine Advisories mehr bestehen:",
                     "step4": "Committen Sie die aktualisierte composer.lock und deployen Sie. Die obige Prüfung läuft automatisch erneut (bis zu 1 Stunde zwischengespeichert — nutzen Sie Aktualisieren, um sie zu erzwingen).",

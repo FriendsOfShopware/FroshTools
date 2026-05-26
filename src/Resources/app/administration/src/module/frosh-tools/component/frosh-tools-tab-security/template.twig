@@ -77,6 +77,7 @@
             :findings="findings"
             :loading="isLoading"
             :error="error"
+            @navigate="selectTab"
         />
         <frosh-tools-security-dependencies v-else-if="activeTab === 'dependencies'"/>
         <frosh-tools-security-files v-else-if="activeTab === 'files'"/>

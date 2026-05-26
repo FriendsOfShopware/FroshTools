@@ -53,12 +53,18 @@ Component.register('frosh-tools-security-dependencies', {
         },
 
         affectedPackages() {
-            return this.groupedAdvisories.map((g) => g.packageName);
+            // Unique, sorted list of the packages that actually have advisories.
+            return [
+                ...new Set(this.groupedAdvisories.map((g) => g.packageName)),
+            ].sort();
         },
 
+        // Update only the affected packages explicitly. `--with-dependencies` is
+        // still required so Composer may also bump their dependencies when a
+        // patched version needs it — but unrelated packages stay untouched.
         updateCommand() {
             const pkgs = this.affectedPackages;
-            if (pkgs.length === 0 || pkgs.length > 5) {
+            if (pkgs.length === 0) {
                 return 'composer update --with-dependencies';
             }
             return `composer update ${pkgs.join(' ')} --with-dependencies`;

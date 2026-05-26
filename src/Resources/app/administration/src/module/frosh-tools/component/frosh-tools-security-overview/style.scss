@@ -4,6 +4,32 @@
     gap: 16px;
 }
 
+.frosh-security-overview__dep-summary {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 16px;
+    flex-wrap: wrap;
+}
+
+.frosh-security-overview__dep-counts {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    flex-wrap: wrap;
+}
+
+.frosh-security-overview__dep-link {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    flex-shrink: 0;
+
+    svg {
+        flex-shrink: 0;
+    }
+}
+
 .frosh-security-overview__list {
     list-style: none;
     padding: 0;

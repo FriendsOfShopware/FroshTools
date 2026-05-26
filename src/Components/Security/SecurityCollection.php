@@ -32,10 +32,14 @@ class SecurityCollection extends Collection
      */
     public function removeByIds(array $ids): void
     {
-        /** @phpstan-ignore-next-line */
-        $this->elements = array_filter($this->elements, static function (SecurityFinding $finding) use ($ids) {
+        $remaining = array_filter($this->getElements(), static function (SecurityFinding $finding) use ($ids) {
             return !\in_array($finding->id, $ids, true);
         });
+
+        $this->clear();
+        foreach ($remaining as $finding) {
+            $this->add($finding);
+        }
     }
 
     /**
@@ -52,7 +56,7 @@ class SecurityCollection extends Collection
             SecurityFinding::SEVERITY_OK => 0,
         ];
 
-        foreach ($this->elements as $finding) {
+        foreach ($this as $finding) {
             if (isset($counts[$finding->severity])) {
                 ++$counts[$finding->severity];
             }

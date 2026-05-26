@@ -101,6 +101,7 @@
                 "noIssues": "No actionable issues",
                 "issuesFound": "{count} security issues found",
                 "allChecksPassed": "All security checks passed.",
+                "viewDependencies": "View in Dependencies",
                 "categories": {
                     "dependencies": "Dependencies",
                     "runtime": "Runtime",
@@ -119,6 +120,15 @@
             "composerAudit": {
                 "title": "Composer Audit",
                 "subtitle": "Check installed Composer packages against the Packagist security advisories database.",
+                "explainer": {
+                    "title": "What is this?",
+                    "whatTitle": "What this page checks",
+                    "what": "Your shop is built from many smaller software building blocks (called \"dependencies\") — both Shopware itself and the plugins and libraries it uses. This page checks the exact versions installed in your shop against a public database of known security problems.",
+                    "whyTitle": "Why it matters",
+                    "why": "When a problem (an \"advisory\") is found, it means a building block your shop relies on has a known weakness that attackers could potentially exploit. The good news: almost all of them are already fixed in a newer version — your shop just needs to be updated to it.",
+                    "whoTitle": "Who should fix it",
+                    "who": "Updating these building blocks is a technical task. If you don't manage your shop's code yourself, send this list (or a screenshot) to your developer or agency and ask them to apply the updates — the step-by-step instructions below are written for them."
+                },
                 "cachedAt": "Cached at {at}. Click Refresh for a fresh check.",
                 "checkFailed": "Audit failed",
                 "allOk": "No known vulnerabilities",
@@ -131,7 +141,7 @@
                 "howto": {
                     "title": "How to fix these advisories",
                     "backup": "Always create a full backup (database and files) before updating dependencies, so you can roll back if an update breaks your shop.",
-                    "step1": "On your local or CI environment, update the affected packages with Composer:",
+                    "step1": "On your local or CI environment, update the affected packages with Composer. The command below names exactly the packages with advisories; \"--with-dependencies\" lets Composer also update their required sub-dependencies when a patched version needs it, while leaving the rest of your project untouched:",
                     "step2": "Review the changes (especially major version bumps) and run your test suite to catch regressions.",
                     "step3": "Confirm no advisories remain:",
                     "step4": "Commit the updated composer.lock and deploy. The check above re-runs automatically (cached up to 1 hour — use Refresh to force it).",

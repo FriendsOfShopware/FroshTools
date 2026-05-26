@@ -16,6 +16,32 @@
         />
     </ft-panel>
     <ft-panel
+        v-if="dependencyIssueCount > 0"
+        :title="categoryLabel('dependencies')"
+        :count="dependencyIssueCount"
+    >
+        <div class="frosh-security-overview__dep-summary">
+            <div class="frosh-security-overview__dep-counts">
+                <ft-pill
+                    v-for="part in dependencySummary"
+                    :key="part.severity"
+                    :variant="severityVariant(part.severity)"
+                >
+                    {{ part.count }}
+                    {{ severityLabel(part.severity) }}
+                </ft-pill>
+            </div>
+            <button
+                type="button"
+                class="ft-btn frosh-security-overview__dep-link"
+                @click="goToDependencies"
+            >
+                {{ $t('frosh-tools.tabs.security.viewDependencies') }}
+                <ft-icon name="arrow-right"/>
+            </button>
+        </div>
+    </ft-panel>
+    <ft-panel
         v-for="group in groupedFindings"
         :key="group.category"
         :title="categoryLabel(group.category)"
