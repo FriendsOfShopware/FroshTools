@@ -29,9 +29,9 @@
         color: var(--ft-text-muted);
     }
 
-    &__message {
+    &__message.ft-diff {
         white-space: pre-wrap;
         overflow-wrap: anywhere;
-        max-height: 50vh;
+        max-height: none;
     }
 }
