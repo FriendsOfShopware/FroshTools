@@ -71,7 +71,7 @@ class DependencyAuditChecker implements SecurityCheckerInterface
             }
 
             $collection->add(new SecurityFinding(
-                'composer-audit-' . md5($packageName . '|' . (string) ($advisory['advisoryId'] ?? $title)),
+                'composer-audit-' . md5($packageName . '|' . $installedVersion . '|' . (string) ($advisory['advisoryId'] ?? $title)),
                 SecurityFinding::CATEGORY_DEPENDENCIES,
                 $this->mapSeverity((string) ($advisory['severity'] ?? '')),
                 $title !== '' ? $title : 'Security advisory',
