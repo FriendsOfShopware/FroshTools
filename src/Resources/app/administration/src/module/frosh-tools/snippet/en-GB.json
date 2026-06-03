@@ -138,6 +138,7 @@
                 "affected": "Affected versions",
                 "reportedAt": "Reported",
                 "severityUnknown": "Unknown",
+                "sourceProject": "Project",
                 "howto": {
                     "title": "How to fix these advisories",
                     "backup": "Always create a full backup (database and files) before updating dependencies, so you can roll back if an update breaks your shop.",

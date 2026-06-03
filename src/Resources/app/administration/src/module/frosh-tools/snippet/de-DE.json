@@ -138,6 +138,7 @@
                 "affected": "Betroffene Versionen",
                 "reportedAt": "Gemeldet am",
                 "severityUnknown": "Unbekannt",
+                "sourceProject": "Projekt",
                 "howto": {
                     "title": "So beheben Sie diese Advisories",
                     "backup": "Erstellen Sie immer ein vollständiges Backup (Datenbank und Dateien), bevor Sie Abhängigkeiten aktualisieren, damit Sie zurückrollen können, falls ein Update Ihren Shop beschädigt.",

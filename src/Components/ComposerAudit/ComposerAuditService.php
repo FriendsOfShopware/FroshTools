@@ -102,22 +102,23 @@ class ComposerAuditService
                         continue;
                     }
 
-                    $installed = $packages[$packageName] ?? null;
-                    $prettyVersion = $installed['pretty'] ?? null;
-                    $normalizedVersion = $installed['normalized'] ?? null;
+                    // The same package may be installed at several versions across vendor dirs;
+                    // audit each version on its own so we only flag the ones actually affected.
+                    foreach ($packages[$packageName] ?? [] as $installed) {
+                        foreach ($packageAdvisories as $advisory) {
+                            $advisory = \is_array($advisory) ? $advisory : [];
 
-                    foreach ($packageAdvisories as $advisory) {
-                        $advisory = \is_array($advisory) ? $advisory : [];
+                            if (!$this->affectsInstalledVersion($installed['normalized'], $advisory)) {
+                                continue;
+                            }
 
-                        if (!$this->affectsInstalledVersion($normalizedVersion, $advisory)) {
-                            continue;
+                            $advisories[] = $this->normalizeAdvisory(
+                                (string) $packageName,
+                                $installed['pretty'],
+                                $installed['sources'],
+                                $advisory,
+                            );
                         }
-
-                        $advisories[] = $this->normalizeAdvisory(
-                            (string) $packageName,
-                            $prettyVersion,
-                            $advisory,
-                        );
                     }
                 }
             }
@@ -158,33 +159,55 @@ class ComposerAuditService
     }
 
     /**
-     * @return array<string, array{pretty: string, normalized: string|null}>
+     * Collects every installed package across all Composer datasets.
+     *
+     * Plugins can ship their own autoloader and register an additional dataset with
+     * InstalledVersions. The aggregate methods (getInstalledPackages/getRootPackage/...)
+     * merge across all of them, which mixes the plugin's dependency tree into the root and
+     * collapses the same package to a single version. getAllRawData() lets us read each
+     * dataset on its own, so we can keep distinct versions apart and remember which roots
+     * shipped each one — a plugin bundling an outdated, vulnerable copy stays visible even
+     * when the project root is already patched.
+     *
+     * The result is keyed by package name, then by pretty version, so each distinct
+     * (package, version) pair is audited on its own with the list of sources that ship it.
+     *
+     * @return array<string, array<string, array{pretty: string, normalized: string|null, sources: list<string>}>>
      */
     private function collectInstalledPackages(): array
     {
         $packages = [];
-        $rootPackageName = InstalledVersions::getRootPackage()['name'];
 
-        foreach (InstalledVersions::getInstalledPackages() as $package) {
-            if ($package === '' || $package === $rootPackageName) {
-                continue;
+        foreach (InstalledVersions::getAllRawData() as $index => $dataset) {
+            $rootPackageName = $dataset['root']['name'];
+
+            // The first dataset is the project itself; every other dataset is registered by a
+            // plugin shipping its own vendor dir. Label the project explicitly, plugins by name.
+            $source = $index === 0 ? 'project' : $rootPackageName;
+
+            foreach ($dataset['versions'] as $package => $info) {
+                if ($package === '' || $package === 'shopware/production') {
+                    continue;
+                }
+
+                // Replaced/provided packages have no version of their own.
+                $prettyVersion = $info['pretty_version'] ?? null;
+                if ($prettyVersion === null || $prettyVersion === '') {
+                    continue;
+                }
+
+                if (!isset($packages[$package][$prettyVersion])) {
+                    $packages[$package][$prettyVersion] = [
+                        'pretty' => $prettyVersion,
+                        'normalized' => $info['version'] ?? null,
+                        'sources' => [],
+                    ];
+                }
+
+                if (!\in_array($source, $packages[$package][$prettyVersion]['sources'], true)) {
+                    $packages[$package][$prettyVersion]['sources'][] = $source;
+                }
             }
-
-            try {
-                $prettyVersion = InstalledVersions::getPrettyVersion($package);
-                $normalizedVersion = InstalledVersions::getVersion($package);
-            } catch (\OutOfBoundsException) {
-                continue;
-            }
-
-            if ($prettyVersion === null || $prettyVersion === '') {
-                continue;
-            }
-
-            $packages[$package] = [
-                'pretty' => $prettyVersion,
-                'normalized' => $normalizedVersion,
-            ];
         }
 
         return $packages;
@@ -267,15 +290,17 @@ class ComposerAuditService
     }
 
     /**
+     * @param list<string> $sources
      * @param array<string, mixed> $advisory
      *
      * @return array<string, mixed>
      */
-    private function normalizeAdvisory(string $packageName, ?string $installedVersion, array $advisory): array
+    private function normalizeAdvisory(string $packageName, ?string $installedVersion, array $sources, array $advisory): array
     {
         return [
             'packageName' => $packageName,
             'installedVersion' => $installedVersion,
+            'installedSources' => $sources,
             'advisoryId' => isset($advisory['advisoryId']) ? (string) $advisory['advisoryId'] : null,
             'cve' => isset($advisory['cve']) ? (string) $advisory['cve'] : null,
             'title' => isset($advisory['title']) ? (string) $advisory['title'] : '',

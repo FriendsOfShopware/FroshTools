@@ -40,14 +40,18 @@ Component.register('frosh-tools-security-dependencies', {
         groupedAdvisories() {
             const groups = {};
             for (const advisory of this.result.advisories || []) {
-                if (!groups[advisory.packageName]) {
-                    groups[advisory.packageName] = {
+                // The same package can be installed at different versions across vendor
+                // dirs (project root vs. a plugin's bundled copy), so group by both.
+                const key = `${advisory.packageName}@${advisory.installedVersion || ''}`;
+                if (!groups[key]) {
+                    groups[key] = {
                         packageName: advisory.packageName,
                         installedVersion: advisory.installedVersion,
+                        sources: advisory.installedSources || [],
                         advisories: [],
                     };
                 }
-                groups[advisory.packageName].advisories.push(advisory);
+                groups[key].advisories.push(advisory);
             }
             return Object.values(groups);
         },
@@ -134,6 +138,13 @@ Component.register('frosh-tools-security-dependencies', {
                 );
             }
             return severity.charAt(0).toUpperCase() + severity.slice(1);
+        },
+
+        sourceLabel(source) {
+            if (source === 'project') {
+                return this.$t('frosh-tools.tabs.composerAudit.sourceProject');
+            }
+            return source;
         },
 
         openUrl(url) {

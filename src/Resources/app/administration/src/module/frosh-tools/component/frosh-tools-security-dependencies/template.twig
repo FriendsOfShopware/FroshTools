@@ -64,8 +64,8 @@
         <p class="frosh-security-dependencies__howto-warning">
                             <ft-icon name="alert"/>
                             <span>
-            {{ $t('frosh-tools.tabs.composerAudit.howto.backup') }}
-        </span>
+    {{ $t('frosh-tools.tabs.composerAudit.howto.backup') }}
+</span>
         </p>
         <ol class="frosh-security-dependencies__howto">
             <li class="frosh-security-dependencies__howto-step">
@@ -118,8 +118,8 @@
         <p class="frosh-security-dependencies__howto-note">
                             <ft-icon name="info"/>
                             <span>
-            {{ $t('frosh-tools.tabs.composerAudit.howto.note') }}
-        </span>
+    {{ $t('frosh-tools.tabs.composerAudit.howto.note') }}
+</span>
         </p>
     </ft-panel>
     <ft-panel
@@ -182,6 +182,17 @@
                             v-if="group.installedVersion"
                             class="frosh-security-dependencies__group-version ft-mono"
                         >{{ group.installedVersion }}</span>
+                        <span
+                            v-if="group.sources && group.sources.length"
+                            class="frosh-security-dependencies__group-sources"
+                        >
+                            <ft-pill
+                                v-for="src in group.sources"
+                                :key="src"
+                                :variant="src === 'project' ? 'muted' : 'warning'"
+                                bare
+                            >{{ sourceLabel(src) }}</ft-pill>
+                        </span>
                     </div>
                     <span class="ft-panel__count">{{ group.advisories.length }}</span>
                 </div>

@@ -122,6 +122,13 @@
     border-radius: var(--ft-radius-sm);
 }
 
+.frosh-security-dependencies__group-sources {
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    flex-wrap: wrap;
+}
+
 .frosh-security-dependencies__advisories {
     list-style: none;
     padding: 0;
