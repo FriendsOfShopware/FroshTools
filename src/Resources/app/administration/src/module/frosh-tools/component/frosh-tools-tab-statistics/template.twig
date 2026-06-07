@@ -83,6 +83,12 @@
                 <div class="frosh-stat__value">
                     {{ formatSize(cacheStats.opcache.internedStringsUsedMemory) }} / {{ formatSize(cacheStats.opcache.internedStringsFreeMemory) }}
                 </div>
+                <div class="frosh-meter">
+                    <div
+                        :class="['frosh-meter__fill', 'frosh-meter__fill--' + fillVariant(ratioPercent(cacheStats.opcache.internedStringsUsedMemory, cacheStats.opcache.internedStringsUsedMemory + cacheStats.opcache.internedStringsFreeMemory))]"
+                        :style="{ width: ratioPercent(cacheStats.opcache.internedStringsUsedMemory, cacheStats.opcache.internedStringsUsedMemory + cacheStats.opcache.internedStringsFreeMemory) + '%' }"
+                    ></div>
+                </div>
             </div>
             <div class="frosh-stat">
                 <div class="frosh-stat__label">
