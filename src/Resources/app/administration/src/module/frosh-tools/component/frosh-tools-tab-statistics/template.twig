@@ -262,6 +262,86 @@
         </div>
     </ft-panel>
 
+    <!-- PHP-FPM -->
+    <ft-panel
+        v-if="cacheStats && cacheStats.fpm"
+    >
+        <template #title>
+            <ft-icon name="cog"/>
+            <span>{{ $t('frosh-tools.tabs.statistics.fpm') }}</span>
+            <ft-pill
+                v-if="cacheStats.fpm.pool"
+                variant="muted"
+                bare
+            >{{ cacheStats.fpm.pool }}</ft-pill>
+            <ft-pill
+                v-if="cacheStats.fpm.processManager"
+                variant="muted"
+                bare
+            >{{ cacheStats.fpm.processManager }}</ft-pill>
+        </template>
+        <div class="frosh-tab-statistics__metrics">
+            <div class="frosh-stat frosh-stat--feature">
+                <div class="frosh-stat__label">
+                    {{ $t('frosh-tools.tabs.statistics.activeWorkers') }} / {{ $t('frosh-tools.tabs.statistics.workers') }}
+                </div>
+                <div :class="['frosh-stat__value', 'frosh-stat__value--' + fillVariant(ratioPercent(cacheStats.fpm.activeProcesses, cacheStats.fpm.totalProcesses))]">
+                    {{ formatNumber(cacheStats.fpm.activeProcesses) }} / {{ formatNumber(cacheStats.fpm.totalProcesses) }}
+                </div>
+                <div class="frosh-meter">
+                    <div
+                        :class="['frosh-meter__fill', 'frosh-meter__fill--' + fillVariant(ratioPercent(cacheStats.fpm.activeProcesses, cacheStats.fpm.totalProcesses))]"
+                        :style="{ width: ratioPercent(cacheStats.fpm.activeProcesses, cacheStats.fpm.totalProcesses) + '%' }"
+                    ></div>
+                </div>
+                <div class="frosh-stat__caption">
+                    {{ formatNumber(cacheStats.fpm.idleProcesses) }} {{ $t('frosh-tools.tabs.statistics.idleWorkers') }}
+                    · {{ $t('frosh-tools.tabs.statistics.maxActiveProcesses') }} {{ formatNumber(cacheStats.fpm.maxActiveProcesses) }}
+                </div>
+            </div>
+            <div class="frosh-stat">
+                <div class="frosh-stat__label">
+                    {{ $t('frosh-tools.tabs.statistics.listenQueue') }} / {{ $t('frosh-tools.tabs.statistics.maxListenQueue') }}
+                </div>
+                <div :class="['frosh-stat__value', { 'frosh-stat__value--warning': cacheStats.fpm.listenQueue > 0 }]">
+                    {{ formatNumber(cacheStats.fpm.listenQueue) }} / {{ formatNumber(cacheStats.fpm.maxListenQueue) }}
+                </div>
+            </div>
+            <div class="frosh-stat">
+                <div class="frosh-stat__label">
+                    {{ $t('frosh-tools.tabs.statistics.maxChildrenReached') }}
+                </div>
+                <div :class="['frosh-stat__value', { 'frosh-stat__value--danger': cacheStats.fpm.maxChildrenReached > 0 }]">
+                    {{ formatNumber(cacheStats.fpm.maxChildrenReached) }}
+                </div>
+            </div>
+            <div class="frosh-stat">
+                <div class="frosh-stat__label">
+                    {{ $t('frosh-tools.tabs.statistics.slowRequests') }}
+                </div>
+                <div :class="['frosh-stat__value', { 'frosh-stat__value--warning': cacheStats.fpm.slowRequests > 0 }]">
+                    {{ formatNumber(cacheStats.fpm.slowRequests) }}
+                </div>
+            </div>
+            <div class="frosh-stat">
+                <div class="frosh-stat__label">
+                    {{ $t('frosh-tools.tabs.statistics.acceptedConnections') }}
+                </div>
+                <div class="frosh-stat__value">
+                    {{ formatNumber(cacheStats.fpm.acceptedConnections) }}
+                </div>
+            </div>
+            <div class="frosh-stat">
+                <div class="frosh-stat__label">
+                    {{ $t('frosh-tools.tabs.statistics.uptime') }}
+                </div>
+                <div class="frosh-stat__value">
+                    {{ formatUptime(cacheStats.fpm.uptime) }}
+                </div>
+            </div>
+        </div>
+    </ft-panel>
+
     <!-- Database Server Info -->
     <ft-panel
         v-if="dbStats"

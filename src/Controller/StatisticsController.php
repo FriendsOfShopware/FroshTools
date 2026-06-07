@@ -26,6 +26,7 @@ class StatisticsController extends AbstractController
             'opcache' => $this->cacheStatisticsService->getOpcacheStatistics(),
             'apcu' => $this->cacheStatisticsService->getApcuStatistics(),
             'redis' => $this->cacheStatisticsService->getRedisStatistics(),
+            'fpm' => $this->cacheStatisticsService->getFpmStatistics(),
         ]);
     }
 

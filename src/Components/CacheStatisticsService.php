@@ -138,6 +138,40 @@ class CacheStatisticsService
     }
 
     /**
+     * PHP-FPM pool status. fpm_get_status() is only defined when the current request is served
+     * by the FPM SAPI, so this returns null under CLI, cli-server or other SAPIs.
+     *
+     * @return array{pool: string, processManager: string, uptime: int, acceptedConnections: int, listenQueue: int, maxListenQueue: int, idleProcesses: int, activeProcesses: int, totalProcesses: int, maxActiveProcesses: int, maxChildrenReached: int, slowRequests: int}|null
+     */
+    public function getFpmStatistics(): ?array
+    {
+        if (!\function_exists('fpm_get_status')) {
+            return null;
+        }
+
+        $status = fpm_get_status();
+
+        if (!\is_array($status)) {
+            return null;
+        }
+
+        return [
+            'pool' => (string) ($status['pool'] ?? ''),
+            'processManager' => (string) ($status['process-manager'] ?? ''),
+            'uptime' => (int) ($status['start-since'] ?? 0),
+            'acceptedConnections' => (int) ($status['accepted-conn'] ?? 0),
+            'listenQueue' => (int) ($status['listen-queue'] ?? 0),
+            'maxListenQueue' => (int) ($status['max-listen-queue'] ?? 0),
+            'idleProcesses' => (int) ($status['idle-processes'] ?? 0),
+            'activeProcesses' => (int) ($status['active-processes'] ?? 0),
+            'totalProcesses' => (int) ($status['total-processes'] ?? 0),
+            'maxActiveProcesses' => (int) ($status['max-active-processes'] ?? 0),
+            'maxChildrenReached' => (int) ($status['max-children-reached'] ?? 0),
+            'slowRequests' => (int) ($status['slow-requests'] ?? 0),
+        ];
+    }
+
+    /**
      * @return list<array{name: string, version: string, uptime: int, hits: int, misses: int, hitRate: float, usedMemory: int, peakMemory: int, maxMemory: int, evictedKeys: int, expiredKeys: int, totalKeys: int, connectedClients: int, opsPerSec: int}>
      */
     public function getRedisStatistics(): array
