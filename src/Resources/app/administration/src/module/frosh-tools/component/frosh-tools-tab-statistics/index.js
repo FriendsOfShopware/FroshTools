@@ -18,10 +18,11 @@ Component.register('frosh-tools-tab-statistics', {
     },
 
     created() {
-        const language =
+        this.language =
             Shopware.Application.getContainer(
                 'factory'
             ).locale.getLastKnownLocale();
+        const language = this.language;
         this.numberFormatter = new Intl.NumberFormat(language, {
             minimumFractionDigits: 0,
             maximumFractionDigits: 0,
@@ -94,6 +95,19 @@ Component.register('frosh-tools-tab-statistics', {
 
         formatDecimal(value) {
             return this.percentFormatter.format(value);
+        },
+
+        formatDateTime(value) {
+            if (!value) {
+                return '';
+            }
+
+            const date = new Date(value);
+            if (Number.isNaN(date.getTime())) {
+                return value;
+            }
+
+            return date.toLocaleString(this.language);
         },
 
         formatUptime(seconds) {

@@ -159,6 +159,8 @@
             },
             "statistics": {
                 "title": "Statistiken",
+                "subtitle": "Performance-Metriken für Cache-Backends und die Datenbank.",
+                "refresh": "Aktualisieren",
                 "hitRate": "Trefferquote",
                 "hits": "Treffer",
                 "misses": "Fehlschläge",

@@ -1,12 +1,12 @@
 <div class="ft frosh-tab-statistics">
     <ft-page-head
         :title="$t('frosh-tools.tabs.statistics.title')"
-        subtitle="Performance metrics for cache backends and the database."
+        :subtitle="$t('frosh-tools.tabs.statistics.subtitle')"
     >
         <template #actions>
             <ft-refresh-button
                 :loading="isLoading"
-                label="Refresh"
+                :label="$t('frosh-tools.tabs.statistics.refresh')"
                 @click="loadData"
             />
         </template>
@@ -74,7 +74,7 @@
                     {{ $t('frosh-tools.tabs.statistics.lastRestart') }}
                 </div>
                 <div class="frosh-stat__value">
-                    {{ cacheStats.opcache.lastRestart || $t('frosh-tools.tabs.statistics.never') }}
+                    {{ formatDateTime(cacheStats.opcache.lastRestart) || $t('frosh-tools.tabs.statistics.never') }}
                 </div>
             </div>
         </div>

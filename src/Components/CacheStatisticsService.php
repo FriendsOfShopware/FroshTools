@@ -72,7 +72,8 @@ class CacheStatisticsService
         }
 
         $cacheInfo = apcu_cache_info(true);
-        $smaInfo = apcu_sma_info();
+        // Pass limited=false so block_lists is populated; needed for the fragmentation metric.
+        $smaInfo = apcu_sma_info(false);
 
         if ($cacheInfo === false || $smaInfo === false) {
             return null;
@@ -86,10 +87,7 @@ class CacheStatisticsService
         $totalSegSize = (int) ($smaInfo['num_seg'] ?? 1) * (int) ($smaInfo['seg_size'] ?? 0);
         $usedMemory = $totalSegSize - $availableMemory;
 
-        $fragmentation = 0.0;
-        if ($totalSegSize > 0) {
-            $fragmentation = round((1 - $availableMemory / $totalSegSize) * 100, 2);
-        }
+        $fragmentation = $this->calculateApcuFragmentation($smaInfo);
 
         return [
             'enabled' => true,
@@ -101,6 +99,42 @@ class CacheStatisticsService
             'entries' => (int) ($cacheInfo['num_entries'] ?? 0),
             'fragmentation' => $fragmentation,
         ];
+    }
+
+    /**
+     * True heap fragmentation: how scattered the free memory is across non-contiguous blocks.
+     * 0% when all free memory is a single contiguous block, approaching 100% when it is split
+     * into many small blocks. This is independent of how full the cache is.
+     *
+     * @param array<string, mixed> $smaInfo result of apcu_sma_info(false)
+     */
+    private function calculateApcuFragmentation(array $smaInfo): float
+    {
+        $blockLists = $smaInfo['block_lists'] ?? null;
+        if (!\is_array($blockLists)) {
+            return 0.0;
+        }
+
+        $freeTotal = 0;
+        $largestBlock = 0;
+        foreach ($blockLists as $blocks) {
+            if (!\is_array($blocks)) {
+                continue;
+            }
+            foreach ($blocks as $block) {
+                $size = (int) ($block['size'] ?? 0);
+                $freeTotal += $size;
+                if ($size > $largestBlock) {
+                    $largestBlock = $size;
+                }
+            }
+        }
+
+        if ($freeTotal <= 0) {
+            return 0.0;
+        }
+
+        return round(($freeTotal - $largestBlock) / $freeTotal * 100, 2);
     }
 
     /**

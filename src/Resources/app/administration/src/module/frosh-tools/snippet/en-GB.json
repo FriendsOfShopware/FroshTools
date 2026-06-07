@@ -159,6 +159,8 @@
             },
             "statistics": {
                 "title": "Statistics",
+                "subtitle": "Performance metrics for cache backends and the database.",
+                "refresh": "Refresh",
                 "hitRate": "Hit Rate",
                 "hits": "Hits",
                 "misses": "Misses",
