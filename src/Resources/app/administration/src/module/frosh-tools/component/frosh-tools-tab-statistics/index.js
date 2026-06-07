@@ -14,8 +14,6 @@ Component.register('frosh-tools-tab-statistics', {
             dbStats: null,
             isLoadingCache: true,
             isLoadingDb: true,
-            numberFormatter: null,
-            percentFormatter: null,
         };
     },
 
@@ -52,8 +50,9 @@ Component.register('frosh-tools-tab-statistics', {
             this.isLoadingCache = true;
             try {
                 this.cacheStats = await this.froshToolsService.getCacheStatistics();
-            } catch {
+            } catch (e) {
                 this.cacheStats = null;
+                console.error('[frosh-tools] failed to load cache statistics', e);
             }
             this.isLoadingCache = false;
         },
@@ -62,8 +61,9 @@ Component.register('frosh-tools-tab-statistics', {
             this.isLoadingDb = true;
             try {
                 this.dbStats = await this.froshToolsService.getDatabaseStatistics();
-            } catch {
+            } catch (e) {
                 this.dbStats = null;
+                console.error('[frosh-tools] failed to load database statistics', e);
             }
             this.isLoadingDb = false;
         },

@@ -46,10 +46,10 @@ class DatabaseStatisticsService
     public function getTableStatistics(): array
     {
         $rows = $this->connection->fetchAllAssociative(
-            'SELECT TABLE_NAME, ENGINE, TABLE_ROWS, DATA_LENGTH, INDEX_LENGTH
+            "SELECT TABLE_NAME, ENGINE, TABLE_ROWS, DATA_LENGTH, INDEX_LENGTH
              FROM information_schema.TABLES
-             WHERE TABLE_SCHEMA = DATABASE()
-             ORDER BY (DATA_LENGTH + INDEX_LENGTH) DESC'
+             WHERE TABLE_SCHEMA = DATABASE() AND TABLE_TYPE = 'BASE TABLE'
+             ORDER BY (DATA_LENGTH + INDEX_LENGTH) DESC"
         );
 
         $result = [];

@@ -88,7 +88,7 @@ class CacheStatisticsService
 
         $fragmentation = 0.0;
         if ($totalSegSize > 0) {
-            $fragmentation = round(($smaInfo['num_seg'] > 0 ? (1 - $availableMemory / $totalSegSize) : 0) * 100, 2);
+            $fragmentation = round((1 - $availableMemory / $totalSegSize) * 100, 2);
         }
 
         return [
@@ -114,19 +114,18 @@ class CacheStatisticsService
         foreach ($this->cacheRegistry->all() as $name => $adapter) {
             try {
                 $redis = $adapter->getRedisOrFail();
-            } catch (\RuntimeException) {
-                continue;
-            }
 
-            $connectionId = $redis->getHost() . ':' . $redis->getPort();
-            if (\in_array($connectionId, $seenConnections, true)) {
-                continue;
-            }
-            $seenConnections[] = $connectionId;
+                // getHost()/getPort() can trigger a lazy connect on Symfony's RedisProxy,
+                // and info() can fail on an unreachable connection. Both must be guarded so a
+                // single bad adapter degrades gracefully instead of 500ing the whole endpoint.
+                $connectionId = $redis->getHost() . ':' . $redis->getPort();
+                if (\in_array($connectionId, $seenConnections, true)) {
+                    continue;
+                }
+                $seenConnections[] = $connectionId;
 
-            try {
                 $info = $redis->info();
-            } catch (\RedisException) {
+            } catch (\Throwable) {
                 continue;
             }
 

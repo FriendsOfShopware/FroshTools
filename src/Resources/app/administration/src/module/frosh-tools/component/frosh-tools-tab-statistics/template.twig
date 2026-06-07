@@ -336,9 +336,11 @@
                         <td class="ft-table__name ft-mono">{{ table.name }}</td>
                         <td>
                             <ft-pill
+                                v-if="table.engine"
                                 variant="muted"
                                 bare
                             >{{ table.engine }}</ft-pill>
+                            <template v-else>—</template>
                         </td>
                         <td class="ft-table__num">{{ formatNumber(table.rows) }}</td>
                         <td class="ft-table__num">{{ formatSize(table.dataSize) }}</td>
@@ -354,4 +356,12 @@
         v-if="isLoading && !cacheStats && !dbStats"
         loading
     />
+    <ft-panel v-else-if="!isLoading && !cacheStats && !dbStats">
+        <ft-hero-state
+            variant="danger"
+            icon="alert"
+            :title="$t('frosh-tools.tabs.statistics.notAvailable')"
+            :body="$t('frosh-tools.tabs.statistics.loadError')"
+        />
+    </ft-panel>
 </div>

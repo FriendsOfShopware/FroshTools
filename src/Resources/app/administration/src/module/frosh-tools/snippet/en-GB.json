@@ -172,6 +172,7 @@
                 "lastRestart": "Last Restart",
                 "never": "Never",
                 "notAvailable": "Not available",
+                "loadError": "Could not load statistics. Check that the API is reachable and you have the required permissions.",
                 "peakMemory": "Peak Memory",
                 "evictedKeys": "Evicted",
                 "expiredKeys": "Expired",

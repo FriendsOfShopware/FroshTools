@@ -172,6 +172,7 @@
                 "lastRestart": "Letzter Neustart",
                 "never": "Nie",
                 "notAvailable": "Nicht verfügbar",
+                "loadError": "Statistiken konnten nicht geladen werden. Prüfen Sie, ob die API erreichbar ist und Sie die nötigen Berechtigungen haben.",
                 "peakMemory": "Spitzenspeicher",
                 "evictedKeys": "Verdrängt",
                 "expiredKeys": "Abgelaufen",
