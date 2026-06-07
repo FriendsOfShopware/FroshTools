@@ -45,10 +45,10 @@
             </div>
             <div class="frosh-stat">
                 <div class="frosh-stat__label">
-                    {{ $t('frosh-tools.tabs.statistics.usedMemory') }} / {{ $t('frosh-tools.tabs.statistics.freeMemory') }}
+                    {{ $t('frosh-tools.tabs.statistics.usedMemory') }} / {{ $t('frosh-tools.tabs.statistics.totalMemory') }}
                 </div>
                 <div class="frosh-stat__value">
-                    {{ formatSize(cacheStats.opcache.usedMemory) }} / {{ formatSize(cacheStats.opcache.freeMemory) }}
+                    {{ formatSize(cacheStats.opcache.usedMemory) }} / {{ formatSize(cacheStats.opcache.usedMemory + cacheStats.opcache.freeMemory) }}
                 </div>
                 <div class="frosh-meter">
                     <div
@@ -79,10 +79,10 @@
             <div class="frosh-stat">
                 <div class="frosh-stat__label">
                     {{ $t('frosh-tools.tabs.statistics.internedStrings') }}
-                    ({{ $t('frosh-tools.tabs.statistics.usedMemory') }} / {{ $t('frosh-tools.tabs.statistics.freeMemory') }})
+                    ({{ $t('frosh-tools.tabs.statistics.usedMemory') }} / {{ $t('frosh-tools.tabs.statistics.totalMemory') }})
                 </div>
                 <div class="frosh-stat__value">
-                    {{ formatSize(cacheStats.opcache.internedStringsUsedMemory) }} / {{ formatSize(cacheStats.opcache.internedStringsFreeMemory) }}
+                    {{ formatSize(cacheStats.opcache.internedStringsUsedMemory) }} / {{ formatSize(cacheStats.opcache.internedStringsUsedMemory + cacheStats.opcache.internedStringsFreeMemory) }}
                 </div>
                 <div class="frosh-meter">
                     <div
@@ -239,10 +239,10 @@
             </div>
             <div class="frosh-stat">
                 <div class="frosh-stat__label">
-                    {{ $t('frosh-tools.tabs.statistics.usedMemory') }} / {{ $t('frosh-tools.tabs.statistics.availableMemory') }}
+                    {{ $t('frosh-tools.tabs.statistics.usedMemory') }} / {{ $t('frosh-tools.tabs.statistics.totalMemory') }}
                 </div>
                 <div class="frosh-stat__value">
-                    {{ formatSize(cacheStats.apcu.usedMemory) }} / {{ formatSize(cacheStats.apcu.availableMemory) }}
+                    {{ formatSize(cacheStats.apcu.usedMemory) }} / {{ formatSize(cacheStats.apcu.usedMemory + cacheStats.apcu.availableMemory) }}
                 </div>
                 <div class="frosh-meter">
                     <div
