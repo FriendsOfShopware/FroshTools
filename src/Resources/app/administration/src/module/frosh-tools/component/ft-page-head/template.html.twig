@@ -1,0 +1,17 @@
+<div class="ft-page-head">
+    <div>
+        <h1 class="ft-page-head__title">{{ title }}</h1>
+        <div
+            class="ft-page-head__sub"
+            v-if="subtitle || $slots.subtitle"
+        >
+            <slot name="subtitle">{{ subtitle }}</slot>
+        </div>
+    </div>
+    <div
+        class="ft-page-head__actions"
+        v-if="$slots.actions"
+    >
+        <slot name="actions"/>
+    </div>
+</div>

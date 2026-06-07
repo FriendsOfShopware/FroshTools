@@ -1,3 +1,11 @@
+import './component/ft-icon';
+import './component/ft-modal';
+import './component/ft-page-head';
+import './component/ft-panel';
+import './component/ft-pill';
+import './component/ft-empty';
+import './component/ft-hero-state';
+import './component/ft-refresh-button';
 import './component/frosh-tools-tab-index';
 import './component/frosh-tools-tab-cache';
 import './component/frosh-tools-tab-queue';
@@ -6,7 +14,11 @@ import './component/frosh-tools-tab-elasticsearch';
 import './component/frosh-tools-tab-feature-flags';
 import './component/frosh-tools-tab-logs';
 import './component/frosh-tools-tab-state-machines';
-import './component/frosh-tools-tab-files';
+import './component/ft-severity-bar';
+import './component/frosh-tools-security-overview';
+import './component/frosh-tools-security-dependencies';
+import './component/frosh-tools-security-files';
+import './component/frosh-tools-tab-security';
 import './component/frosh-tools-tab-fastly';
 import './component/frosh-tools-tab-statistics';
 import './page/index';
@@ -90,9 +102,9 @@ Shopware.Module.register('frosh-tools', {
                         parentPath: 'sw.settings.index.plugins',
                     },
                 },
-                files: {
-                    component: 'frosh-tools-tab-files',
-                    path: 'files',
+                security: {
+                    component: 'frosh-tools-tab-security',
+                    path: 'security',
                     meta: {
                         privilege: 'frosh_tools:read',
                         parentPath: 'sw.settings.index.plugins',

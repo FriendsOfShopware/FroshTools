@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace Frosh\Tools\Components;
 
-use Frosh\Tools\Components\Exception\CannotClearCacheException;
+use Frosh\Tools\Components\Exception\FroshToolsException;
 use Symfony\Component\Process\Process;
 
 class CacheHelper
@@ -40,7 +40,7 @@ class CacheHelper
             $process->run();
 
             if (!$process->isSuccessful()) {
-                throw new CannotClearCacheException($process->getErrorOutput());
+                throw FroshToolsException::cannotClearCache($process->getErrorOutput());
             }
 
             /** @phpstan-ignore shopware.forbidLocalDiskWrite */
@@ -50,7 +50,7 @@ class CacheHelper
             $process->run();
 
             if (!$process->isSuccessful()) {
-                throw new CannotClearCacheException($process->getErrorOutput());
+                throw FroshToolsException::cannotClearCache($process->getErrorOutput());
             }
         }
     }

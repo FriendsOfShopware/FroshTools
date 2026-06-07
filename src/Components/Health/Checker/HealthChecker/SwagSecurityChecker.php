@@ -33,7 +33,6 @@ class SwagSecurityChecker implements HealthCheckerInterface, CheckerInterface
     {
         $this->refreshPlugins($this->connection);
 
-        $this->determineSecurityIssue($collection);
         $this->determineEolSupport($collection);
     }
 
@@ -53,101 +52,6 @@ class SwagSecurityChecker implements HealthCheckerInterface, CheckerInterface
         $application = new Application($this->kernel);
         $application->setAutoExit(false);
         $application->run($pluginRefresh, new NullOutput());
-    }
-
-    private function hasSecurityAdvisories(): bool
-    {
-        $cacheKey = \sprintf('security-advisories-%s', $this->shopwareVersion);
-
-        return $this->cacheObject->get($cacheKey, function (ItemInterface $cacheItem) {
-            try {
-                $securityJson = $this->httpClient->request('GET', 'https://raw.githubusercontent.com/FriendsOfShopware/shopware-static-data/main/data/security.json')->getContent();
-            } catch (\Throwable) {
-                throw new \RuntimeException('Could not fetch security.json');
-            }
-
-            $data = \json_decode(trim($securityJson), true, 512, \JSON_THROW_ON_ERROR);
-
-            if (!\is_array($data)) {
-                throw new \RuntimeException('Could not read security.json');
-            }
-
-            $cacheItem->expiresAfter(3600 * 24);
-
-            return isset($data['versionToAdvisories']['v' . $this->shopwareVersion]);
-        });
-    }
-
-    private function swagSecurityUpdateVersion(): ?string
-    {
-        try {
-            $cacheKey = \sprintf('recent-security-plugin-version-%s', $this->shopwareVersion);
-
-            $recentVersion = $this->cacheObject->get($cacheKey, function (ItemInterface $cacheItem) {
-                $result = $this->httpClient->request('GET', \sprintf('https://api.shopware.com/pluginStore/pluginsByName?shopwareVersion=%s&technicalNames[]=SwagPlatformSecurity', $this->shopwareVersion))->getContent();
-
-                $data = \json_decode(trim($result), true, 512, \JSON_THROW_ON_ERROR);
-
-                if (!\is_array($data)) {
-                    throw new \RuntimeException('result is not decodeable');
-                }
-
-                $recentVersion = $data[0]['version'] ?? null;
-
-                if ($recentVersion === null) {
-                    throw new \RuntimeException('could not determine recent version of SwagPlatformSecurity');
-                }
-
-                $cacheItem->expiresAfter(3600 * 24);
-
-                return $recentVersion;
-            });
-        } catch (\Throwable $e) {
-            throw new \RuntimeException(\sprintf('Could not fetch https://api.shopware.com/pluginStore/pluginsByName: %s', $e->getMessage()));
-        }
-
-        $installedVersion = $this->connection->executeQuery(
-            'SELECT version FROM plugin WHERE active = 1 AND installed_at IS NOT NULL AND name = :pluginName',
-            ['pluginName' => 'SwagPlatformSecurity', 'recentVersion' => $recentVersion],
-        )->fetchOne();
-
-        if (empty($installedVersion) || version_compare($installedVersion, $recentVersion, '<')) {
-            return $recentVersion;
-        }
-
-        return null;
-    }
-
-    private function determineSecurityIssue(HealthCollection $collection): void
-    {
-        try {
-            if (!$this->hasSecurityAdvisories()) {
-                return;
-            }
-        } catch (\Throwable) {
-            $collection->add(
-                SettingsResult::error(
-                    'security-update',
-                    'Cannot check security.json from shopware-static-data',
-                    'not accessible',
-                    'accessible',
-                    'https://raw.githubusercontent.com/FriendsOfShopware/shopware-static-data/main/data/security.json',
-                ),
-            );
-        }
-
-        $securityUpdateVersion = $this->swagSecurityUpdateVersion();
-        if ($securityUpdateVersion !== null) {
-            $collection->add(
-                SettingsResult::error(
-                    'security-update',
-                    'Security update',
-                    'Shopware outdated',
-                    \sprintf('Update Shopware to the latest version or install recent version of the plugin SwagPlatformSecurity %s', $securityUpdateVersion),
-                    'https://store.shopware.com/en/swag136939272659f/shopware-6-security-plugin.html',
-                ),
-            );
-        }
     }
 
     private function determineEolSupport(HealthCollection $collection): void

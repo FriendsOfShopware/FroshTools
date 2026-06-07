@@ -26,7 +26,7 @@ class AdminWorkerChecker implements PerformanceCheckerInterface, CheckerInterfac
                     'Admin-Worker',
                     'enabled',
                     'disabled',
-                    'https://developer.shopware.com/docs/guides/plugins/plugins/framework/message-queue/add-message-handler#the-admin-worker',
+                    'https://docs.shopware.com/en/shopware-6-en/tutorials-and-faq/message-queue-and-scheduled-tasks#disable-admin-worker-set-up-cli-worker',
                 ),
             );
         }

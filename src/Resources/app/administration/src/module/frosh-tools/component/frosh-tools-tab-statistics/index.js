@@ -40,51 +40,6 @@ Component.register('frosh-tools-tab-statistics', {
         isLoading() {
             return this.isLoadingCache || this.isLoadingDb;
         },
-
-        tableColumns() {
-            return [
-                {
-                    property: 'name',
-                    label: this.$t('frosh-tools.tabs.statistics.tableName'),
-                    rawData: true,
-                    allowResize: true,
-                },
-                {
-                    property: 'engine',
-                    label: this.$t('frosh-tools.tabs.statistics.engine'),
-                    rawData: true,
-                    allowResize: true,
-                },
-                {
-                    property: 'rows',
-                    label: this.$t('frosh-tools.tabs.statistics.rows'),
-                    rawData: true,
-                    align: 'right',
-                    allowResize: true,
-                },
-                {
-                    property: 'dataSize',
-                    label: this.$t('frosh-tools.tabs.statistics.dataSize'),
-                    rawData: true,
-                    align: 'right',
-                    allowResize: true,
-                },
-                {
-                    property: 'indexSize',
-                    label: this.$t('frosh-tools.tabs.statistics.indexSize'),
-                    rawData: true,
-                    align: 'right',
-                    allowResize: true,
-                },
-                {
-                    property: 'totalSize',
-                    label: this.$t('frosh-tools.tabs.statistics.totalSize'),
-                    rawData: true,
-                    align: 'right',
-                    allowResize: true,
-                },
-            ];
-        },
     },
 
     methods: {

@@ -1,103 +1,111 @@
-<sw-card-view>
-    <sw-card
-        class="frosh-tools-tab-cache__cache-card"
-        deprecated
+<div class="ft frosh-tab-cache">
+    <ft-page-head
         :title="$t('frosh-tools.tabs.cache.title')"
-        :isLoading="isLoading"
-        :large="true"
-        positionIdentifier="frosh-tools-tab-cache"
+        subtitle="Manage cache pools, theme compilation and PHP opcache."
     >
-        <template #toolbar>
-            <!-- @todo: Make the refresh button fancy -->
-            <sw-button
-                variant="ghost"
-                deprecated
+        <template #actions>
+            <ft-refresh-button
+                :loading="isLoading"
+                label="Refresh"
                 @click="createdComponent"
+            />
+            <button
+                class="ft-btn"
+                @click="compileTheme"
+                :disabled="isLoading"
             >
-                <sw-icon
-                    deprecated
-                    :small="true"
-                    name="regular-undo"
-                ></sw-icon>
-            </sw-button>
-        </template>
-
-        <template #grid>
-            <sw-data-grid
-                :showSelection="false"
-                :dataSource="cacheFolders"
-                :columns="columns"
+                <ft-icon name="paint"/>
+                <span>
+                    {{ $t('frosh-tools.compileTheme') }}
+                </span>
+            </button>
+            <button
+                class="ft-btn ft-btn--primary"
+                @click="clearOPcache"
+                :disabled="isLoading"
             >
-                <template #column-name="{ item }">
-                    <sw-label
-                        variant="success"
-                        appearance="pill"
-                        v-if="item.active"
-                    >
-                        {{ $t('frosh-tools.active') }}
-                    </sw-label>
-                    <sw-label
-                        variant="primary"
-                        appearance="pill"
-                        v-if="item.type"
-                    >
-                        {{ item.type }}
-                    </sw-label>
-                    {{ item.name }}
-                </template>
-
-                <template #column-size="{ item }">
-                    <template v-if="item.size < 0">
-                        {{ $t('frosh-tools.unknown') }}
-                    </template>
-
-                    <template v-else>
-                        {{ formatSize(item.size) }}
-                    </template>
-                </template>
-
-                <template #column-freeSpace="{ item }">
-                    <template v-if="item.freeSpace < 0">
-                        {{ $t('frosh-tools.unknown') }}
-                    </template>
-
-                    <template v-else>
-                        {{ formatSize(item.freeSpace) }}
-                    </template>
-                </template>
-
-                <template #actions="{ item }">
-                    <sw-context-menu-item
-                        variant="danger"
-                        @click="clearCache(item)"
-                    >
-                        {{ $t('frosh-tools.clear') }}
-                    </sw-context-menu-item>
-                </template>
-            </sw-data-grid>
+                <ft-icon name="bolt"/>
+                <span>
+                    {{ $t('frosh-tools.clearOpCache') }}
+                </span>
+            </button>
         </template>
-    </sw-card>
-    <sw-card
-        class="frosh-tools-tab-cache__action-card"
-        deprecated
-        :title="$t('frosh-tools.actions')"
-        :isLoading="isLoading"
-        :large="true"
-        positionIdentifier="frosh-tools-tab-cache-action"
+    </ft-page-head>
+    <ft-panel
+        title="Cache pools"
+        :count="cacheFolders.length"
+        flush
     >
-        <sw-button
-            variant="primary"
-            deprecated
-            @click="compileTheme"
+        <ft-empty
+            v-if="isLoading && !cacheFolders.length"
+            loading
+        />
+        <ft-empty
+            v-else-if="!cacheFolders.length"
+            title="No cache pools reported"
+        />
+        <div
+            v-else
+            class="ft-table-wrap"
         >
-            {{ $t('frosh-tools.compileTheme') }}
-        </sw-button>
-        <sw-button
-            variant="primary"
-            deprecated
-            @click="clearOPcache"
-        >
-            {{ $t('frosh-tools.clearOpCache') }}
-        </sw-button>
-    </sw-card>
-</sw-card-view>
+            <table class="ft-table">
+                <thead>
+                    <tr>
+                        <th>{{ $t('frosh-tools.name') }}</th>
+                        <th class="ft-table__num">{{ $t('frosh-tools.used') }}</th>
+                        <th class="ft-table__num">{{ $t('frosh-tools.free') }}</th>
+                        <th class="ft-table__actions">
+                            {{ $t('frosh-tools.actions') }}
+                        </th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr
+                        v-for="item in cacheFolders"
+                        :key="item.name"
+                    >
+                        <td class="ft-table__name">
+                            <div class="frosh-tab-cache__name-row">
+                                <ft-pill
+                                    v-if="item.active"
+                                    variant="success"
+                                >{{ $t('frosh-tools.active') }}</ft-pill>
+                                <ft-pill
+                                    v-if="item.type"
+                                    variant="muted"
+                                    bare
+                                >{{ item.type }}</ft-pill>
+                                <span>{{ item.name }}</span>
+                            </div>
+                        </td>
+                        <td class="ft-table__num">
+                            <template v-if="item.size < 0">
+                                {{ $t('frosh-tools.unknown') }}
+                            </template>
+
+                            <template v-else>{{ formatSize(item.size) }}</template>
+                        </td>
+                        <td class="ft-table__num">
+                            <template v-if="item.freeSpace < 0">
+                                {{ $t('frosh-tools.unknown') }}
+                            </template>
+
+                            <template v-else>
+                                {{ formatSize(item.freeSpace) }}
+                            </template>
+                        </td>
+                        <td class="ft-table__actions">
+                            <button
+                                class="ft-btn ft-btn--danger"
+                                @click="clearCache(item)"
+                            >
+                                <ft-icon name="trash"/>
+                                {{ $t('frosh-tools.clear') }}
+                            </button>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </ft-panel>
+</div>

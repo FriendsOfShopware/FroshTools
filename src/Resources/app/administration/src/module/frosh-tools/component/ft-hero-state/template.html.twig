@@ -1,0 +1,22 @@
+<div :class="rootClass">
+    <div class="ft-hero-state__icon">
+        <ft-icon
+            :name="icon"
+            :size="22"
+        />
+    </div>
+    <div>
+        <div
+            class="ft-hero-state__title"
+            v-if="title || $slots.title"
+        >
+            <slot name="title">{{ title }}</slot>
+        </div>
+        <div
+            class="ft-hero-state__body"
+            v-if="body || $slots.default"
+        >
+            <slot>{{ body }}</slot>
+        </div>
+    </div>
+</div>

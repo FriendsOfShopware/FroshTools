@@ -20,23 +20,6 @@ Component.register('frosh-tools-tab-queue', {
         this.createdComponent();
     },
 
-    computed: {
-        columns() {
-            return [
-                {
-                    property: 'name',
-                    label: 'frosh-tools.name',
-                    rawData: true,
-                },
-                {
-                    property: 'size',
-                    label: 'frosh-tools.size',
-                    rawData: true,
-                },
-            ];
-        },
-    },
-
     methods: {
         async refresh() {
             this.isLoading = true;

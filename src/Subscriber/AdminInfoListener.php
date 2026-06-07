@@ -11,6 +11,8 @@ class AdminInfoListener
     public function __construct(
         #[Autowire('%frosh_tools.elasticsearch.enabled%')]
         private bool $elasticsearchEnabled,
+        #[Autowire(param: 'kernel.logs_dir')]
+        private readonly string $logDir,
         #[Autowire(param: 'shopware.http_cache.reverse_proxy.fastly.service_id')]
         private readonly ?string $fastlyServiceId = null,
     ) {
@@ -29,6 +31,7 @@ class AdminInfoListener
 
         $data['settings']['froshTools'] = [
             'elasticsearchEnabled' => $this->elasticsearchEnabled,
+            'logsEnabled' => is_dir($this->logDir),
             'fastlyEnabled' => !empty($this->fastlyServiceId),
         ];
 

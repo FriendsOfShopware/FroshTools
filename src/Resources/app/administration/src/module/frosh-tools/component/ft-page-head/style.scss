@@ -1,0 +1,28 @@
+.ft-page-head {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 16px;
+    align-items: flex-end;
+    justify-content: space-between;
+    margin-bottom: 22px;
+
+    &__title {
+        font-size: 22px;
+        font-weight: 600;
+        margin: 0;
+        line-height: 1.2;
+        color: var(--ft-text);
+    }
+
+    &__sub {
+        color: var(--ft-text-muted);
+        font-size: 13.5px;
+        margin-top: 4px;
+    }
+
+    &__actions {
+        display: flex;
+        gap: 8px;
+        flex-wrap: wrap;
+    }
+}
