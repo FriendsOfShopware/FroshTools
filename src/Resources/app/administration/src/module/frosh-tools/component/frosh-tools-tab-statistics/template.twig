@@ -15,15 +15,24 @@
     <!-- OPcache -->
     <ft-panel
         v-if="cacheStats && cacheStats.opcache"
-        title="OPcache"
     >
+        <template #title>
+            <ft-icon name="bolt"/>
+            <span>OPcache</span>
+        </template>
         <div class="frosh-tab-statistics__metrics">
-            <div class="frosh-stat">
+            <div class="frosh-stat frosh-stat--feature">
                 <div class="frosh-stat__label">
                     {{ $t('frosh-tools.tabs.statistics.hitRate') }}
                 </div>
                 <div :class="['frosh-stat__value', 'frosh-stat__value--' + hitRateVariant(cacheStats.opcache.hitRate)]">
                     {{ formatPercent(cacheStats.opcache.hitRate) }}
+                </div>
+                <div class="frosh-meter">
+                    <div
+                        :class="['frosh-meter__fill', 'frosh-meter__fill--' + hitRateVariant(cacheStats.opcache.hitRate)]"
+                        :style="{ width: clampPercent(cacheStats.opcache.hitRate) + '%' }"
+                    ></div>
                 </div>
             </div>
             <div class="frosh-stat">
@@ -40,6 +49,12 @@
                 </div>
                 <div class="frosh-stat__value">
                     {{ formatSize(cacheStats.opcache.usedMemory) }} / {{ formatSize(cacheStats.opcache.freeMemory) }}
+                </div>
+                <div class="frosh-meter">
+                    <div
+                        :class="['frosh-meter__fill', 'frosh-meter__fill--' + fillVariant(ratioPercent(cacheStats.opcache.usedMemory, cacheStats.opcache.usedMemory + cacheStats.opcache.freeMemory))]"
+                        :style="{ width: ratioPercent(cacheStats.opcache.usedMemory, cacheStats.opcache.usedMemory + cacheStats.opcache.freeMemory) + '%' }"
+                    ></div>
                 </div>
             </div>
             <div class="frosh-stat">
@@ -81,8 +96,11 @@
     </ft-panel>
     <ft-panel
         v-else-if="cacheStats && !cacheStats.opcache"
-        title="OPcache"
     >
+        <template #title>
+            <ft-icon name="bolt"/>
+            <span>OPcache</span>
+        </template>
         <ft-empty :title="'OPcache: ' + $t('frosh-tools.tabs.statistics.notAvailable')"/>
     </ft-panel>
 
@@ -90,15 +108,24 @@
     <ft-panel
         v-for="redis in (cacheStats ? cacheStats.redis : [])"
         :key="redis.name"
-        :title="'Redis: ' + redis.name"
     >
+        <template #title>
+            <ft-icon name="flow"/>
+            <span>Redis: {{ redis.name }}</span>
+        </template>
         <div class="frosh-tab-statistics__metrics">
-            <div class="frosh-stat">
+            <div class="frosh-stat frosh-stat--feature">
                 <div class="frosh-stat__label">
                     {{ $t('frosh-tools.tabs.statistics.hitRate') }}
                 </div>
                 <div :class="['frosh-stat__value', 'frosh-stat__value--' + hitRateVariant(redis.hitRate)]">
                     {{ formatPercent(redis.hitRate) }}
+                </div>
+                <div class="frosh-meter">
+                    <div
+                        :class="['frosh-meter__fill', 'frosh-meter__fill--' + hitRateVariant(redis.hitRate)]"
+                        :style="{ width: clampPercent(redis.hitRate) + '%' }"
+                    ></div>
                 </div>
             </div>
             <div class="frosh-stat">
@@ -118,6 +145,15 @@
                     <template v-if="redis.maxMemory > 0">
                         / {{ formatSize(redis.maxMemory) }}
                     </template>
+                </div>
+                <div
+                    v-if="redis.maxMemory > 0"
+                    class="frosh-meter"
+                >
+                    <div
+                        :class="['frosh-meter__fill', 'frosh-meter__fill--' + fillVariant(ratioPercent(redis.usedMemory, redis.maxMemory))]"
+                        :style="{ width: ratioPercent(redis.usedMemory, redis.maxMemory) + '%' }"
+                    ></div>
                 </div>
             </div>
             <div class="frosh-stat">
@@ -166,15 +202,24 @@
     <!-- APCu -->
     <ft-panel
         v-if="cacheStats && cacheStats.apcu"
-        title="APCu"
     >
+        <template #title>
+            <ft-icon name="bolt"/>
+            <span>APCu</span>
+        </template>
         <div class="frosh-tab-statistics__metrics">
-            <div class="frosh-stat">
+            <div class="frosh-stat frosh-stat--feature">
                 <div class="frosh-stat__label">
                     {{ $t('frosh-tools.tabs.statistics.hitRate') }}
                 </div>
                 <div :class="['frosh-stat__value', 'frosh-stat__value--' + hitRateVariant(cacheStats.apcu.hitRate)]">
                     {{ formatPercent(cacheStats.apcu.hitRate) }}
+                </div>
+                <div class="frosh-meter">
+                    <div
+                        :class="['frosh-meter__fill', 'frosh-meter__fill--' + hitRateVariant(cacheStats.apcu.hitRate)]"
+                        :style="{ width: clampPercent(cacheStats.apcu.hitRate) + '%' }"
+                    ></div>
                 </div>
             </div>
             <div class="frosh-stat">
@@ -192,6 +237,12 @@
                 <div class="frosh-stat__value">
                     {{ formatSize(cacheStats.apcu.usedMemory) }} / {{ formatSize(cacheStats.apcu.availableMemory) }}
                 </div>
+                <div class="frosh-meter">
+                    <div
+                        :class="['frosh-meter__fill', 'frosh-meter__fill--' + fillVariant(ratioPercent(cacheStats.apcu.usedMemory, cacheStats.apcu.usedMemory + cacheStats.apcu.availableMemory))]"
+                        :style="{ width: ratioPercent(cacheStats.apcu.usedMemory, cacheStats.apcu.usedMemory + cacheStats.apcu.availableMemory) + '%' }"
+                    ></div>
+                </div>
             </div>
             <div class="frosh-stat">
                 <div class="frosh-stat__label">
@@ -207,8 +258,11 @@
     <!-- Database Server Info -->
     <ft-panel
         v-if="dbStats"
-        :title="$t('frosh-tools.tabs.statistics.serverInfo')"
     >
+        <template #title>
+            <ft-icon name="chart"/>
+            <span>{{ $t('frosh-tools.tabs.statistics.serverInfo') }}</span>
+        </template>
         <div class="frosh-tab-statistics__metrics">
             <div class="frosh-stat">
                 <div class="frosh-stat__label">
@@ -264,15 +318,24 @@
     <!-- InnoDB Buffer Pool -->
     <ft-panel
         v-if="dbStats && dbStats.globalStatus"
-        :title="$t('frosh-tools.tabs.statistics.bufferPool')"
     >
+        <template #title>
+            <ft-icon name="chart"/>
+            <span>{{ $t('frosh-tools.tabs.statistics.bufferPool') }}</span>
+        </template>
         <div class="frosh-tab-statistics__metrics">
-            <div class="frosh-stat">
+            <div class="frosh-stat frosh-stat--feature">
                 <div class="frosh-stat__label">
                     {{ $t('frosh-tools.tabs.statistics.bufferPoolHitRate') }}
                 </div>
                 <div :class="['frosh-stat__value', 'frosh-stat__value--' + hitRateVariant(dbStats.globalStatus.bufferPoolHitRate)]">
                     {{ formatPercent(dbStats.globalStatus.bufferPoolHitRate) }}
+                </div>
+                <div class="frosh-meter">
+                    <div
+                        :class="['frosh-meter__fill', 'frosh-meter__fill--' + hitRateVariant(dbStats.globalStatus.bufferPoolHitRate)]"
+                        :style="{ width: clampPercent(dbStats.globalStatus.bufferPoolHitRate) + '%' }"
+                    ></div>
                 </div>
             </div>
             <div class="frosh-stat">
@@ -281,6 +344,15 @@
                 </div>
                 <div class="frosh-stat__value">
                     {{ formatSize(dbStats.globalStatus.bufferPoolUsed) }} / {{ formatSize(dbStats.globalStatus.bufferPoolSize) }}
+                </div>
+                <div
+                    v-if="dbStats.globalStatus.bufferPoolSize > 0"
+                    class="frosh-meter"
+                >
+                    <div
+                        :class="['frosh-meter__fill', 'frosh-meter__fill--' + fillVariant(ratioPercent(dbStats.globalStatus.bufferPoolUsed, dbStats.globalStatus.bufferPoolSize))]"
+                        :style="{ width: ratioPercent(dbStats.globalStatus.bufferPoolUsed, dbStats.globalStatus.bufferPoolSize) + '%' }"
+                    ></div>
                 </div>
             </div>
             <div class="frosh-stat">
@@ -305,10 +377,13 @@
     <!-- Table Sizes -->
     <ft-panel
         v-if="dbStats && dbStats.tables"
-        :title="$t('frosh-tools.tabs.statistics.tableStatistics')"
         :count="dbStats.tables.length"
         flush
     >
+        <template #title>
+            <ft-icon name="chart"/>
+            <span>{{ $t('frosh-tools.tabs.statistics.tableStatistics') }}</span>
+        </template>
         <ft-empty
             v-if="!dbStats.tables.length"
             :title="$t('frosh-tools.tabs.statistics.tableStatistics')"
@@ -345,7 +420,17 @@
                         <td class="ft-table__num">{{ formatNumber(table.rows) }}</td>
                         <td class="ft-table__num">{{ formatSize(table.dataSize) }}</td>
                         <td class="ft-table__num">{{ formatSize(table.indexSize) }}</td>
-                        <td class="ft-table__num">{{ formatSize(table.totalSize) }}</td>
+                        <td class="ft-table__num">
+                            <div class="frosh-size-cell">
+                                <span>{{ formatSize(table.totalSize) }}</span>
+                                <span class="frosh-size-cell__bar">
+                                    <span
+                                        class="frosh-size-cell__fill"
+                                        :style="{ width: tableSizeWidth(table.totalSize) + '%' }"
+                                    ></span>
+                                </span>
+                            </div>
+                        </td>
                     </tr>
                 </tbody>
             </table>

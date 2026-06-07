@@ -39,6 +39,17 @@ Component.register('frosh-tools-tab-statistics', {
         isLoading() {
             return this.isLoadingCache || this.isLoadingDb;
         },
+
+        largestTableSize() {
+            if (!this.dbStats || !this.dbStats.tables) {
+                return 0;
+            }
+
+            return this.dbStats.tables.reduce(
+                (max, table) => Math.max(max, table.totalSize || 0),
+                0
+            );
+        },
     },
 
     methods: {
@@ -130,6 +141,35 @@ Component.register('frosh-tools-tab-statistics', {
             if (rate >= 95) return 'success';
             if (rate >= 80) return 'warning';
             return 'danger';
+        },
+
+        // Clamp a 0-100 value to a safe meter width.
+        clampPercent(value) {
+            if (typeof value !== 'number' || Number.isNaN(value)) {
+                return 0;
+            }
+
+            return Math.min(100, Math.max(0, value));
+        },
+
+        // used / total as a 0-100 percentage; returns 0 when total is unknown.
+        ratioPercent(used, total) {
+            if (!total || total <= 0) {
+                return 0;
+            }
+
+            return this.clampPercent((used / total) * 100);
+        },
+
+        // Variant for a fill meter: higher fill = more pressure (inverse of hit rate).
+        fillVariant(percent) {
+            if (percent >= 90) return 'danger';
+            if (percent >= 75) return 'warning';
+            return 'success';
+        },
+
+        tableSizeWidth(size) {
+            return this.ratioPercent(size, this.largestTableSize);
         },
     },
 });
