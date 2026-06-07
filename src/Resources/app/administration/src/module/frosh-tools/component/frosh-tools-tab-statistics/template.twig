@@ -79,6 +79,7 @@
             <div class="frosh-stat">
                 <div class="frosh-stat__label">
                     {{ $t('frosh-tools.tabs.statistics.internedStrings') }}
+                    ({{ $t('frosh-tools.tabs.statistics.usedMemory') }} / {{ $t('frosh-tools.tabs.statistics.freeMemory') }})
                 </div>
                 <div class="frosh-stat__value">
                     {{ formatSize(cacheStats.opcache.internedStringsUsedMemory) }} / {{ formatSize(cacheStats.opcache.internedStringsFreeMemory) }}
