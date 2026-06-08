@@ -1,0 +1,134 @@
+.frosh-tab-statistics {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+
+    &__metrics {
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(190px, 1fr));
+        gap: 12px;
+    }
+}
+
+.frosh-stat {
+    background: var(--ft-surface-2);
+    border: 1px solid var(--ft-border);
+    border-radius: var(--ft-radius-md);
+    padding: 14px 16px;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+
+    &__label {
+        font-size: 11px;
+        text-transform: uppercase;
+        letter-spacing: 0.06em;
+        color: var(--ft-text-muted);
+        font-weight: 600;
+        line-height: 1.3;
+    }
+
+    &__value {
+        font-size: 17px;
+        font-weight: 600;
+        line-height: 1.3;
+        color: var(--ft-text);
+        font-variant-numeric: tabular-nums;
+        overflow-wrap: break-word;
+
+        &--success {
+            color: var(--ft-success);
+        }
+
+        &--warning {
+            color: var(--ft-warning);
+        }
+
+        &--danger {
+            color: var(--ft-danger);
+        }
+    }
+
+    // Featured metric: highlighted card spanning two grid columns with a meter.
+    &--feature {
+        grid-column: span 2;
+        background: var(--ft-surface);
+        border-color: var(--ft-border-strong);
+        box-shadow: var(--ft-shadow-sm);
+
+        .frosh-stat__value {
+            font-size: 30px;
+            font-weight: 700;
+            letter-spacing: -0.02em;
+        }
+
+        @media (max-width: 520px) {
+            grid-column: span 1;
+        }
+    }
+
+    &__caption {
+        font-size: 11.5px;
+        color: var(--ft-text-muted);
+        font-variant-numeric: tabular-nums;
+        margin-top: -2px;
+    }
+}
+
+// Horizontal meter / utilization bar. Pairs the colored value with a visible
+// fill so the signal is not conveyed by color alone.
+.frosh-meter {
+    height: 6px;
+    border-radius: 999px;
+    background: var(--ft-surface-2);
+    overflow: hidden;
+
+    .frosh-stat--feature & {
+        height: 8px;
+        background: var(--ft-surface-2);
+    }
+
+    &__fill {
+        height: 100%;
+        border-radius: inherit;
+        background: var(--ft-neutral);
+        transition: width var(--ft-transition);
+
+        &--success {
+            background: var(--ft-success);
+        }
+
+        &--warning {
+            background: var(--ft-warning);
+        }
+
+        &--danger {
+            background: var(--ft-danger);
+        }
+    }
+}
+
+// Inline relative-size bar behind the table's total-size column.
+.frosh-size-cell {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-end;
+    gap: 5px;
+    min-width: 96px;
+
+    &__bar {
+        width: 100%;
+        height: 4px;
+        border-radius: 999px;
+        background: var(--ft-surface-2);
+        overflow: hidden;
+    }
+
+    &__fill {
+        display: block;
+        height: 100%;
+        border-radius: inherit;
+        background: var(--ft-accent);
+        opacity: 0.55;
+    }
+}

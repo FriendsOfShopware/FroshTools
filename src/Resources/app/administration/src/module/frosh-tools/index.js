@@ -20,6 +20,7 @@ import './component/frosh-tools-security-dependencies';
 import './component/frosh-tools-security-files';
 import './component/frosh-tools-tab-security';
 import './component/frosh-tools-tab-fastly';
+import './component/frosh-tools-tab-statistics';
 import './page/index';
 import './acl';
 
@@ -112,6 +113,14 @@ Shopware.Module.register('frosh-tools', {
                 fastly: {
                     component: 'frosh-tools-tab-fastly',
                     path: 'fastly',
+                    meta: {
+                        privilege: 'frosh_tools:read',
+                        parentPath: 'sw.settings.index.plugins',
+                    },
+                },
+                statistics: {
+                    component: 'frosh-tools-tab-statistics',
+                    path: 'statistics',
                     meta: {
                         privilege: 'frosh_tools:read',
                         parentPath: 'sw.settings.index.plugins',

@@ -66,6 +66,10 @@ Component.register('frosh-tools-index', {
                     route: 'frosh.tools.index.cache',
                     labelKey: 'frosh-tools.tabs.cache.title',
                 },
+                {
+                    route: 'frosh.tools.index.statistics',
+                    labelKey: 'frosh-tools.tabs.statistics.title',
+                },
             ];
             if (this.elasticsearchAvailable) {
                 performance.push({
