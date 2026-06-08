@@ -563,29 +563,77 @@
             <table class="ft-table">
                 <thead>
                     <tr>
-                        <th>
+                        <th
+                            class="ft-table__sortable"
+                            :class="{ 'is-active': sortDirOf('name') }"
+                            @click="toggleSort('name')"
+                        >
                             {{ $t('frosh-tools.tabs.statistics.tableName') }}
+                            <ft-icon
+                                v-if="sortDirOf('name')"
+                                :name="sortDirOf('name') === 'ASC' ? 'chevron-up' : 'chevron-down'"
+                            />
                         </th>
-                        <th>
+                        <th
+                            class="ft-table__sortable"
+                            :class="{ 'is-active': sortDirOf('engine') }"
+                            @click="toggleSort('engine')"
+                        >
                             {{ $t('frosh-tools.tabs.statistics.engine') }}
+                            <ft-icon
+                                v-if="sortDirOf('engine')"
+                                :name="sortDirOf('engine') === 'ASC' ? 'chevron-up' : 'chevron-down'"
+                            />
                         </th>
-                        <th class="ft-table__num">
+                        <th
+                            class="ft-table__num ft-table__sortable"
+                            :class="{ 'is-active': sortDirOf('rows') }"
+                            @click="toggleSort('rows')"
+                        >
                             {{ $t('frosh-tools.tabs.statistics.rows') }}
+                            <ft-icon
+                                v-if="sortDirOf('rows')"
+                                :name="sortDirOf('rows') === 'ASC' ? 'chevron-up' : 'chevron-down'"
+                            />
                         </th>
-                        <th class="ft-table__num">
+                        <th
+                            class="ft-table__num ft-table__sortable"
+                            :class="{ 'is-active': sortDirOf('dataSize') }"
+                            @click="toggleSort('dataSize')"
+                        >
                             {{ $t('frosh-tools.tabs.statistics.dataSize') }}
+                            <ft-icon
+                                v-if="sortDirOf('dataSize')"
+                                :name="sortDirOf('dataSize') === 'ASC' ? 'chevron-up' : 'chevron-down'"
+                            />
                         </th>
-                        <th class="ft-table__num">
+                        <th
+                            class="ft-table__num ft-table__sortable"
+                            :class="{ 'is-active': sortDirOf('indexSize') }"
+                            @click="toggleSort('indexSize')"
+                        >
                             {{ $t('frosh-tools.tabs.statistics.indexSize') }}
+                            <ft-icon
+                                v-if="sortDirOf('indexSize')"
+                                :name="sortDirOf('indexSize') === 'ASC' ? 'chevron-up' : 'chevron-down'"
+                            />
                         </th>
-                        <th class="ft-table__num">
+                        <th
+                            class="ft-table__num ft-table__sortable"
+                            :class="{ 'is-active': sortDirOf('totalSize') }"
+                            @click="toggleSort('totalSize')"
+                        >
                             {{ $t('frosh-tools.tabs.statistics.totalSize') }}
+                            <ft-icon
+                                v-if="sortDirOf('totalSize')"
+                                :name="sortDirOf('totalSize') === 'ASC' ? 'chevron-up' : 'chevron-down'"
+                            />
                         </th>
                     </tr>
                 </thead>
                 <tbody>
                     <tr
-                        v-for="table in dbStats.tables"
+                        v-for="table in sortRows(dbStats.tables)"
                         :key="table.name"
                     >
                         <td class="ft-table__name ft-mono">{{ table.name }}</td>

@@ -76,9 +76,39 @@
                 <table class="ft-table">
                     <thead>
                         <tr>
-                            <th>{{ $t('frosh-tools.name') }}</th>
-                            <th class="ft-table__num">{{ $t('frosh-tools.size') }}</th>
-                            <th class="ft-table__num">{{ $t('frosh-tools.docs') }}</th>
+                            <th
+                                class="ft-table__sortable"
+                                :class="{ 'is-active': sortDirOf('name') }"
+                                @click="toggleSort('name')"
+                            >
+                                {{ $t('frosh-tools.name') }}
+                                <ft-icon
+                                    v-if="sortDirOf('name')"
+                                    :name="sortDirOf('name') === 'ASC' ? 'chevron-up' : 'chevron-down'"
+                                />
+                            </th>
+                            <th
+                                class="ft-table__num ft-table__sortable"
+                                :class="{ 'is-active': sortDirOf('indexSize') }"
+                                @click="toggleSort('indexSize')"
+                            >
+                                {{ $t('frosh-tools.size') }}
+                                <ft-icon
+                                    v-if="sortDirOf('indexSize')"
+                                    :name="sortDirOf('indexSize') === 'ASC' ? 'chevron-up' : 'chevron-down'"
+                                />
+                            </th>
+                            <th
+                                class="ft-table__num ft-table__sortable"
+                                :class="{ 'is-active': sortDirOf('docs') }"
+                                @click="toggleSort('docs')"
+                            >
+                                {{ $t('frosh-tools.docs') }}
+                                <ft-icon
+                                    v-if="sortDirOf('docs')"
+                                    :name="sortDirOf('docs') === 'ASC' ? 'chevron-up' : 'chevron-down'"
+                                />
+                            </th>
                             <th class="ft-table__actions">
                                 {{ $t('frosh-tools.actions') }}
                             </th>
@@ -86,7 +116,7 @@
                     </thead>
                     <tbody>
                         <tr
-                            v-for="item in indices"
+                            v-for="item in sortRows(indices)"
                             :key="item.name"
                         >
                             <td class="ft-table__name">

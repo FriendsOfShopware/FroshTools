@@ -31,24 +31,69 @@
             <table class="ft-table">
                 <thead>
                     <tr>
-                        <th>
+                        <th
+                            class="ft-table__sortable"
+                            :class="{ 'is-active': sortDirOf('flag') }"
+                            @click="toggleSort('flag')"
+                        >
                             {{ $t('frosh-tools.tabs.feature-flags.flag') }}
+                            <ft-icon
+                                v-if="sortDirOf('flag')"
+                                :name="sortDirOf('flag') === 'ASC' ? 'chevron-up' : 'chevron-down'"
+                            />
                         </th>
-                        <th>
+                        <th
+                            class="ft-table__sortable"
+                            :class="{ 'is-active': sortDirOf('description') }"
+                            @click="toggleSort('description')"
+                        >
                             {{ $t('frosh-tools.tabs.feature-flags.description') }}
+                            <ft-icon
+                                v-if="sortDirOf('description')"
+                                :name="sortDirOf('description') === 'ASC' ? 'chevron-up' : 'chevron-down'"
+                            />
                         </th>
-                        <th style="width: 110px;">{{ $t('frosh-tools.active') }}</th>
-                        <th style="width: 110px;">
+                        <th
+                            class="ft-table__sortable"
+                            :class="{ 'is-active': sortDirOf('active') }"
+                            style="width: 110px;"
+                            @click="toggleSort('active')"
+                        >
+                            {{ $t('frosh-tools.active') }}
+                            <ft-icon
+                                v-if="sortDirOf('active')"
+                                :name="sortDirOf('active') === 'ASC' ? 'chevron-up' : 'chevron-down'"
+                            />
+                        </th>
+                        <th
+                            class="ft-table__sortable"
+                            :class="{ 'is-active': sortDirOf('major') }"
+                            style="width: 110px;"
+                            @click="toggleSort('major')"
+                        >
                             {{ $t('frosh-tools.tabs.feature-flags.major') }}
+                            <ft-icon
+                                v-if="sortDirOf('major')"
+                                :name="sortDirOf('major') === 'ASC' ? 'chevron-up' : 'chevron-down'"
+                            />
                         </th>
-                        <th style="width: 110px;">
+                        <th
+                            class="ft-table__sortable"
+                            :class="{ 'is-active': sortDirOf('default') }"
+                            style="width: 110px;"
+                            @click="toggleSort('default')"
+                        >
                             {{ $t('frosh-tools.tabs.feature-flags.default') }}
+                            <ft-icon
+                                v-if="sortDirOf('default')"
+                                :name="sortDirOf('default') === 'ASC' ? 'chevron-up' : 'chevron-down'"
+                            />
                         </th>
                     </tr>
                 </thead>
                 <tbody>
                     <tr
-                        v-for="item in featureFlags"
+                        v-for="item in sortRows(featureFlags)"
                         :key="item.flag"
                     >
                         <td class="ft-table__name ft-mono">{{ item.flag }}</td>

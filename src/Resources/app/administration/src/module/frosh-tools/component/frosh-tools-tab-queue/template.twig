@@ -42,13 +42,33 @@
             <table class="ft-table">
                 <thead>
                     <tr>
-                        <th>{{ $t('frosh-tools.name') }}</th>
-                        <th class="ft-table__num">{{ $t('frosh-tools.size') }}</th>
+                        <th
+                            class="ft-table__sortable"
+                            :class="{ 'is-active': sortDirOf('name') }"
+                            @click="toggleSort('name')"
+                        >
+                            {{ $t('frosh-tools.name') }}
+                            <ft-icon
+                                v-if="sortDirOf('name')"
+                                :name="sortDirOf('name') === 'ASC' ? 'chevron-up' : 'chevron-down'"
+                            />
+                        </th>
+                        <th
+                            class="ft-table__num ft-table__sortable"
+                            :class="{ 'is-active': sortDirOf('size') }"
+                            @click="toggleSort('size')"
+                        >
+                            {{ $t('frosh-tools.size') }}
+                            <ft-icon
+                                v-if="sortDirOf('size')"
+                                :name="sortDirOf('size') === 'ASC' ? 'chevron-up' : 'chevron-down'"
+                            />
+                        </th>
                     </tr>
                 </thead>
                 <tbody>
                     <tr
-                        v-for="(item, idx) in queueEntries"
+                        v-for="(item, idx) in sortRows(queueEntries)"
                         :key="idx"
                     >
                         <td class="ft-table__name">{{ item.name }}</td>

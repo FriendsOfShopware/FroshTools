@@ -45,19 +45,58 @@
             <table class="ft-table">
                 <thead>
                     <tr>
-                        <th style="width: 170px;">{{ $t('frosh-tools.date') }}</th>
-                        <th style="width: 130px;">
-                            {{ $t('frosh-tools.channel') }}
+                        <th
+                            class="ft-table__sortable"
+                            :class="{ 'is-active': sortDirOf('date') }"
+                            style="width: 170px;"
+                            @click="toggleSort('date')"
+                        >
+                            {{ $t('frosh-tools.date') }}
+                            <ft-icon
+                                v-if="sortDirOf('date')"
+                                :name="sortDirOf('date') === 'ASC' ? 'chevron-up' : 'chevron-down'"
+                            />
                         </th>
-                        <th style="width: 110px;">{{ $t('frosh-tools.level') }}</th>
-                        <th>
+                        <th
+                            class="ft-table__sortable"
+                            :class="{ 'is-active': sortDirOf('channel') }"
+                            style="width: 130px;"
+                            @click="toggleSort('channel')"
+                        >
+                            {{ $t('frosh-tools.channel') }}
+                            <ft-icon
+                                v-if="sortDirOf('channel')"
+                                :name="sortDirOf('channel') === 'ASC' ? 'chevron-up' : 'chevron-down'"
+                            />
+                        </th>
+                        <th
+                            class="ft-table__sortable"
+                            :class="{ 'is-active': sortDirOf('level') }"
+                            style="width: 110px;"
+                            @click="toggleSort('level')"
+                        >
+                            {{ $t('frosh-tools.level') }}
+                            <ft-icon
+                                v-if="sortDirOf('level')"
+                                :name="sortDirOf('level') === 'ASC' ? 'chevron-up' : 'chevron-down'"
+                            />
+                        </th>
+                        <th
+                            class="ft-table__sortable"
+                            :class="{ 'is-active': sortDirOf('message') }"
+                            @click="toggleSort('message')"
+                        >
                             {{ $t('frosh-tools.message') }}
+                            <ft-icon
+                                v-if="sortDirOf('message')"
+                                :name="sortDirOf('message') === 'ASC' ? 'chevron-up' : 'chevron-down'"
+                            />
                         </th>
                     </tr>
                 </thead>
                 <tbody>
                     <tr
-                        v-for="(item, idx) in logEntries"
+                        v-for="(item, idx) in sortRows(logEntries)"
                         :key="idx"
                     >
                         <td class="ft-mono">

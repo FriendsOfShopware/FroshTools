@@ -38,8 +38,28 @@
             <table class="ft-table">
                 <thead>
                     <tr>
-                        <th>{{ $t('frosh-tools.name') }}</th>
-                        <th>{{ $t('frosh-tools.status') }}</th>
+                        <th
+                            class="ft-table__sortable"
+                            :class="{ 'is-active': sortDirOf('name') }"
+                            @click="toggleSort('name')"
+                        >
+                            {{ $t('frosh-tools.name') }}
+                            <ft-icon
+                                v-if="sortDirOf('name')"
+                                :name="sortDirOf('name') === 'ASC' ? 'chevron-up' : 'chevron-down'"
+                            />
+                        </th>
+                        <th
+                            class="ft-table__sortable"
+                            :class="{ 'is-active': sortDirOf('expected') }"
+                            @click="toggleSort('expected')"
+                        >
+                            {{ $t('frosh-tools.status') }}
+                            <ft-icon
+                                v-if="sortDirOf('expected')"
+                                :name="sortDirOf('expected') === 'ASC' ? 'chevron-up' : 'chevron-down'"
+                            />
+                        </th>
                         <th class="ft-table__actions">
                             {{ $t('frosh-tools.actions') }}
                         </th>
@@ -47,7 +67,7 @@
                 </thead>
                 <tbody>
                     <tr
-                        v-for="item in items.files"
+                        v-for="item in sortRows(items.files)"
                         :key="item.name"
                     >
                         <td>
