@@ -7,7 +7,10 @@ Component.register('frosh-tools-tab-elasticsearch', {
     template,
 
     inject: ['froshElasticSearch'],
-    mixins: [Mixin.getByName('notification'), Mixin.getByName('frosh-sortable-table')],
+    mixins: [
+        Mixin.getByName('notification'),
+        Mixin.getByName('frosh-sortable-table'),
+    ],
 
     data() {
         return {

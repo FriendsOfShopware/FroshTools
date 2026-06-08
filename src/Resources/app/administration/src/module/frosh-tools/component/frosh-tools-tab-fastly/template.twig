@@ -98,39 +98,18 @@
             <table class="ft-table">
                 <thead>
                     <tr>
-                        <th
-                            class="ft-table__sortable"
-                            :class="{ 'is-active': sortDirOf('name') }"
-                            @click="toggleSort('name')"
-                        >
+                        <ft-th-sort sort-key="name">
                             {{ $t('frosh-tools.tabs.fastly.snippets.name') }}
-                            <ft-icon
-                                v-if="sortDirOf('name')"
-                                :name="sortDirOf('name') === 'ASC' ? 'chevron-up' : 'chevron-down'"
-                            />
-                        </th>
-                        <th
-                            class="ft-table__sortable"
-                            :class="{ 'is-active': sortDirOf('type') }"
-                            @click="toggleSort('type')"
-                        >
+                        </ft-th-sort>
+                        <ft-th-sort sort-key="type">
                             {{ $t('frosh-tools.tabs.fastly.snippets.type') }}
-                            <ft-icon
-                                v-if="sortDirOf('type')"
-                                :name="sortDirOf('type') === 'ASC' ? 'chevron-up' : 'chevron-down'"
-                            />
-                        </th>
-                        <th
-                            class="ft-table__num ft-table__sortable"
-                            :class="{ 'is-active': sortDirOf('priority') }"
-                            @click="toggleSort('priority')"
+                        </ft-th-sort>
+                        <ft-th-sort
+                            sort-key="priority"
+                            class="ft-table__num"
                         >
                             {{ $t('frosh-tools.tabs.fastly.snippets.priority') }}
-                            <ft-icon
-                                v-if="sortDirOf('priority')"
-                                :name="sortDirOf('priority') === 'ASC' ? 'chevron-up' : 'chevron-down'"
-                            />
-                        </th>
+                        </ft-th-sort>
                         <th class="ft-table__actions">
                             {{ $t('frosh-tools.actions') }}
                         </th>

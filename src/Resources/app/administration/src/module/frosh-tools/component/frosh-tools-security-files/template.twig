@@ -38,28 +38,8 @@
             <table class="ft-table">
                 <thead>
                     <tr>
-                        <th
-                            class="ft-table__sortable"
-                            :class="{ 'is-active': sortDirOf('name') }"
-                            @click="toggleSort('name')"
-                        >
-                            {{ $t('frosh-tools.name') }}
-                            <ft-icon
-                                v-if="sortDirOf('name')"
-                                :name="sortDirOf('name') === 'ASC' ? 'chevron-up' : 'chevron-down'"
-                            />
-                        </th>
-                        <th
-                            class="ft-table__sortable"
-                            :class="{ 'is-active': sortDirOf('expected') }"
-                            @click="toggleSort('expected')"
-                        >
-                            {{ $t('frosh-tools.status') }}
-                            <ft-icon
-                                v-if="sortDirOf('expected')"
-                                :name="sortDirOf('expected') === 'ASC' ? 'chevron-up' : 'chevron-down'"
-                            />
-                        </th>
+                        <ft-th-sort sort-key="name">{{ $t('frosh-tools.name') }}</ft-th-sort>
+                        <ft-th-sort sort-key="expected">{{ $t('frosh-tools.status') }}</ft-th-sort>
                         <th class="ft-table__actions">
                             {{ $t('frosh-tools.actions') }}
                         </th>

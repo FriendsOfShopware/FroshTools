@@ -41,62 +41,23 @@
             <table class="ft-table">
                 <thead>
                     <tr>
-                        <th
-                            class="ft-table__sortable"
-                            :class="{ 'is-active': sortDirOf('name') }"
-                            @click="toggleSort('name')"
-                        >
-                            {{ $t('frosh-tools.name') }}
-                            <ft-icon
-                                v-if="sortDirOf('name')"
-                                :name="sortDirOf('name') === 'ASC' ? 'chevron-up' : 'chevron-down'"
-                            />
-                        </th>
-                        <th
-                            class="ft-table__num ft-table__sortable"
-                            :class="{ 'is-active': sortDirOf('runInterval') }"
-                            @click="toggleSort('runInterval')"
+                        <ft-th-sort sort-key="name">{{ $t('frosh-tools.name') }}</ft-th-sort>
+                        <ft-th-sort
+                            sort-key="runInterval"
+                            class="ft-table__num"
                         >
                             {{ $t('frosh-tools.interval') }}
-                            <ft-icon
-                                v-if="sortDirOf('runInterval')"
-                                :name="sortDirOf('runInterval') === 'ASC' ? 'chevron-up' : 'chevron-down'"
-                            />
-                        </th>
-                        <th
-                            class="ft-table__sortable"
-                            :class="{ 'is-active': sortDirOf('lastExecutionTime') }"
-                            @click="toggleSort('lastExecutionTime')"
-                        >
+                        </ft-th-sort>
+                        <ft-th-sort sort-key="lastExecutionTime">
                             {{ $t('frosh-tools.lastExecutionTime') }}
-                            <ft-icon
-                                v-if="sortDirOf('lastExecutionTime')"
-                                :name="sortDirOf('lastExecutionTime') === 'ASC' ? 'chevron-up' : 'chevron-down'"
-                            />
-                        </th>
-                        <th
-                            class="ft-table__sortable"
-                            :class="{ 'is-active': sortDirOf('nextExecutionTime') }"
-                            @click="toggleSort('nextExecutionTime')"
-                        >
+                        </ft-th-sort>
+                        <ft-th-sort sort-key="nextExecutionTime">
                             {{ $t('frosh-tools.nextExecutionTime') }}
-                            <ft-icon
-                                v-if="sortDirOf('nextExecutionTime')"
-                                :name="sortDirOf('nextExecutionTime') === 'ASC' ? 'chevron-up' : 'chevron-down'"
-                            />
-                        </th>
-                        <th
-                            class="ft-table__sortable"
-                            :class="{ 'is-active': sortDirOf('status') }"
+                        </ft-th-sort>
+                        <ft-th-sort
+                            sort-key="status"
                             style="width: 130px;"
-                            @click="toggleSort('status')"
-                        >
-                            {{ $t('frosh-tools.status') }}
-                            <ft-icon
-                                v-if="sortDirOf('status')"
-                                :name="sortDirOf('status') === 'ASC' ? 'chevron-up' : 'chevron-down'"
-                            />
-                        </th>
+                        >{{ $t('frosh-tools.status') }}</ft-th-sort>
                         <th
                             class="ft-table__actions"
                             style="width: 60px;"

@@ -2,7 +2,9 @@ const { Mixin } = Shopware;
 
 function resolvePath(obj, path) {
     if (obj == null) return obj;
-    return path.split('.').reduce((acc, key) => (acc == null ? acc : acc[key]), obj);
+    return path
+        .split('.')
+        .reduce((acc, key) => (acc == null ? acc : acc[key]), obj);
 }
 
 function compare(a, b) {
@@ -14,15 +16,24 @@ function compare(a, b) {
         return a - b;
     }
     if (typeof a === 'boolean' && typeof b === 'boolean') {
-        return (a === b) ? 0 : (a ? 1 : -1);
+        return a === b ? 0 : a ? 1 : -1;
     }
-    return String(a).localeCompare(String(b), undefined, { numeric: true, sensitivity: 'base' });
+    return String(a).localeCompare(String(b), undefined, {
+        numeric: true,
+        sensitivity: 'base',
+    });
 }
 
 Mixin.register('frosh-sortable-table', {
     data() {
         return {
             tableSorts: {},
+        };
+    },
+
+    provide() {
+        return {
+            froshSortHost: this,
         };
     },
 
@@ -51,7 +62,12 @@ Mixin.register('frosh-sortable-table', {
             if (!current || !current.key) return rows;
 
             const copy = rows.slice();
-            copy.sort((a, b) => compare(resolvePath(a, current.key), resolvePath(b, current.key)));
+            copy.sort((a, b) =>
+                compare(
+                    resolvePath(a, current.key),
+                    resolvePath(b, current.key)
+                )
+            );
             if (current.dir === 'DESC') copy.reverse();
             return copy;
         },

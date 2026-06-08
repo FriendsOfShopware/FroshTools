@@ -31,51 +31,27 @@
             <table class="ft-table">
                 <thead>
                     <tr>
-                        <th
-                            class="ft-table__sortable"
-                            :class="{ 'is-active': sortDirOf('state', 'health') }"
+                        <ft-th-sort
+                            sort-key="state"
+                            table="health"
                             style="width: 110px;"
-                            @click="toggleSort('state', 'health')"
-                        >
-                            Status
-                            <ft-icon
-                                v-if="sortDirOf('state', 'health')"
-                                :name="sortDirOf('state', 'health') === 'ASC' ? 'chevron-up' : 'chevron-down'"
-                            />
-                        </th>
-                        <th
-                            class="ft-table__sortable"
-                            :class="{ 'is-active': sortDirOf('snippet', 'health') }"
-                            @click="toggleSort('snippet', 'health')"
-                        >
-                            {{ $t('frosh-tools.name') }}
-                            <ft-icon
-                                v-if="sortDirOf('snippet', 'health')"
-                                :name="sortDirOf('snippet', 'health') === 'ASC' ? 'chevron-up' : 'chevron-down'"
-                            />
-                        </th>
-                        <th
-                            class="ft-table__sortable"
-                            :class="{ 'is-active': sortDirOf('current', 'health') }"
-                            @click="toggleSort('current', 'health')"
+                        >Status</ft-th-sort>
+                        <ft-th-sort
+                            sort-key="snippet"
+                            table="health"
+                        >{{ $t('frosh-tools.name') }}</ft-th-sort>
+                        <ft-th-sort
+                            sort-key="current"
+                            table="health"
                         >
                             {{ $t('frosh-tools.current') }}
-                            <ft-icon
-                                v-if="sortDirOf('current', 'health')"
-                                :name="sortDirOf('current', 'health') === 'ASC' ? 'chevron-up' : 'chevron-down'"
-                            />
-                        </th>
-                        <th
-                            class="ft-table__sortable"
-                            :class="{ 'is-active': sortDirOf('recommended', 'health') }"
-                            @click="toggleSort('recommended', 'health')"
+                        </ft-th-sort>
+                        <ft-th-sort
+                            sort-key="recommended"
+                            table="health"
                         >
                             {{ $t('frosh-tools.recommended') }}
-                            <ft-icon
-                                v-if="sortDirOf('recommended', 'health')"
-                                :name="sortDirOf('recommended', 'health') === 'ASC' ? 'chevron-up' : 'chevron-down'"
-                            />
-                        </th>
+                        </ft-th-sort>
                     </tr>
                 </thead>
                 <tbody>
@@ -124,51 +100,27 @@
             <table class="ft-table">
                 <thead>
                     <tr>
-                        <th
-                            class="ft-table__sortable"
-                            :class="{ 'is-active': sortDirOf('state', 'performance') }"
+                        <ft-th-sort
+                            sort-key="state"
+                            table="performance"
                             style="width: 110px;"
-                            @click="toggleSort('state', 'performance')"
-                        >
-                            Status
-                            <ft-icon
-                                v-if="sortDirOf('state', 'performance')"
-                                :name="sortDirOf('state', 'performance') === 'ASC' ? 'chevron-up' : 'chevron-down'"
-                            />
-                        </th>
-                        <th
-                            class="ft-table__sortable"
-                            :class="{ 'is-active': sortDirOf('snippet', 'performance') }"
-                            @click="toggleSort('snippet', 'performance')"
-                        >
-                            {{ $t('frosh-tools.name') }}
-                            <ft-icon
-                                v-if="sortDirOf('snippet', 'performance')"
-                                :name="sortDirOf('snippet', 'performance') === 'ASC' ? 'chevron-up' : 'chevron-down'"
-                            />
-                        </th>
-                        <th
-                            class="ft-table__sortable"
-                            :class="{ 'is-active': sortDirOf('current', 'performance') }"
-                            @click="toggleSort('current', 'performance')"
+                        >Status</ft-th-sort>
+                        <ft-th-sort
+                            sort-key="snippet"
+                            table="performance"
+                        >{{ $t('frosh-tools.name') }}</ft-th-sort>
+                        <ft-th-sort
+                            sort-key="current"
+                            table="performance"
                         >
                             {{ $t('frosh-tools.current') }}
-                            <ft-icon
-                                v-if="sortDirOf('current', 'performance')"
-                                :name="sortDirOf('current', 'performance') === 'ASC' ? 'chevron-up' : 'chevron-down'"
-                            />
-                        </th>
-                        <th
-                            class="ft-table__sortable"
-                            :class="{ 'is-active': sortDirOf('recommended', 'performance') }"
-                            @click="toggleSort('recommended', 'performance')"
+                        </ft-th-sort>
+                        <ft-th-sort
+                            sort-key="recommended"
+                            table="performance"
                         >
                             {{ $t('frosh-tools.recommended') }}
-                            <ft-icon
-                                v-if="sortDirOf('recommended', 'performance')"
-                                :name="sortDirOf('recommended', 'performance') === 'ASC' ? 'chevron-up' : 'chevron-down'"
-                            />
-                        </th>
+                        </ft-th-sort>
                     </tr>
                 </thead>
                 <tbody>

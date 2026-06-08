@@ -51,39 +51,15 @@
             <table class="ft-table">
                 <thead>
                     <tr>
-                        <th
-                            class="ft-table__sortable"
-                            :class="{ 'is-active': sortDirOf('name') }"
-                            @click="toggleSort('name')"
-                        >
-                            {{ $t('frosh-tools.name') }}
-                            <ft-icon
-                                v-if="sortDirOf('name')"
-                                :name="sortDirOf('name') === 'ASC' ? 'chevron-up' : 'chevron-down'"
-                            />
-                        </th>
-                        <th
-                            class="ft-table__num ft-table__sortable"
-                            :class="{ 'is-active': sortDirOf('size') }"
-                            @click="toggleSort('size')"
-                        >
-                            {{ $t('frosh-tools.used') }}
-                            <ft-icon
-                                v-if="sortDirOf('size')"
-                                :name="sortDirOf('size') === 'ASC' ? 'chevron-up' : 'chevron-down'"
-                            />
-                        </th>
-                        <th
-                            class="ft-table__num ft-table__sortable"
-                            :class="{ 'is-active': sortDirOf('freeSpace') }"
-                            @click="toggleSort('freeSpace')"
-                        >
-                            {{ $t('frosh-tools.free') }}
-                            <ft-icon
-                                v-if="sortDirOf('freeSpace')"
-                                :name="sortDirOf('freeSpace') === 'ASC' ? 'chevron-up' : 'chevron-down'"
-                            />
-                        </th>
+                        <ft-th-sort sort-key="name">{{ $t('frosh-tools.name') }}</ft-th-sort>
+                        <ft-th-sort
+                            sort-key="size"
+                            class="ft-table__num"
+                        >{{ $t('frosh-tools.used') }}</ft-th-sort>
+                        <ft-th-sort
+                            sort-key="freeSpace"
+                            class="ft-table__num"
+                        >{{ $t('frosh-tools.free') }}</ft-th-sort>
                         <th class="ft-table__actions">
                             {{ $t('frosh-tools.actions') }}
                         </th>

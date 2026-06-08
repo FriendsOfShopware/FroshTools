@@ -563,72 +563,36 @@
             <table class="ft-table">
                 <thead>
                     <tr>
-                        <th
-                            class="ft-table__sortable"
-                            :class="{ 'is-active': sortDirOf('name') }"
-                            @click="toggleSort('name')"
-                        >
+                        <ft-th-sort sort-key="name">
                             {{ $t('frosh-tools.tabs.statistics.tableName') }}
-                            <ft-icon
-                                v-if="sortDirOf('name')"
-                                :name="sortDirOf('name') === 'ASC' ? 'chevron-up' : 'chevron-down'"
-                            />
-                        </th>
-                        <th
-                            class="ft-table__sortable"
-                            :class="{ 'is-active': sortDirOf('engine') }"
-                            @click="toggleSort('engine')"
-                        >
+                        </ft-th-sort>
+                        <ft-th-sort sort-key="engine">
                             {{ $t('frosh-tools.tabs.statistics.engine') }}
-                            <ft-icon
-                                v-if="sortDirOf('engine')"
-                                :name="sortDirOf('engine') === 'ASC' ? 'chevron-up' : 'chevron-down'"
-                            />
-                        </th>
-                        <th
-                            class="ft-table__num ft-table__sortable"
-                            :class="{ 'is-active': sortDirOf('rows') }"
-                            @click="toggleSort('rows')"
+                        </ft-th-sort>
+                        <ft-th-sort
+                            sort-key="rows"
+                            class="ft-table__num"
                         >
                             {{ $t('frosh-tools.tabs.statistics.rows') }}
-                            <ft-icon
-                                v-if="sortDirOf('rows')"
-                                :name="sortDirOf('rows') === 'ASC' ? 'chevron-up' : 'chevron-down'"
-                            />
-                        </th>
-                        <th
-                            class="ft-table__num ft-table__sortable"
-                            :class="{ 'is-active': sortDirOf('dataSize') }"
-                            @click="toggleSort('dataSize')"
+                        </ft-th-sort>
+                        <ft-th-sort
+                            sort-key="dataSize"
+                            class="ft-table__num"
                         >
                             {{ $t('frosh-tools.tabs.statistics.dataSize') }}
-                            <ft-icon
-                                v-if="sortDirOf('dataSize')"
-                                :name="sortDirOf('dataSize') === 'ASC' ? 'chevron-up' : 'chevron-down'"
-                            />
-                        </th>
-                        <th
-                            class="ft-table__num ft-table__sortable"
-                            :class="{ 'is-active': sortDirOf('indexSize') }"
-                            @click="toggleSort('indexSize')"
+                        </ft-th-sort>
+                        <ft-th-sort
+                            sort-key="indexSize"
+                            class="ft-table__num"
                         >
                             {{ $t('frosh-tools.tabs.statistics.indexSize') }}
-                            <ft-icon
-                                v-if="sortDirOf('indexSize')"
-                                :name="sortDirOf('indexSize') === 'ASC' ? 'chevron-up' : 'chevron-down'"
-                            />
-                        </th>
-                        <th
-                            class="ft-table__num ft-table__sortable"
-                            :class="{ 'is-active': sortDirOf('totalSize') }"
-                            @click="toggleSort('totalSize')"
+                        </ft-th-sort>
+                        <ft-th-sort
+                            sort-key="totalSize"
+                            class="ft-table__num"
                         >
                             {{ $t('frosh-tools.tabs.statistics.totalSize') }}
-                            <ft-icon
-                                v-if="sortDirOf('totalSize')"
-                                :name="sortDirOf('totalSize') === 'ASC' ? 'chevron-up' : 'chevron-down'"
-                            />
-                        </th>
+                        </ft-th-sort>
                     </tr>
                 </thead>
                 <tbody>
