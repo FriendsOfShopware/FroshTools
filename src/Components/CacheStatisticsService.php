@@ -102,42 +102,6 @@ class CacheStatisticsService
     }
 
     /**
-     * True heap fragmentation: how scattered the free memory is across non-contiguous blocks.
-     * 0% when all free memory is a single contiguous block, approaching 100% when it is split
-     * into many small blocks. This is independent of how full the cache is.
-     *
-     * @param array<string, mixed> $smaInfo result of apcu_sma_info(false)
-     */
-    private function calculateApcuFragmentation(array $smaInfo): float
-    {
-        $blockLists = $smaInfo['block_lists'] ?? null;
-        if (!\is_array($blockLists)) {
-            return 0.0;
-        }
-
-        $freeTotal = 0;
-        $largestBlock = 0;
-        foreach ($blockLists as $blocks) {
-            if (!\is_array($blocks)) {
-                continue;
-            }
-            foreach ($blocks as $block) {
-                $size = (int) ($block['size'] ?? 0);
-                $freeTotal += $size;
-                if ($size > $largestBlock) {
-                    $largestBlock = $size;
-                }
-            }
-        }
-
-        if ($freeTotal <= 0) {
-            return 0.0;
-        }
-
-        return round(($freeTotal - $largestBlock) / $freeTotal * 100, 2);
-    }
-
-    /**
      * PHP-FPM pool status. fpm_get_status() is only defined when the current request is served
      * by the FPM SAPI, so this returns null under CLI, cli-server or other SAPIs.
      *
@@ -156,18 +120,18 @@ class CacheStatisticsService
         }
 
         return [
-            'pool' => (string) ($status['pool'] ?? ''),
-            'processManager' => (string) ($status['process-manager'] ?? ''),
-            'uptime' => (int) ($status['start-since'] ?? 0),
-            'acceptedConnections' => (int) ($status['accepted-conn'] ?? 0),
-            'listenQueue' => (int) ($status['listen-queue'] ?? 0),
-            'maxListenQueue' => (int) ($status['max-listen-queue'] ?? 0),
-            'idleProcesses' => (int) ($status['idle-processes'] ?? 0),
-            'activeProcesses' => (int) ($status['active-processes'] ?? 0),
-            'totalProcesses' => (int) ($status['total-processes'] ?? 0),
-            'maxActiveProcesses' => (int) ($status['max-active-processes'] ?? 0),
-            'maxChildrenReached' => (int) ($status['max-children-reached'] ?? 0),
-            'slowRequests' => (int) ($status['slow-requests'] ?? 0),
+            'pool' => (string) $status['pool'],
+            'processManager' => (string) $status['process-manager'],
+            'uptime' => (int) $status['start-since'],
+            'acceptedConnections' => (int) $status['accepted-conn'],
+            'listenQueue' => (int) $status['listen-queue'],
+            'maxListenQueue' => (int) $status['max-listen-queue'],
+            'idleProcesses' => (int) $status['idle-processes'],
+            'activeProcesses' => (int) $status['active-processes'],
+            'totalProcesses' => (int) $status['total-processes'],
+            'maxActiveProcesses' => (int) $status['max-active-processes'],
+            'maxChildrenReached' => (int) $status['max-children-reached'],
+            'slowRequests' => (int) $status['slow-requests'],
         ];
     }
 
@@ -194,6 +158,10 @@ class CacheStatisticsService
 
                 $info = $redis->info();
             } catch (\Throwable) {
+                continue;
+            }
+
+            if (!\is_array($info)) {
                 continue;
             }
 
@@ -227,5 +195,41 @@ class CacheStatisticsService
         }
 
         return $result;
+    }
+
+    /**
+     * True heap fragmentation: how scattered the free memory is across non-contiguous blocks.
+     * 0% when all free memory is a single contiguous block, approaching 100% when it is split
+     * into many small blocks. This is independent of how full the cache is.
+     *
+     * @param array<string, mixed> $smaInfo result of apcu_sma_info(false)
+     */
+    private function calculateApcuFragmentation(array $smaInfo): float
+    {
+        $blockLists = $smaInfo['block_lists'] ?? null;
+        if (!\is_array($blockLists)) {
+            return 0.0;
+        }
+
+        $freeTotal = 0;
+        $largestBlock = 0;
+        foreach ($blockLists as $blocks) {
+            if (!\is_array($blocks)) {
+                continue;
+            }
+            foreach ($blocks as $block) {
+                $size = (int) ($block['size'] ?? 0);
+                $freeTotal += $size;
+                if ($size > $largestBlock) {
+                    $largestBlock = $size;
+                }
+            }
+        }
+
+        if ($freeTotal <= 0) {
+            return 0.0;
+        }
+
+        return round(($freeTotal - $largestBlock) / $freeTotal * 100, 2);
     }
 }

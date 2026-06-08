@@ -11,11 +11,8 @@
             />
         </template>
     </ft-page-head>
-
     <!-- OPcache -->
-    <ft-panel
-        v-if="cacheStats && cacheStats.opcache"
-    >
+    <ft-panel v-if="cacheStats && cacheStats.opcache">
         <template #title>
             <ft-icon name="bolt"/>
             <span>OPcache</span>
@@ -25,7 +22,9 @@
                 <div class="frosh-stat__label">
                     {{ $t('frosh-tools.tabs.statistics.hitRate') }}
                 </div>
-                <div :class="['frosh-stat__value', 'frosh-stat__value--' + hitRateVariant(cacheStats.opcache.hitRate)]">
+                <div
+                    :class="['frosh-stat__value', 'frosh-stat__value--' + hitRateVariant(cacheStats.opcache.hitRate)]"
+                >
                     {{ formatPercent(cacheStats.opcache.hitRate) }}
                 </div>
                 <div class="frosh-meter">
@@ -37,18 +36,26 @@
             </div>
             <div class="frosh-stat">
                 <div class="frosh-stat__label">
-                    {{ $t('frosh-tools.tabs.statistics.hits') }} / {{ $t('frosh-tools.tabs.statistics.misses') }}
+                    {{ $t('frosh-tools.tabs.statistics.hits') }}
+                    /
+                    {{ $t('frosh-tools.tabs.statistics.misses') }}
                 </div>
                 <div class="frosh-stat__value">
-                    {{ formatNumber(cacheStats.opcache.hits) }} / {{ formatNumber(cacheStats.opcache.misses) }}
+                    {{ formatNumber(cacheStats.opcache.hits) }}
+                    /
+                    {{ formatNumber(cacheStats.opcache.misses) }}
                 </div>
             </div>
             <div class="frosh-stat">
                 <div class="frosh-stat__label">
-                    {{ $t('frosh-tools.tabs.statistics.usedMemory') }} / {{ $t('frosh-tools.tabs.statistics.totalMemory') }}
+                    {{ $t('frosh-tools.tabs.statistics.usedMemory') }}
+                    /
+                    {{ $t('frosh-tools.tabs.statistics.totalMemory') }}
                 </div>
                 <div class="frosh-stat__value">
-                    {{ formatSize(cacheStats.opcache.usedMemory) }} / {{ formatSize(cacheStats.opcache.usedMemory + cacheStats.opcache.freeMemory) }}
+                    {{ formatSize(cacheStats.opcache.usedMemory) }}
+                    /
+                    {{ formatSize(cacheStats.opcache.usedMemory + cacheStats.opcache.freeMemory) }}
                 </div>
                 <div class="frosh-meter">
                     <div
@@ -64,7 +71,8 @@
                 <div class="frosh-stat__value">
                     {{ formatNumber(cacheStats.opcache.cachedScripts) }}
                     <template v-if="cacheStats.opcache.maxCachedScripts > 0">
-                        / {{ formatNumber(cacheStats.opcache.maxCachedScripts) }}
+                        /
+                        {{ formatNumber(cacheStats.opcache.maxCachedScripts) }}
                     </template>
                 </div>
             </div>
@@ -73,16 +81,25 @@
                     {{ $t('frosh-tools.tabs.statistics.wastedMemory') }}
                 </div>
                 <div class="frosh-stat__value">
-                    {{ formatSize(cacheStats.opcache.wastedMemory) }} ({{ formatPercent(cacheStats.opcache.wastedPercentage) }})
+                    {{ formatSize(cacheStats.opcache.wastedMemory) }}
+                    (
+                    {{ formatPercent(cacheStats.opcache.wastedPercentage) }}
+                    )
                 </div>
             </div>
             <div class="frosh-stat">
                 <div class="frosh-stat__label">
                     {{ $t('frosh-tools.tabs.statistics.internedStrings') }}
-                    ({{ $t('frosh-tools.tabs.statistics.usedMemory') }} / {{ $t('frosh-tools.tabs.statistics.totalMemory') }})
+                    (
+                    {{ $t('frosh-tools.tabs.statistics.usedMemory') }}
+                    /
+                    {{ $t('frosh-tools.tabs.statistics.totalMemory') }}
+                    )
                 </div>
                 <div class="frosh-stat__value">
-                    {{ formatSize(cacheStats.opcache.internedStringsUsedMemory) }} / {{ formatSize(cacheStats.opcache.internedStringsUsedMemory + cacheStats.opcache.internedStringsFreeMemory) }}
+                    {{ formatSize(cacheStats.opcache.internedStringsUsedMemory) }}
+                    /
+                    {{ formatSize(cacheStats.opcache.internedStringsUsedMemory + cacheStats.opcache.internedStringsFreeMemory) }}
                 </div>
                 <div class="frosh-meter">
                     <div
@@ -101,16 +118,15 @@
             </div>
         </div>
     </ft-panel>
-    <ft-panel
-        v-else-if="cacheStats && !cacheStats.opcache"
-    >
+    <ft-panel v-else-if="cacheStats && !cacheStats.opcache">
         <template #title>
             <ft-icon name="bolt"/>
             <span>OPcache</span>
         </template>
-        <ft-empty :title="'OPcache: ' + $t('frosh-tools.tabs.statistics.notAvailable')"/>
+        <ft-empty
+            :title="'OPcache: ' + $t('frosh-tools.tabs.statistics.notAvailable')"
+        />
     </ft-panel>
-
     <!-- Redis -->
     <ft-panel
         v-for="redis in (cacheStats ? cacheStats.redis : [])"
@@ -125,7 +141,9 @@
                 <div class="frosh-stat__label">
                     {{ $t('frosh-tools.tabs.statistics.hitRate') }}
                 </div>
-                <div :class="['frosh-stat__value', 'frosh-stat__value--' + hitRateVariant(redis.hitRate)]">
+                <div
+                    :class="['frosh-stat__value', 'frosh-stat__value--' + hitRateVariant(redis.hitRate)]"
+                >
                     {{ formatPercent(redis.hitRate) }}
                 </div>
                 <div class="frosh-meter">
@@ -137,20 +155,27 @@
             </div>
             <div class="frosh-stat">
                 <div class="frosh-stat__label">
-                    {{ $t('frosh-tools.tabs.statistics.hits') }} / {{ $t('frosh-tools.tabs.statistics.misses') }}
+                    {{ $t('frosh-tools.tabs.statistics.hits') }}
+                    /
+                    {{ $t('frosh-tools.tabs.statistics.misses') }}
                 </div>
                 <div class="frosh-stat__value">
-                    {{ formatNumber(redis.hits) }} / {{ formatNumber(redis.misses) }}
+                    {{ formatNumber(redis.hits) }}
+                    /
+                    {{ formatNumber(redis.misses) }}
                 </div>
             </div>
             <div class="frosh-stat">
                 <div class="frosh-stat__label">
-                    {{ $t('frosh-tools.tabs.statistics.usedMemory') }} / {{ $t('frosh-tools.tabs.statistics.maxMemory') }}
+                    {{ $t('frosh-tools.tabs.statistics.usedMemory') }}
+                    /
+                    {{ $t('frosh-tools.tabs.statistics.maxMemory') }}
                 </div>
                 <div class="frosh-stat__value">
                     {{ formatSize(redis.usedMemory) }}
                     <template v-if="redis.maxMemory > 0">
-                        / {{ formatSize(redis.maxMemory) }}
+                        /
+                        {{ formatSize(redis.maxMemory) }}
                     </template>
                 </div>
                 <div
@@ -181,35 +206,44 @@
             </div>
             <div class="frosh-stat">
                 <div class="frosh-stat__label">
-                    {{ $t('frosh-tools.tabs.statistics.evictedKeys') }} / {{ $t('frosh-tools.tabs.statistics.expiredKeys') }}
+                    {{ $t('frosh-tools.tabs.statistics.evictedKeys') }}
+                    /
+                    {{ $t('frosh-tools.tabs.statistics.expiredKeys') }}
                 </div>
                 <div class="frosh-stat__value">
-                    {{ formatNumber(redis.evictedKeys) }} / {{ formatNumber(redis.expiredKeys) }}
+                    {{ formatNumber(redis.evictedKeys) }}
+                    /
+                    {{ formatNumber(redis.expiredKeys) }}
                 </div>
             </div>
             <div class="frosh-stat">
                 <div class="frosh-stat__label">
-                    {{ $t('frosh-tools.tabs.statistics.opsPerSec') }} / {{ $t('frosh-tools.tabs.statistics.connectedClients') }}
+                    {{ $t('frosh-tools.tabs.statistics.opsPerSec') }}
+                    /
+                    {{ $t('frosh-tools.tabs.statistics.connectedClients') }}
                 </div>
                 <div class="frosh-stat__value">
-                    {{ formatNumber(redis.opsPerSec) }} / {{ formatNumber(redis.connectedClients) }}
+                    {{ formatNumber(redis.opsPerSec) }}
+                    /
+                    {{ formatNumber(redis.connectedClients) }}
                 </div>
             </div>
             <div class="frosh-stat">
                 <div class="frosh-stat__label">
-                    {{ $t('frosh-tools.tabs.statistics.version') }} / {{ $t('frosh-tools.tabs.statistics.uptime') }}
+                    {{ $t('frosh-tools.tabs.statistics.version') }}
+                    /
+                    {{ $t('frosh-tools.tabs.statistics.uptime') }}
                 </div>
                 <div class="frosh-stat__value">
-                    {{ redis.version }} / {{ formatUptime(redis.uptime) }}
+                    {{ redis.version }}
+                    /
+                    {{ formatUptime(redis.uptime) }}
                 </div>
             </div>
         </div>
     </ft-panel>
-
     <!-- APCu -->
-    <ft-panel
-        v-if="cacheStats && cacheStats.apcu"
-    >
+    <ft-panel v-if="cacheStats && cacheStats.apcu">
         <template #title>
             <ft-icon name="bolt"/>
             <span>APCu</span>
@@ -219,7 +253,9 @@
                 <div class="frosh-stat__label">
                     {{ $t('frosh-tools.tabs.statistics.hitRate') }}
                 </div>
-                <div :class="['frosh-stat__value', 'frosh-stat__value--' + hitRateVariant(cacheStats.apcu.hitRate)]">
+                <div
+                    :class="['frosh-stat__value', 'frosh-stat__value--' + hitRateVariant(cacheStats.apcu.hitRate)]"
+                >
                     {{ formatPercent(cacheStats.apcu.hitRate) }}
                 </div>
                 <div class="frosh-meter">
@@ -231,18 +267,26 @@
             </div>
             <div class="frosh-stat">
                 <div class="frosh-stat__label">
-                    {{ $t('frosh-tools.tabs.statistics.hits') }} / {{ $t('frosh-tools.tabs.statistics.misses') }}
+                    {{ $t('frosh-tools.tabs.statistics.hits') }}
+                    /
+                    {{ $t('frosh-tools.tabs.statistics.misses') }}
                 </div>
                 <div class="frosh-stat__value">
-                    {{ formatNumber(cacheStats.apcu.hits) }} / {{ formatNumber(cacheStats.apcu.misses) }}
+                    {{ formatNumber(cacheStats.apcu.hits) }}
+                    /
+                    {{ formatNumber(cacheStats.apcu.misses) }}
                 </div>
             </div>
             <div class="frosh-stat">
                 <div class="frosh-stat__label">
-                    {{ $t('frosh-tools.tabs.statistics.usedMemory') }} / {{ $t('frosh-tools.tabs.statistics.totalMemory') }}
+                    {{ $t('frosh-tools.tabs.statistics.usedMemory') }}
+                    /
+                    {{ $t('frosh-tools.tabs.statistics.totalMemory') }}
                 </div>
                 <div class="frosh-stat__value">
-                    {{ formatSize(cacheStats.apcu.usedMemory) }} / {{ formatSize(cacheStats.apcu.usedMemory + cacheStats.apcu.availableMemory) }}
+                    {{ formatSize(cacheStats.apcu.usedMemory) }}
+                    /
+                    {{ formatSize(cacheStats.apcu.usedMemory + cacheStats.apcu.availableMemory) }}
                 </div>
                 <div class="frosh-meter">
                     <div
@@ -253,22 +297,25 @@
             </div>
             <div class="frosh-stat">
                 <div class="frosh-stat__label">
-                    {{ $t('frosh-tools.tabs.statistics.entries') }} / {{ $t('frosh-tools.tabs.statistics.fragmentation') }}
+                    {{ $t('frosh-tools.tabs.statistics.entries') }}
+                    /
+                    {{ $t('frosh-tools.tabs.statistics.fragmentation') }}
                 </div>
                 <div class="frosh-stat__value">
-                    {{ formatNumber(cacheStats.apcu.entries) }} / {{ formatPercent(cacheStats.apcu.fragmentation) }}
+                    {{ formatNumber(cacheStats.apcu.entries) }}
+                    /
+                    {{ formatPercent(cacheStats.apcu.fragmentation) }}
                 </div>
             </div>
         </div>
     </ft-panel>
-
     <!-- PHP-FPM -->
-    <ft-panel
-        v-if="cacheStats && cacheStats.fpm"
-    >
+    <ft-panel v-if="cacheStats && cacheStats.fpm">
         <template #title>
             <ft-icon name="cog"/>
-            <span>{{ $t('frosh-tools.tabs.statistics.fpm') }}</span>
+            <span>
+                {{ $t('frosh-tools.tabs.statistics.fpm') }}
+            </span>
             <ft-pill
                 v-if="cacheStats.fpm.pool"
                 variant="muted"
@@ -278,15 +325,23 @@
                 v-if="cacheStats.fpm.processManager"
                 variant="muted"
                 bare
-            >{{ cacheStats.fpm.processManager }}</ft-pill>
+            >
+                {{ cacheStats.fpm.processManager }}
+            </ft-pill>
         </template>
         <div class="frosh-tab-statistics__metrics">
             <div class="frosh-stat frosh-stat--feature">
                 <div class="frosh-stat__label">
-                    {{ $t('frosh-tools.tabs.statistics.activeWorkers') }} / {{ $t('frosh-tools.tabs.statistics.workers') }}
+                    {{ $t('frosh-tools.tabs.statistics.activeWorkers') }}
+                    /
+                    {{ $t('frosh-tools.tabs.statistics.workers') }}
                 </div>
-                <div :class="['frosh-stat__value', 'frosh-stat__value--' + fillVariant(ratioPercent(cacheStats.fpm.activeProcesses, cacheStats.fpm.totalProcesses))]">
-                    {{ formatNumber(cacheStats.fpm.activeProcesses) }} / {{ formatNumber(cacheStats.fpm.totalProcesses) }}
+                <div
+                    :class="['frosh-stat__value', 'frosh-stat__value--' + fillVariant(ratioPercent(cacheStats.fpm.activeProcesses, cacheStats.fpm.totalProcesses))]"
+                >
+                    {{ formatNumber(cacheStats.fpm.activeProcesses) }}
+                    /
+                    {{ formatNumber(cacheStats.fpm.totalProcesses) }}
                 </div>
                 <div class="frosh-meter">
                     <div
@@ -295,23 +350,34 @@
                     ></div>
                 </div>
                 <div class="frosh-stat__caption">
-                    {{ formatNumber(cacheStats.fpm.idleProcesses) }} {{ $t('frosh-tools.tabs.statistics.idleWorkers') }}
-                    · {{ $t('frosh-tools.tabs.statistics.maxActiveProcesses') }} {{ formatNumber(cacheStats.fpm.maxActiveProcesses) }}
+                    {{ formatNumber(cacheStats.fpm.idleProcesses) }}
+                    {{ $t('frosh-tools.tabs.statistics.idleWorkers') }}
+                    ·
+                    {{ $t('frosh-tools.tabs.statistics.maxActiveProcesses') }}
+                    {{ formatNumber(cacheStats.fpm.maxActiveProcesses) }}
                 </div>
             </div>
             <div class="frosh-stat">
                 <div class="frosh-stat__label">
-                    {{ $t('frosh-tools.tabs.statistics.listenQueue') }} / {{ $t('frosh-tools.tabs.statistics.maxListenQueue') }}
+                    {{ $t('frosh-tools.tabs.statistics.listenQueue') }}
+                    /
+                    {{ $t('frosh-tools.tabs.statistics.maxListenQueue') }}
                 </div>
-                <div :class="['frosh-stat__value', { 'frosh-stat__value--warning': cacheStats.fpm.listenQueue > 0 }]">
-                    {{ formatNumber(cacheStats.fpm.listenQueue) }} / {{ formatNumber(cacheStats.fpm.maxListenQueue) }}
+                <div
+                    :class="['frosh-stat__value', { 'frosh-stat__value--warning': cacheStats.fpm.listenQueue > 0 }]"
+                >
+                    {{ formatNumber(cacheStats.fpm.listenQueue) }}
+                    /
+                    {{ formatNumber(cacheStats.fpm.maxListenQueue) }}
                 </div>
             </div>
             <div class="frosh-stat">
                 <div class="frosh-stat__label">
                     {{ $t('frosh-tools.tabs.statistics.maxChildrenReached') }}
                 </div>
-                <div :class="['frosh-stat__value', { 'frosh-stat__value--danger': cacheStats.fpm.maxChildrenReached > 0 }]">
+                <div
+                    :class="['frosh-stat__value', { 'frosh-stat__value--danger': cacheStats.fpm.maxChildrenReached > 0 }]"
+                >
                     {{ formatNumber(cacheStats.fpm.maxChildrenReached) }}
                 </div>
             </div>
@@ -319,7 +385,9 @@
                 <div class="frosh-stat__label">
                     {{ $t('frosh-tools.tabs.statistics.slowRequests') }}
                 </div>
-                <div :class="['frosh-stat__value', { 'frosh-stat__value--warning': cacheStats.fpm.slowRequests > 0 }]">
+                <div
+                    :class="['frosh-stat__value', { 'frosh-stat__value--warning': cacheStats.fpm.slowRequests > 0 }]"
+                >
                     {{ formatNumber(cacheStats.fpm.slowRequests) }}
                 </div>
             </div>
@@ -341,14 +409,13 @@
             </div>
         </div>
     </ft-panel>
-
     <!-- Database Server Info -->
-    <ft-panel
-        v-if="dbStats"
-    >
+    <ft-panel v-if="dbStats">
         <template #title>
             <ft-icon name="chart"/>
-            <span>{{ $t('frosh-tools.tabs.statistics.serverInfo') }}</span>
+            <span>
+                {{ $t('frosh-tools.tabs.statistics.serverInfo') }}
+            </span>
         </template>
         <div class="frosh-tab-statistics__metrics">
             <div class="frosh-stat">
@@ -401,21 +468,22 @@
             </div>
         </div>
     </ft-panel>
-
     <!-- InnoDB Buffer Pool -->
-    <ft-panel
-        v-if="dbStats && dbStats.globalStatus"
-    >
+    <ft-panel v-if="dbStats && dbStats.globalStatus">
         <template #title>
             <ft-icon name="chart"/>
-            <span>{{ $t('frosh-tools.tabs.statistics.bufferPool') }}</span>
+            <span>
+                {{ $t('frosh-tools.tabs.statistics.bufferPool') }}
+            </span>
         </template>
         <div class="frosh-tab-statistics__metrics">
             <div class="frosh-stat frosh-stat--feature">
                 <div class="frosh-stat__label">
                     {{ $t('frosh-tools.tabs.statistics.bufferPoolHitRate') }}
                 </div>
-                <div :class="['frosh-stat__value', 'frosh-stat__value--' + hitRateVariant(dbStats.globalStatus.bufferPoolHitRate)]">
+                <div
+                    :class="['frosh-stat__value', 'frosh-stat__value--' + hitRateVariant(dbStats.globalStatus.bufferPoolHitRate)]"
+                >
                     {{ formatPercent(dbStats.globalStatus.bufferPoolHitRate) }}
                 </div>
                 <div class="frosh-meter">
@@ -427,10 +495,14 @@
             </div>
             <div class="frosh-stat">
                 <div class="frosh-stat__label">
-                    {{ $t('frosh-tools.tabs.statistics.usedMemory') }} / {{ $t('frosh-tools.tabs.statistics.totalMemory') }}
+                    {{ $t('frosh-tools.tabs.statistics.usedMemory') }}
+                    /
+                    {{ $t('frosh-tools.tabs.statistics.totalMemory') }}
                 </div>
                 <div class="frosh-stat__value">
-                    {{ formatSize(dbStats.globalStatus.bufferPoolUsed) }} / {{ formatSize(dbStats.globalStatus.bufferPoolSize) }}
+                    {{ formatSize(dbStats.globalStatus.bufferPoolUsed) }}
+                    /
+                    {{ formatSize(dbStats.globalStatus.bufferPoolSize) }}
                 </div>
                 <div
                     v-if="dbStats.globalStatus.bufferPoolSize > 0"
@@ -444,23 +516,30 @@
             </div>
             <div class="frosh-stat">
                 <div class="frosh-stat__label">
-                    {{ $t('frosh-tools.tabs.statistics.threadsConnected') }} / {{ $t('frosh-tools.tabs.statistics.threadsRunning') }}
+                    {{ $t('frosh-tools.tabs.statistics.threadsConnected') }}
+                    /
+                    {{ $t('frosh-tools.tabs.statistics.threadsRunning') }}
                 </div>
                 <div class="frosh-stat__value">
-                    {{ formatNumber(dbStats.globalStatus.threadsConnected) }} / {{ formatNumber(dbStats.globalStatus.threadsRunning) }}
+                    {{ formatNumber(dbStats.globalStatus.threadsConnected) }}
+                    /
+                    {{ formatNumber(dbStats.globalStatus.threadsRunning) }}
                 </div>
             </div>
             <div class="frosh-stat">
                 <div class="frosh-stat__label">
-                    {{ $t('frosh-tools.tabs.statistics.tmpDiskTables') }} / {{ $t('frosh-tools.tabs.statistics.tmpTables') }}
+                    {{ $t('frosh-tools.tabs.statistics.tmpDiskTables') }}
+                    /
+                    {{ $t('frosh-tools.tabs.statistics.tmpTables') }}
                 </div>
                 <div class="frosh-stat__value">
-                    {{ formatNumber(dbStats.globalStatus.tmpDiskTables) }} / {{ formatNumber(dbStats.globalStatus.tmpTables) }}
+                    {{ formatNumber(dbStats.globalStatus.tmpDiskTables) }}
+                    /
+                    {{ formatNumber(dbStats.globalStatus.tmpTables) }}
                 </div>
             </div>
         </div>
     </ft-panel>
-
     <!-- Table Sizes -->
     <ft-panel
         v-if="dbStats && dbStats.tables"
@@ -469,7 +548,9 @@
     >
         <template #title>
             <ft-icon name="chart"/>
-            <span>{{ $t('frosh-tools.tabs.statistics.tableStatistics') }}</span>
+            <span>
+                {{ $t('frosh-tools.tabs.statistics.tableStatistics') }}
+            </span>
         </template>
         <ft-empty
             v-if="!dbStats.tables.length"
@@ -482,12 +563,24 @@
             <table class="ft-table">
                 <thead>
                     <tr>
-                        <th>{{ $t('frosh-tools.tabs.statistics.tableName') }}</th>
-                        <th>{{ $t('frosh-tools.tabs.statistics.engine') }}</th>
-                        <th class="ft-table__num">{{ $t('frosh-tools.tabs.statistics.rows') }}</th>
-                        <th class="ft-table__num">{{ $t('frosh-tools.tabs.statistics.dataSize') }}</th>
-                        <th class="ft-table__num">{{ $t('frosh-tools.tabs.statistics.indexSize') }}</th>
-                        <th class="ft-table__num">{{ $t('frosh-tools.tabs.statistics.totalSize') }}</th>
+                        <th>
+                            {{ $t('frosh-tools.tabs.statistics.tableName') }}
+                        </th>
+                        <th>
+                            {{ $t('frosh-tools.tabs.statistics.engine') }}
+                        </th>
+                        <th class="ft-table__num">
+                            {{ $t('frosh-tools.tabs.statistics.rows') }}
+                        </th>
+                        <th class="ft-table__num">
+                            {{ $t('frosh-tools.tabs.statistics.dataSize') }}
+                        </th>
+                        <th class="ft-table__num">
+                            {{ $t('frosh-tools.tabs.statistics.indexSize') }}
+                        </th>
+                        <th class="ft-table__num">
+                            {{ $t('frosh-tools.tabs.statistics.totalSize') }}
+                        </th>
                     </tr>
                 </thead>
                 <tbody>
@@ -505,11 +598,17 @@
                             <template v-else>—</template>
                         </td>
                         <td class="ft-table__num">{{ formatNumber(table.rows) }}</td>
-                        <td class="ft-table__num">{{ formatSize(table.dataSize) }}</td>
-                        <td class="ft-table__num">{{ formatSize(table.indexSize) }}</td>
+                        <td class="ft-table__num">
+                            {{ formatSize(table.dataSize) }}
+                        </td>
+                        <td class="ft-table__num">
+                            {{ formatSize(table.indexSize) }}
+                        </td>
                         <td class="ft-table__num">
                             <div class="frosh-size-cell">
-                                <span>{{ formatSize(table.totalSize) }}</span>
+                                <span>
+                                    {{ formatSize(table.totalSize) }}
+                                </span>
                                 <span class="frosh-size-cell__bar">
                                     <span
                                         class="frosh-size-cell__fill"
@@ -523,7 +622,6 @@
             </table>
         </div>
     </ft-panel>
-
     <ft-empty
         v-if="isLoading && !cacheStats && !dbStats"
         loading

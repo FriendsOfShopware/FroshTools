@@ -34,7 +34,7 @@
         line-height: 1.3;
         color: var(--ft-text);
         font-variant-numeric: tabular-nums;
-        word-break: break-word;
+        overflow-wrap: break-word;
 
         &--success {
             color: var(--ft-success);

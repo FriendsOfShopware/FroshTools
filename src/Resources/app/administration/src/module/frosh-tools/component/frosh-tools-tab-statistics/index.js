@@ -61,10 +61,14 @@ Component.register('frosh-tools-tab-statistics', {
         async loadCacheStats() {
             this.isLoadingCache = true;
             try {
-                this.cacheStats = await this.froshToolsService.getCacheStatistics();
+                this.cacheStats =
+                    await this.froshToolsService.getCacheStatistics();
             } catch (e) {
                 this.cacheStats = null;
-                console.error('[frosh-tools] failed to load cache statistics', e);
+                console.error(
+                    '[frosh-tools] failed to load cache statistics',
+                    e
+                );
             }
             this.isLoadingCache = false;
         },
@@ -72,21 +76,30 @@ Component.register('frosh-tools-tab-statistics', {
         async loadDbStats() {
             this.isLoadingDb = true;
             try {
-                this.dbStats = await this.froshToolsService.getDatabaseStatistics();
+                this.dbStats =
+                    await this.froshToolsService.getDatabaseStatistics();
             } catch (e) {
                 this.dbStats = null;
-                console.error('[frosh-tools] failed to load database statistics', e);
+                console.error(
+                    '[frosh-tools] failed to load database statistics',
+                    e
+                );
             }
             this.isLoadingDb = false;
         },
 
         formatSize(bytes) {
             if (bytes >= 1024 * 1024 * 1024) {
-                return this.percentFormatter.format(bytes / (1024 * 1024 * 1024)) + ' GiB';
+                return (
+                    this.percentFormatter.format(bytes / (1024 * 1024 * 1024)) +
+                    ' GiB'
+                );
             }
 
             if (bytes >= 1024 * 1024) {
-                return this.percentFormatter.format(bytes / (1024 * 1024)) + ' MiB';
+                return (
+                    this.percentFormatter.format(bytes / (1024 * 1024)) + ' MiB'
+                );
             }
 
             if (bytes >= 1024) {
