@@ -24,9 +24,6 @@ import './component/frosh-tools-tab-statistics';
 import './page/index';
 import './acl';
 
-import enGB from './snippet/en-GB.json';
-import deDE from './snippet/de-DE.json';
-
 Shopware.Module.register('frosh-tools', {
     type: 'plugin',
     name: 'frosh-tools.title',
@@ -35,11 +32,6 @@ Shopware.Module.register('frosh-tools', {
     color: '#303A4F',
 
     icon: 'regular-cog',
-
-    snippets: {
-        'de-DE': deDE,
-        'en-GB': enGB,
-    },
 
     routes: {
         index: {
