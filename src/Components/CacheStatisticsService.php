@@ -37,7 +37,7 @@ class CacheStatisticsService
 
         $maxScripts = 0;
         if ($config !== false) {
-            $maxScripts = (int) ($config['directives']['opcache.max_accelerated_files'] ?? 0);
+            $maxScripts = (int) $config['directives']['opcache.max_accelerated_files'];
         }
 
         $lastRestart = null;
