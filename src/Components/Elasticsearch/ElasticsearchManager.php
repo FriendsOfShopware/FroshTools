@@ -95,20 +95,30 @@ class ElasticsearchManager
     }
 
     /**
-     * @param array<mixed> $body
      * @param array<mixed> $params
      *
-     * @return array<mixed>|callable
+     * @return iterable<mixed>|string|null
      */
-    public function proxy(string $method, string $path, array $params, array $body): array|callable
+    public function proxy(string $method, string $path, array $params, mixed $body): iterable|string|null
     {
         if ($body === []) {
             $body = null;
         }
 
-        $response = $this->client->transport->performRequest($method, $path, $params, $body);
+        $response = $this->client->request($method, $path, [
+            'params' => $params,
+            'body' => $body,
+        ]);
 
-        return $this->client->transport->resultOrFuture($response);
+        if (\is_callable($response)) {
+            $response = $response();
+        }
+
+        if (!\is_iterable($response) && !\is_string($response) && $response !== null) {
+            throw new \UnexpectedValueException('Unexpected Elasticsearch proxy response type.');
+        }
+
+        return $response;
     }
 
     public function flushAll(): void
@@ -213,6 +223,7 @@ class ElasticsearchManager
             $activeIndexTasks = $this->getActiveIndexTaskMap();
         } catch (\Throwable $e) {
             $result['errors']['__detector__'] = $e->getMessage();
+
             return $result;
         }
 
@@ -278,7 +289,7 @@ class ElasticsearchManager
         $orphaned = [];
 
         foreach ($indices as $indexName => $config) {
-            if (!\is_string($indexName) || !$this->isOrphanedIndex($indexName, $config, $activeIndexTasks)) {
+            if (!$this->isOrphanedIndex($indexName, $config, $activeIndexTasks)) {
                 continue;
             }
 

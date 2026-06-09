@@ -56,7 +56,15 @@ class ElasticsearchController extends AbstractController
             throw FroshToolsException::elasticsearchDisabled();
         }
 
-        $data = $this->manager->proxy($request->getMethod(), '/' . $path, $request->query->all(), $request->request->all());
+        $body = $request->request->all();
+        $content = trim($request->getContent());
+
+        if ($body === [] && $content !== '') {
+            $decoded = json_decode($content, true);
+            $body = \json_last_error() === \JSON_ERROR_NONE ? $decoded : $content;
+        }
+
+        $data = $this->manager->proxy($request->getMethod(), '/' . $path, $request->query->all(), $body);
 
         return new JsonResponse($data);
     }

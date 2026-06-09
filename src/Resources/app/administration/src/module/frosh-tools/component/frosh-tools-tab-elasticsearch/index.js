@@ -20,6 +20,10 @@ Component.register('frosh-tools-tab-elasticsearch', {
             indices: [],
             consoleInput: 'GET /_cat/indices',
             consoleOutput: {},
+            showOrphanedCleanupModal: false,
+            orphanedCleanupIndices: [],
+            isLoadingOrphanedPreview: false,
+            isCleaningOrphaned: false,
         };
     },
 
@@ -28,6 +32,32 @@ Component.register('frosh-tools-tab-elasticsearch', {
     },
 
     methods: {
+        resizeCodeEditor(refName) {
+            const resize = () => {
+                const editor = this.$refs[refName]?.editor;
+
+                if (!editor || typeof editor.resize !== 'function') {
+                    return;
+                }
+
+                editor.resize(true);
+            };
+
+            this.$nextTick(() => {
+                resize();
+
+                if (typeof window === 'undefined') {
+                    return;
+                }
+
+                window.requestAnimationFrame(() => {
+                    resize();
+                    window.requestAnimationFrame(resize);
+                });
+                window.setTimeout(resize, 220);
+            });
+        },
+
         async createdComponent() {
             this.isLoading = true;
             try {
@@ -129,7 +159,9 @@ Component.register('frosh-tools-tab-elasticsearch', {
 
             if (deleted.length === 0 && errorKeys.length === 0) {
                 this.createNotificationInfo({
-                    message: this.$t('frosh-tools.tabs.elasticsearch.notification.cleanup.empty'),
+                    message: this.$t(
+                        'frosh-tools.tabs.elasticsearch.notification.cleanup.empty'
+                    ),
                 });
             } else if (deleted.length > 0) {
                 this.createNotificationSuccess({
@@ -176,7 +208,9 @@ Component.register('frosh-tools-tab-elasticsearch', {
 
                 if (indices.length === 0) {
                     this.createNotificationInfo({
-                        message: this.$t('frosh-tools.tabs.elasticsearch.notification.cleanup.empty'),
+                        message: this.$t(
+                            'frosh-tools.tabs.elasticsearch.notification.cleanup.empty'
+                        ),
                     });
                     return;
                 }
@@ -194,7 +228,9 @@ Component.register('frosh-tools-tab-elasticsearch', {
             }
         },
 
-        async cleanupOrphaned() {
+        async openOrphanedCleanupModal() {
+            this.isLoadingOrphanedPreview = true;
+
             let preview;
             try {
                 preview = await this.froshElasticSearch.getOrphanedIndices();
@@ -203,6 +239,8 @@ Component.register('frosh-tools-tab-elasticsearch', {
                     message: e?.message ?? this.$t('global.default.error'),
                 });
                 return;
+            } finally {
+                this.isLoadingOrphanedPreview = false;
             }
 
             const indices = preview?.indices ?? [];
@@ -215,31 +253,53 @@ Component.register('frosh-tools-tab-elasticsearch', {
 
             if (indices.length === 0) {
                 this.createNotificationInfo({
-                    message: this.$t('frosh-tools.tabs.elasticsearch.notification.orphaned.empty'),
+                    message: this.$t(
+                        'frosh-tools.tabs.elasticsearch.notification.orphaned.empty'
+                    ),
                 });
                 return;
             }
 
-            const confirmMessage = this.$t(
-                'frosh-tools.tabs.elasticsearch.notification.orphaned.confirm',
-                { count: indices.length, list: indices.join('\n') }
-            );
+            this.orphanedCleanupIndices = indices;
+            this.showOrphanedCleanupModal = true;
+        },
 
-            // eslint-disable-next-line no-alert
-            if (!window.confirm(confirmMessage)) {
+        closeOrphanedCleanupModal(force = false) {
+            if (this.isCleaningOrphaned && force !== true) {
                 return;
             }
 
+            this.showOrphanedCleanupModal = false;
+            this.orphanedCleanupIndices = [];
+        },
+
+        async confirmCleanupOrphaned() {
+            if (this.orphanedCleanupIndices.length === 0) {
+                this.closeOrphanedCleanupModal(true);
+                return;
+            }
+
+            this.isCleaningOrphaned = true;
+            let shouldClose = false;
+
             try {
-                const result = await this.froshElasticSearch.cleanupOrphaned(indices);
+                const result = await this.froshElasticSearch.cleanupOrphaned(
+                    this.orphanedCleanupIndices
+                );
                 this.notifyCleanupResult(result);
+                shouldClose = true;
             } catch (e) {
                 this.createNotificationError({
                     message: e?.message ?? this.$t('global.default.error'),
                 });
+            } finally {
+                this.isCleaningOrphaned = false;
             }
 
-            await this.createdComponent();
+            if (shouldClose) {
+                this.closeOrphanedCleanupModal(true);
+                await this.createdComponent();
+            }
         },
     },
 });

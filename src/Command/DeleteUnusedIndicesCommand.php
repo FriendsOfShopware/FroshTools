@@ -23,8 +23,8 @@ class DeleteUnusedIndicesCommand extends Command
     {
         $result = $this->elasticsearchManager->deleteUnusedIndices();
 
-        $deleted = $result['deleted'] ?? [];
-        $errors = $result['errors'] ?? [];
+        $deleted = $result['deleted'];
+        $errors = $result['errors'];
 
         if ($deleted === []) {
             $output->writeln('No unused indices found.');
