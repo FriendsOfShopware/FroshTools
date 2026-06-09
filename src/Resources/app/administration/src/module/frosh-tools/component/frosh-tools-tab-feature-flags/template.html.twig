@@ -31,24 +31,33 @@
             <table class="ft-table">
                 <thead>
                     <tr>
-                        <th>
+                        <ft-th-sort sort-key="flag">
                             {{ $t('frosh-tools.tabs.feature-flags.flag') }}
-                        </th>
-                        <th>
+                        </ft-th-sort>
+                        <ft-th-sort sort-key="description">
                             {{ $t('frosh-tools.tabs.feature-flags.description') }}
-                        </th>
-                        <th style="width: 110px;">{{ $t('frosh-tools.active') }}</th>
-                        <th style="width: 110px;">
+                        </ft-th-sort>
+                        <ft-th-sort
+                            sort-key="active"
+                            style="width: 110px;"
+                        >{{ $t('frosh-tools.active') }}</ft-th-sort>
+                        <ft-th-sort
+                            sort-key="major"
+                            style="width: 110px;"
+                        >
                             {{ $t('frosh-tools.tabs.feature-flags.major') }}
-                        </th>
-                        <th style="width: 110px;">
+                        </ft-th-sort>
+                        <ft-th-sort
+                            sort-key="default"
+                            style="width: 110px;"
+                        >
                             {{ $t('frosh-tools.tabs.feature-flags.default') }}
-                        </th>
+                        </ft-th-sort>
                     </tr>
                 </thead>
                 <tbody>
                     <tr
-                        v-for="item in featureFlags"
+                        v-for="item in sortRows(featureFlags)"
                         :key="item.flag"
                     >
                         <td class="ft-table__name ft-mono">{{ item.flag }}</td>

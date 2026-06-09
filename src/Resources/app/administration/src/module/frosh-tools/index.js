@@ -6,6 +6,7 @@ import './component/ft-pill';
 import './component/ft-empty';
 import './component/ft-hero-state';
 import './component/ft-refresh-button';
+import './component/ft-th-sort';
 import './component/frosh-tools-tab-index';
 import './component/frosh-tools-tab-cache';
 import './component/frosh-tools-tab-queue';

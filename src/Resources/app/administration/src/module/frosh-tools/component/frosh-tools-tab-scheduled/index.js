@@ -7,7 +7,10 @@ const { Criteria } = Shopware.Data;
 Component.register('frosh-tools-tab-scheduled', {
     template,
     inject: ['repositoryFactory', 'froshToolsService'],
-    mixins: [Mixin.getByName('notification')],
+    mixins: [
+        Mixin.getByName('notification'),
+        Mixin.getByName('frosh-sortable-table'),
+    ],
 
     data() {
         return {

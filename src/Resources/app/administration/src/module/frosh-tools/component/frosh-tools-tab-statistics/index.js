@@ -1,12 +1,13 @@
 import template from './template.twig';
 import './style.scss';
 
-const { Component } = Shopware;
+const { Component, Mixin } = Shopware;
 
 Component.register('frosh-tools-tab-statistics', {
     template,
 
     inject: ['froshToolsService'],
+    mixins: [Mixin.getByName('frosh-sortable-table')],
 
     data() {
         return {

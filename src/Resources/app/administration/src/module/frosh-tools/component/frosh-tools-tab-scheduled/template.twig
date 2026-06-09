@@ -41,17 +41,23 @@
             <table class="ft-table">
                 <thead>
                     <tr>
-                        <th>{{ $t('frosh-tools.name') }}</th>
-                        <th class="ft-table__num">
+                        <ft-th-sort sort-key="name">{{ $t('frosh-tools.name') }}</ft-th-sort>
+                        <ft-th-sort
+                            sort-key="runInterval"
+                            class="ft-table__num"
+                        >
                             {{ $t('frosh-tools.interval') }}
-                        </th>
-                        <th>
+                        </ft-th-sort>
+                        <ft-th-sort sort-key="lastExecutionTime">
                             {{ $t('frosh-tools.lastExecutionTime') }}
-                        </th>
-                        <th>
+                        </ft-th-sort>
+                        <ft-th-sort sort-key="nextExecutionTime">
                             {{ $t('frosh-tools.nextExecutionTime') }}
-                        </th>
-                        <th style="width: 130px;">{{ $t('frosh-tools.status') }}</th>
+                        </ft-th-sort>
+                        <ft-th-sort
+                            sort-key="status"
+                            style="width: 130px;"
+                        >{{ $t('frosh-tools.status') }}</ft-th-sort>
                         <th
                             class="ft-table__actions"
                             style="width: 60px;"
@@ -60,7 +66,7 @@
                 </thead>
                 <tbody>
                     <tr
-                        v-for="item in items"
+                        v-for="item in sortRows(items)"
                         :key="item.id"
                     >
                         <td>

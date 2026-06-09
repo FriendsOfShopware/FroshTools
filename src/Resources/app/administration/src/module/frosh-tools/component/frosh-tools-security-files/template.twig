@@ -38,8 +38,8 @@
             <table class="ft-table">
                 <thead>
                     <tr>
-                        <th>{{ $t('frosh-tools.name') }}</th>
-                        <th>{{ $t('frosh-tools.status') }}</th>
+                        <ft-th-sort sort-key="name">{{ $t('frosh-tools.name') }}</ft-th-sort>
+                        <ft-th-sort sort-key="expected">{{ $t('frosh-tools.status') }}</ft-th-sort>
                         <th class="ft-table__actions">
                             {{ $t('frosh-tools.actions') }}
                         </th>
@@ -47,7 +47,7 @@
                 </thead>
                 <tbody>
                     <tr
-                        v-for="item in items.files"
+                        v-for="item in sortRows(items.files)"
                         :key="item.name"
                     >
                         <td>

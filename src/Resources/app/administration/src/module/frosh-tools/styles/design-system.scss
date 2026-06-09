@@ -369,6 +369,26 @@ body.dark .ft {
         text-align: right;
         white-space: nowrap;
     }
+
+    &__sortable {
+        cursor: pointer;
+        user-select: none;
+
+        &:hover {
+            color: var(--ft-text);
+            background: var(--ft-surface-hover);
+        }
+
+        &.is-active {
+            color: var(--ft-text);
+        }
+
+        .ft-icon {
+            display: inline-flex;
+            margin-left: 4px;
+            vertical-align: middle;
+        }
+    }
 }
 
 .ft-table-wrap {

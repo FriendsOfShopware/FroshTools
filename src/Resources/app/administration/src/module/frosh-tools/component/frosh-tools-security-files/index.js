@@ -10,7 +10,10 @@ const { Component, Mixin } = Shopware;
 Component.register('frosh-tools-security-files', {
     template,
     inject: ['froshToolsService'],
-    mixins: [Mixin.getByName('notification')],
+    mixins: [
+        Mixin.getByName('notification'),
+        Mixin.getByName('frosh-sortable-table'),
+    ],
 
     data() {
         return {

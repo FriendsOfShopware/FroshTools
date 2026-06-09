@@ -42,13 +42,16 @@
             <table class="ft-table">
                 <thead>
                     <tr>
-                        <th>{{ $t('frosh-tools.name') }}</th>
-                        <th class="ft-table__num">{{ $t('frosh-tools.size') }}</th>
+                        <ft-th-sort sort-key="name">{{ $t('frosh-tools.name') }}</ft-th-sort>
+                        <ft-th-sort
+                            sort-key="size"
+                            class="ft-table__num"
+                        >{{ $t('frosh-tools.size') }}</ft-th-sort>
                     </tr>
                 </thead>
                 <tbody>
                     <tr
-                        v-for="(item, idx) in queueEntries"
+                        v-for="(item, idx) in sortRows(queueEntries)"
                         :key="idx"
                     >
                         <td class="ft-table__name">{{ item.name }}</td>

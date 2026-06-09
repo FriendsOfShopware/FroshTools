@@ -45,19 +45,28 @@
             <table class="ft-table">
                 <thead>
                     <tr>
-                        <th style="width: 170px;">{{ $t('frosh-tools.date') }}</th>
-                        <th style="width: 130px;">
+                        <ft-th-sort
+                            sort-key="date"
+                            style="width: 170px;"
+                        >{{ $t('frosh-tools.date') }}</ft-th-sort>
+                        <ft-th-sort
+                            sort-key="channel"
+                            style="width: 130px;"
+                        >
                             {{ $t('frosh-tools.channel') }}
-                        </th>
-                        <th style="width: 110px;">{{ $t('frosh-tools.level') }}</th>
-                        <th>
+                        </ft-th-sort>
+                        <ft-th-sort
+                            sort-key="level"
+                            style="width: 110px;"
+                        >{{ $t('frosh-tools.level') }}</ft-th-sort>
+                        <ft-th-sort sort-key="message">
                             {{ $t('frosh-tools.message') }}
-                        </th>
+                        </ft-th-sort>
                     </tr>
                 </thead>
                 <tbody>
                     <tr
-                        v-for="(item, idx) in logEntries"
+                        v-for="(item, idx) in sortRows(logEntries)"
                         :key="idx"
                     >
                         <td class="ft-mono">

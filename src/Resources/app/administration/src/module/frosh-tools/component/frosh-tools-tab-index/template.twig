@@ -31,19 +31,32 @@
             <table class="ft-table">
                 <thead>
                     <tr>
-                        <th style="width: 110px;">Status</th>
-                        <th>{{ $t('frosh-tools.name') }}</th>
-                        <th>
+                        <ft-th-sort
+                            sort-key="state"
+                            table="health"
+                            style="width: 110px;"
+                        >Status</ft-th-sort>
+                        <ft-th-sort
+                            sort-key="snippet"
+                            table="health"
+                        >{{ $t('frosh-tools.name') }}</ft-th-sort>
+                        <ft-th-sort
+                            sort-key="current"
+                            table="health"
+                        >
                             {{ $t('frosh-tools.current') }}
-                        </th>
-                        <th>
+                        </ft-th-sort>
+                        <ft-th-sort
+                            sort-key="recommended"
+                            table="health"
+                        >
                             {{ $t('frosh-tools.recommended') }}
-                        </th>
+                        </ft-th-sort>
                     </tr>
                 </thead>
                 <tbody>
                     <tr
-                        v-for="(item, idx) in health"
+                        v-for="(item, idx) in sortRows(health, 'health')"
                         :key="`h-${idx}`"
                     >
                         <td>
@@ -87,19 +100,32 @@
             <table class="ft-table">
                 <thead>
                     <tr>
-                        <th style="width: 110px;">Status</th>
-                        <th>{{ $t('frosh-tools.name') }}</th>
-                        <th>
+                        <ft-th-sort
+                            sort-key="state"
+                            table="performance"
+                            style="width: 110px;"
+                        >Status</ft-th-sort>
+                        <ft-th-sort
+                            sort-key="snippet"
+                            table="performance"
+                        >{{ $t('frosh-tools.name') }}</ft-th-sort>
+                        <ft-th-sort
+                            sort-key="current"
+                            table="performance"
+                        >
                             {{ $t('frosh-tools.current') }}
-                        </th>
-                        <th>
+                        </ft-th-sort>
+                        <ft-th-sort
+                            sort-key="recommended"
+                            table="performance"
+                        >
                             {{ $t('frosh-tools.recommended') }}
-                        </th>
+                        </ft-th-sort>
                     </tr>
                 </thead>
                 <tbody>
                     <tr
-                        v-for="(item, idx) in performanceStatus"
+                        v-for="(item, idx) in sortRows(performanceStatus, 'performance')"
                         :key="`p-${idx}`"
                     >
                         <td>

@@ -98,15 +98,18 @@
             <table class="ft-table">
                 <thead>
                     <tr>
-                        <th>
+                        <ft-th-sort sort-key="name">
                             {{ $t('frosh-tools.tabs.fastly.snippets.name') }}
-                        </th>
-                        <th>
+                        </ft-th-sort>
+                        <ft-th-sort sort-key="type">
                             {{ $t('frosh-tools.tabs.fastly.snippets.type') }}
-                        </th>
-                        <th class="ft-table__num">
+                        </ft-th-sort>
+                        <ft-th-sort
+                            sort-key="priority"
+                            class="ft-table__num"
+                        >
                             {{ $t('frosh-tools.tabs.fastly.snippets.priority') }}
-                        </th>
+                        </ft-th-sort>
                         <th class="ft-table__actions">
                             {{ $t('frosh-tools.actions') }}
                         </th>
@@ -114,7 +117,7 @@
                 </thead>
                 <tbody>
                     <tr
-                        v-for="item in snippets"
+                        v-for="item in sortRows(snippets)"
                         :key="item.name"
                     >
                         <td class="ft-table__name ft-mono">{{ item.name }}</td>
