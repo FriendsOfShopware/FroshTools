@@ -56,24 +56,27 @@ class ElasticsearchManager
      */
     public function indices(): array
     {
-        $indices = $this->client->indices()->get(['index' => '*']);
-        $stats = $this->client->indices()->stats(['index' => '*']);
+        $patterns = [
+            $this->indexPrefix . '_*',
+            $this->adminIndexPrefix . '-*',
+        ];
 
         $list = [];
 
-        foreach ($indices as $indexName => $config) {
-            if (!$this->matchesPrefix($indexName)) {
-                continue;
+        foreach ($patterns as $pattern) {
+            $indices = $this->client->indices()->get(['index' => $pattern]);
+            $stats = $this->client->indices()->stats(['index' => $pattern]);
+
+            foreach ($indices as $indexName => $config) {
+                $statCfg = $stats['indices'][$indexName];
+
+                $list[] = [
+                    'name' => $indexName,
+                    'aliases' => array_keys($config['aliases']),
+                    'indexSize' => $statCfg['total']['store']['size_in_bytes'],
+                    'docs' => $statCfg['primaries']['docs']['count'],
+                ];
             }
-
-            $statCfg = $stats['indices'][$indexName];
-
-            $list[] = [
-                'name' => $indexName,
-                'aliases' => array_keys($config['aliases']),
-                'indexSize' => $statCfg['total']['store']['size_in_bytes'],
-                'docs' => $statCfg['primaries']['docs']['count'],
-            ];
         }
 
         return $list;
@@ -174,8 +177,8 @@ class ElasticsearchManager
      * removed entity definitions or older Shopware versions that the strict
      * ElasticsearchOutdatedIndexDetector::get() does not consider "outdated".
      *
-     * Safety net: any index that has at least one alias is excluded — Shopware
-     * relies on aliases to route to the live indices.
+     * Safety nets: any index that has at least one alias or is still tracked in
+     * Shopware's indexing task tables is excluded.
      *
      * @return array{indices: array<string>, error: string|null}
      */
@@ -183,45 +186,47 @@ class ElasticsearchManager
     {
         try {
             $indices = $this->client->indices()->get(['index' => '*']);
+            $activeIndexTasks = $this->getActiveIndexTaskMap();
         } catch (\Throwable $e) {
             return ['indices' => [], 'error' => $e->getMessage()];
         }
 
-        $orphaned = [];
-        foreach ($indices as $indexName => $config) {
-            if (!$this->matchesPrefix($indexName)) {
-                continue;
-            }
-
-            $aliases = $config['aliases'] ?? [];
-            if ($aliases !== []) {
-                continue;
-            }
-
-            $orphaned[] = $indexName;
-        }
-
-        return ['indices' => $orphaned, 'error' => null];
+        return ['indices' => $this->filterOrphanedIndices($indices, $activeIndexTasks), 'error' => null];
     }
 
     /**
+     * @param list<string> $indices
+     *
      * @return array{deleted: array<string>, errors: array<string, string>}
      */
-    public function deleteOrphanedIndices(): array
+    public function deleteOrphanedIndices(array $indices): array
     {
         $result = ['deleted' => [], 'errors' => []];
+        $indices = array_values(array_unique($indices));
 
-        $orphaned = $this->getOrphanedIndices();
-        if ($orphaned['error'] !== null) {
-            $result['errors']['__detector__'] = $orphaned['error'];
-
+        if ($indices === []) {
             return $result;
         }
 
-        foreach ($orphaned['indices'] as $index) {
-            // Defensive double-check: never delete anything outside the
-            // configured prefix, even if upstream lookups regress.
-            if (!$this->matchesPrefix($index)) {
+        try {
+            $currentIndices = $this->client->indices()->get(['index' => '*']);
+            $activeIndexTasks = $this->getActiveIndexTaskMap();
+        } catch (\Throwable $e) {
+            $result['errors']['__detector__'] = $e->getMessage();
+            return $result;
+        }
+
+        foreach ($indices as $index) {
+            $config = $currentIndices[$index] ?? null;
+            if (!\is_array($config)) {
+                $result['errors'][$index] = 'Index does not exist.';
+
+                continue;
+            }
+
+            if (!$this->isOrphanedIndex($index, $config, $activeIndexTasks)) {
+                $result['errors'][$index] = 'Index is no longer orphaned.';
+
                 continue;
             }
 
@@ -260,5 +265,61 @@ class ElasticsearchManager
     {
         return str_starts_with($indexName, $this->indexPrefix . '_')
             || str_starts_with($indexName, $this->adminIndexPrefix . '-');
+    }
+
+    /**
+     * @param array<string, array<mixed>> $indices
+     * @param array<string, true> $activeIndexTasks
+     *
+     * @return list<string>
+     */
+    private function filterOrphanedIndices(array $indices, array $activeIndexTasks): array
+    {
+        $orphaned = [];
+
+        foreach ($indices as $indexName => $config) {
+            if (!\is_string($indexName) || !$this->isOrphanedIndex($indexName, $config, $activeIndexTasks)) {
+                continue;
+            }
+
+            $orphaned[] = $indexName;
+        }
+
+        return $orphaned;
+    }
+
+    /**
+     * @param array<mixed> $config
+     * @param array<string, true> $activeIndexTasks
+     */
+    private function isOrphanedIndex(string $indexName, array $config, array $activeIndexTasks): bool
+    {
+        if (!$this->matchesPrefix($indexName) || isset($activeIndexTasks[$indexName])) {
+            return false;
+        }
+
+        $aliases = $config['aliases'] ?? null;
+
+        return \is_array($aliases) && $aliases === [];
+    }
+
+    /**
+     * @return array<string, true>
+     */
+    private function getActiveIndexTaskMap(): array
+    {
+        $activeIndexTasks = [];
+
+        foreach (['elasticsearch_index_task', 'admin_elasticsearch_index_task'] as $table) {
+            foreach ($this->connection->fetchFirstColumn(\sprintf('SELECT `index` FROM `%s`', $table)) as $index) {
+                if (!\is_string($index) || $index === '') {
+                    continue;
+                }
+
+                $activeIndexTasks[$index] = true;
+            }
+        }
+
+        return $activeIndexTasks;
     }
 }

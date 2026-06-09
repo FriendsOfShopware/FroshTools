@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Frosh\Tools\Controller;
 
 use Frosh\Tools\Components\Elasticsearch\ElasticsearchManager;
+use Frosh\Tools\Components\Exception\FroshToolsException;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
@@ -22,7 +23,7 @@ class ElasticsearchController extends AbstractController
     public function status(): Response
     {
         if (!$this->manager->isEnabled()) {
-            return new Response('', Response::HTTP_PRECONDITION_FAILED);
+            throw FroshToolsException::elasticsearchDisabled();
         }
 
         return new JsonResponse($this->manager->info());
@@ -32,7 +33,7 @@ class ElasticsearchController extends AbstractController
     public function indices(): Response
     {
         if (!$this->manager->isEnabled()) {
-            return new Response('', Response::HTTP_PRECONDITION_FAILED);
+            throw FroshToolsException::elasticsearchDisabled();
         }
 
         return new JsonResponse($this->manager->indices());
@@ -42,7 +43,7 @@ class ElasticsearchController extends AbstractController
     public function deleteIndex(string $indexName): Response
     {
         if (!$this->manager->isEnabled()) {
-            return new Response('', Response::HTTP_PRECONDITION_FAILED);
+            throw FroshToolsException::elasticsearchDisabled();
         }
 
         return new JsonResponse($this->manager->deleteIndex($indexName));
@@ -52,7 +53,7 @@ class ElasticsearchController extends AbstractController
     public function console(Request $request, string $path): Response
     {
         if (!$this->manager->isEnabled()) {
-            return new Response('', Response::HTTP_PRECONDITION_FAILED);
+            throw FroshToolsException::elasticsearchDisabled();
         }
 
         $data = $this->manager->proxy($request->getMethod(), '/' . $path, $request->query->all(), $request->request->all());
@@ -88,7 +89,7 @@ class ElasticsearchController extends AbstractController
     public function unusedIndices(): Response
     {
         if (!$this->manager->isEnabled()) {
-            return new Response('', Response::HTTP_PRECONDITION_FAILED);
+            throw FroshToolsException::elasticsearchDisabled();
         }
 
         return new JsonResponse($this->manager->getUnusedIndices());
@@ -98,7 +99,7 @@ class ElasticsearchController extends AbstractController
     public function orphanedIndices(): Response
     {
         if (!$this->manager->isEnabled()) {
-            return new Response('', Response::HTTP_PRECONDITION_FAILED);
+            throw FroshToolsException::elasticsearchDisabled();
         }
 
         return new JsonResponse($this->manager->getOrphanedIndices());
@@ -108,20 +109,44 @@ class ElasticsearchController extends AbstractController
     public function deleteUnusedIndices(): Response
     {
         if (!$this->manager->isEnabled()) {
-            return new Response('', Response::HTTP_PRECONDITION_FAILED);
+            throw FroshToolsException::elasticsearchDisabled();
         }
 
         return new JsonResponse($this->manager->deleteUnusedIndices());
     }
 
     #[Route(path: '/cleanup_orphaned', name: 'api.frosh.tools.elasticsearch.cleanup_orphaned', methods: ['POST'])]
-    public function deleteOrphanedIndices(): Response
+    public function deleteOrphanedIndices(Request $request): Response
     {
         if (!$this->manager->isEnabled()) {
-            return new Response('', Response::HTTP_PRECONDITION_FAILED);
+            throw FroshToolsException::elasticsearchDisabled();
         }
 
-        return new JsonResponse($this->manager->deleteOrphanedIndices());
+        $data = $request->request->all();
+        $content = trim($request->getContent());
+
+        if ($data === [] && $content !== '') {
+            try {
+                $decoded = json_decode($content, true, 512, \JSON_THROW_ON_ERROR);
+            } catch (\JsonException $e) {
+                return new JsonResponse(['message' => $e->getMessage()], Response::HTTP_BAD_REQUEST);
+            }
+
+            if (!\is_array($decoded)) {
+                return new JsonResponse(['message' => 'Request body must be a JSON object.'], Response::HTTP_BAD_REQUEST);
+            }
+
+            $data = $decoded;
+        }
+
+        $indices = $data['indices'] ?? [];
+        if (!\is_array($indices)) {
+            return new JsonResponse(['message' => 'Field "indices" must be an array.'], Response::HTTP_BAD_REQUEST);
+        }
+
+        $indices = array_values(array_unique(array_filter($indices, static fn (mixed $index): bool => \is_string($index) && $index !== '')));
+
+        return new JsonResponse($this->manager->deleteOrphanedIndices($indices));
     }
 
     #[Route(path: '/reset', name: 'api.frosh.tools.elasticsearch.reset', methods: ['POST'])]

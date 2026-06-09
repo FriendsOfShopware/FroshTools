@@ -1,26 +1,33 @@
-<sw-card-view>
-    <sw-card
-        class="frosh-tools-tab-state-machines__state-machines-card"
-        deprecated
+<div class="ft frosh-tab-sm">
+    <ft-page-head
         :title="$t('frosh-tools.tabs.state-machines.title')"
-        :isLoading="isLoading"
-        :large="true"
-        positionIdentifier="frosh-tools-tab-state-machines"
-    >
-        <div
-            id="state_machine"
-            class="frosh-tools-tab-state-machines__state-machines-card-image-wrapper"
-        ></div>
-        <template #toolbar>
-            <sw-single-select
-                v-model:value="selectedStateMachine"
-                :options="stateMachineOptions"
-                :aside="true"
-                :disable-search-function="true"
-                @update:value="onStateMachineChange"
-                :label="$t('frosh-tools.tabs.state-machines.label')"
-                :placeholder="$t('frosh-tools.chooseStateMachine')"
-            />
+        subtitle="Visualize states, transitions and actions for any registered state machine."
+    />
+    <ft-panel :title="$t('frosh-tools.tabs.state-machines.label')">
+        <template #actions>
+            <div class="frosh-tab-sm__select">
+                <sw-single-select
+                    v-model:value="selectedStateMachine"
+                    :options="stateMachineOptions"
+                    :aside="true"
+                    :disable-search-function="true"
+                    @update:value="onStateMachineChange"
+                    :placeholder="$t('frosh-tools.chooseStateMachine')"
+                />
+            </div>
         </template>
-    </sw-card>
-</sw-card-view>
+        <div class="frosh-tab-sm__body">
+            <ft-empty
+                v-if="!selectedStateMachine"
+                icon="flow"
+                title="No state machine selected"
+                sub="Pick one from the dropdown above to render its diagram."
+            />
+            <div
+                id="state_machine"
+                class="frosh-tab-sm__canvas"
+                v-show="selectedStateMachine"
+            ></div>
+        </div>
+    </ft-panel>
+</div>

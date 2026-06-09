@@ -230,6 +230,29 @@ class FroshTools extends ApiService {
             });
     }
 
+    getComposerAudit(forceRefresh = false) {
+        const apiRoute = `${this.getApiBasePath()}/composer-audit`;
+        return this.httpClient
+            .get(apiRoute, {
+                headers: this.getBasicHeaders(),
+                params: forceRefresh ? { refresh: 1 } : {},
+            })
+            .then((response) => {
+                return ApiService.handleResponse(response);
+            });
+    }
+
+    getSecurityStatus() {
+        const apiRoute = `${this.getApiBasePath()}/security/status`;
+        return this.httpClient
+            .get(apiRoute, {
+                headers: this.getBasicHeaders(),
+            })
+            .then((response) => {
+                return ApiService.handleResponse(response);
+            });
+    }
+
     getFeatureFlags() {
         const apiRoute = `${this.getApiBasePath()}/feature-flag/list`;
         return this.httpClient
@@ -296,6 +319,28 @@ class FroshTools extends ApiService {
 
     getFastlySnippets() {
         const apiRoute = `${this.getApiBasePath()}/fastly/snippets`;
+        return this.httpClient
+            .get(apiRoute, {
+                headers: this.getBasicHeaders(),
+            })
+            .then((response) => {
+                return ApiService.handleResponse(response);
+            });
+    }
+
+    getCacheStatistics() {
+        const apiRoute = `${this.getApiBasePath()}/statistics/cache`;
+        return this.httpClient
+            .get(apiRoute, {
+                headers: this.getBasicHeaders(),
+            })
+            .then((response) => {
+                return ApiService.handleResponse(response);
+            });
+    }
+
+    getDatabaseStatistics() {
+        const apiRoute = `${this.getApiBasePath()}/statistics/database`;
         return this.httpClient
             .get(apiRoute, {
                 headers: this.getBasicHeaders(),

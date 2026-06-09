@@ -1,9 +1,8 @@
-.frosh-tools-tab-cache__cache-card {
-    .sw-card__content {
-        padding: 0;
-
-        .sw-label {
-            text-align: center;
-        }
+.frosh-tab-cache {
+    &__name-row {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        flex-wrap: wrap;
     }
 }

@@ -1,12 +1,19 @@
 import template from './template.twig';
+import './style.scss';
 import DiffMatchPatch from 'diff-match-patch';
 
 const { Component, Mixin } = Shopware;
 
-Component.register('frosh-tools-tab-files', {
+// File integrity: detects drift between shipped Shopware/extension files and
+// what is on disk, with a diff modal and a guarded restore action. Interactive,
+// so it lives on its own sub-tab inside the Security Center.
+Component.register('frosh-tools-security-files', {
     template,
-    inject: ['repositoryFactory', 'froshToolsService'],
-    mixins: [Mixin.getByName('notification')],
+    inject: ['froshToolsService'],
+    mixins: [
+        Mixin.getByName('notification'),
+        Mixin.getByName('frosh-sortable-table'),
+    ],
 
     data() {
         return {
@@ -23,31 +30,6 @@ Component.register('frosh-tools-tab-files', {
 
     created() {
         this.createdComponent();
-    },
-
-    computed: {
-        columns() {
-            return [
-                {
-                    property: 'name',
-                    label: 'frosh-tools.name',
-                    rawData: true,
-                    primary: true,
-                },
-                {
-                    property: 'expected',
-                    label: 'frosh-tools.status',
-                    rawData: true,
-                    primary: true,
-                },
-            ];
-        },
-
-        isLoadingClass() {
-            return {
-                'is-loading': this.isLoading,
-            };
-        },
     },
 
     methods: {

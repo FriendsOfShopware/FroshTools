@@ -1,0 +1,11 @@
+<th
+    class="ft-table__sortable"
+    :class="{ 'is-active': dir }"
+    @click="onClick"
+>
+    <slot/>
+    <ft-icon
+        v-if="dir"
+        :name="dir === 'ASC' ? 'chevron-up' : 'chevron-down'"
+    />
+</th>

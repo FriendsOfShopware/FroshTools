@@ -96,6 +96,10 @@ class LogController extends AbstractController
      */
     private function getFiles(): array
     {
+        if (!is_dir($this->logDir)) {
+            return [];
+        }
+
         $finder = new Finder();
         $finder
             ->in($this->logDir)

@@ -1,0 +1,29 @@
+.ft-empty {
+    padding: 40px 24px;
+    text-align: center;
+    color: var(--ft-text-muted);
+
+    &__icon {
+        width: 44px;
+        height: 44px;
+        border-radius: 12px;
+        background: var(--ft-surface-2);
+        display: inline-grid;
+        place-items: center;
+        margin-bottom: 12px;
+        color: var(--ft-text-soft);
+    }
+
+    &__title {
+        font-size: 15px;
+        font-weight: 600;
+        color: var(--ft-text);
+        margin-bottom: 4px;
+    }
+
+    &__sub {
+        font-size: 13px;
+        max-width: 360px;
+        margin: 0 auto;
+    }
+}

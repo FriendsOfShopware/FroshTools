@@ -5,10 +5,11 @@ const { Component, Mixin } = Shopware;
 
 Component.register('frosh-tools-tab-fastly', {
     template,
-
     inject: ['froshToolsService'],
-
-    mixins: [Mixin.getByName('notification')],
+    mixins: [
+        Mixin.getByName('notification'),
+        Mixin.getByName('frosh-sortable-table'),
+    ],
 
     data() {
         return {
@@ -51,26 +52,6 @@ Component.register('frosh-tools-tab-fastly', {
                 },
             ];
         },
-
-        snippetColumns() {
-            return [
-                {
-                    property: 'name',
-                    label: this.$t('frosh-tools.tabs.fastly.snippets.name'),
-                    allowResize: true,
-                },
-                {
-                    property: 'type',
-                    label: this.$t('frosh-tools.tabs.fastly.snippets.type'),
-                    allowResize: true,
-                },
-                {
-                    property: 'priority',
-                    label: this.$t('frosh-tools.tabs.fastly.snippets.priority'),
-                    allowResize: true,
-                },
-            ];
-        },
     },
 
     created() {
@@ -82,7 +63,6 @@ Component.register('frosh-tools-tab-fastly', {
             minimumFractionDigits: 2,
             maximumFractionDigits: 2,
         });
-
         this.loadStats();
         this.loadSnippets();
     },
@@ -103,9 +83,7 @@ Component.register('frosh-tools-tab-fastly', {
                 const formatted = bytes / (1024 * 1024 * 1024);
                 return this.numberFormater.format(formatted) + ' GiB';
             }
-
             const formatted = bytes / (1024 * 1024);
-
             return this.numberFormater.format(formatted) + ' MiB';
         },
 
@@ -117,7 +95,6 @@ Component.register('frosh-tools-tab-fastly', {
             this.isLoading = true;
             try {
                 await this.froshToolsService.fastlyPurgeAll();
-
                 this.createNotificationSuccess({
                     message: this.$t('frosh-tools.tabs.fastly.purgeAllSuccess'),
                 });
@@ -135,7 +112,6 @@ Component.register('frosh-tools-tab-fastly', {
             this.isLoading = true;
             try {
                 await this.froshToolsService.fastlyPurge(this.purgePath);
-
                 this.createNotificationSuccess({
                     message: this.$t('frosh-tools.tabs.fastly.purgeSuccess'),
                 });

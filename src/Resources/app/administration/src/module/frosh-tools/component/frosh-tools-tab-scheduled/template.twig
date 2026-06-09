@@ -1,115 +1,208 @@
-<sw-card-view>
-    <sw-card
-        class="frosh-tools-tab-scheduled__tasks-card"
+<div class="ft frosh-tab-scheduled">
+    <ft-page-head
         :title="$t('frosh-tools.tabs.scheduledTaskOverview.title')"
-        :isLoading="isLoading"
-        :large="true"
-        positionIdentifier="frosh-tools-tab-scheduled"
-        deprecated
+        subtitle="Inspect, schedule, deactivate and run background tasks."
     >
-        <template #toolbar>
-            <sw-button
-                deprecated
-                variant="ghost"
+        <template #actions>
+            <ft-refresh-button
+                :loading="isLoading"
+                label="Refresh"
                 @click="refresh"
-            >
-                <sw-icon
-                    :small="true"
-                    name="regular-undo"
-                    deprecated
-                ></sw-icon>
-            </sw-button>
-            <sw-button
-                deprecated
-                variant="primary"
+            />
+            <button
+                class="ft-btn ft-btn--primary"
+                :disabled="isLoading"
                 @click="registerScheduledTasks"
             >
-                {{ $t('frosh-tools.scheduledTasksRegisterStarted') }}
-            </sw-button>
+                <ft-icon name="cog"/>
+                <span>
+                    {{ $t('frosh-tools.scheduledTasksRegisterStarted') }}
+                </span>
+            </button>
         </template>
-
-        <template #grid>
-            <sw-entity-listing
-                :showSelection="false"
-                :fullPage="false"
-                :allowInlineEdit="true"
-                :allowEdit="false"
-                :allowDelete="false"
-                :showActions="true"
-                :repository="scheduledRepository"
-                :items="items"
-                :columns="columns"
+    </ft-page-head>
+    <ft-panel
+        title="Tasks"
+        :count="items ? items.length : null"
+        flush
+    >
+        <ft-empty
+            v-if="!items"
+            loading
+        />
+        <ft-empty
+            v-else-if="!items.length"
+            title="No scheduled tasks registered"
+        />
+        <div
+            v-else
+            class="ft-table-wrap"
+        >
+            <table class="ft-table">
+                <thead>
+                    <tr>
+                        <ft-th-sort sort-key="name">{{ $t('frosh-tools.name') }}</ft-th-sort>
+                        <ft-th-sort
+                            sort-key="runInterval"
+                            class="ft-table__num"
+                        >
+                            {{ $t('frosh-tools.interval') }}
+                        </ft-th-sort>
+                        <ft-th-sort sort-key="lastExecutionTime">
+                            {{ $t('frosh-tools.lastExecutionTime') }}
+                        </ft-th-sort>
+                        <ft-th-sort sort-key="nextExecutionTime">
+                            {{ $t('frosh-tools.nextExecutionTime') }}
+                        </ft-th-sort>
+                        <ft-th-sort
+                            sort-key="status"
+                            style="width: 130px;"
+                        >{{ $t('frosh-tools.status') }}</ft-th-sort>
+                        <th
+                            class="ft-table__actions"
+                            style="width: 60px;"
+                        ></th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr
+                        v-for="item in sortRows(items)"
+                        :key="item.id"
+                    >
+                        <td>
+                            <div class="ft-table__name">
+                                {{ shortName(item.name) }}
+                                <div class="ft-table__name-sub">{{ item.name }}</div>
+                            </div>
+                        </td>
+                        <td class="ft-table__num">{{ item.runInterval }}s</td>
+                        <td class="ft-mono">
+                            {{ formatDate(item.lastExecutionTime) }}
+                        </td>
+                        <td class="ft-mono">
+                            {{ formatDate(item.nextExecutionTime) }}
+                        </td>
+                        <td>
+                            <ft-pill :variant="statusVariant(item.status)">{{ item.status }}</ft-pill>
+                        </td>
+                        <td class="ft-table__actions">
+                            <div class="frosh-tab-scheduled__menu-wrap">
+                                <button
+                                    class="ft-btn ft-btn--ghost ft-btn--icon"
+                                    @click.stop="toggleMenu(item.id)"
+                                    :aria-expanded="openMenuId === item.id"
+                                    aria-haspopup="true"
+                                >
+                                    <ft-icon name="more"/>
+                                </button>
+                                <div
+                                    v-if="openMenuId === item.id"
+                                    class="frosh-tab-scheduled__menu"
+                                    @click.stop
+                                >
+                                    <button
+                                        class="frosh-tab-scheduled__menu-item"
+                                        @click="onMenu('edit', item)"
+                                    >
+                                        <ft-icon name="pencil"/>
+                                        Edit interval &amp; next run
+                                    </button>
+                                    <button
+                                        class="frosh-tab-scheduled__menu-item"
+                                        @click="onMenu('run', item)"
+                                    >
+                                        <ft-icon name="play"/>
+                                        {{ $t('frosh-tools.runManually') }}
+                                    </button>
+                                    <div class="frosh-tab-scheduled__menu-sep"></div>
+                                    <button
+                                        class="frosh-tab-scheduled__menu-item"
+                                        @click="onMenu('schedule', item)"
+                                    >
+                                        {{ $t('frosh-tools.setToScheduled') }}
+                                    </button>
+                                    <button
+                                        class="frosh-tab-scheduled__menu-item"
+                                        @click="onMenu('schedule-immediate', item)"
+                                    >
+                                        {{ $t('frosh-tools.setToScheduledImmediately') }}
+                                    </button>
+                                    <div class="frosh-tab-scheduled__menu-sep"></div>
+                                    <button
+                                        class="frosh-tab-scheduled__menu-item frosh-tab-scheduled__menu-item--danger"
+                                        @click="onMenu('deactivate', item)"
+                                    >
+                                        {{ $t('frosh-tools.setToInactive') }}
+                                    </button>
+                                </div>
+                            </div>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </ft-panel>
+    <ft-modal
+        v-if="editTask"
+        :title="`Edit: ${shortName(editTask.name)}`"
+        variant="small"
+        @close="closeEdit"
+    >
+        <div class="frosh-tab-scheduled__edit">
+            <sw-number-field
+                v-model:value="editForm.runInterval"
+                :label="$t('frosh-tools.interval') + ' (seconds)'"
+                :min="1"
+                numberType="int"
+            />
+            <sw-datepicker
+                v-model:value="editForm.nextExecutionTime"
+                :label="$t('frosh-tools.nextExecutionTime')"
+                dateType="datetime"
+            />
+        </div>
+        <template #footer>
+            <button
+                class="ft-btn"
+                @click="closeEdit"
+                :disabled="isSaving"
             >
-                <template #column-lastExecutionTime="{ item }">
-                    {{ date(item.lastExecutionTime, {hour: '2-digit', minute: '2-digit'}) }}
-                </template>
-
-                <template
-                    #column-nextExecutionTime="{ item, column, compact, isInlineEdit }"
-                >
-                    <sw-data-grid-inline-edit
-                        v-if="isInlineEdit"
-                        :column="column"
-                        :compact="compact"
-                        :value="item[column.property]"
-                        @update:value="item[column.property] = $event"
-                    >
-                    </sw-data-grid-inline-edit>
-                    <span v-else>
-                        {{ date(item.nextExecutionTime, {hour: '2-digit', minute: '2-digit'}) }}
-                    </span>
-                </template>
-
-                <template #actions="{ item }">
-                    <sw-context-menu-item
-                        variant="primary"
-                        @click="runTask(item)"
-                    >
-                        {{ $t('frosh-tools.runManually') }}
-                    </sw-context-menu-item>
-                    <sw-context-menu-item
-                        variant="primary"
-                        @click="scheduleTask(item)"
-                    >
-                        {{ $t('frosh-tools.setToScheduled') }}
-                    </sw-context-menu-item>
-                    <sw-context-menu-item
-                        variant="primary"
-                        @click="scheduleTask(item, true)"
-                    >
-                        {{ $t('frosh-tools.setToScheduledImmediately') }}
-                    </sw-context-menu-item>
-                    <sw-context-menu-item
-                        variant="primary"
-                        @click="deactivateTask(item)"
-                    >
-                        {{ $t('frosh-tools.setToInactive') }}
-                    </sw-context-menu-item>
-                </template>
-            </sw-entity-listing>
+                {{ $t('global.default.cancel') }}
+            </button>
+            <button
+                class="ft-btn ft-btn--primary"
+                @click="saveEdit"
+                :disabled="isSaving"
+            >
+                <span
+                    v-if="isSaving"
+                    class="ft-spinner"
+                ></span>
+                <span>Save</span>
+            </button>
         </template>
-    </sw-card>
-    <sw-modal
+    </ft-modal>
+    <ft-modal
         v-if="taskError"
         :title="$t('global.default.error')"
-        @modal-close="taskError = null"
+        @close="taskError = null"
     >
         <pre
             v-if="typeof taskError === 'object'"
+            class="ft-diff"
             v-text="taskError"
         />
         <div
             v-else
             v-html="taskError"
         />
-        <template #modal-footer>
-            <sw-button
-                deprecated
-                size="small"
+        <template #footer>
+            <button
+                class="ft-btn"
                 @click="taskError = null"
             >
                 {{ $t('global.default.close') }}
-            </sw-button>
+            </button>
         </template>
-    </sw-modal>
-</sw-card-view>
+    </ft-modal>
+</div>

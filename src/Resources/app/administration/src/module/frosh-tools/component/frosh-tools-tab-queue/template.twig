@@ -1,63 +1,88 @@
-<sw-card-view>
-    <sw-card
-        class="frosh-tools-tab-queue__manager-card"
+<div class="ft frosh-tab-queue">
+    <ft-page-head
         :title="$t('frosh-tools.tabs.queue.title')"
-        :isLoading="isLoading"
-        :large="true"
-        positionIdentifier="frosh-tools-tab-queue"
-        deprecated
+        subtitle="Pending messages waiting to be processed."
     >
-        <template #toolbar>
-            <sw-button
-                variant="ghost"
-                deprecated
+        <template #actions>
+            <ft-refresh-button
+                :loading="isLoading"
+                label="Refresh"
                 @click="refresh"
-            >
-                <sw-icon
-                    :small="true"
-                    deprecated
-                    name="regular-undo"
-                ></sw-icon>
-            </sw-button>
-            <sw-button
-                deprecated
+            />
+            <button
+                class="ft-btn ft-btn--danger"
                 @click="showResetModal = true"
             >
-                {{ $t('frosh-tools.resetQueue') }}
-            </sw-button>
+                <ft-icon name="trash"/>
+                <span>
+                    {{ $t('frosh-tools.resetQueue') }}
+                </span>
+            </button>
         </template>
-
-        <template #grid>
-            <sw-data-grid
-                :showSelection="false"
-                :dataSource="queueEntries"
-                :columns="columns"
-                :showActions="false"
-            >
-            </sw-data-grid>
-        </template>
-    </sw-card>
-    <sw-modal
+    </ft-page-head>
+    <ft-panel
+        title="Active queues"
+        :count="queueEntries.length"
+        flush
+    >
+        <ft-empty
+            v-if="isLoading && !queueEntries.length"
+            loading
+        />
+        <ft-empty
+            v-else-if="!queueEntries.length"
+            icon="check"
+            title="No pending messages"
+            sub="All workers are caught up."
+        />
+        <div
+            v-else
+            class="ft-table-wrap"
+        >
+            <table class="ft-table">
+                <thead>
+                    <tr>
+                        <ft-th-sort sort-key="name">{{ $t('frosh-tools.name') }}</ft-th-sort>
+                        <ft-th-sort
+                            sort-key="size"
+                            class="ft-table__num"
+                        >{{ $t('frosh-tools.size') }}</ft-th-sort>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr
+                        v-for="(item, idx) in sortRows(queueEntries)"
+                        :key="idx"
+                    >
+                        <td class="ft-table__name">{{ item.name }}</td>
+                        <td class="ft-table__num">
+                            {{ Number(item.size).toLocaleString() }}
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </ft-panel>
+    <ft-modal
         v-if="showResetModal"
         :title="$t('frosh-tools.tabs.queue.reset.modal.title')"
         variant="small"
-        @modal-close="showResetModal = false"
+        @close="showResetModal = false"
     >
         {{ $t('frosh-tools.tabs.queue.reset.modal.description') }}
-        <template #modal-footer>
-            <sw-button
-                deprecated
+        <template #footer>
+            <button
+                class="ft-btn"
                 @click="showResetModal = false"
             >
                 {{ $t('global.default.cancel') }}
-            </sw-button>
-            <sw-button
-                deprecated
+            </button>
+            <button
+                class="ft-btn ft-btn--primary"
                 @click="resetQueue"
-                variant="primary"
             >
                 {{ $t('frosh-tools.tabs.queue.reset.modal.reset') }}
-            </sw-button>
+            </button>
         </template>
-    </sw-modal>
-</sw-card-view>
+    </ft-modal>
+</div>

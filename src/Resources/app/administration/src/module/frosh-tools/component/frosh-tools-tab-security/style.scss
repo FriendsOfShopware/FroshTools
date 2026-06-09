@@ -1,0 +1,131 @@
+.frosh-tab-security {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+}
+
+.frosh-tab-security__subnav {
+    display: flex;
+    gap: 4px;
+    padding: 4px;
+    background: var(--ft-surface-2);
+    border: 1px solid var(--ft-border);
+    border-radius: var(--ft-radius-md);
+    overflow-x: auto;
+}
+
+.frosh-tab-security__subnav-item {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    padding: 8px 16px;
+    min-height: 36px;
+    border: none;
+    background: transparent;
+    color: var(--ft-text-soft);
+    font-size: 13px;
+    font-weight: 600;
+    border-radius: var(--ft-radius-sm);
+    cursor: pointer;
+    white-space: nowrap;
+    transition:
+        background 0.15s ease,
+        color 0.15s ease;
+
+    &:hover {
+        color: var(--ft-text);
+        background: var(--ft-surface-hover);
+    }
+
+    &:focus-visible {
+        outline: 2px solid var(--ft-accent);
+        outline-offset: 1px;
+    }
+
+    &.is-active {
+        color: var(--ft-text);
+        background: var(--ft-surface);
+        box-shadow: 0 1px 2px rgba(0, 0, 0, 0.08);
+    }
+}
+
+.frosh-tab-security__subnav-badge {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-width: 18px;
+    height: 18px;
+    padding: 0 5px;
+    font-size: 11px;
+    font-weight: 700;
+    border-radius: 999px;
+    color: #fff;
+
+    &--danger {
+        background: var(--ft-danger);
+    }
+    &--warning {
+        background: var(--ft-warning);
+    }
+    &--muted {
+        background: var(--ft-border-strong);
+        color: var(--ft-text);
+    }
+}
+
+.frosh-tab-security__notice {
+    display: flex;
+    align-items: flex-start;
+    gap: 10px;
+    padding: 10px 12px;
+    background: var(--ft-info-soft);
+    border: 1px solid var(--ft-info);
+    border-radius: var(--ft-radius-md);
+    color: var(--ft-text);
+
+    svg {
+        flex-shrink: 0;
+        margin-top: 1px;
+        color: var(--ft-info);
+    }
+}
+
+.frosh-tab-security__notice-text {
+    flex: 1;
+    font-size: 12.5px;
+    line-height: 1.5;
+    color: var(--ft-text-soft);
+}
+
+.frosh-tab-security__notice-close {
+    flex-shrink: 0;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 24px;
+    height: 24px;
+    border: none;
+    background: transparent;
+    color: var(--ft-text-muted);
+    border-radius: var(--ft-radius-sm);
+    cursor: pointer;
+    transition:
+        background 0.15s ease,
+        color 0.15s ease;
+
+    &:hover {
+        background: var(--ft-surface-hover);
+        color: var(--ft-text);
+    }
+
+    &:focus-visible {
+        outline: 2px solid var(--ft-accent);
+        outline-offset: 1px;
+    }
+}
+
+.frosh-tab-security__body {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+}

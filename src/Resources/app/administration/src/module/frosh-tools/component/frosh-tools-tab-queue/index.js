@@ -6,7 +6,10 @@ const { Component, Mixin } = Shopware;
 Component.register('frosh-tools-tab-queue', {
     template,
     inject: ['repositoryFactory', 'froshToolsService'],
-    mixins: [Mixin.getByName('notification')],
+    mixins: [
+        Mixin.getByName('notification'),
+        Mixin.getByName('frosh-sortable-table'),
+    ],
 
     data() {
         return {
@@ -18,23 +21,6 @@ Component.register('frosh-tools-tab-queue', {
 
     created() {
         this.createdComponent();
-    },
-
-    computed: {
-        columns() {
-            return [
-                {
-                    property: 'name',
-                    label: 'frosh-tools.name',
-                    rawData: true,
-                },
-                {
-                    property: 'size',
-                    label: 'frosh-tools.size',
-                    rawData: true,
-                },
-            ];
-        },
     },
 
     methods: {

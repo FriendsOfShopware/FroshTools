@@ -141,12 +141,12 @@ class Elasticsearch extends ApiService {
             });
     }
 
-    cleanupOrphaned() {
+    cleanupOrphaned(indices) {
         const apiRoute = `${this.getApiBasePath()}/cleanup_orphaned`;
         return this.httpClient
             .post(
                 apiRoute,
-                {},
+                { indices },
                 {
                     headers: this.getBasicHeaders(),
                 }
