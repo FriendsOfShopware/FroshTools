@@ -56,7 +56,15 @@ class ElasticsearchController extends AbstractController
             throw FroshToolsException::elasticsearchDisabled();
         }
 
-        $data = $this->manager->proxy($request->getMethod(), '/' . $path, $request->query->all(), $request->request->all());
+        $body = $request->request->all();
+        $content = trim($request->getContent());
+
+        if ($body === [] && $content !== '') {
+            $decoded = json_decode($content, true);
+            $body = \json_last_error() === \JSON_ERROR_NONE ? $decoded : $content;
+        }
+
+        $data = $this->manager->proxy($request->getMethod(), '/' . $path, $request->query->all(), $body);
 
         return new JsonResponse($data);
     }
@@ -85,12 +93,68 @@ class ElasticsearchController extends AbstractController
         return new Response('', Response::HTTP_NO_CONTENT);
     }
 
+    #[Route(path: '/unused_indices', name: 'api.frosh.tools.elasticsearch.unused_indices', methods: ['GET'])]
+    public function unusedIndices(): Response
+    {
+        if (!$this->manager->isEnabled()) {
+            throw FroshToolsException::elasticsearchDisabled();
+        }
+
+        return new JsonResponse($this->manager->getUnusedIndices());
+    }
+
+    #[Route(path: '/orphaned_indices', name: 'api.frosh.tools.elasticsearch.orphaned_indices', methods: ['GET'])]
+    public function orphanedIndices(): Response
+    {
+        if (!$this->manager->isEnabled()) {
+            throw FroshToolsException::elasticsearchDisabled();
+        }
+
+        return new JsonResponse($this->manager->getOrphanedIndices());
+    }
+
     #[Route(path: '/cleanup', name: 'api.frosh.tools.elasticsearch.cleanup', methods: ['POST'])]
     public function deleteUnusedIndices(): Response
     {
-        $this->manager->deleteUnusedIndices();
+        if (!$this->manager->isEnabled()) {
+            throw FroshToolsException::elasticsearchDisabled();
+        }
 
-        return new Response('', Response::HTTP_NO_CONTENT);
+        return new JsonResponse($this->manager->deleteUnusedIndices());
+    }
+
+    #[Route(path: '/cleanup_orphaned', name: 'api.frosh.tools.elasticsearch.cleanup_orphaned', methods: ['POST'])]
+    public function deleteOrphanedIndices(Request $request): Response
+    {
+        if (!$this->manager->isEnabled()) {
+            throw FroshToolsException::elasticsearchDisabled();
+        }
+
+        $data = $request->request->all();
+        $content = trim($request->getContent());
+
+        if ($data === [] && $content !== '') {
+            try {
+                $decoded = json_decode($content, true, 512, \JSON_THROW_ON_ERROR);
+            } catch (\JsonException $e) {
+                return new JsonResponse(['message' => $e->getMessage()], Response::HTTP_BAD_REQUEST);
+            }
+
+            if (!\is_array($decoded)) {
+                return new JsonResponse(['message' => 'Request body must be a JSON object.'], Response::HTTP_BAD_REQUEST);
+            }
+
+            $data = $decoded;
+        }
+
+        $indices = $data['indices'] ?? [];
+        if (!\is_array($indices)) {
+            return new JsonResponse(['message' => 'Field "indices" must be an array.'], Response::HTTP_BAD_REQUEST);
+        }
+
+        $indices = array_values(array_unique(array_filter($indices, static fn (mixed $index): bool => \is_string($index) && $index !== '')));
+
+        return new JsonResponse($this->manager->deleteOrphanedIndices($indices));
     }
 
     #[Route(path: '/reset', name: 'api.frosh.tools.elasticsearch.reset', methods: ['POST'])]

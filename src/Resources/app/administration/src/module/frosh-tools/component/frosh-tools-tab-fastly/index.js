@@ -54,6 +54,14 @@ Component.register('frosh-tools-tab-fastly', {
         },
     },
 
+    watch: {
+        activeSnippet(value) {
+            if (value) {
+                this.resizeCodeEditor('snippetEditor');
+            }
+        },
+    },
+
     created() {
         const language =
             Shopware.Application.getContainer(
@@ -68,6 +76,32 @@ Component.register('frosh-tools-tab-fastly', {
     },
 
     methods: {
+        resizeCodeEditor(refName) {
+            const resize = () => {
+                const editor = this.$refs[refName]?.editor;
+
+                if (!editor || typeof editor.resize !== 'function') {
+                    return;
+                }
+
+                editor.resize(true);
+            };
+
+            this.$nextTick(() => {
+                resize();
+
+                if (typeof window === 'undefined') {
+                    return;
+                }
+
+                window.requestAnimationFrame(() => {
+                    resize();
+                    window.requestAnimationFrame(resize);
+                });
+                window.setTimeout(resize, 220);
+            });
+        },
+
         async loadStats() {
             this.stats = await this.froshToolsService.getFastlyStatistics(
                 this.timeframe

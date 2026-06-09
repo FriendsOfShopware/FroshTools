@@ -95,20 +95,30 @@ class ElasticsearchManager
     }
 
     /**
-     * @param array<mixed> $body
      * @param array<mixed> $params
      *
-     * @return array<mixed>|callable
+     * @return iterable<mixed>|string|null
      */
-    public function proxy(string $method, string $path, array $params, array $body): array|callable
+    public function proxy(string $method, string $path, array $params, mixed $body): iterable|string|null
     {
         if ($body === []) {
             $body = null;
         }
 
-        $response = $this->client->transport->performRequest($method, $path, $params, $body);
+        $response = $this->client->request($method, $path, [
+            'params' => $params,
+            'body' => $body,
+        ]);
 
-        return $this->client->transport->resultOrFuture($response);
+        if (\is_callable($response)) {
+            $response = $response();
+        }
+
+        if (!\is_iterable($response) && !\is_string($response) && $response !== null) {
+            throw new \UnexpectedValueException('Unexpected Elasticsearch proxy response type.');
+        }
+
+        return $response;
     }
 
     public function flushAll(): void
@@ -130,13 +140,116 @@ class ElasticsearchManager
         $this->createAliasTaskHandler->run();
     }
 
-    public function deleteUnusedIndices(): void
+    /**
+     * @return array{indices: array<string>, error: string|null}
+     */
+    public function getUnusedIndices(): array
     {
-        $indices = $this->outdatedIndexDetector->get() ?? [];
+        try {
+            $indices = $this->outdatedIndexDetector->get() ?? [];
+        } catch (\Throwable $e) {
+            return ['indices' => [], 'error' => $e->getMessage()];
+        }
+
+        return ['indices' => array_values($indices), 'error' => null];
+    }
+
+    /**
+     * @return array{deleted: array<string>, errors: array<string, string>}
+     */
+    public function deleteUnusedIndices(): array
+    {
+        $result = ['deleted' => [], 'errors' => []];
+
+        try {
+            $indices = $this->outdatedIndexDetector->get() ?? [];
+        } catch (\Throwable $e) {
+            $result['errors']['__detector__'] = $e->getMessage();
+
+            return $result;
+        }
 
         foreach ($indices as $index) {
-            $this->client->indices()->delete(['index' => $index]);
+            try {
+                $this->client->indices()->delete(['index' => $index]);
+                $result['deleted'][] = $index;
+            } catch (\Throwable $e) {
+                $result['errors'][$index] = $e->getMessage();
+            }
         }
+
+        return $result;
+    }
+
+    /**
+     * Aggressive detection: lists all indices that match the configured prefix
+     * but are NOT attached to any alias. This catches orphaned indices from
+     * removed entity definitions or older Shopware versions that the strict
+     * ElasticsearchOutdatedIndexDetector::get() does not consider "outdated".
+     *
+     * Safety nets: any index that has at least one alias or is still tracked in
+     * Shopware's indexing task tables is excluded.
+     *
+     * @return array{indices: array<string>, error: string|null}
+     */
+    public function getOrphanedIndices(): array
+    {
+        try {
+            $indices = $this->client->indices()->get(['index' => '*']);
+            $activeIndexTasks = $this->getActiveIndexTaskMap();
+        } catch (\Throwable $e) {
+            return ['indices' => [], 'error' => $e->getMessage()];
+        }
+
+        return ['indices' => $this->filterOrphanedIndices($indices, $activeIndexTasks), 'error' => null];
+    }
+
+    /**
+     * @param list<string> $indices
+     *
+     * @return array{deleted: array<string>, errors: array<string, string>}
+     */
+    public function deleteOrphanedIndices(array $indices): array
+    {
+        $result = ['deleted' => [], 'errors' => []];
+        $indices = array_values(array_unique($indices));
+
+        if ($indices === []) {
+            return $result;
+        }
+
+        try {
+            $currentIndices = $this->client->indices()->get(['index' => '*']);
+            $activeIndexTasks = $this->getActiveIndexTaskMap();
+        } catch (\Throwable $e) {
+            $result['errors']['__detector__'] = $e->getMessage();
+
+            return $result;
+        }
+
+        foreach ($indices as $index) {
+            $config = $currentIndices[$index] ?? null;
+            if (!\is_array($config)) {
+                $result['errors'][$index] = 'Index does not exist.';
+
+                continue;
+            }
+
+            if (!$this->isOrphanedIndex($index, $config, $activeIndexTasks)) {
+                $result['errors'][$index] = 'Index is no longer orphaned.';
+
+                continue;
+            }
+
+            try {
+                $this->client->indices()->delete(['index' => $index]);
+                $result['deleted'][] = $index;
+            } catch (\Throwable $e) {
+                $result['errors'][$index] = $e->getMessage();
+            }
+        }
+
+        return $result;
     }
 
     public function reset(): void
@@ -163,5 +276,61 @@ class ElasticsearchManager
     {
         return str_starts_with($indexName, $this->indexPrefix . '_')
             || str_starts_with($indexName, $this->adminIndexPrefix . '-');
+    }
+
+    /**
+     * @param array<string, array<mixed>> $indices
+     * @param array<string, true> $activeIndexTasks
+     *
+     * @return list<string>
+     */
+    private function filterOrphanedIndices(array $indices, array $activeIndexTasks): array
+    {
+        $orphaned = [];
+
+        foreach ($indices as $indexName => $config) {
+            if (!$this->isOrphanedIndex($indexName, $config, $activeIndexTasks)) {
+                continue;
+            }
+
+            $orphaned[] = $indexName;
+        }
+
+        return $orphaned;
+    }
+
+    /**
+     * @param array<mixed> $config
+     * @param array<string, true> $activeIndexTasks
+     */
+    private function isOrphanedIndex(string $indexName, array $config, array $activeIndexTasks): bool
+    {
+        if (!$this->matchesPrefix($indexName) || isset($activeIndexTasks[$indexName])) {
+            return false;
+        }
+
+        $aliases = $config['aliases'] ?? null;
+
+        return \is_array($aliases) && $aliases === [];
+    }
+
+    /**
+     * @return array<string, true>
+     */
+    private function getActiveIndexTaskMap(): array
+    {
+        $activeIndexTasks = [];
+
+        foreach (['elasticsearch_index_task', 'admin_elasticsearch_index_task'] as $table) {
+            foreach ($this->connection->fetchFirstColumn(\sprintf('SELECT `index` FROM `%s`', $table)) as $index) {
+                if (!\is_string($index) || $index === '') {
+                    continue;
+                }
+
+                $activeIndexTasks[$index] = true;
+            }
+        }
+
+        return $activeIndexTasks;
     }
 }

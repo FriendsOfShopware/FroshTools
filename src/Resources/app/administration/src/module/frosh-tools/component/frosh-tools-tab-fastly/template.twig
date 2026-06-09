@@ -149,11 +149,14 @@
     >
         <div class="frosh-tab-fastly__editor">
             <sw-code-editor
+                ref="snippetEditor"
+                :key="activeSnippet.name"
                 :value="activeSnippet.content"
-                :readonly="true"
+                :disabled="true"
                 mode="text"
-                :softwraps="true"
-                :setfocus="false"
+                :soft-wraps="true"
+                :set-focus="false"
+                @mounted="resizeCodeEditor('snippetEditor')"
             />
         </div>
         <template #footer>

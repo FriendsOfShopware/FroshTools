@@ -6,6 +6,55 @@
         flex-wrap: wrap;
     }
 
+    &__action-pill {
+        padding: 1px 6px;
+        font-size: 10.5px;
+        line-height: 1.45;
+    }
+
+    &__cleanup-modal {
+        display: flex;
+        flex-direction: column;
+        gap: 12px;
+    }
+
+    &__cleanup-summary {
+        display: flex;
+        align-items: center;
+        flex-wrap: wrap;
+        gap: 8px;
+        font-size: 13px;
+        color: var(--ft-text);
+    }
+
+    &__cleanup-text {
+        margin: 0;
+        color: var(--ft-text-soft);
+        font-size: 13px;
+        line-height: 1.5;
+    }
+
+    &__index-list {
+        list-style: none;
+        margin: 0;
+        padding: 0;
+        border: 1px solid var(--ft-border);
+        border-radius: var(--ft-radius-md);
+        max-height: 320px;
+        overflow: auto;
+        background: var(--ft-surface-2);
+    }
+
+    &__index-list-item {
+        padding: 8px 10px;
+        border-bottom: 1px solid var(--ft-divider);
+        word-break: break-all;
+
+        &:last-child {
+            border-bottom: 0;
+        }
+    }
+
     &__editor {
         border: 1px solid var(--ft-border);
         border-radius: var(--ft-radius-md);

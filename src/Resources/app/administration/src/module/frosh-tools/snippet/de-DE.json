@@ -41,8 +41,38 @@
                     "reindex": "Neu indexieren",
                     "switchAlias": "\"Alias switching\" durchführen",
                     "flushAll": "Alle Indizes löschen",
+                    "showUnused": "Ungenutzte Indizes anzeigen",
                     "cleanup": "Ungenutzte Indizes löschen",
+                    "cleanupOrphaned": "Verwaiste Indizes löschen",
                     "reset": "Elasticsearch zurücksetzen"
+                },
+                "badge": {
+                    "shopware": "Shopware",
+                    "heuristic": "Heuristik"
+                },
+                "tooltip": {
+                    "unused": "Verwendet Shopwares Detector für veraltete Indizes.",
+                    "cleanup": "Löscht Indizes, die Shopwares Detector als ungenutzt meldet.",
+                    "orphaned": "Findet aliaslose Shopware-Indizes, die nicht in Indexing-Tasks eingetragen sind."
+                },
+                "orphanedModal": {
+                    "title": "Verwaiste Indizes löschen",
+                    "summary": "{count} verwaiste(r) Index/Indizes ausgewählt",
+                    "description": "Diese heuristische Bereinigung löscht aliaslose Shopware-Indizes. Indizes, die noch in Storefront- oder Admin-Indexing-Tasks eingetragen sind, werden ausgeschlossen und der Server validiert diese Liste vor dem Löschen erneut.",
+                    "delete": "Verwaiste Indizes löschen"
+                },
+                "notification": {
+                    "cleanup": {
+                        "empty": "Keine ungenutzten Indizes gefunden.",
+                        "success": "{count} Index/Indizes gelöscht.",
+                        "partialError": "Beim Löschen sind {count} Fehler aufgetreten. Bitte Logs prüfen."
+                    },
+                    "unused": {
+                        "list": "Ungenutzte Indizes ({count}): {list}"
+                    },
+                    "orphaned": {
+                        "empty": "Keine verwaisten Indizes gefunden."
+                    }
                 },
                 "console": {
                     "title": "Elasticsearch Konsole",

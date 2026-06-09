@@ -48,9 +48,60 @@
                 </button>
                 <button
                     class="ft-btn"
+                    v-tooltip="{
+                        showDelay: 300,
+                        message: $t('frosh-tools.tabs.elasticsearch.tooltip.unused')
+                    }"
+                    @click="showUnusedIndices"
+                >
+                    <ft-pill
+                        bare
+                        variant="info"
+                        class="frosh-tab-es__action-pill"
+                    >
+                        {{ $t('frosh-tools.tabs.elasticsearch.badge.shopware') }}
+                    </ft-pill>
+                    {{ $t('frosh-tools.tabs.elasticsearch.action.showUnused') }}
+                </button>
+                <button
+                    class="ft-btn"
+                    v-tooltip="{
+                        showDelay: 300,
+                        message: $t('frosh-tools.tabs.elasticsearch.tooltip.cleanup')
+                    }"
                     @click="cleanup"
                 >
+                    <ft-pill
+                        bare
+                        variant="info"
+                        class="frosh-tab-es__action-pill"
+                    >
+                        {{ $t('frosh-tools.tabs.elasticsearch.badge.shopware') }}
+                    </ft-pill>
                     {{ $t('frosh-tools.tabs.elasticsearch.action.cleanup') }}
+                </button>
+                <button
+                    class="ft-btn ft-btn--danger"
+                    v-tooltip="{
+                        showDelay: 300,
+                        message: $t('frosh-tools.tabs.elasticsearch.tooltip.orphaned')
+                    }"
+                    :disabled="isLoadingOrphanedPreview || isCleaningOrphaned"
+                    @click="openOrphanedCleanupModal"
+                >
+                    <span
+                        v-if="isLoadingOrphanedPreview"
+                        class="ft-spinner"
+                    ></span>
+                    <ft-pill
+                        v-else
+                        bare
+                        variant="warning"
+                        class="frosh-tab-es__action-pill"
+                    >
+                        {{ $t('frosh-tools.tabs.elasticsearch.badge.heuristic') }}
+                    </ft-pill>
+                    {{ $t('frosh-tools.tabs.elasticsearch.action.cleanupOrphaned') }}
                 </button>
                 <button
                     class="ft-btn ft-btn--danger"
@@ -136,13 +187,15 @@
             </template>
             <div class="frosh-tab-es__editor">
                 <sw-code-editor
-                    completionMode="text"
+                    ref="consoleEditor"
+                    completion-mode="text"
                     mode="twig"
-                    :softWraps="true"
-                    :setFocus="false"
+                    :soft-wraps="true"
+                    :set-focus="false"
                     :disabled="false"
-                    :sanitizeInput="false"
+                    :sanitize-input="false"
                     v-model:value="consoleInput"
+                    @mounted="resizeCodeEditor('consoleEditor')"
                 ></sw-code-editor>
             </div>
             <div class="frosh-tab-es__output-label">
@@ -151,4 +204,57 @@
             <pre class="ft-diff frosh-tab-es__output">{{ consoleOutput }}</pre>
         </ft-panel>
     </template>
+    <ft-modal
+        v-if="showOrphanedCleanupModal"
+        :title="$t('frosh-tools.tabs.elasticsearch.orphanedModal.title')"
+        variant="large"
+        @close="closeOrphanedCleanupModal()"
+    >
+        <div class="frosh-tab-es__cleanup-modal">
+            <div class="frosh-tab-es__cleanup-summary">
+                <ft-pill variant="warning">
+                    {{ $t('frosh-tools.tabs.elasticsearch.badge.heuristic') }}
+                </ft-pill>
+                <span>
+                    {{ $t('frosh-tools.tabs.elasticsearch.orphanedModal.summary', { count: orphanedCleanupIndices.length }) }}
+                </span>
+            </div>
+            <p class="frosh-tab-es__cleanup-text">
+                {{ $t('frosh-tools.tabs.elasticsearch.orphanedModal.description') }}
+            </p>
+            <ul class="frosh-tab-es__index-list">
+                <li
+                    v-for="index in orphanedCleanupIndices"
+                    :key="index"
+                    class="frosh-tab-es__index-list-item ft-mono"
+                >
+                    {{ index }}
+                </li>
+            </ul>
+        </div>
+        <template #footer>
+            <button
+                class="ft-btn"
+                :disabled="isCleaningOrphaned"
+                @click="closeOrphanedCleanupModal()"
+            >
+                {{ $t('global.default.cancel') }}
+            </button>
+            <button
+                class="ft-btn ft-btn--danger"
+                :disabled="isCleaningOrphaned"
+                @click="confirmCleanupOrphaned"
+            >
+                <span
+                    v-if="isCleaningOrphaned"
+                    class="ft-spinner"
+                ></span>
+                <ft-icon
+                    v-else
+                    name="trash"
+                />
+                {{ $t('frosh-tools.tabs.elasticsearch.orphanedModal.delete') }}
+            </button>
+        </template>
+    </ft-modal>
 </div>

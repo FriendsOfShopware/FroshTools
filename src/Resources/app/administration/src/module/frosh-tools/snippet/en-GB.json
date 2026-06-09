@@ -41,8 +41,38 @@
                     "reindex": "Reindex",
                     "switchAlias": "Trigger \"Alias switching\"",
                     "flushAll": "Delete all indices",
+                    "showUnused": "Show unused indices",
                     "cleanup": "Delete unused indices",
+                    "cleanupOrphaned": "Delete orphaned indices",
                     "reset": "Reset Elasticsearch"
+                },
+                "badge": {
+                    "shopware": "Shopware",
+                    "heuristic": "Heuristic"
+                },
+                "tooltip": {
+                    "unused": "Uses Shopware's outdated index detector.",
+                    "cleanup": "Deletes indices reported by Shopware's outdated index detector.",
+                    "orphaned": "Finds alias-less Shopware-prefixed indices that are not tracked by indexing tasks."
+                },
+                "orphanedModal": {
+                    "title": "Delete orphaned indices",
+                    "summary": "{count} orphaned index/indices selected",
+                    "description": "This heuristic cleanup deletes alias-less Shopware-prefixed indices. Indices that are still tracked by storefront or admin indexing tasks are excluded and the server revalidates this list before deletion.",
+                    "delete": "Delete orphaned indices"
+                },
+                "notification": {
+                    "cleanup": {
+                        "empty": "No unused indices found.",
+                        "success": "{count} index/indices deleted.",
+                        "partialError": "{count} error(s) occurred while deleting. Please check the logs."
+                    },
+                    "unused": {
+                        "list": "Unused indices ({count}): {list}"
+                    },
+                    "orphaned": {
+                        "empty": "No orphaned indices found."
+                    }
                 },
                 "console": {
                     "title": "Elasticsearch Console",
