@@ -1,4 +1,24 @@
 .frosh-tab-es {
+    &__status-bar {
+        display: flex;
+        align-items: center;
+        flex-wrap: wrap;
+        gap: 8px 16px;
+        margin-bottom: 16px;
+    }
+
+    &__status-item {
+        display: flex;
+        align-items: center;
+        gap: 6px;
+    }
+
+    &__status-label {
+        font-size: 12px;
+        font-weight: 500;
+        color: var(--ft-text-soft);
+    }
+
     &__name {
         display: flex;
         align-items: center;

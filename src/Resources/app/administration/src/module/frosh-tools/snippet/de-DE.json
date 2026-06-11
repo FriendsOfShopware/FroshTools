@@ -31,9 +31,9 @@
                 }
             },
             "elasticsearch": {
-                "title": "Elasticsearch",
-                "disabled": "Elasticsearch ist nicht aktiviert",
-                "version": "Elasticsearch version",
+                "title": "Search",
+                "disabled": "Search ist nicht aktiviert",
+                "version": "Version",
                 "nodes": "Nodes",
                 "status": "Cluster Status",
                 "indices": "Indizes",
@@ -44,7 +44,7 @@
                     "showUnused": "Ungenutzte Indizes anzeigen",
                     "cleanup": "Ungenutzte Indizes löschen",
                     "cleanupOrphaned": "Verwaiste Indizes löschen",
-                    "reset": "Elasticsearch zurücksetzen"
+                    "reset": "Search zurücksetzen"
                 },
                 "badge": {
                     "shopware": "Shopware",
@@ -75,7 +75,7 @@
                     }
                 },
                 "console": {
-                    "title": "Elasticsearch Konsole",
+                    "title": "Konsole",
                     "send": "Senden",
                     "output": "Ausgabe"
                 }
