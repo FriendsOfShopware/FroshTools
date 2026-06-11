@@ -33,6 +33,7 @@
             "elasticsearch": {
                 "title": "Search",
                 "disabled": "Search is not enabled",
+                "disabledTitle": "{engine} is not enabled",
                 "version": "Version",
                 "nodes": "Nodes",
                 "status": "Cluster Status",
@@ -75,7 +76,7 @@
                     }
                 },
                 "console": {
-                    "title": "Console",
+                    "title": "{engine} Console",
                     "send": "Send",
                     "output": "Output"
                 }
