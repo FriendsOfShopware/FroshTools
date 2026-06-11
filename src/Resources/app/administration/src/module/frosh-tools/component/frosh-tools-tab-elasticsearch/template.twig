@@ -22,7 +22,7 @@
         <ft-hero-state
             variant="danger"
             icon="alert"
-            :title="engineName + ' is not enabled'"
+            :title="$t('frosh-tools.tabs.elasticsearch.disabledTitle', { engine: engineName })"
             :body="$t('frosh-tools.tabs.elasticsearch.disabled')"
         />
     </template>
@@ -208,7 +208,7 @@
             </div>
         </ft-panel>
         <ft-panel
-            :title="engineName + ' ' + $t('frosh-tools.tabs.elasticsearch.console.title')"
+            :title="$t('frosh-tools.tabs.elasticsearch.console.title', { engine: engineName })"
         >
             <template #actions>
                 <button
