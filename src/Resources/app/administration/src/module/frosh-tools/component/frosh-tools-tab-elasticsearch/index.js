@@ -27,6 +27,39 @@ Component.register('frosh-tools-tab-elasticsearch', {
         };
     },
 
+    computed: {
+        engineName() {
+            return this.statusInfo.info?.version?.distribution === 'opensearch'
+                ? 'OpenSearch'
+                : 'Elasticsearch';
+        },
+
+        engineVersion() {
+            return this.statusInfo.info?.version?.number ?? null;
+        },
+
+        clusterHealth() {
+            return this.statusInfo.health?.status ?? null;
+        },
+
+        healthVariant() {
+            switch (this.clusterHealth) {
+                case 'green':
+                    return 'success';
+                case 'yellow':
+                    return 'warning';
+                case 'red':
+                    return 'danger';
+                default:
+                    return null;
+            }
+        },
+
+        nodeCount() {
+            return this.statusInfo.health?.number_of_nodes ?? null;
+        },
+    },
+
     created() {
         this.createdComponent();
     },

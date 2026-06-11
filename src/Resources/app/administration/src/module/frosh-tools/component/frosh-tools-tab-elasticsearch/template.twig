@@ -1,6 +1,6 @@
 <div class="ft frosh-tab-es">
     <ft-page-head
-        :title="$t('frosh-tools.tabs.elasticsearch.title')"
+        :title="engineName"
         subtitle="Cluster status, indices and a low-level query console."
     >
         <template
@@ -22,12 +22,44 @@
         <ft-hero-state
             variant="danger"
             icon="alert"
-            title="Elasticsearch is not enabled"
+            :title="engineName + ' is not enabled'"
             :body="$t('frosh-tools.tabs.elasticsearch.disabled')"
         />
     </template>
 
     <template v-else>
+        <div
+            v-if="engineVersion || clusterHealth || nodeCount !== null"
+            class="frosh-tab-es__status-bar"
+        >
+            <div
+                v-if="engineVersion"
+                class="frosh-tab-es__status-item"
+            >
+                <span class="frosh-tab-es__status-label">
+                    {{ $t('frosh-tools.tabs.elasticsearch.version') }}
+                </span>
+                <ft-pill variant="info">{{ engineVersion }}</ft-pill>
+            </div>
+            <div
+                v-if="nodeCount !== null"
+                class="frosh-tab-es__status-item"
+            >
+                <span class="frosh-tab-es__status-label">
+                    {{ $t('frosh-tools.tabs.elasticsearch.nodes') }}
+                </span>
+                <ft-pill variant="info">{{ nodeCount }}</ft-pill>
+            </div>
+            <div
+                v-if="clusterHealth"
+                class="frosh-tab-es__status-item"
+            >
+                <span class="frosh-tab-es__status-label">
+                    {{ $t('frosh-tools.tabs.elasticsearch.status') }}
+                </span>
+                <ft-pill :variant="healthVariant">{{ clusterHealth }}</ft-pill>
+            </div>
+        </div>
         <ft-panel
             :title="$t('frosh-tools.tabs.elasticsearch.indices')"
             :count="indices ? indices.length : 0"
@@ -175,7 +207,9 @@
                 </table>
             </div>
         </ft-panel>
-        <ft-panel :title="$t('frosh-tools.tabs.elasticsearch.console.title')">
+        <ft-panel
+            :title="engineName + ' ' + $t('frosh-tools.tabs.elasticsearch.console.title')"
+        >
             <template #actions>
                 <button
                     class="ft-btn ft-btn--primary"
