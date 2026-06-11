@@ -32,6 +32,8 @@ class ElasticsearchManager
         private readonly string $indexPrefix = 'sw',
         #[Autowire('%elasticsearch.administration.index_prefix%')]
         private readonly string $adminIndexPrefix = 'sw-admin',
+        #[Autowire(param: 'frosh_tools.elasticsearch.show_all_indices')]
+        private readonly bool $showAllIndices = false,
     ) {
     }
 
@@ -56,10 +58,12 @@ class ElasticsearchManager
      */
     public function indices(): array
     {
-        $patterns = [
-            $this->indexPrefix . '_*',
-            $this->adminIndexPrefix . '-*',
-        ];
+        $patterns = $this->showAllIndices
+            ? ['*']
+            : [
+                $this->indexPrefix . '_*',
+                $this->adminIndexPrefix . '-*',
+            ];
 
         $list = [];
 
@@ -87,7 +91,7 @@ class ElasticsearchManager
      */
     public function deleteIndex(string $name): array
     {
-        if (!$this->matchesPrefix($name)) {
+        if (!$this->showAllIndices && !$this->matchesPrefix($name)) {
             throw new \InvalidArgumentException(\sprintf('Index "%s" does not match the configured prefix', $name));
         }
 

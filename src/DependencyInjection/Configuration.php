@@ -34,6 +34,14 @@ class Configuration implements ConfigurationInterface
                         ->end()
                     ->end()
                 ->end()
+                ->arrayNode('elasticsearch')
+                    ->addDefaultsIfNotSet()
+                    ->children()
+                        ->booleanNode('show_all_indices')
+                            ->defaultFalse()
+                        ->end()
+                    ->end()
+                ->end()
             ->end()
         ;
 

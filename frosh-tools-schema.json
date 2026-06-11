@@ -25,6 +25,18 @@
         "system_config": {
           "type": "object",
           "additionalProperties": true
+        },
+        "elasticsearch": {
+          "title": "Elasticsearch manager settings",
+          "type": "object",
+          "properties": {
+            "show_all_indices": {
+              "title": "Show all indices instead of only those matching the configured index prefixes",
+              "type": "boolean",
+              "default": false
+            }
+          },
+          "additionalProperties": false
         }
       },
       "additionalProperties": false

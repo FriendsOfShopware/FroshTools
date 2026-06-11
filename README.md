@@ -114,6 +114,17 @@ frosh_tools:
             - vendor/shopware/core/SecondFile.php
 ```
 
+## Show all Elasticsearch indices
+
+By default, the Elasticsearch manager only shows indices matching the configured Shopware index prefixes (`elasticsearch.index_prefix` / `elasticsearch.administration.index_prefix`). To list (and manage) all indices of the cluster instead:
+
+```yaml
+# config/packages/frosh_tools.yaml
+frosh_tools:
+    elasticsearch:
+        show_all_indices: true
+```
+
 ## Screenshots
 
 ![System Status](https://i.imgur.com/tKVIvFh.png)

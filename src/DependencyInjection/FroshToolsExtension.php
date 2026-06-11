@@ -47,5 +47,9 @@ class FroshToolsExtension extends Extension
         if (!$container->hasParameter('frosh_tools.checker.disabled_checks')) {
             $container->setParameter('frosh_tools.checker.disabled_checks', []);
         }
+
+        if (!$container->hasParameter('frosh_tools.elasticsearch.show_all_indices')) {
+            $container->setParameter('frosh_tools.elasticsearch.show_all_indices', false);
+        }
     }
 }
