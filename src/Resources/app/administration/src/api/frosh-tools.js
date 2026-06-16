@@ -349,6 +349,43 @@ class FroshTools extends ApiService {
                 return ApiService.handleResponse(response);
             });
     }
+
+    getShopmonStatus() {
+        const apiRoute = `${this.getApiBasePath()}/shopmon`;
+        return this.httpClient
+            .get(apiRoute, {
+                headers: this.getBasicHeaders(),
+            })
+            .then((response) => {
+                return ApiService.handleResponse(response);
+            });
+    }
+
+    setupShopmon() {
+        const apiRoute = `${this.getApiBasePath()}/shopmon`;
+        return this.httpClient
+            .post(
+                apiRoute,
+                {},
+                {
+                    headers: this.getBasicHeaders(),
+                }
+            )
+            .then((response) => {
+                return ApiService.handleResponse(response);
+            });
+    }
+
+    removeShopmon() {
+        const apiRoute = `${this.getApiBasePath()}/shopmon`;
+        return this.httpClient
+            .delete(apiRoute, {
+                headers: this.getBasicHeaders(),
+            })
+            .then((response) => {
+                return ApiService.handleResponse(response);
+            });
+    }
 }
 
 export default FroshTools;

@@ -281,6 +281,60 @@
                     "7d": "Last 7 Days",
                     "30d": "Last 30 Days"
                 }
+            },
+            "shopmon": {
+                "title": "Shopmon",
+                "hero": {
+                    "badge": "Open-Source",
+                    "titleLine1": "The monitoring dashboard",
+                    "titleLine2": "your Shopware shops deserve",
+                    "description": "Monitor all your Shopware environments from one central dashboard. Shop status, performance metrics, extension updates, and security alerts - all in real-time without switching between tools.",
+                    "start": "Start monitoring for free",
+                    "hint": "This creates a restricted API integration in this shop that Shopmon uses to read its status."
+                },
+                "features": {
+                    "status": {
+                        "title": "Shop status",
+                        "body": "Health checks, Shopware version, queue and scheduled task status of all your environments at a glance."
+                    },
+                    "updates": {
+                        "title": "Extension updates",
+                        "body": "See pending Shopware and extension updates across all shops and track every change over time."
+                    },
+                    "alerts": {
+                        "title": "Security alerts",
+                        "body": "Get notified about known security issues in your installed Shopware version and extensions."
+                    }
+                },
+                "setup": {
+                    "success": "The Shopmon integration has been created",
+                    "error": "The Shopmon integration could not be created"
+                },
+                "configured": {
+                    "subtitle": "This shop is ready to be monitored with Shopmon.",
+                    "open": "Open Shopmon",
+                    "remove": "Remove integration",
+                    "readyTitle": "Integration ready",
+                    "readyBody": "An API integration for Shopmon has been created. Use the quick setup code below to add this shop in Shopmon.",
+                    "setupCode": "Quick setup code",
+                    "setupCodeHint": "Paste this code in Shopmon when adding a new shop — it contains the shop URL and the API credentials.",
+                    "copy": "Copy",
+                    "copied": "Copied",
+                    "nextSteps": "Next steps",
+                    "step1": "Open shopmon.fos.gg and sign in or create a free account.",
+                    "step2": "Add a new shop in your organization and paste the quick setup code shown above.",
+                    "step3": "Shopmon will connect to this shop and start monitoring it right away."
+                },
+                "remove": {
+                    "success": "The Shopmon integration has been removed",
+                    "modal": {
+                        "title": "Remove Shopmon integration",
+                        "description": "This deletes the API integration used by Shopmon. Shopmon will no longer be able to monitor this shop until a new integration is created.",
+                        "cancel": "Cancel",
+                        "confirm": "Remove"
+                    }
+                },
+                "copyError": "Could not copy to clipboard"
             }
         },
         "clear": "Clear",

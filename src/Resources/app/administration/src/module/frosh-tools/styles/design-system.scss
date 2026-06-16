@@ -104,6 +104,11 @@ body.dark .ft {
         grid-template-columns: 1fr;
         gap: 16px;
     }
+
+    @media (max-width: 540px) {
+        padding: 12px;
+        gap: 12px;
+    }
 }
 
 .ft-sidebar {
@@ -115,6 +120,23 @@ body.dark .ft {
     top: 20px;
     box-shadow: var(--ft-shadow-sm);
 
+    // On phones the stacked sidebar collapses into a horizontal scroll strip
+    // so it no longer eats a full screen of height above the content.
+    @media (max-width: 540px) {
+        position: static;
+        top: auto;
+        padding: 8px;
+        display: flex;
+        gap: 6px;
+        overflow-x: auto;
+        -webkit-overflow-scrolling: touch;
+        scrollbar-width: none;
+
+        &::-webkit-scrollbar {
+            display: none;
+        }
+    }
+
     &__brand {
         display: flex;
         align-items: center;
@@ -122,6 +144,10 @@ body.dark .ft {
         padding: 4px 8px 14px;
         border-bottom: 1px solid var(--ft-divider);
         margin-bottom: 12px;
+
+        @media (max-width: 540px) {
+            display: none;
+        }
 
         &-mark {
             width: 32px;
@@ -156,6 +182,12 @@ body.dark .ft {
     &__group {
         margin-bottom: 14px;
 
+        @media (max-width: 540px) {
+            display: flex;
+            gap: 6px;
+            margin-bottom: 0;
+        }
+
         &-label {
             font-size: 10px;
             text-transform: uppercase;
@@ -163,6 +195,10 @@ body.dark .ft {
             color: var(--ft-text-muted);
             padding: 6px 10px;
             font-weight: 600;
+
+            @media (max-width: 540px) {
+                display: none;
+            }
         }
     }
 
@@ -193,6 +229,18 @@ body.dark .ft {
             font-weight: 600;
         }
 
+        @media (max-width: 540px) {
+            white-space: nowrap;
+            border: 1px solid var(--ft-border);
+            background: var(--ft-surface);
+            padding: 8px 12px;
+
+            &.is-active {
+                border-color: var(--ft-accent);
+                background: var(--ft-accent-soft);
+            }
+        }
+
         .mt-icon,
         .sw-icon {
             width: 16px;
@@ -211,6 +259,10 @@ body.dark .ft {
 
         .is-active & {
             opacity: 1;
+        }
+
+        @media (max-width: 540px) {
+            display: none;
         }
     }
 }
@@ -303,6 +355,32 @@ body.dark .ft {
     }
 }
 
+// The admin globally restyles a[target="_blank"] as an inline text link
+// (underline, brand color, small font, ::after icon) — undo that for anchor buttons.
+.ft a.ft-btn[target='_blank'] {
+    display: inline-flex;
+    font-size: 13px;
+    color: var(--ft-text);
+    text-decoration: none;
+    word-break: normal;
+
+    &::after {
+        content: none;
+    }
+
+    &:hover:not(:disabled) {
+        text-decoration: none;
+    }
+}
+
+.ft a.ft-btn--primary[target='_blank'] {
+    color: #fff;
+
+    &:hover:not(:disabled) {
+        color: #fff;
+    }
+}
+
 // ============================================================
 // Custom data table
 // ============================================================
@@ -320,6 +398,10 @@ body.dark .ft {
         padding: 12px 16px;
         border-bottom: 1px solid var(--ft-divider);
         vertical-align: middle;
+
+        @media (max-width: 540px) {
+            padding: 10px 10px;
+        }
     }
 
     thead th {
@@ -393,6 +475,40 @@ body.dark .ft {
 
 .ft-table-wrap {
     overflow-x: auto;
+
+    // Hint that the table scrolls sideways on narrow screens.
+    @media (max-width: 540px) {
+        background:
+            linear-gradient(
+                to right,
+                var(--ft-surface) 30%,
+                rgba(255, 255, 255, 0)
+            ),
+            linear-gradient(
+                    to left,
+                    var(--ft-surface) 30%,
+                    rgba(255, 255, 255, 0)
+                )
+                100% 0,
+            radial-gradient(
+                farthest-side at 0 50%,
+                rgba(0, 0, 0, 0.12),
+                rgba(0, 0, 0, 0)
+            ),
+            radial-gradient(
+                    farthest-side at 100% 50%,
+                    rgba(0, 0, 0, 0.12),
+                    rgba(0, 0, 0, 0)
+                )
+                100% 0;
+        background-repeat: no-repeat;
+        background-size:
+            40px 100%,
+            40px 100%,
+            14px 100%,
+            14px 100%;
+        background-attachment: local, local, scroll, scroll;
+    }
 }
 
 // ============================================================

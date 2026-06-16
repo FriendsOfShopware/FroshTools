@@ -281,6 +281,60 @@
                     "7d": "Letzte 7 Tage",
                     "30d": "Letzte 30 Tage"
                 }
+            },
+            "shopmon": {
+                "title": "Shopmon",
+                "hero": {
+                    "badge": "Open-Source",
+                    "titleLine1": "Das Monitoring-Dashboard,",
+                    "titleLine2": "das deine Shopware-Shops verdienen",
+                    "description": "Überwache alle deine Shopware-Umgebungen über ein zentrales Dashboard. Shop-Status, Performance-Metriken, Erweiterungs-Updates und Sicherheitswarnungen – alles in Echtzeit, ohne zwischen Tools zu wechseln.",
+                    "start": "Kostenlos mit dem Monitoring starten",
+                    "hint": "Es wird eine eingeschränkte API-Integration in diesem Shop angelegt, über die Shopmon den Status ausliest."
+                },
+                "features": {
+                    "status": {
+                        "title": "Shop-Status",
+                        "body": "Health-Checks, Shopware-Version, Queue- und Scheduled-Task-Status aller Umgebungen auf einen Blick."
+                    },
+                    "updates": {
+                        "title": "Erweiterungs-Updates",
+                        "body": "Sieh ausstehende Shopware- und Erweiterungs-Updates über alle Shops hinweg und verfolge jede Änderung."
+                    },
+                    "alerts": {
+                        "title": "Sicherheitswarnungen",
+                        "body": "Werde über bekannte Sicherheitsprobleme in deiner installierten Shopware-Version und deinen Erweiterungen informiert."
+                    }
+                },
+                "setup": {
+                    "success": "Die Shopmon-Integration wurde erstellt",
+                    "error": "Die Shopmon-Integration konnte nicht erstellt werden"
+                },
+                "configured": {
+                    "subtitle": "Dieser Shop ist bereit, mit Shopmon überwacht zu werden.",
+                    "open": "Shopmon öffnen",
+                    "remove": "Integration entfernen",
+                    "readyTitle": "Integration bereit",
+                    "readyBody": "Eine API-Integration für Shopmon wurde erstellt. Nutze den Schnelleinrichtungs-Code unten, um diesen Shop in Shopmon hinzuzufügen.",
+                    "setupCode": "Schnelleinrichtungs-Code",
+                    "setupCodeHint": "Füge diesen Code in Shopmon ein, wenn du einen neuen Shop hinzufügst — er enthält die Shop-URL und die API-Zugangsdaten.",
+                    "copy": "Kopieren",
+                    "copied": "Kopiert",
+                    "nextSteps": "Nächste Schritte",
+                    "step1": "Öffne shopmon.fos.gg und melde dich an oder erstelle einen kostenlosen Account.",
+                    "step2": "Füge in deiner Organisation einen neuen Shop hinzu und füge den oben angezeigten Schnelleinrichtungs-Code ein.",
+                    "step3": "Shopmon verbindet sich mit diesem Shop und beginnt sofort mit dem Monitoring."
+                },
+                "remove": {
+                    "success": "Die Shopmon-Integration wurde entfernt",
+                    "modal": {
+                        "title": "Shopmon-Integration entfernen",
+                        "description": "Die von Shopmon genutzte API-Integration wird gelöscht. Shopmon kann diesen Shop nicht mehr überwachen, bis eine neue Integration erstellt wird.",
+                        "cancel": "Abbrechen",
+                        "confirm": "Entfernen"
+                    }
+                },
+                "copyError": "Konnte nicht in die Zwischenablage kopieren"
             }
         },
         "clear": "Leeren",

@@ -22,6 +22,7 @@ import './component/frosh-tools-security-files';
 import './component/frosh-tools-tab-security';
 import './component/frosh-tools-tab-fastly';
 import './component/frosh-tools-tab-statistics';
+import './component/frosh-tools-tab-shopmon';
 import './page/index';
 import './acl';
 
@@ -122,6 +123,14 @@ Shopware.Module.register('frosh-tools', {
                 statistics: {
                     component: 'frosh-tools-tab-statistics',
                     path: 'statistics',
+                    meta: {
+                        privilege: 'frosh_tools:read',
+                        parentPath: 'sw.settings.index.plugins',
+                    },
+                },
+                shopmon: {
+                    component: 'frosh-tools-tab-shopmon',
+                    path: 'shopmon',
                     meta: {
                         privilege: 'frosh_tools:read',
                         parentPath: 'sw.settings.index.plugins',
