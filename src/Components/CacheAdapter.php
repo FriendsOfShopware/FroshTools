@@ -17,6 +17,16 @@ use Symfony\Component\Cache\Adapter\TraceableAdapter;
 
 class CacheAdapter
 {
+    /**
+     * Sentry's cache tracing (sentry.tracing.cache.enabled) decorates the pools.
+     * These are stable class_alias names registered by the bundle; the concrete
+     * version-specific class stores the real adapter in a private $decoratedAdapter.
+     */
+    private const SENTRY_TRACEABLE_CACHE_ADAPTERS = [
+        'Sentry\\SentryBundle\\Tracing\\Cache\\TraceableTagAwareCacheAdapter',
+        'Sentry\\SentryBundle\\Tracing\\Cache\\TraceableCacheAdapter',
+    ];
+
     public const TYPE_REDIS = 'Redis';
     public const TYPE_REDIS_TAG_AWARE = 'Redis (TagAware)';
     public const TYPE_FILESYSTEM = 'Filesystem';
@@ -142,6 +152,15 @@ class CacheAdapter
             $func = \Closure::bind(fn () => $adapter->decorated, $adapter, $adapter::class);
 
             return $this->getCacheAdapter($func());
+        }
+
+        foreach (self::SENTRY_TRACEABLE_CACHE_ADAPTERS as $sentryAdapterClass) {
+            if (class_exists($sentryAdapterClass) && $adapter instanceof $sentryAdapterClass) {
+                // @phpstan-ignore-next-line property.notFound
+                $func = \Closure::bind(fn () => $adapter->decoratedAdapter, $adapter, $adapter::class);
+
+                return $this->getCacheAdapter($func());
+            }
         }
 
         if ($adapter instanceof TagAwareAdapter || $adapter instanceof TraceableAdapter) {
