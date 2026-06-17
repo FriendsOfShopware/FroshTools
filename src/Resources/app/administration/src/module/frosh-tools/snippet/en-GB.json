@@ -327,6 +327,7 @@
                 },
                 "remove": {
                     "success": "The Shopmon integration has been removed",
+                    "error": "The Shopmon integration could not be removed",
                     "modal": {
                         "title": "Remove Shopmon integration",
                         "description": "This deletes the API integration used by Shopmon. Shopmon will no longer be able to monitor this shop until a new integration is created.",

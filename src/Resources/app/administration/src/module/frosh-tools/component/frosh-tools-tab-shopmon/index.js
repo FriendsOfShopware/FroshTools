@@ -62,6 +62,10 @@ Component.register('frosh-tools-tab-shopmon', {
                 this.createNotificationSuccess({
                     message: this.$t('frosh-tools.tabs.shopmon.remove.success'),
                 });
+            } catch {
+                this.createNotificationError({
+                    message: this.$t('frosh-tools.tabs.shopmon.remove.error'),
+                });
             } finally {
                 await this.loadStatus();
             }

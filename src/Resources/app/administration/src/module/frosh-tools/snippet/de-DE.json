@@ -327,6 +327,7 @@
                 },
                 "remove": {
                     "success": "Die Shopmon-Integration wurde entfernt",
+                    "error": "Die Shopmon-Integration konnte nicht entfernt werden",
                     "modal": {
                         "title": "Shopmon-Integration entfernen",
                         "description": "Die von Shopmon genutzte API-Integration wird gelöscht. Shopmon kann diesen Shop nicht mehr überwachen, bis eine neue Integration erstellt wird.",

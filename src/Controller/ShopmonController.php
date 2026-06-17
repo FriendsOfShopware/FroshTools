@@ -124,9 +124,14 @@ class ShopmonController extends AbstractController
             return ['configured' => false];
         }
 
-        $integration = $this->integrationRepository
-            ->search(new Criteria([self::INTEGRATION_ID]), $context)
-            ->first();
+        // Read in system scope to match the write path; admin users browsing the
+        // tools usually lack integration:read and would otherwise see "not configured".
+        $integration = null;
+        $context->scope(Context::SYSTEM_SCOPE, function (Context $context) use (&$integration): void {
+            $integration = $this->integrationRepository
+                ->search(new Criteria([self::INTEGRATION_ID]), $context)
+                ->first();
+        });
 
         if ($integration === null) {
             return ['configured' => false];
