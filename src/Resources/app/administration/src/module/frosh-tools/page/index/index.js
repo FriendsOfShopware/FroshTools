@@ -59,6 +59,10 @@ Component.register('frosh-tools-index', {
                     route: 'frosh.tools.index.security',
                     labelKey: 'frosh-tools.tabs.security.title',
                 },
+                {
+                    route: 'frosh.tools.index.shopmon',
+                    labelKey: 'frosh-tools.tabs.shopmon.title',
+                },
             ];
 
             const performance = [
