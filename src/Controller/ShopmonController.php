@@ -56,7 +56,6 @@ class ShopmonController extends AbstractController
                             'privileges' => [
                                 'app:read',
                                 'plugin:read',
-                                'system_config:read',
                                 'scheduled_task:read',
                                 'frosh_tools:read',
                                 'system:clear:cache',
