@@ -23,6 +23,15 @@ class CacheAdapter
     public const TYPE_ARRAY = 'Array';
     public const TYPE_PHP_FILES = 'PHP files';
     public const TYPE_APCU = 'APCu';
+    /**
+     * Sentry's cache tracing (sentry.tracing.cache.enabled) decorates the pools.
+     * These are stable class_alias names registered by the bundle; the concrete
+     * version-specific class stores the real adapter in a private $decoratedAdapter.
+     */
+    private const SENTRY_TRACEABLE_CACHE_ADAPTERS = [
+        'Sentry\\SentryBundle\\Tracing\\Cache\\TraceableTagAwareCacheAdapter',
+        'Sentry\\SentryBundle\\Tracing\\Cache\\TraceableCacheAdapter',
+    ];
 
     private readonly AdapterInterface $adapter;
 
@@ -142,6 +151,16 @@ class CacheAdapter
             $func = \Closure::bind(fn () => $adapter->decorated, $adapter, $adapter::class);
 
             return $this->getCacheAdapter($func());
+        }
+
+        foreach (self::SENTRY_TRACEABLE_CACHE_ADAPTERS as $sentryAdapterClass) {
+            // @phpstan-ignore-next-line booleanAnd.alwaysFalse, function.impossibleType, instanceof.alwaysFalse
+            if (class_exists($sentryAdapterClass) && $adapter instanceof $sentryAdapterClass) {
+                // @phpstan-ignore-next-line property.notFound
+                $func = \Closure::bind(fn () => $adapter->decoratedAdapter, $adapter, $adapter::class);
+
+                return $this->getCacheAdapter($func());
+            }
         }
 
         if ($adapter instanceof TagAwareAdapter || $adapter instanceof TraceableAdapter) {
