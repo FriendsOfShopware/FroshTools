@@ -1,0 +1,193 @@
+<div class="ft frosh-tab-shopmon">
+    <ft-empty
+        v-if="isLoading"
+        loading
+    />
+    <template v-else-if="!isConfigured">
+        <section class="frosh-tab-shopmon__hero">
+            <span class="frosh-tab-shopmon__badge">
+                <ft-icon
+                    name="check"
+                    :size="12"
+                />
+                {{ $t('frosh-tools.tabs.shopmon.hero.badge') }}
+            </span>
+            <h1 class="frosh-tab-shopmon__headline">
+                {{ $t('frosh-tools.tabs.shopmon.hero.titleLine1') }}
+                <br/>
+                <span>
+                    {{ $t('frosh-tools.tabs.shopmon.hero.titleLine2') }}
+                </span>
+            </h1>
+            <p class="frosh-tab-shopmon__lead">
+                {{ $t('frosh-tools.tabs.shopmon.hero.description') }}
+            </p>
+            <div class="frosh-tab-shopmon__cta">
+                <button
+                    class="frosh-tab-shopmon__cta-primary"
+                    :disabled="isSettingUp"
+                    @click="setup"
+                >
+                    <span
+                        v-if="isSettingUp"
+                        class="ft-spinner"
+                    ></span>
+                    <span>
+                        {{ $t('frosh-tools.tabs.shopmon.hero.start') }}
+                    </span>
+                    <ft-icon name="arrow-right"/>
+                </button>
+                <a
+                    class="frosh-tab-shopmon__cta-secondary"
+                    href="https://github.com/FriendsOfShopware/shopmon"
+                    target="_blank"
+                    rel="noopener"
+                >
+                    <ft-icon name="external-link"/>
+                    <span>GitHub</span>
+                </a>
+            </div>
+            <p class="frosh-tab-shopmon__hint">
+                {{ $t('frosh-tools.tabs.shopmon.hero.hint') }}
+            </p>
+        </section>
+        <div class="frosh-tab-shopmon__features">
+            <div class="frosh-tab-shopmon__feature">
+                <div class="frosh-tab-shopmon__feature-icon">
+                    <ft-icon
+                        name="chart"
+                        :size="18"
+                    />
+                </div>
+                <div class="frosh-tab-shopmon__feature-title">
+                    {{ $t('frosh-tools.tabs.shopmon.features.status.title') }}
+                </div>
+                <div class="frosh-tab-shopmon__feature-body">
+                    {{ $t('frosh-tools.tabs.shopmon.features.status.body') }}
+                </div>
+            </div>
+            <div class="frosh-tab-shopmon__feature">
+                <div class="frosh-tab-shopmon__feature-icon">
+                    <ft-icon
+                        name="refresh"
+                        :size="18"
+                    />
+                </div>
+                <div class="frosh-tab-shopmon__feature-title">
+                    {{ $t('frosh-tools.tabs.shopmon.features.updates.title') }}
+                </div>
+                <div class="frosh-tab-shopmon__feature-body">
+                    {{ $t('frosh-tools.tabs.shopmon.features.updates.body') }}
+                </div>
+            </div>
+            <div class="frosh-tab-shopmon__feature">
+                <div class="frosh-tab-shopmon__feature-icon">
+                    <ft-icon
+                        name="alert"
+                        :size="18"
+                    />
+                </div>
+                <div class="frosh-tab-shopmon__feature-title">
+                    {{ $t('frosh-tools.tabs.shopmon.features.alerts.title') }}
+                </div>
+                <div class="frosh-tab-shopmon__feature-body">
+                    {{ $t('frosh-tools.tabs.shopmon.features.alerts.body') }}
+                </div>
+            </div>
+        </div>
+    </template>
+
+    <template v-else>
+        <ft-page-head
+            :title="$t('frosh-tools.tabs.shopmon.title')"
+            :subtitle="$t('frosh-tools.tabs.shopmon.configured.subtitle')"
+        >
+            <template #actions>
+                <a
+                    class="ft-btn ft-btn--primary"
+                    href="https://shopmon.fos.gg"
+                    target="_blank"
+                    rel="noopener"
+                >
+                    <ft-icon name="external-link"/>
+                    <span>
+                        {{ $t('frosh-tools.tabs.shopmon.configured.open') }}
+                    </span>
+                </a>
+                <button
+                    class="ft-btn ft-btn--danger"
+                    @click="showRemoveModal = true"
+                >
+                    <ft-icon name="trash"/>
+                    <span>
+                        {{ $t('frosh-tools.tabs.shopmon.configured.remove') }}
+                    </span>
+                </button>
+            </template>
+        </ft-page-head>
+        <ft-hero-state
+            variant="success"
+            icon="check"
+            :title="$t('frosh-tools.tabs.shopmon.configured.readyTitle')"
+            :body="$t('frosh-tools.tabs.shopmon.configured.readyBody')"
+        />
+        <ft-panel :title="$t('frosh-tools.tabs.shopmon.configured.setupCode')">
+            <p class="frosh-tab-shopmon__setup-hint">
+                {{ $t('frosh-tools.tabs.shopmon.configured.setupCodeHint') }}
+            </p>
+            <div class="frosh-tab-shopmon__setup-code">
+                <code>{{ status.integrationData }}</code>
+                <button
+                    class="ft-btn"
+                    @click="copy('integrationData', status.integrationData)"
+                >
+                    <ft-icon
+                        :name="copiedField === 'integrationData' ? 'check' : 'copy'"
+                    />
+                    <span>
+                        {{ copiedField === 'integrationData' ? $t('frosh-tools.tabs.shopmon.configured.copied') : $t('frosh-tools.tabs.shopmon.configured.copy') }}
+                    </span>
+                </button>
+            </div>
+        </ft-panel>
+        <ft-panel :title="$t('frosh-tools.tabs.shopmon.configured.nextSteps')">
+            <ol class="frosh-tab-shopmon__steps">
+                <li
+                    v-for="step in 3"
+                    :key="step"
+                    class="frosh-tab-shopmon__step"
+                >
+                    <span class="frosh-tab-shopmon__step-number">{{ step }}</span>
+                    <span class="frosh-tab-shopmon__step-text">
+                        {{ $t(`frosh-tools.tabs.shopmon.configured.step${step}`) }}
+                    </span>
+                </li>
+            </ol>
+        </ft-panel>
+        <ft-modal
+            v-if="showRemoveModal"
+            variant="small"
+            :title="$t('frosh-tools.tabs.shopmon.remove.modal.title')"
+            @close="showRemoveModal = false"
+        >
+            <p>
+                {{ $t('frosh-tools.tabs.shopmon.remove.modal.description') }}
+            </p>
+            <template #footer>
+                <button
+                    class="ft-btn"
+                    @click="showRemoveModal = false"
+                >
+                    {{ $t('frosh-tools.tabs.shopmon.remove.modal.cancel') }}
+                </button>
+                <button
+                    class="ft-btn ft-btn--danger"
+                    @click="removeIntegration"
+                >
+                    <ft-icon name="trash"/>
+                    {{ $t('frosh-tools.tabs.shopmon.remove.modal.confirm') }}
+                </button>
+            </template>
+        </ft-modal>
+    </template>
+</div>
