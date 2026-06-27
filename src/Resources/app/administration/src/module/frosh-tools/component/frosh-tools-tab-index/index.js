@@ -1,4 +1,5 @@
 import template from './template.twig';
+import recommendations from './recommendations';
 import './style.scss';
 
 const { Component, Mixin } = Shopware;
@@ -13,6 +14,7 @@ Component.register('frosh-tools-tab-index', {
             isLoading: true,
             health: null,
             performanceStatus: null,
+            activeInfo: null,
         };
     },
 
@@ -21,6 +23,22 @@ Component.register('frosh-tools-tab-index', {
     },
 
     methods: {
+        recommendationFor(item) {
+            return (item && recommendations[item.id]) || null;
+        },
+
+        hasInfo(item) {
+            return Boolean(this.recommendationFor(item) || (item && item.url));
+        },
+
+        openInfo(item) {
+            this.activeInfo = item;
+        },
+
+        closeInfo() {
+            this.activeInfo = null;
+        },
+
         pillVariant(state) {
             switch (state) {
                 case 'STATE_ERROR':

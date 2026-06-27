@@ -64,15 +64,14 @@
                         </td>
                         <td class="ft-table__name">
                             {{ item.snippet }}
-                            <a
-                                v-if="item.url"
-                                class="ft-link"
-                                :href="item.url"
-                                target="_blank"
-                                rel="noopener"
+                            <button
+                                v-if="hasInfo(item)"
+                                type="button"
+                                class="ft-link ft-info-trigger"
+                                @click="openInfo(item)"
                             >
                                 {{ $t('frosh-tools.tabs.index.info') }}
-                            </a>
+                            </button>
                         </td>
                         <td class="ft-mono">{{ item.current }}</td>
                         <td class="ft-mono">{{ item.recommended }}</td>
@@ -133,15 +132,14 @@
                         </td>
                         <td class="ft-table__name">
                             {{ item.snippet }}
-                            <a
-                                v-if="item.url"
-                                class="ft-link"
-                                :href="item.url"
-                                target="_blank"
-                                rel="noopener"
+                            <button
+                                v-if="hasInfo(item)"
+                                type="button"
+                                class="ft-link ft-info-trigger"
+                                @click="openInfo(item)"
                             >
                                 {{ $t('frosh-tools.tabs.index.info') }}
-                            </a>
+                            </button>
                         </td>
                         <td class="ft-mono">{{ item.current }}</td>
                         <td class="ft-mono">{{ item.recommended }}</td>
@@ -150,4 +148,68 @@
             </table>
         </div>
     </ft-panel>
+
+    <ft-modal
+        v-if="activeInfo"
+        :title="activeInfo.snippet"
+        @close="closeInfo"
+    >
+        <div class="ft-info-modal">
+            <div class="ft-info-modal__status">
+                <ft-pill :variant="pillVariant(activeInfo.state)">{{ stateLabel(activeInfo.state) }}</ft-pill>
+                <div
+                    class="ft-info-modal__values"
+                    v-if="activeInfo.current || activeInfo.recommended"
+                >
+                    <span
+                        class="ft-info-modal__value"
+                        v-if="activeInfo.current"
+                    >
+                        <span class="ft-info-modal__value-label">{{ $t('frosh-tools.current') }}</span>
+                        <span class="ft-mono">{{ activeInfo.current }}</span>
+                    </span>
+                    <span
+                        class="ft-info-modal__value"
+                        v-if="activeInfo.recommended"
+                    >
+                        <span class="ft-info-modal__value-label">{{ $t('frosh-tools.recommended') }}</span>
+                        <span class="ft-mono">{{ activeInfo.recommended }}</span>
+                    </span>
+                </div>
+            </div>
+
+            <template v-if="recommendationFor(activeInfo)">
+                <section class="ft-info-modal__section">
+                    <h3 class="ft-info-modal__heading">{{ $t('frosh-tools.tabs.index.recommendation.what') }}</h3>
+                    <p class="ft-info-modal__text">{{ recommendationFor(activeInfo).description }}</p>
+                </section>
+
+                <section
+                    class="ft-info-modal__section"
+                    v-if="recommendationFor(activeInfo).solution"
+                >
+                    <h3 class="ft-info-modal__heading">{{ $t('frosh-tools.tabs.index.recommendation.how') }}</h3>
+                    <p class="ft-info-modal__text">{{ recommendationFor(activeInfo).solution }}</p>
+                    <pre
+                        class="ft-info-modal__code"
+                        v-if="recommendationFor(activeInfo).code"
+                    >{{ recommendationFor(activeInfo).code }}</pre>
+                </section>
+            </template>
+
+            <p
+                class="ft-info-modal__source"
+                v-if="activeInfo.url"
+            >
+                <a
+                    class="ft-link"
+                    :href="activeInfo.url"
+                    target="_blank"
+                    rel="noopener"
+                >
+                    {{ $t('frosh-tools.tabs.index.recommendation.source') }}
+                </a>
+            </p>
+        </div>
+    </ft-modal>
 </div>

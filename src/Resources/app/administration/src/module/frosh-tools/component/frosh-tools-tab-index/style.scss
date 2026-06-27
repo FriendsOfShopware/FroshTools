@@ -1,3 +1,81 @@
 .frosh-tab-index {
     display: block;
 }
+
+.ft-info-trigger {
+    margin-left: 8px;
+    background: transparent;
+    border: none;
+    padding: 0;
+    font: inherit;
+    font-weight: 500;
+}
+
+.ft-info-modal {
+    display: flex;
+    flex-direction: column;
+    gap: 18px;
+
+    &__status {
+        display: flex;
+        align-items: center;
+        flex-wrap: wrap;
+        gap: 12px;
+    }
+
+    &__values {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 16px;
+    }
+
+    &__value {
+        display: inline-flex;
+        align-items: center;
+        gap: 6px;
+    }
+
+    &__value-label {
+        font-size: 12px;
+        color: var(--ft-text-muted);
+    }
+
+    &__section {
+        display: flex;
+        flex-direction: column;
+        gap: 8px;
+    }
+
+    &__heading {
+        font-size: 13px;
+        font-weight: 600;
+        margin: 0;
+        text-transform: uppercase;
+        letter-spacing: 0.02em;
+        color: var(--ft-text-muted);
+    }
+
+    &__text {
+        margin: 0;
+        line-height: 1.55;
+        color: var(--ft-text);
+    }
+
+    &__code {
+        margin: 0;
+        padding: 12px 14px;
+        background: var(--ft-surface-2);
+        border: 1px solid var(--ft-border);
+        border-radius: var(--ft-radius-sm);
+        font-family: var(--ft-mono);
+        font-size: 12.5px;
+        line-height: 1.5;
+        white-space: pre;
+        overflow-x: auto;
+    }
+
+    &__source {
+        margin: 0;
+        font-size: 13px;
+    }
+}
