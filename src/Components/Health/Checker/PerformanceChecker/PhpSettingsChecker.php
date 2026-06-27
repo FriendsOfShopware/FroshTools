@@ -38,13 +38,12 @@ class PhpSettingsChecker implements PerformanceCheckerInterface, CheckerInterfac
 
     private function checkEnableFileOverride(HealthCollection $collection, string $url): void
     {
-        $currentValue = $this->iniGetFailover('opcache.enable_file_override');
-        if (!\filter_var($currentValue, \FILTER_VALIDATE_BOOL)) {
+        if (!$this->isIniEnabled('opcache.enable_file_override')) {
             $collection->add(
                 SettingsResult::warning(
                     'php.opcache.enable_file_override',
                     'PHP value opcache.enable_file_override',
-                    $currentValue,
+                    $this->iniGetFailover('opcache.enable_file_override'),
                     '1',
                     $url,
                 ),
@@ -70,13 +69,12 @@ class PhpSettingsChecker implements PerformanceCheckerInterface, CheckerInterfac
 
     private function checkZendDetectUnicode(HealthCollection $collection, string $url): void
     {
-        $currentValue = $this->iniGetFailover('zend.detect_unicode');
-        if (\filter_var($currentValue, \FILTER_VALIDATE_BOOL)) {
+        if ($this->isIniEnabled('zend.detect_unicode')) {
             $collection->add(
                 SettingsResult::warning(
                     'php.zend.detect_unicode',
                     'PHP value zend.detect_unicode',
-                    $currentValue,
+                    $this->iniGetFailover('zend.detect_unicode'),
                     '0',
                     $url,
                 ),
@@ -98,6 +96,24 @@ class PhpSettingsChecker implements PerformanceCheckerInterface, CheckerInterfac
                 ),
             );
         }
+    }
+
+    /**
+     * Determines whether a boolean ini directive is enabled.
+     *
+     * ini_get() returns false when a directive is unknown/unavailable and an
+     * empty string when it is explicitly disabled (e.g. "Off" or "0"); both
+     * cases must be treated as "not enabled". This avoids relying on the
+     * "not set" failover placeholder being coincidentally falsy in filter_var().
+     */
+    private function isIniEnabled(string $option): bool
+    {
+        $currentValue = \ini_get($option);
+        if (!\is_string($currentValue)) {
+            return false;
+        }
+
+        return \filter_var($currentValue, \FILTER_VALIDATE_BOOL);
     }
 
     private function iniGetFailover(string $option): string
