@@ -37,7 +37,7 @@ class SystemTimeChecker implements HealthCheckerInterface, CheckerInterface
 
             $cloudflareTimestamp = isset($data['ts']) ? (int) $data['ts'] : null;
             if (!$cloudflareTimestamp) {
-                $status = SettingsResult::info('system-time', $snippet, 'Could not parse remote time', $recommended, $url);
+                $status = SettingsResult::info('system-time', $snippet, 'Could not parse remote time', $recommended);
                 $collection->add($status);
 
                 return;
@@ -50,7 +50,7 @@ class SystemTimeChecker implements HealthCheckerInterface, CheckerInterface
                 $status = SettingsResult::ok('system-time', $snippet, $diff . ' second(s)', $recommended);
             }
         } catch (GuzzleException) {
-            $status = SettingsResult::info('system-time', $snippet, 'Could not fetch remote time', $recommended, $url);
+            $status = SettingsResult::info('system-time', $snippet, 'Could not fetch remote time', $recommended);
         }
 
         $collection->add($status);

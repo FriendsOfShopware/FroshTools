@@ -33,7 +33,6 @@ class MysqlTimeZoneChecker implements HealthCheckerInterface, CheckerInterface
                 $snippet,
                 'Time zone tables not available',
                 'Time zone tables available',
-                'https://dev.mysql.com/doc/refman/8.4/en/mysql-tzinfo-to-sql.html',
             ));
 
             return;

@@ -30,7 +30,6 @@ class MessengerAutoSetupChecker implements PerformanceCheckerInterface, CheckerI
                     'Messenger auto_setup',
                     'enabled',
                     'disabled',
-                    'https://developer.shopware.com/docs/guides/hosting/performance/performance-tweaks.html#disable-auto-setup',
                 ),
             );
         }

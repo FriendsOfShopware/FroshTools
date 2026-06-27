@@ -13,8 +13,6 @@ use Symfony\Component\DependencyInjection\Attribute\Autowire;
 
 class MysqlSettingsChecker implements PerformanceCheckerInterface, CheckerInterface
 {
-    public const DOCUMENTATION_URL = 'https://developer.shopware.com/docs/guides/hosting/performance/performance-tweaks.html#mysql-configuration';
-
     public const MYSQL_GROUP_CONCAT_MAX_LEN = 320000;
 
     public const MYSQL_SQL_MODE_PART = 'ONLY_FULL_GROUP_BY';
@@ -50,7 +48,6 @@ class MysqlSettingsChecker implements PerformanceCheckerInterface, CheckerInterf
                     'MySQL value group_concat_max_len',
                     (string) $groupConcatMaxLen,
                     'min ' . self::MYSQL_GROUP_CONCAT_MAX_LEN,
-                    self::DOCUMENTATION_URL,
                 ),
             );
         }
@@ -66,7 +63,6 @@ class MysqlSettingsChecker implements PerformanceCheckerInterface, CheckerInterf
                     'MySQL value sql_mode',
                     $sqlMode,
                     'No ' . self::MYSQL_SQL_MODE_PART,
-                    self::DOCUMENTATION_URL,
                 ),
             );
         }
@@ -82,7 +78,6 @@ class MysqlSettingsChecker implements PerformanceCheckerInterface, CheckerInterf
                     'MySQL value time_zone',
                     $timeZone,
                     implode(', ', self::MYSQL_TIME_ZONES),
-                    self::DOCUMENTATION_URL,
                 ),
             );
         }
@@ -103,7 +98,6 @@ class MysqlSettingsChecker implements PerformanceCheckerInterface, CheckerInterf
                     'MySQL session vars are set on each connect',
                     'enabled',
                     'disabled',
-                    self::DOCUMENTATION_URL,
                 ),
             );
         }

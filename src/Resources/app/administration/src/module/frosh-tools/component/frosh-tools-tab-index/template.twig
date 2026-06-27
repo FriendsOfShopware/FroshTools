@@ -196,20 +196,6 @@
                     >{{ recommendationFor(activeInfo).code }}</pre>
                 </section>
             </template>
-
-            <p
-                class="ft-info-modal__source"
-                v-if="activeInfo.url"
-            >
-                <a
-                    class="ft-link"
-                    :href="activeInfo.url"
-                    target="_blank"
-                    rel="noopener"
-                >
-                    {{ $t('frosh-tools.tabs.index.recommendation.source') }}
-                </a>
-            </p>
         </div>
     </ft-modal>
 </div>

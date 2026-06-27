@@ -68,7 +68,6 @@ class SwagSecurityChecker implements HealthCheckerInterface, CheckerInterface
                     $snippet,
                     'releases.json not accessible',
                     'accessible',
-                    'https://raw.githubusercontent.com/shopware/shopware/trunk/releases.json',
                 ),
             );
 

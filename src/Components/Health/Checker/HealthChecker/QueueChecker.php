@@ -43,7 +43,6 @@ class QueueChecker implements HealthCheckerInterface, CheckerInterface
             $result = SettingsResult::info('queue', $snippet, 'unknown', $recommended);
         }
 
-        $result->url = 'https://developer.shopware.com/docs/guides/hosting/infrastructure/message-queue';
         $collection->add($result);
     }
 }

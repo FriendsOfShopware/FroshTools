@@ -28,7 +28,7 @@ Component.register('frosh-tools-tab-index', {
         },
 
         hasInfo(item) {
-            return Boolean(this.recommendationFor(item) || (item && item.url));
+            return Boolean(this.recommendationFor(item));
         },
 
         openInfo(item) {

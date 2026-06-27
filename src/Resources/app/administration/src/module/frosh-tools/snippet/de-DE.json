@@ -8,8 +8,7 @@
                 "info": "Info",
                 "recommendation": {
                     "what": "Worum es geht",
-                    "how": "So wird es behoben",
-                    "source": "Mehr in der Shopware-Dokumentation"
+                    "how": "So wird es behoben"
                 }
             },
             "cache": {

@@ -22,7 +22,6 @@ class MultipleAutoloaderChecker implements HealthCheckerInterface, CheckerInterf
 {
     private const ID = 'multiple-autoloaders';
     private const SNIPPET = 'Composer autoloaders';
-    private const DOCS_URL = 'https://developer.shopware.com/docs/guides/plugins/plugins/dependencies/using-composer-dependencies.html';
 
     public function collect(HealthCollection $collection): void
     {
@@ -64,7 +63,6 @@ class MultipleAutoloaderChecker implements HealthCheckerInterface, CheckerInterf
                 self::SNIPPET,
                 $current,
                 'remove bundled vendor directories so only the project autoloader is used. Contact plugin authors if you are unsure how to do this.',
-                self::DOCS_URL,
             ),
         );
     }

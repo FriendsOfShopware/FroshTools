@@ -30,7 +30,6 @@ class IncrementStorageChecker implements PerformanceCheckerInterface, CheckerInt
                     'Increment storage',
                     'mysql',
                     $recommended,
-                    'https://developer.shopware.com/docs/guides/hosting/performance/performance-tweaks#increment-storage',
                 ),
             );
         }
