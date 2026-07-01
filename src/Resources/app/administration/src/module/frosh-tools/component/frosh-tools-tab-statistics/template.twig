@@ -53,14 +53,14 @@
                     {{ $t('frosh-tools.tabs.statistics.totalMemory') }}
                 </div>
                 <div class="frosh-stat__value">
-                    {{ formatSize(cacheStats.opcache.usedMemory) }}
+                    {{ formatSize(cacheStats.opcache.usedMemory + cacheStats.opcache.wastedMemory) }}
                     /
                     {{ formatSize(cacheStats.opcache.totalMemory) }}
                 </div>
                 <div class="frosh-meter">
                     <div
-                        :class="['frosh-meter__fill', 'frosh-meter__fill--' + fillVariant(ratioPercent(cacheStats.opcache.usedMemory, cacheStats.opcache.totalMemory))]"
-                        :style="{ width: ratioPercent(cacheStats.opcache.usedMemory, cacheStats.opcache.totalMemory) + '%' }"
+                        :class="['frosh-meter__fill', 'frosh-meter__fill--' + fillVariant(ratioPercent(cacheStats.opcache.usedMemory + cacheStats.opcache.wastedMemory, cacheStats.opcache.totalMemory))]"
+                        :style="{ width: ratioPercent(cacheStats.opcache.usedMemory + cacheStats.opcache.wastedMemory, cacheStats.opcache.totalMemory) + '%' }"
                     ></div>
                 </div>
             </div>
