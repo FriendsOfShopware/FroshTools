@@ -38,7 +38,9 @@ class TwigCacheWarmer
         }
 
         $originalCache = $this->twig->getCache(false);
-        $templates = iterator_to_array($this->templateIterator, false);
+        $templates = array_values(array_filter(iterator_to_array($this->templateIterator, false), static function ($template) {
+            return str_contains($template, 'storefront/');
+        }));
         $twigCacheDir = $cacheDir . '/twig';
 
         foreach ($this->getHierarchyConfigurations() as $hierarchy) {
