@@ -15,8 +15,7 @@ class ShopwareEolChecker implements SecurityCheckerInterface
 
     public function __construct(
         private readonly ShopwareReleaseService $releaseService,
-    ) {
-    }
+    ) {}
 
     public function collect(SecurityCollection $collection): void
     {

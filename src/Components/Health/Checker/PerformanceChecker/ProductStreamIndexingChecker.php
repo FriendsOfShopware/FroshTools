@@ -16,8 +16,7 @@ class ProductStreamIndexingChecker implements PerformanceCheckerInterface, Check
         private readonly bool $productStreamIndexingEnabled,
         #[Autowire(param: 'kernel.shopware_version')]
         private readonly string $shopwareVersion,
-    ) {
-    }
+    ) {}
 
     public function collect(HealthCollection $collection): void
     {

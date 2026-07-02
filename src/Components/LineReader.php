@@ -13,9 +13,7 @@ final class LineReader
     /**
      * Prevent instantiation
      */
-    private function __construct()
-    {
-    }
+    private function __construct() {}
 
     /**
      * @throws \InvalidArgumentException if $filePath is not readable

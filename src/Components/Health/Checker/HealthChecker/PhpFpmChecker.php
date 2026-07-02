@@ -15,8 +15,7 @@ class PhpFpmChecker implements HealthCheckerInterface, CheckerInterface
     public function __construct(
         #[Autowire(param: 'shopware.deployment.cluster_setup')]
         private readonly bool $clusterSetup,
-    ) {
-    }
+    ) {}
 
     public function collect(HealthCollection $collection): void
     {
@@ -91,7 +90,7 @@ class PhpFpmChecker implements HealthCheckerInterface, CheckerInterface
                 'PHP FPM memory peak',
                 $memoryPeak,
                 '',
-            )
+            ),
         );
     }
 }

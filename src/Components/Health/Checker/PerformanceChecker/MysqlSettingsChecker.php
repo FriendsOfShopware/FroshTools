@@ -26,8 +26,7 @@ class MysqlSettingsChecker implements PerformanceCheckerInterface, CheckerInterf
         private readonly Connection $connection,
         #[Autowire(param: 'kernel.shopware_version')]
         private readonly string $shopwareVersion,
-    ) {
-    }
+    ) {}
 
     public function collect(HealthCollection $collection): void
     {

@@ -115,12 +115,12 @@ class MonitorCommand extends Command
     {
         return trim(
             $this->configService->getString(
-                'core.basicInformation.email'
-            )
+                'core.basicInformation.email',
+            ),
         ) ?: trim(
             $this->configService->getString(
-                'core.mailerSettings.senderAddress'
-            )
+                'core.mailerSettings.senderAddress',
+            ),
         );
     }
 }

@@ -14,8 +14,7 @@ class MysqlEolChecker implements SecurityCheckerInterface
     public function __construct(
         private readonly Connection $connection,
         private readonly EndOfLifeService $endOfLifeService,
-    ) {
-    }
+    ) {}
 
     public function collect(SecurityCollection $collection): void
     {

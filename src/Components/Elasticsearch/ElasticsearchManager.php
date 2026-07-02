@@ -34,8 +34,7 @@ class ElasticsearchManager
         private readonly string $adminIndexPrefix = 'sw-admin',
         #[Autowire(param: 'frosh_tools.elasticsearch.show_all_indices')]
         private readonly bool $showAllIndices = false,
-    ) {
-    }
+    ) {}
 
     public function isEnabled(): bool
     {

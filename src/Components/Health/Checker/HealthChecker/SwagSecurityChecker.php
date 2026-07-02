@@ -26,8 +26,7 @@ class SwagSecurityChecker implements HealthCheckerInterface, CheckerInterface
         private readonly string $shopwareVersion,
         private readonly CacheInterface $cacheObject,
         private readonly HttpClientInterface $httpClient,
-    ) {
-    }
+    ) {}
 
     public function collect(HealthCollection $collection): void
     {

@@ -1,4 +1,6 @@
-<?php declare(strict_types=1);
+<?php
+
+declare(strict_types=1);
 
 namespace Frosh\Tools\Components\ExtensionChecksum\Struct;
 
@@ -19,8 +21,7 @@ class ExtensionChecksumCheckResult extends Struct
         protected array $newFiles = [],
         protected array $changedFiles = [],
         protected array $missingFiles = [],
-    ) {
-    }
+    ) {}
 
     public function isExtensionOk(): bool
     {

@@ -25,8 +25,7 @@ class TwigCacheWarmer
         #[Autowire(service: 'twig.template_iterator')]
         private readonly \IteratorAggregate $templateIterator,
         private readonly KernelInterface $kernel,
-    ) {
-    }
+    ) {}
 
     /**
      * @return list<string>

@@ -11,9 +11,7 @@ use Frosh\Tools\Components\Health\SettingsResult;
 
 class MysqlTimeZoneChecker implements HealthCheckerInterface, CheckerInterface
 {
-    public function __construct(private readonly Connection $connection)
-    {
-    }
+    public function __construct(private readonly Connection $connection) {}
 
     public function collect(HealthCollection $collection): void
     {

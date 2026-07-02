@@ -15,8 +15,7 @@ class ComposerAuditController extends AbstractController
 {
     public function __construct(
         private readonly ComposerAuditService $composerAuditService,
-    ) {
-    }
+    ) {}
 
     #[Route(path: '/composer-audit', name: 'api.frosh.tools.composer-audit', methods: ['GET'])]
     public function audit(Request $request): JsonResponse

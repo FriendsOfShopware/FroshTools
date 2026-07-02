@@ -15,8 +15,7 @@ class DisableSymfonySecretsChecker implements PerformanceCheckerInterface, Check
     public function __construct(
         #[Autowire(service: 'secrets.vault')]
         private readonly ?AbstractVault $vault = null,
-    ) {
-    }
+    ) {}
 
     public function collect(HealthCollection $collection): void
     {

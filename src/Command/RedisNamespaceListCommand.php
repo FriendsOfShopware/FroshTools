@@ -78,7 +78,7 @@ class RedisNamespaceListCommand extends Command
         $io->section('Namespace Summary');
         $io->table(
             ['Prefix', 'Count', 'Percentage', 'Active'],
-            $tableData
+            $tableData,
         );
 
         $io->success(\sprintf('Total keys analyzed: %d', $totalKeys));

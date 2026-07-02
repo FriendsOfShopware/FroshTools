@@ -1,4 +1,6 @@
-<?php declare(strict_types=1);
+<?php
+
+declare(strict_types=1);
 
 namespace Frosh\Tools\Controller;
 
@@ -26,7 +28,7 @@ class FeatureFlagController
             \SORT_DESC,
             $flagColumns,
             \SORT_ASC,
-            $featureFlags
+            $featureFlags,
         );
 
         return new JsonResponse(array_values($featureFlags));

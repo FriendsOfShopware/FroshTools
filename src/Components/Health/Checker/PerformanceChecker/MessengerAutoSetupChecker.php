@@ -18,8 +18,7 @@ class MessengerAutoSetupChecker implements PerformanceCheckerInterface, CheckerI
         private readonly string $messageTransportDsnLowPriority,
         #[Autowire(param: 'env(MESSENGER_TRANSPORT_FAILURE_DSN)')]
         private readonly string $messageTransportDsnFailure,
-    ) {
-    }
+    ) {}
 
     public function collect(HealthCollection $collection): void
     {

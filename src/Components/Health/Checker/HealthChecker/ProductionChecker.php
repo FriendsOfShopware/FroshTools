@@ -14,8 +14,7 @@ class ProductionChecker implements HealthCheckerInterface, CheckerInterface
     public function __construct(
         #[Autowire(param: 'kernel.environment')]
         private readonly string $environment,
-    ) {
-    }
+    ) {}
 
     public function collect(HealthCollection $collection): void
     {

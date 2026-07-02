@@ -11,9 +11,7 @@ use Symfony\Component\DependencyInjection\ParameterBag\ParameterBagInterface;
 
 class DisabledMailUpdatesChecker implements PerformanceCheckerInterface, CheckerInterface
 {
-    public function __construct(private readonly ParameterBagInterface $params)
-    {
-    }
+    public function __construct(private readonly ParameterBagInterface $params) {}
 
     public function collect(HealthCollection $collection): void
     {

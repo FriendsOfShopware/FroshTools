@@ -32,8 +32,7 @@ class ShopmonController extends AbstractController
         private readonly EntityRepository $integrationRepository,
         private readonly EntityRepository $aclRoleRepository,
         private readonly SystemConfigService $systemConfigService,
-    ) {
-    }
+    ) {}
 
     #[Route(path: '/shopmon', name: 'api.frosh.tools.shopmon.setup', methods: ['POST'])]
     public function setup(Context $context): JsonResponse

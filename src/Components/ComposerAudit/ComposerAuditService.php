@@ -33,8 +33,7 @@ class ComposerAuditService
         private readonly Connection $connection,
         #[Autowire(param: 'kernel.shopware_version')]
         private readonly string $shopwareVersion,
-    ) {
-    }
+    ) {}
 
     /**
      * @return array{packages: int, vulnerable: int, advisories: list<array<string, mixed>>, error?: string, cachedAt?: int}

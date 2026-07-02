@@ -19,8 +19,7 @@ class CacheController extends AbstractController
         #[Autowire(param: 'kernel.cache_dir')]
         private readonly string $cacheDir,
         private readonly CacheRegistry $cacheRegistry,
-    ) {
-    }
+    ) {}
 
     #[Route(path: '/cache', name: 'api.frosh.tools.cache.get', methods: ['GET'])]
     public function cacheStatistics(): JsonResponse

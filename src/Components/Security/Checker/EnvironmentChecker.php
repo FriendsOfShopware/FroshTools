@@ -21,8 +21,7 @@ class EnvironmentChecker implements SecurityCheckerInterface
          */
         #[Autowire(param: 'kernel.bundles')]
         private readonly array $kernelBundles,
-    ) {
-    }
+    ) {}
 
     public function collect(SecurityCollection $collection): void
     {

@@ -23,8 +23,7 @@ class SecurityController extends AbstractController
         private readonly iterable $securityCheckers,
         #[Autowire(param: 'frosh_tools.checker.disabled_checks')]
         private readonly array $ignoredChecks,
-    ) {
-    }
+    ) {}
 
     #[Route(path: '/security/status', name: 'api.frosh.tools.security.status', methods: ['GET'])]
     public function status(): JsonResponse

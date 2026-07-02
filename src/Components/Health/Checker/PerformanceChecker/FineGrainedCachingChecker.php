@@ -1,4 +1,6 @@
-<?php declare(strict_types=1);
+<?php
+
+declare(strict_types=1);
 
 namespace Frosh\Tools\Components\Health\Checker\PerformanceChecker;
 
@@ -18,8 +20,7 @@ class FineGrainedCachingChecker implements PerformanceCheckerInterface, CheckerI
         public readonly bool $cacheTaggingEachSnippet,
         #[Autowire('%shopware.cache.tagging.each_theme_config%')]
         public readonly bool $cacheTaggingEachThemeConfig,
-    ) {
-    }
+    ) {}
 
     public function collect(HealthCollection $collection): void
     {

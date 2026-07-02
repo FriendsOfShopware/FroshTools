@@ -27,8 +27,7 @@ class ExtensionFilesController extends AbstractController
         private readonly EntityRepository $pluginRepository,
         private readonly ExtensionFileHashService $pluginFileHashService,
         private readonly LoggerInterface $froshToolsLogger,
-    ) {
-    }
+    ) {}
 
     #[Route(path: '/extension-files', name: 'api.frosh.tools.extension-files', methods: ['GET'])]
     public function listExtensionFiles(Context $context): JsonResponse

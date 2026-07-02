@@ -1,4 +1,6 @@
-<?php declare(strict_types=1);
+<?php
+
+declare(strict_types=1);
 
 namespace Frosh\Tools\Subscriber;
 
@@ -15,8 +17,7 @@ class AdminInfoListener
         private readonly string $logDir,
         #[Autowire(param: 'shopware.http_cache.reverse_proxy.fastly.service_id')]
         private readonly ?string $fastlyServiceId = null,
-    ) {
-    }
+    ) {}
 
     #[AsEventListener('api.info.config.response')]
     public function filterJson(ResponseEvent $event): void

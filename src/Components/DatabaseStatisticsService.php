@@ -8,9 +8,7 @@ use Doctrine\DBAL\Connection;
 
 class DatabaseStatisticsService
 {
-    public function __construct(private readonly Connection $connection)
-    {
-    }
+    public function __construct(private readonly Connection $connection) {}
 
     /**
      * @return array{version: string, uptime: int, threads: int, questions: int, slowQueries: int, queriesPerSecond: float}
@@ -49,7 +47,7 @@ class DatabaseStatisticsService
             'SELECT TABLE_NAME, ENGINE, TABLE_ROWS, DATA_LENGTH, INDEX_LENGTH
              FROM information_schema.TABLES
              WHERE TABLE_SCHEMA = DATABASE() AND TABLE_TYPE = \'BASE TABLE\'
-             ORDER BY (DATA_LENGTH + INDEX_LENGTH) DESC'
+             ORDER BY (DATA_LENGTH + INDEX_LENGTH) DESC',
         );
 
         $result = [];
@@ -127,7 +125,7 @@ class DatabaseStatisticsService
         $rows = $this->connection->fetchAllAssociative(
             'SHOW GLOBAL STATUS WHERE Variable_name IN (?)',
             [$names],
-            [\Doctrine\DBAL\ArrayParameterType::STRING]
+            [\Doctrine\DBAL\ArrayParameterType::STRING],
         );
 
         $map = [];
@@ -148,7 +146,7 @@ class DatabaseStatisticsService
         $rows = $this->connection->fetchAllAssociative(
             'SHOW GLOBAL VARIABLES WHERE Variable_name IN (?)',
             [$names],
-            [\Doctrine\DBAL\ArrayParameterType::STRING]
+            [\Doctrine\DBAL\ArrayParameterType::STRING],
         );
 
         $map = [];

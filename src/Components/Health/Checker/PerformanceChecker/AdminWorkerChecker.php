@@ -14,8 +14,7 @@ class AdminWorkerChecker implements PerformanceCheckerInterface, CheckerInterfac
     public function __construct(
         #[Autowire(param: 'shopware.admin_worker.enable_admin_worker')]
         private readonly bool $adminWorkerEnabled,
-    ) {
-    }
+    ) {}
 
     public function collect(HealthCollection $collection): void
     {
