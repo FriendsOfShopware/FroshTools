@@ -21,7 +21,8 @@ class ExtensionChecksumCheckResult extends Struct
         protected array $newFiles = [],
         protected array $changedFiles = [],
         protected array $missingFiles = [],
-    ) {}
+    ) {
+    }
 
     public function isExtensionOk(): bool
     {

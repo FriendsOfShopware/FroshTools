@@ -8,7 +8,9 @@ use Doctrine\DBAL\Connection;
 
 class DatabaseStatisticsService
 {
-    public function __construct(private readonly Connection $connection) {}
+    public function __construct(private readonly Connection $connection)
+    {
+    }
 
     /**
      * @return array{version: string, uptime: int, threads: int, questions: int, slowQueries: int, queriesPerSecond: float}

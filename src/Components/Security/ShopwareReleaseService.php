@@ -18,7 +18,8 @@ class ShopwareReleaseService
         private readonly CacheInterface $cacheObject,
         #[Autowire(param: 'kernel.shopware_version')]
         private readonly string $shopwareVersion,
-    ) {}
+    ) {
+    }
 
     /**
      * @return array{version?: string, release_date?: string, extended_eol?: string|false, security_eol?: string, extended_eol_version?: string}

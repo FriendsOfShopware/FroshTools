@@ -13,7 +13,8 @@ class SymfonyEolChecker implements SecurityCheckerInterface
 {
     public function __construct(
         private readonly EndOfLifeService $endOfLifeService,
-    ) {}
+    ) {
+    }
 
     public function collect(SecurityCollection $collection): void
     {

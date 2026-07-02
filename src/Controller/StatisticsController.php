@@ -16,7 +16,8 @@ class StatisticsController extends AbstractController
     public function __construct(
         private readonly CacheStatisticsService $cacheStatisticsService,
         private readonly DatabaseStatisticsService $databaseStatisticsService,
-    ) {}
+    ) {
+    }
 
     #[Route(path: '/cache', name: 'api.frosh.tools.statistics.cache', methods: ['GET'])]
     public function cacheStatistics(): JsonResponse

@@ -140,7 +140,8 @@ export default {
     'increment-storage': {
         description:
             'The increment storage (user activity and message-queue statistics) is backed by MySQL, which generates a large number of small writes. Using "array" or Redis scales much better.',
-        solution: 'Move the increment storage to Redis (or "array" if you do not need it persisted).',
+        solution:
+            'Move the increment storage to Redis (or "array" if you do not need it persisted).',
         code: '# config/packages/shopware.yaml\nshopware:\n    increment:\n        user_activity:\n            type: array\n        message_queue:\n            type: array',
     },
     business_logger: {
@@ -155,7 +156,7 @@ export default {
             'Mails are sent synchronously during the request. The customer then has to wait for the SMTP server to respond. Routing mail through the message queue sends it in the background.',
         solution:
             'Route the SendEmailMessage onto the asynchronous transport so mails are delivered by the worker.',
-        code: '# config/packages/framework.yaml\nframework:\n    messenger:\n        routing:\n            \'Symfony\\Component\\Mailer\\Messenger\\SendEmailMessage\': async',
+        code: "# config/packages/framework.yaml\nframework:\n    messenger:\n        routing:\n            'Symfony\\Component\\Mailer\\Messenger\\SendEmailMessage': async",
     },
     'messenger-auto-setup': {
         description:
@@ -166,7 +167,7 @@ export default {
     },
     sql_group_concat_max_len: {
         description:
-            'MySQL\'s group_concat_max_len is too low. Shopware aggregates data with GROUP_CONCAT and a low limit silently truncates the result, which leads to broken data or errors.',
+            "MySQL's group_concat_max_len is too low. Shopware aggregates data with GROUP_CONCAT and a low limit silently truncates the result, which leads to broken data or errors.",
         solution: 'Raise group_concat_max_len on the MySQL server.',
         code: '# my.cnf\n[mysqld]\ngroup_concat_max_len = 320000',
     },
@@ -204,7 +205,8 @@ export default {
     'php.opcache.interned_strings_buffer': {
         description:
             'The OPcache interned strings buffer is small. Shopware uses a lot of strings, so a small buffer reduces OPcache efficiency and increases memory churn.',
-        solution: 'Increase the interned strings buffer in your PHP configuration.',
+        solution:
+            'Increase the interned strings buffer in your PHP configuration.',
         code: '; php.ini\nopcache.interned_strings_buffer=20',
     },
     'php.zend.detect_unicode': {
@@ -222,7 +224,8 @@ export default {
     'product-stream-indexing': {
         description:
             'Product stream indexing keeps a pre-computed mapping of products to dynamic product groups up to date. On many shops this background work is unnecessary and can be disabled.',
-        solution: 'Disable product stream indexing if you do not depend on the pre-computed mapping.',
+        solution:
+            'Disable product stream indexing if you do not depend on the pre-computed mapping.',
         code: '# config/packages/shopware.yaml\nshopware:\n    product_stream:\n        indexing: false',
     },
     'queue.adapter': {

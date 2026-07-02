@@ -23,7 +23,8 @@ class ExtensionFileHashService
     public function __construct(
         #[Autowire('%kernel.project_dir%')]
         private readonly string $rootDir,
-    ) {}
+    ) {
+    }
 
     public function getChecksumFilePathForExtension(PluginEntity $extension): string
     {

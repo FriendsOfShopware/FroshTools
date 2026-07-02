@@ -138,7 +138,7 @@ class CacheAdapter
 
     private function extractNamespace(RedisTagAwareAdapter $adapter): string
     {
-        $func = \Closure::bind(fn() => $adapter->namespace, $adapter, $adapter::class);
+        $func = \Closure::bind(fn () => $adapter->namespace, $adapter, $adapter::class);
 
         return $func();
     }
@@ -148,7 +148,7 @@ class CacheAdapter
         if (class_exists('Shopware\Core\Framework\Adapter\Cache\CacheDecorator') && $adapter instanceof CacheDecorator) {
             // Do not declare function as static
             // @phpstan-ignore-next-line
-            $func = \Closure::bind(fn() => $adapter->decorated, $adapter, $adapter::class);
+            $func = \Closure::bind(fn () => $adapter->decorated, $adapter, $adapter::class);
 
             return $this->getCacheAdapter($func());
         }
@@ -157,7 +157,7 @@ class CacheAdapter
             // @phpstan-ignore-next-line booleanAnd.alwaysFalse, function.impossibleType, instanceof.alwaysFalse
             if (class_exists($sentryAdapterClass) && $adapter instanceof $sentryAdapterClass) {
                 // @phpstan-ignore-next-line property.notFound
-                $func = \Closure::bind(fn() => $adapter->decoratedAdapter, $adapter, $adapter::class);
+                $func = \Closure::bind(fn () => $adapter->decoratedAdapter, $adapter, $adapter::class);
 
                 return $this->getCacheAdapter($func());
             }
@@ -165,7 +165,7 @@ class CacheAdapter
 
         if ($adapter instanceof TagAwareAdapter || $adapter instanceof TraceableAdapter) {
             // Do not declare function as static
-            $func = \Closure::bind(fn() => $adapter->pool, $adapter, $adapter::class);
+            $func = \Closure::bind(fn () => $adapter->pool, $adapter, $adapter::class);
 
             return $this->getCacheAdapter($func());
         }
@@ -176,10 +176,10 @@ class CacheAdapter
     private function getRedis(AdapterInterface $adapter): \Redis
     {
         if ($adapter instanceof RedisTagAwareAdapter) {
-            $redisProxyGetter = \Closure::bind(fn() => $adapter->redis, $adapter, RedisTagAwareAdapter::class);
+            $redisProxyGetter = \Closure::bind(fn () => $adapter->redis, $adapter, RedisTagAwareAdapter::class);
         } else {
             // @phpstan-ignore-next-line
-            $redisProxyGetter = \Closure::bind(fn() => $adapter->redis, $adapter, RedisAdapter::class);
+            $redisProxyGetter = \Closure::bind(fn () => $adapter->redis, $adapter, RedisAdapter::class);
         }
 
         return $redisProxyGetter();
@@ -187,14 +187,14 @@ class CacheAdapter
 
     private function getPathFromFilesystemAdapter(FilesystemAdapter $adapter): string
     {
-        $getter = \Closure::bind(fn() => $adapter->directory, $adapter, $adapter::class);
+        $getter = \Closure::bind(fn () => $adapter->directory, $adapter, $adapter::class);
 
         return $getter();
     }
 
     private function getPathOfFilesAdapter(PhpFilesAdapter $adapter): string
     {
-        $getter = \Closure::bind(fn() => $adapter->directory, $adapter, $adapter::class);
+        $getter = \Closure::bind(fn () => $adapter->directory, $adapter, $adapter::class);
 
         return $getter();
     }

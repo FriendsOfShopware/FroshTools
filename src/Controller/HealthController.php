@@ -30,7 +30,8 @@ class HealthController extends AbstractController
         private readonly CacheInterface $cacheObject,
         #[Autowire(param: 'frosh_tools.checker.disabled_checks')]
         private readonly array $ignoredChecks,
-    ) {}
+    ) {
+    }
 
     #[Route(path: '/health/status', name: 'api.frosh.tools.health.status', methods: ['GET'])]
     public function status(): JsonResponse

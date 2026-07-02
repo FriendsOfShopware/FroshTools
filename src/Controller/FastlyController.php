@@ -23,7 +23,8 @@ class FastlyController extends AbstractController
         private readonly ?string $apiKey = null,
         private readonly ?AbstractReverseProxyGateway $reverseProxyGateway = null,
         private readonly ?HttpClientInterface $client = null,
-    ) {}
+    ) {
+    }
 
     #[Route(path: '/status', name: 'api.frosh.tools.fastly.status', methods: ['GET'])]
     public function status(): JsonResponse

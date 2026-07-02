@@ -15,7 +15,9 @@ use Symfony\Component\Routing\Attribute\Route;
 #[Route(path: '/api/_action/frosh-tools/elasticsearch', defaults: ['_routeScope' => ['api'], '_acl' => ['frosh_tools:read']])]
 class ElasticsearchController extends AbstractController
 {
-    public function __construct(private readonly ElasticsearchManager $manager) {}
+    public function __construct(private readonly ElasticsearchManager $manager)
+    {
+    }
 
     #[Route(path: '/status', name: 'api.frosh.tools.elasticsearch.status', methods: ['GET'])]
     public function status(): Response
@@ -150,7 +152,7 @@ class ElasticsearchController extends AbstractController
             return new JsonResponse(['message' => 'Field "indices" must be an array.'], Response::HTTP_BAD_REQUEST);
         }
 
-        $indices = array_values(array_unique(array_filter($indices, static fn(mixed $index): bool => \is_string($index) && $index !== '')));
+        $indices = array_values(array_unique(array_filter($indices, static fn (mixed $index): bool => \is_string($index) && $index !== '')));
 
         return new JsonResponse($this->manager->deleteOrphanedIndices($indices));
     }

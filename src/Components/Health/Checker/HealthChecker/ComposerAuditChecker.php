@@ -16,7 +16,8 @@ class ComposerAuditChecker implements HealthCheckerInterface, CheckerInterface
 
     public function __construct(
         private readonly ComposerAuditService $composerAuditService,
-    ) {}
+    ) {
+    }
 
     public function collect(HealthCollection $collection): void
     {

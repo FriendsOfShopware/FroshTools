@@ -17,7 +17,8 @@ class AdminInfoListener
         private readonly string $logDir,
         #[Autowire(param: 'shopware.http_cache.reverse_proxy.fastly.service_id')]
         private readonly ?string $fastlyServiceId = null,
-    ) {}
+    ) {
+    }
 
     #[AsEventListener('api.info.config.response')]
     public function filterJson(ResponseEvent $event): void

@@ -22,7 +22,8 @@ class EndOfLifeService
     public function __construct(
         private readonly HttpClientInterface $httpClient,
         private readonly CacheInterface $cacheObject,
-    ) {}
+    ) {
+    }
 
     /**
      * Resolve the EOL information for the cycle matching the given version (major.minor).

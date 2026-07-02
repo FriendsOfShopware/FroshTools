@@ -6,7 +6,9 @@ namespace Frosh\Tools\Components;
 
 class CacheStatisticsService
 {
-    public function __construct(private readonly CacheRegistry $cacheRegistry) {}
+    public function __construct(private readonly CacheRegistry $cacheRegistry)
+    {
+    }
 
     /**
      * @return array{enabled: bool, hitRate: float, hits: int, misses: int, usedMemory: int, freeMemory: int, wastedMemory: int, wastedPercentage: float, cachedScripts: int, maxCachedScripts: int, internedStringsUsedMemory: int, internedStringsFreeMemory: int, lastRestart: string|null}|null

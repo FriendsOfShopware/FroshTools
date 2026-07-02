@@ -12,7 +12,8 @@ class DependencyAuditChecker implements SecurityCheckerInterface
 {
     public function __construct(
         private readonly ComposerAuditService $composerAuditService,
-    ) {}
+    ) {
+    }
 
     public function collect(SecurityCollection $collection): void
     {
