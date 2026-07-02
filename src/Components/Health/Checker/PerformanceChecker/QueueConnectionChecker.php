@@ -22,7 +22,6 @@ class QueueConnectionChecker implements PerformanceCheckerInterface, CheckerInte
         $schema = $this->getSchema();
 
         $id = 'queue.adapter';
-        $url = 'https://developer.shopware.com/docs/guides/hosting/infrastructure/message-queue.html#message-queue-on-production-systems';
 
         if ($schema === 'doctrine') {
             $collection->add(
@@ -31,7 +30,6 @@ class QueueConnectionChecker implements PerformanceCheckerInterface, CheckerInte
                     'The queue storage in database does not scale well with multiple workers',
                     $schema,
                     'redis or rabbitmq',
-                    $url,
                 ),
             );
 
@@ -45,7 +43,6 @@ class QueueConnectionChecker implements PerformanceCheckerInterface, CheckerInte
                     'The sync queue is not suitable for production environments',
                     $schema,
                     'redis or rabbitmq',
-                    $url,
                 ),
             );
         }

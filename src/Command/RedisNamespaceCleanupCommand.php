@@ -97,7 +97,7 @@ class RedisNamespaceCleanupCommand extends Command
         $io->section('Namespace Summary');
         $io->table(
             ['Namespace', 'Key Count', 'Action'],
-            $tableData
+            $tableData,
         );
 
         $deleteCount = \count($keysToDelete);

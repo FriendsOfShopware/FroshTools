@@ -32,7 +32,6 @@ class RedisTagAwareChecker implements PerformanceCheckerInterface, CheckerInterf
                 'Redis adapter should be TagAware',
                 CacheAdapter::TYPE_REDIS,
                 CacheAdapter::TYPE_REDIS_TAG_AWARE,
-                'https://developer.shopware.com/docs/guides/hosting/performance/caches.html#example-replace-some-cache-with-redis',
             ),
         );
     }

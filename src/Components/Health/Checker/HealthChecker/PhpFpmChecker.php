@@ -48,7 +48,6 @@ class PhpFpmChecker implements HealthCheckerInterface, CheckerInterface
             'PHP FPM max listen queue',
             (string) $listenQueue,
             '0',
-            'https://www.php.net/manual/en/fpm.status.php#:~:text=a%20free%20process.-,max%20listen%20queue,-The%20maximum%20number'
         );
 
         if ($listenQueue > 0) {
@@ -67,7 +66,6 @@ class PhpFpmChecker implements HealthCheckerInterface, CheckerInterface
             'PHP FPM max children reached',
             (string) $maxChildrenReached,
             '0',
-            'https://www.php.net/manual/en/fpm.status.php#:~:text=max%20children%20reached'
         );
 
         if ($maxChildrenReached > 0) {
@@ -93,8 +91,7 @@ class PhpFpmChecker implements HealthCheckerInterface, CheckerInterface
                 'PHP FPM memory peak',
                 $memoryPeak,
                 '',
-                'https://www.php.net/manual/en/fpm.status.php#:~:text=memory%20peak'
-            )
+            ),
         );
     }
 }

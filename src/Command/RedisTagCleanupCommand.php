@@ -120,7 +120,7 @@ class RedisTagCleanupCommand extends Command
                             '  Processed: %d, Members removed: %d, Keys deleted: %d',
                             $processed,
                             $removed,
-                            $deleted
+                            $deleted,
                         ));
                     }
                 } catch (\Exception $e) {
@@ -140,7 +140,7 @@ class RedisTagCleanupCommand extends Command
                 ['Total keys processed', $totalProcessed],
                 ['Total members removed', $totalRemoved],
                 ['Total keys deleted', $totalDeleted],
-            ]
+            ],
         );
 
         $io->success('Tag cleanup completed successfully');
@@ -204,7 +204,7 @@ class RedisTagCleanupCommand extends Command
                 ['Total tag keys found', $totalTagKeys],
                 ['Orphaned members to remove', $orphanedMembers],
                 ['Empty tags to delete', $emptyTags],
-            ]
+            ],
         );
 
         if (!empty($sampleOrphans)) {
@@ -222,7 +222,7 @@ class RedisTagCleanupCommand extends Command
         $io->warning(\sprintf(
             'Dry run complete - would have removed %d orphaned members and deleted %d empty tags',
             $orphanedMembers,
-            $emptyTags
+            $emptyTags,
         ));
 
         return Command::SUCCESS;

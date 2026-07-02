@@ -1,4 +1,6 @@
-<?php declare(strict_types=1);
+<?php
+
+declare(strict_types=1);
 
 namespace Frosh\Tools\Components\ExtensionChecksum;
 
@@ -55,7 +57,7 @@ class ExtensionFileHashService
                 (string) file_get_contents($checksumFilePath),
                 true,
                 512,
-                \JSON_THROW_ON_ERROR
+                \JSON_THROW_ON_ERROR,
             );
         } catch (\JsonException $exception) {
             throw new \RuntimeException(\sprintf('Checksum file "%s" is not valid JSON', $checksumFilePath), 0, $exception);
@@ -122,7 +124,7 @@ class ExtensionFileHashService
                 throw new \RuntimeException(\sprintf(
                     'Could not generate %s hash for "%s"',
                     $algorithm,
-                    $absoluteFilePath
+                    $absoluteFilePath,
                 ));
             }
 

@@ -5,7 +5,11 @@
             "index": {
                 "title": "System-Status",
                 "performance": "Performance recommendations",
-                "info": "Info"
+                "info": "Info",
+                "recommendation": {
+                    "what": "What this means",
+                    "how": "How to fix it"
+                }
             },
             "cache": {
                 "title": "Cache"
