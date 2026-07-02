@@ -23,16 +23,17 @@ class MessengerAutoSetupChecker implements PerformanceCheckerInterface, CheckerI
 
     public function collect(HealthCollection $collection): void
     {
-        if ($this->isAutoSetupEnabled($this->messageTransportDsn) || $this->isAutoSetupEnabled($this->messageTransportDsnLowPriority) || $this->isAutoSetupEnabled($this->messageTransportDsnFailure)) {
-            $collection->add(
-                SettingsResult::info(
-                    'messenger-auto-setup',
-                    'Messenger auto_setup',
-                    'enabled',
-                    'disabled',
-                ),
-            );
-        }
+        $autoSetupState = $this->isAutoSetupEnabled($this->messageTransportDsn) || $this->isAutoSetupEnabled($this->messageTransportDsnLowPriority) || $this->isAutoSetupEnabled($this->messageTransportDsnFailure);
+
+        $collection->add(
+            SettingsResult::create(
+                $autoSetupState ? 'info' : 'ok',
+                'messenger-auto-setup',
+                'Messenger auto_setup',
+                $autoSetupState ? 'enabled' : 'disabled',
+                'disabled',
+            ),
+        );
     }
 
     private function isAutoSetupEnabled(string $messageTransportDsn): bool

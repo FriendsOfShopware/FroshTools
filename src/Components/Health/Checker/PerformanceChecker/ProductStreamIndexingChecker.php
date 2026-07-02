@@ -26,15 +26,14 @@ class ProductStreamIndexingChecker implements PerformanceCheckerInterface, Check
             return;
         }
 
-        if ($this->productStreamIndexingEnabled) {
-            $collection->add(
-                SettingsResult::info(
-                    'product-stream-indexing',
-                    'Product Stream Indexing',
-                    'enabled',
-                    'disabled',
-                ),
-            );
-        }
+        $collection->add(
+            SettingsResult::create(
+                $this->productStreamIndexingEnabled ? 'info' : 'ok',
+                'product-stream-indexing',
+                'Product Stream Indexing',
+                $this->productStreamIndexingEnabled ? 'enabled' : 'disabled',
+                'disabled',
+            ),
+        );
     }
 }

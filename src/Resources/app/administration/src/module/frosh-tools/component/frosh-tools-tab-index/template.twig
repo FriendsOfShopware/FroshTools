@@ -82,11 +82,20 @@
     </ft-panel>
     <ft-panel
         :title="$t('frosh-tools.tabs.index.performance')"
-        :count="performanceStatus ? performanceStatus.length : 0"
-        :flush="!(performanceStatus && performanceStatus.length === 0)"
+        :count="filteredPerformanceStatus.length"
+        :flush="filteredPerformanceStatus.length > 0"
     >
+        <template #actions>
+            <label class="ft-show-done-toggle">
+                <input
+                    type="checkbox"
+                    v-model="showDone"
+                >
+                {{ $t('frosh-tools.showDone') }}
+            </label>
+        </template>
         <ft-hero-state
-            v-if="!isLoading && performanceStatus && performanceStatus.length === 0"
+            v-if="!isLoading && filteredPerformanceStatus.length === 0"
             variant="success"
             icon="check"
             title="All clear"
@@ -94,7 +103,7 @@
         />
         <div
             class="ft-table-wrap"
-            v-else-if="performanceStatus && performanceStatus.length > 0"
+            v-else-if="filteredPerformanceStatus.length > 0"
         >
             <table class="ft-table">
                 <thead>
@@ -124,7 +133,7 @@
                 </thead>
                 <tbody>
                     <tr
-                        v-for="(item, idx) in sortRows(performanceStatus, 'performance')"
+                        v-for="(item, idx) in sortRows(filteredPerformanceStatus, 'performance')"
                         :key="`p-${idx}`"
                     >
                         <td>

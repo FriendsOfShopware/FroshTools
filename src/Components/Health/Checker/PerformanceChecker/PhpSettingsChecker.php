@@ -22,74 +22,75 @@ class PhpSettingsChecker implements PerformanceCheckerInterface, CheckerInterfac
     private function checkAssertActive(HealthCollection $collection): void
     {
         $currentValue = $this->iniGetFailover('zend.assertions');
-        if ($currentValue !== '-1') {
-            $collection->add(
-                SettingsResult::warning(
-                    'zend.assertions',
-                    'PHP value zend.assertions',
-                    $currentValue,
-                    '-1',
-                ),
-            );
-        }
+        $collection->add(
+            SettingsResult::create(
+                $currentValue !== '-1' ? 'warning' : 'ok',
+                'zend.assertions',
+                'PHP value zend.assertions',
+                $currentValue,
+                '-1',
+            ),
+        );
     }
 
     private function checkEnableFileOverride(HealthCollection $collection): void
     {
-        if (!$this->isIniEnabled('opcache.enable_file_override')) {
-            $collection->add(
-                SettingsResult::warning(
-                    'php.opcache.enable_file_override',
-                    'PHP value opcache.enable_file_override',
-                    $this->iniGetFailover('opcache.enable_file_override'),
-                    '1',
-                ),
-            );
-        }
+        $currentValue = $this->iniGetFailover('opcache.enable_file_override');
+        $iniFailOver = !$this->isIniEnabled('opcache.enable_file_override');
+        $collection->add(
+            SettingsResult::create(
+                $iniFailOver ? 'warning' : 'ok',
+                'php.opcache.enable_file_override',
+                'PHP value opcache.enable_file_override',
+                $currentValue,
+                '1',
+            ),
+        );
     }
 
     private function checkInternedStringsBuffer(HealthCollection $collection): void
     {
         $currentValue = $this->iniGetFailover('opcache.interned_strings_buffer');
-        if ((int) $currentValue < 20) {
-            $collection->add(
-                SettingsResult::warning(
-                    'php.opcache.interned_strings_buffer',
-                    'PHP value opcache.interned_strings_buffer',
-                    $currentValue,
-                    'min 20',
-                ),
-            );
-        }
+        $bufferTooSmall = (int) $currentValue < 20;
+        $collection->add(
+            SettingsResult::create(
+                $bufferTooSmall ? 'warning' : 'ok',
+                'php.opcache.interned_strings_buffer',
+                'PHP value opcache.interned_strings_buffer',
+                $currentValue,
+                'min 20',
+            ),
+        );
     }
 
     private function checkZendDetectUnicode(HealthCollection $collection): void
     {
-        if ($this->isIniEnabled('zend.detect_unicode')) {
-            $collection->add(
-                SettingsResult::warning(
-                    'php.zend.detect_unicode',
-                    'PHP value zend.detect_unicode',
-                    $this->iniGetFailover('zend.detect_unicode'),
-                    '0',
-                ),
-            );
-        }
+        $currentValue = $this->iniGetFailover('zend.detect_unicode');
+        $iniFailOver = $this->isIniEnabled('zend.detect_unicode');
+        $collection->add(
+            SettingsResult::create(
+                $iniFailOver ? 'warning' : 'ok',
+                'php.zend.detect_unicode',
+                'PHP value zend.detect_unicode',
+                $currentValue,
+                '0',
+            ),
+        );
     }
 
     private function checkRealpathCacheTtl(HealthCollection $collection): void
     {
         $currentValue = $this->iniGetFailover('realpath_cache_ttl');
-        if ((int) $currentValue < 3600) {
-            $collection->add(
-                SettingsResult::warning(
-                    'php.zend.realpath_cache_ttl',
-                    'PHP value realpath_cache_ttl',
-                    $currentValue,
-                    'min 3600',
-                ),
-            );
-        }
+        $ttlTooLow = (int) $currentValue < 3600;
+        $collection->add(
+            SettingsResult::create(
+                $ttlTooLow ? 'warning' : 'ok',
+                'php.zend.realpath_cache_ttl',
+                'PHP value realpath_cache_ttl',
+                $currentValue,
+                'min 3600',
+            ),
+        );
     }
 
     /**

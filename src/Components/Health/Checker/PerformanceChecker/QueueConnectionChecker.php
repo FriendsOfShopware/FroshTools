@@ -11,6 +11,9 @@ use Symfony\Component\DependencyInjection\Attribute\Autowire;
 
 class QueueConnectionChecker implements PerformanceCheckerInterface, CheckerInterface
 {
+    private const ID = 'queue.adapter';
+    private const RECOMMENDED = 'redis or rabbitmq';
+
     public function __construct(
         #[Autowire(param: 'frosh_tools.queue_connection')]
         protected string $connection,
@@ -20,32 +23,37 @@ class QueueConnectionChecker implements PerformanceCheckerInterface, CheckerInte
     public function collect(HealthCollection $collection): void
     {
         $schema = $this->getSchema();
+        $state = $this->determineState($schema);
+        $snippet = $this->getSnippet($schema);
 
-        $id = 'queue.adapter';
+        $collection->add(
+            SettingsResult::create(
+                $state,
+                self::ID,
+                $snippet,
+                $schema,
+                self::RECOMMENDED,
+            ),
+        );
+    }
 
-        if ($schema === 'doctrine') {
-            $collection->add(
-                SettingsResult::warning(
-                    $id,
-                    'The queue storage in database does not scale well with multiple workers',
-                    $schema,
-                    'redis or rabbitmq',
-                ),
-            );
+    private function determineState(string $schema): string
+    {
+        return match ($schema) {
+            'redis', 'rabbitmq' => 'ok',
+            'doctrine', 'sync' => 'warning',
+            default => 'info',
+        };
+    }
 
-            return;
-        }
-
-        if ($schema === 'sync') {
-            $collection->add(
-                SettingsResult::warning(
-                    $id,
-                    'The sync queue is not suitable for production environments',
-                    $schema,
-                    'redis or rabbitmq',
-                ),
-            );
-        }
+    private function getSnippet(string $schema): string
+    {
+        return match ($schema) {
+            'doctrine' => 'The queue storage in database does not scale well with multiple workers',
+            'sync' => 'The sync queue is not suitable for production environments',
+            'redis', 'rabbitmq' => 'Queue adapter',
+            default => 'Unknown queue adapter',
+        };
     }
 
     private function getSchema(): string

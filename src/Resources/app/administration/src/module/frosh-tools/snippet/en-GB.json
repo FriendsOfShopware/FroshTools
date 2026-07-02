@@ -346,6 +346,8 @@
         "status": "Status",
         "name": "Name",
         "good": "Good",
+        "done": "Done",
+        "showDone": "Show done",
         "warning": "Warning",
         "error": "Error",
         "info": "Info",

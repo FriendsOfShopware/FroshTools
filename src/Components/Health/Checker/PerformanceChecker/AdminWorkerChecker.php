@@ -19,15 +19,14 @@ class AdminWorkerChecker implements PerformanceCheckerInterface, CheckerInterfac
 
     public function collect(HealthCollection $collection): void
     {
-        if ($this->adminWorkerEnabled) {
-            $collection->add(
-                SettingsResult::warning(
-                    'admin-watcher',
-                    'Admin-Worker',
-                    'enabled',
-                    'disabled',
-                ),
-            );
-        }
+        $collection->add(
+            SettingsResult::create(
+                $this->adminWorkerEnabled ? 'warning' : 'ok',
+                'admin-watcher',
+                'Admin-Worker',
+                $this->adminWorkerEnabled ? 'enabled' : 'disabled',
+                'disabled',
+            ),
+        );
     }
 }
