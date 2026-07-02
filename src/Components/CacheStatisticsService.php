@@ -35,6 +35,11 @@ class CacheStatisticsService
         $misses = (int) ($stats['misses'] ?? 0);
         $total = $hits + $misses;
 
+        $usedMemory = (int) ($memory['used_memory'] ?? 0);
+        $freeMemory = (int) ($memory['free_memory'] ?? 0);
+        $wastedMemory = (int) ($memory['wasted_memory'] ?? 0);
+        $totalMemory = $usedMemory + $wastedMemory + $freeMemory;
+
         $maxScripts = 0;
         if ($config !== false) {
             $maxScripts = (int) $config['directives']['opcache.max_accelerated_files'];
@@ -50,9 +55,10 @@ class CacheStatisticsService
             'hitRate' => $total > 0 ? round($hits / $total * 100, 2) : 0.0,
             'hits' => $hits,
             'misses' => $misses,
-            'usedMemory' => (int) ($memory['used_memory'] ?? 0),
-            'freeMemory' => (int) ($memory['free_memory'] ?? 0),
-            'wastedMemory' => (int) ($memory['wasted_memory'] ?? 0),
+            'usedMemory' => $usedMemory,
+            'freeMemory' => $freeMemory,
+            'wastedMemory' => $wastedMemory,
+            'totalMemory' => $totalMemory,
             'wastedPercentage' => round((float) ($memory['current_wasted_percentage'] ?? 0), 2),
             'cachedScripts' => (int) ($stats['num_cached_scripts'] ?? 0),
             'maxCachedScripts' => $maxScripts,
