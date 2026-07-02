@@ -347,6 +347,7 @@
         "name": "Name",
         "good": "Gut",
         "done": "Erledigt",
+        "showDone": "Erledigte anzeigen",
         "warning": "Warnung",
         "error": "Fehler",
         "info": "Info",

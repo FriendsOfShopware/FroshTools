@@ -12,7 +12,6 @@ use Symfony\Component\DependencyInjection\Attribute\Autowire;
 class QueueConnectionChecker implements PerformanceCheckerInterface, CheckerInterface
 {
     private const ID = 'queue.adapter';
-    private const URL = 'https://developer.shopware.com/docs/guides/hosting/infrastructure/message-queue.html#message-queue-on-production-systems';
     private const RECOMMENDED = 'redis or rabbitmq';
 
     public function __construct(
@@ -34,7 +33,6 @@ class QueueConnectionChecker implements PerformanceCheckerInterface, CheckerInte
                 $snippet,
                 $schema,
                 self::RECOMMENDED,
-                self::URL,
             ),
         );
     }
@@ -53,7 +51,7 @@ class QueueConnectionChecker implements PerformanceCheckerInterface, CheckerInte
         return match ($schema) {
             'doctrine' => 'The queue storage in database does not scale well with multiple workers',
             'sync' => 'The sync queue is not suitable for production environments',
-            'redis', 'rabbitmq' => '',
+            'redis', 'rabbitmq' => 'Queue adapter',
             default => 'Unknown queue adapter',
         };
     }

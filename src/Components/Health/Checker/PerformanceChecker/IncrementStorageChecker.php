@@ -30,7 +30,6 @@ class IncrementStorageChecker implements PerformanceCheckerInterface, CheckerInt
                 'Increment storage',
                 $this->userActivity === 'mysql' || $this->queueActivity === 'mysql' ? 'mysql' : 'array or redis',
                 $recommended,
-                'https://developer.shopware.com/docs/guides/hosting/performance/performance-tweaks#increment-storage',
             ),
         );
     }

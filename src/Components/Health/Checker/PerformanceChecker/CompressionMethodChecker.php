@@ -11,8 +11,6 @@ use Symfony\Component\DependencyInjection\Attribute\Autowire;
 
 class CompressionMethodChecker implements PerformanceCheckerInterface, CheckerInterface
 {
-    public const DOCUMENTATION_URL = 'https://developer.shopware.com/docs/guides/hosting/performance/performance-tweaks.html#using-zstd-instead-of-gzip-for-compression';
-
     public function __construct(
         #[Autowire(param: 'kernel.shopware_version')]
         public readonly string $shopwareVersion,
@@ -54,7 +52,6 @@ class CompressionMethodChecker implements PerformanceCheckerInterface, CheckerIn
                     $snippet,
                     'gzip',
                     'zstd',
-                    self::DOCUMENTATION_URL,
                 ),
             );
 
@@ -71,7 +68,6 @@ class CompressionMethodChecker implements PerformanceCheckerInterface, CheckerIn
                     'PHP extension zstd for ' . $snippet,
                     $extensionLoaded ? 'enabled' : 'disabled',
                     'enabled',
-                    self::DOCUMENTATION_URL,
                 ),
             );
         }

@@ -12,15 +12,14 @@ class PhpSettingsChecker implements PerformanceCheckerInterface, CheckerInterfac
 {
     public function collect(HealthCollection $collection): void
     {
-        $url = 'https://developer.shopware.com/docs/guides/hosting/performance/performance-tweaks#php-config-tweaks';
-        $this->checkAssertActive($collection, $url);
-        $this->checkEnableFileOverride($collection, $url);
-        $this->checkInternedStringsBuffer($collection, $url);
-        $this->checkZendDetectUnicode($collection, $url);
-        $this->checkRealpathCacheTtl($collection, $url);
+        $this->checkAssertActive($collection);
+        $this->checkEnableFileOverride($collection);
+        $this->checkInternedStringsBuffer($collection);
+        $this->checkZendDetectUnicode($collection);
+        $this->checkRealpathCacheTtl($collection);
     }
 
-    private function checkAssertActive(HealthCollection $collection, string $url): void
+    private function checkAssertActive(HealthCollection $collection): void
     {
         $currentValue = $this->iniGetFailover('zend.assertions');
         $collection->add(
@@ -30,12 +29,11 @@ class PhpSettingsChecker implements PerformanceCheckerInterface, CheckerInterfac
                 'PHP value zend.assertions',
                 $currentValue,
                 '-1',
-                $url,
             ),
         );
     }
 
-    private function checkEnableFileOverride(HealthCollection $collection, string $url): void
+    private function checkEnableFileOverride(HealthCollection $collection): void
     {
         $currentValue = $this->iniGetFailover('opcache.enable_file_override');
         $iniFailOver = !$this->isIniEnabled('opcache.enable_file_override');
@@ -46,12 +44,11 @@ class PhpSettingsChecker implements PerformanceCheckerInterface, CheckerInterfac
                 'PHP value opcache.enable_file_override',
                 $currentValue,
                 '1',
-                $url,
             ),
         );
     }
 
-    private function checkInternedStringsBuffer(HealthCollection $collection, string $url): void
+    private function checkInternedStringsBuffer(HealthCollection $collection): void
     {
         $currentValue = $this->iniGetFailover('opcache.interned_strings_buffer');
         $bufferTooSmall = (int) $currentValue < 20;
@@ -62,12 +59,11 @@ class PhpSettingsChecker implements PerformanceCheckerInterface, CheckerInterfac
                 'PHP value opcache.interned_strings_buffer',
                 $currentValue,
                 'min 20',
-                $url,
             ),
         );
     }
 
-    private function checkZendDetectUnicode(HealthCollection $collection, string $url): void
+    private function checkZendDetectUnicode(HealthCollection $collection): void
     {
         $currentValue = $this->iniGetFailover('zend.detect_unicode');
         $iniFailOver = $this->isIniEnabled('zend.detect_unicode');
@@ -78,12 +74,11 @@ class PhpSettingsChecker implements PerformanceCheckerInterface, CheckerInterfac
                 'PHP value zend.detect_unicode',
                 $currentValue,
                 '0',
-                $url,
             ),
         );
     }
 
-    private function checkRealpathCacheTtl(HealthCollection $collection, string $url): void
+    private function checkRealpathCacheTtl(HealthCollection $collection): void
     {
         $currentValue = $this->iniGetFailover('realpath_cache_ttl');
         $ttlTooLow = (int) $currentValue < 3600;
@@ -94,7 +89,6 @@ class PhpSettingsChecker implements PerformanceCheckerInterface, CheckerInterfac
                 'PHP value realpath_cache_ttl',
                 $currentValue,
                 'min 3600',
-                $url,
             ),
         );
     }

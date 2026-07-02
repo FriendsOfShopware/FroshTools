@@ -19,13 +19,11 @@ class SettingsResult extends Struct
 
     public string $state;
 
-    public ?string $url = null;
-
     public string $id;
 
     protected string $snippet;
 
-    public static function ok(string $id, string $snippet, string $current = '', string $recommended = '', ?string $url = null): self
+    public static function ok(string $id, string $snippet, string $current = '', string $recommended = ''): self
     {
         $me = new self();
         $me->id = $id;
@@ -33,12 +31,11 @@ class SettingsResult extends Struct
         $me->snippet = $snippet;
         $me->current = $current;
         $me->recommended = $recommended;
-        $me->url = $url;
 
         return $me;
     }
 
-    public static function warning(string $id, string $snippet, string $current = '', string $recommended = '', ?string $url = null): self
+    public static function warning(string $id, string $snippet, string $current = '', string $recommended = ''): self
     {
         $me = new self();
         $me->id = $id;
@@ -46,12 +43,11 @@ class SettingsResult extends Struct
         $me->snippet = $snippet;
         $me->current = $current;
         $me->recommended = $recommended;
-        $me->url = $url;
 
         return $me;
     }
 
-    public static function error(string $id, string $snippet, string $current = '', string $recommended = '', ?string $url = null): self
+    public static function error(string $id, string $snippet, string $current = '', string $recommended = ''): self
     {
         $me = new self();
         $me->id = $id;
@@ -59,12 +55,11 @@ class SettingsResult extends Struct
         $me->snippet = $snippet;
         $me->current = $current;
         $me->recommended = $recommended;
-        $me->url = $url;
 
         return $me;
     }
 
-    public static function info(string $id, string $snippet, string $current = '', string $recommended = '', ?string $url = null): self
+    public static function info(string $id, string $snippet, string $current = '', string $recommended = ''): self
     {
         $me = new self();
         $me->id = $id;
@@ -72,7 +67,6 @@ class SettingsResult extends Struct
         $me->snippet = $snippet;
         $me->current = $current;
         $me->recommended = $recommended;
-        $me->url = $url;
 
         return $me;
     }
@@ -82,14 +76,13 @@ class SettingsResult extends Struct
         string $id,
         string $snippet,
         string $current = '',
-        string $recommended = '',
-        ?string $url = null
+        string $recommended = ''
     ): self {
         return match ($state) {
-            'ok' => self::ok($id, $snippet, $current, $recommended, $url),
-            'warning' => self::warning($id, $snippet, $current, $recommended, $url),
-            'error' => self::error($id, $snippet, $current, $recommended, $url),
-            'info' => self::info($id, $snippet, $current, $recommended, $url),
+            'ok' => self::ok($id, $snippet, $current, $recommended),
+            'warning' => self::warning($id, $snippet, $current, $recommended),
+            'error' => self::error($id, $snippet, $current, $recommended),
+            'info' => self::info($id, $snippet, $current, $recommended),
             default => throw new \InvalidArgumentException("Invalid state: {$state}"),
         };
     }

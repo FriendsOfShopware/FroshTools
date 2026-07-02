@@ -16,8 +16,6 @@ class LoggerLevelChecker implements PerformanceCheckerInterface, CheckerInterfac
 {
     private readonly Level $businessEventHandlerLevel;
 
-    private string $url = 'https://developer.shopware.com/docs/guides/hosting/performance/performance-tweaks#logging';
-
     public function __construct(
         #[Autowire(service: 'monolog.handler.business_event_handler_buffer')]
         AbstractHandler $businessEventHandlerLevel,
@@ -34,7 +32,6 @@ class LoggerLevelChecker implements PerformanceCheckerInterface, CheckerInterfac
                 'BusinessEventHandler logging',
                 Logger::toMonologLevel($this->businessEventHandlerLevel)->getName(),
                 'min WARNING',
-                $this->url,
             ),
         );
     }

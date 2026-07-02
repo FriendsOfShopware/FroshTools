@@ -31,9 +31,8 @@ class ProductStreamIndexingChecker implements PerformanceCheckerInterface, Check
                 $this->productStreamIndexingEnabled ? 'info' : 'ok',
                 'product-stream-indexing',
                 'Product Stream Indexing',
-                'enabled',
+                $this->productStreamIndexingEnabled ? 'enabled' : 'disabled',
                 'disabled',
-                'https://developer.shopware.com/docs/guides/hosting/performance/performance-tweaks.html#disable-product-stream-indexer',
             ),
         );
     }

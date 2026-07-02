@@ -27,7 +27,6 @@ class DisableSymfonySecretsChecker implements PerformanceCheckerInterface, Check
                 'Disable Symfony Secrets',
                 $this->vault ? 'enabled' : 'disabled',
                 'disabled',
-                'https://developer.shopware.com/docs/guides/hosting/performance/performance-tweaks.html#disable-symfony-secrets',
             ),
         );
     }

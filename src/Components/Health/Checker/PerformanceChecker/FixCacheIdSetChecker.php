@@ -32,12 +32,11 @@ class FixCacheIdSetChecker implements PerformanceCheckerInterface, CheckerInterf
 
         $collection->add(
             SettingsResult::create(
-                $cacheId ? 'warning' : 'ok',
+                $cacheId === '' ? 'warning' : 'ok',
                 'cache-id',
                 'Fixed cache id',
-                'not set',
+                $cacheId === '' ? 'not set' : 'set',
                 'set',
-                'https://developer.shopware.com/docs/guides/hosting/performance/performance-tweaks#cache-id',
             ),
         );
     }
