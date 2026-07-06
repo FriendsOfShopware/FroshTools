@@ -35,12 +35,25 @@ class ConflictsRepositoryChecker implements HealthCheckerInterface, CheckerInter
     {
         $composerFile = $this->projectDir . '/composer.json';
 
-        if (!is_file($composerFile) || !is_readable($composerFile)) {
+        if (!is_file($composerFile)) {
             $collection->add(
                 SettingsResult::warning(
                     self::ID,
                     self::SNIPPET,
                     'root composer.json not found',
+                    'configured',
+                ),
+            );
+
+            return;
+        }
+
+        if (!is_readable($composerFile)) {
+            $collection->add(
+                SettingsResult::warning(
+                    self::ID,
+                    self::SNIPPET,
+                    'root composer.json not readable',
                     'configured',
                 ),
             );
