@@ -99,8 +99,6 @@ class ConflictsRepositoryChecker implements HealthCheckerInterface, CheckerInter
     /**
      * The "repositories" key may be a list (0,1,2,…) or an object keyed by name; both hold
      * entries of the shape {"type": "...", "url": "..."}.
-     *
-     * @param mixed $repositories
      */
     private function hasConflictsRepository(mixed $repositories): bool
     {
