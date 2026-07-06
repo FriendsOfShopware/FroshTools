@@ -61,6 +61,13 @@ export default {
         description:
             'The highest amount of memory a single PHP-FPM worker has used. This is informational — use it to size memory_limit and to decide how many workers (pm.max_children) fit into the available RAM.',
     },
+    'composer-conflicts-repository': {
+        description:
+            'The Shopware conflicts repository (https://shopware.github.io/conflicts/) is not registered in the "repositories" section of your root composer.json. This repository declares combinations of packages and versions that are known to be incompatible. With it in place, Composer refuses to install or update to a broken combination before it reaches production; without it those guard rails are missing.',
+        solution:
+            'Add the conflicts repository to the "repositories" section of your root composer.json (either edit the file directly or run the composer command below), then run "composer update" so Composer re-evaluates your dependencies against it.',
+        code: 'composer config repositories.shopware-conflicts composer https://shopware.github.io/conflicts/\n\n# or add manually to composer.json:\n# "repositories": [\n#     {\n#         "type": "composer",\n#         "url": "https://shopware.github.io/conflicts/"\n#     }\n# ]',
+    },
 
     // --- Performance ----------------------------------------------------
     'admin-watcher': {
