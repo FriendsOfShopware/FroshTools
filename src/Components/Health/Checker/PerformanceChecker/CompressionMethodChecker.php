@@ -11,41 +11,18 @@ use Symfony\Component\DependencyInjection\Attribute\Autowire;
 
 class CompressionMethodChecker implements PerformanceCheckerInterface, CheckerInterface
 {
-    public readonly bool $cacheCompressionEnabled;
-
-    public readonly string $cacheCompressionMethod;
-
     public function __construct(
         #[Autowire(param: 'kernel.shopware_version')]
         public readonly string $shopwareVersion,
         #[Autowire(param: 'shopware.cache.cache_compression')]
-        public readonly ?bool $deprecatedCacheCompressionEnabled,
+        public readonly bool $cacheCompressionEnabled,
         #[Autowire(param: 'shopware.cache.cache_compression_method')]
-        public readonly ?string $deprecatedCacheCompressionMethod,
-        #[Autowire(param: 'shopware.cache.compress')]
-        ?bool $cacheCompressionEnabled,
-        #[Autowire(param: 'shopware.cache.compression_method')]
-        ?string $cacheCompressionMethod,
+        public readonly string $cacheCompressionMethod,
         #[Autowire(param: 'shopware.cart.compress')]
         public readonly bool $cartCompressionEnabled,
         #[Autowire(param: 'shopware.cart.compression_method')]
         public readonly string $cartCompressionMethod,
     ) {
-        if ($cacheCompressionEnabled === null) {
-            \assert($this->deprecatedCacheCompressionEnabled !== null);
-
-            $this->cacheCompressionEnabled = $this->deprecatedCacheCompressionEnabled;
-        } else {
-            $this->cacheCompressionEnabled = $cacheCompressionEnabled;
-        }
-
-        if ($cacheCompressionMethod === null) {
-            \assert($this->deprecatedCacheCompressionMethod !== null);
-
-            $this->cacheCompressionMethod = $this->deprecatedCacheCompressionMethod;
-        } else {
-            $this->cacheCompressionMethod = $cacheCompressionMethod;
-        }
     }
 
     public function collect(HealthCollection $collection): void
