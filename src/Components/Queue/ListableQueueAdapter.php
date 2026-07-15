@@ -102,13 +102,15 @@ class ListableQueueAdapter implements QueueAdapter
             throw new \RuntimeException(\sprintf('Message "%s" is not a failed message, only failed messages can be retried', $id));
         }
 
+        // Remove the failure copy before dispatching so a failed reject cannot leave two
+        // independently retryable copies of the same message.
+        $this->transport->reject($envelope);
+
         // A fresh envelope on purpose: carrying over stamps like ReceivedStamp would make
         // the bus handle the message synchronously instead of sending it to the transport
         $this->bus->dispatch(new Envelope($envelope->getMessage(), [
             new TransportNamesStamp([$failureStamp->getOriginalReceiverName()]),
         ]));
-
-        $this->transport->reject($envelope);
     }
 
     public function supportsPurge(): bool
@@ -118,13 +120,26 @@ class ListableQueueAdapter implements QueueAdapter
 
     public function purge(): void
     {
+        $firstError = null;
+
         do {
+            $listed = 0;
             $rejected = 0;
             foreach ($this->transport->all(self::PURGE_BATCH_SIZE) as $envelope) {
-                $this->transport->reject($envelope);
-                ++$rejected;
+                ++$listed;
+
+                try {
+                    $this->transport->reject($envelope);
+                    ++$rejected;
+                } catch (\Throwable $e) {
+                    $firstError ??= $e;
+                }
             }
-        } while ($rejected === self::PURGE_BATCH_SIZE);
+        } while ($listed === self::PURGE_BATCH_SIZE && $rejected > 0);
+
+        if ($firstError !== null) {
+            throw $firstError;
+        }
     }
 
     private function findEnvelope(string $id): Envelope

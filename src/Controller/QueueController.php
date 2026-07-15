@@ -63,7 +63,7 @@ class QueueController extends AbstractController
         return new JsonResponse($transports);
     }
 
-    #[Route(path: '/queue/transport/{name}/messages/{id}/retry', name: 'api.frosh.tools.queue.message.retry', requirements: ['id' => '.+'], methods: ['POST'])]
+    #[Route(path: '/queue/transport/{name}/messages/{id}/retry', name: 'api.frosh.tools.queue.message.retry', requirements: ['id' => '.+'], defaults: ['_acl' => ['frosh_tools:update']], methods: ['POST'])]
     public function retryMessage(string $name, string $id): JsonResponse
     {
         $adapter = $this->queueRegistry->has($name) ? $this->queueRegistry->get($name) : null;
@@ -78,7 +78,7 @@ class QueueController extends AbstractController
         return $this->executeMessageAction(static fn () => $adapter->retryMessage($id));
     }
 
-    #[Route(path: '/queue/transport/{name}/messages/{id}', name: 'api.frosh.tools.queue.message.delete', requirements: ['id' => '.+'], methods: ['DELETE'])]
+    #[Route(path: '/queue/transport/{name}/messages/{id}', name: 'api.frosh.tools.queue.message.delete', requirements: ['id' => '.+'], defaults: ['_acl' => ['frosh_tools:update']], methods: ['DELETE'])]
     public function deleteMessage(string $name, string $id): JsonResponse
     {
         $adapter = $this->queueRegistry->has($name) ? $this->queueRegistry->get($name) : null;
@@ -93,7 +93,7 @@ class QueueController extends AbstractController
         return $this->executeMessageAction(static fn () => $adapter->removeMessage($id));
     }
 
-    #[Route(path: '/queue/transport/{name}', name: 'api.frosh.tools.queue.transport.purge', methods: ['DELETE'])]
+    #[Route(path: '/queue/transport/{name}', name: 'api.frosh.tools.queue.transport.purge', defaults: ['_acl' => ['frosh_tools:update']], methods: ['DELETE'])]
     public function purgeTransport(string $name): JsonResponse
     {
         $adapter = $this->queueRegistry->has($name) ? $this->queueRegistry->get($name) : null;
@@ -153,7 +153,7 @@ class QueueController extends AbstractController
         return new JsonResponse($queueData);
     }
 
-    #[Route(path: '/queue', name: 'api.frosh.tools.queue.clear', methods: ['DELETE'])]
+    #[Route(path: '/queue', name: 'api.frosh.tools.queue.clear', defaults: ['_acl' => ['frosh_tools:update']], methods: ['DELETE'])]
     public function resetQueue(): JsonResponse
     {
         $incrementer = $this->incrementer->get('message_queue');

@@ -58,8 +58,13 @@ class RedisQueueAdapter implements QueueAdapter
             \assert(\is_object($connection));
             $redis = $this->getRedis($connection);
             $stream = $this->extractProperty($connection, 'stream');
+            $lastDeliveredId = $this->getLastDeliveredId($redis, $connection);
 
-            $entries = $redis->xRange($stream, '-', '+', 1);
+            if ($lastDeliveredId === null) {
+                return null;
+            }
+
+            $entries = $redis->xRange($stream, self::nextStreamId($lastDeliveredId), '+', 1);
             if (!\is_array($entries) || $entries === []) {
                 return null;
             }
@@ -131,8 +136,13 @@ class RedisQueueAdapter implements QueueAdapter
 
         $redis = $this->getRedis($connection);
         $stream = $this->extractProperty($connection, 'stream');
+        $lastDeliveredId = $this->getLastDeliveredId($redis, $connection);
 
-        $entries = $redis->xRevRange($stream, '+', '-', $limit);
+        if ($lastDeliveredId === null) {
+            return [];
+        }
+
+        $entries = $redis->xRevRange($stream, '+', self::nextStreamId($lastDeliveredId), $limit);
         if (!\is_array($entries)) {
             return [];
         }
@@ -143,6 +153,34 @@ class RedisQueueAdapter implements QueueAdapter
         }
 
         return $messages;
+    }
+
+    private function getLastDeliveredId(\Redis|\RedisCluster $redis, object $connection): ?string
+    {
+        $stream = $this->extractProperty($connection, 'stream');
+        $groupName = $this->extractProperty($connection, 'group');
+        $groups = $redis->xInfo('GROUPS', $stream);
+
+        if (!\is_array($groups)) {
+            return null;
+        }
+
+        foreach ($groups as $group) {
+            if (\is_array($group) && ($group['name'] ?? null) === $groupName) {
+                $lastDeliveredId = $group['last-delivered-id'] ?? null;
+
+                return \is_string($lastDeliveredId) ? $lastDeliveredId : null;
+            }
+        }
+
+        return null;
+    }
+
+    private static function nextStreamId(string $id): string
+    {
+        [$milliseconds, $sequence] = array_pad(explode('-', $id, 2), 2, '0');
+
+        return $milliseconds . '-' . ((int) $sequence + 1);
     }
 
     /**

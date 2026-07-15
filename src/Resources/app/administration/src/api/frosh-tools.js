@@ -50,7 +50,7 @@ class FroshTools extends ApiService {
     }
 
     getQueueMessages(name, limit = 10) {
-        const apiRoute = `${this.getApiBasePath()}/queue/transport/${name}/messages`;
+        const apiRoute = `${this.getApiBasePath()}/queue/transport/${encodeURIComponent(name)}/messages`;
         return this.httpClient
             .get(apiRoute, {
                 params: { limit },
@@ -62,7 +62,7 @@ class FroshTools extends ApiService {
     }
 
     retryQueueMessage(name, id) {
-        const apiRoute = `${this.getApiBasePath()}/queue/transport/${name}/messages/${encodeURIComponent(id)}/retry`;
+        const apiRoute = `${this.getApiBasePath()}/queue/transport/${encodeURIComponent(name)}/messages/${encodeURIComponent(id)}/retry`;
         return this.httpClient
             .post(
                 apiRoute,
@@ -77,7 +77,7 @@ class FroshTools extends ApiService {
     }
 
     deleteQueueMessage(name, id) {
-        const apiRoute = `${this.getApiBasePath()}/queue/transport/${name}/messages/${encodeURIComponent(id)}`;
+        const apiRoute = `${this.getApiBasePath()}/queue/transport/${encodeURIComponent(name)}/messages/${encodeURIComponent(id)}`;
         return this.httpClient
             .delete(apiRoute, {
                 headers: this.getBasicHeaders(),
@@ -88,7 +88,7 @@ class FroshTools extends ApiService {
     }
 
     purgeQueueTransport(name) {
-        const apiRoute = `${this.getApiBasePath()}/queue/transport/${name}`;
+        const apiRoute = `${this.getApiBasePath()}/queue/transport/${encodeURIComponent(name)}`;
         return this.httpClient
             .delete(apiRoute, {
                 headers: this.getBasicHeaders(),

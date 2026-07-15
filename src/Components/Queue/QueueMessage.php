@@ -110,20 +110,9 @@ class QueueMessage implements \JsonSerializable
 
         if (\is_object($value)) {
             $result = [];
-            $reflection = new \ReflectionObject($value);
-            do {
-                foreach ($reflection->getProperties() as $property) {
-                    if ($property->isStatic() || \array_key_exists($property->getName(), $result)) {
-                        continue;
-                    }
-
-                    if (!$property->isInitialized($value)) {
-                        continue;
-                    }
-
-                    $result[$property->getName()] = self::normalize($property->getValue($value), $depth + 1);
-                }
-            } while (($reflection = $reflection->getParentClass()) !== false);
+            foreach (get_object_vars($value) as $property => $propertyValue) {
+                $result[$property] = self::normalize($propertyValue, $depth + 1);
+            }
 
             return $result;
         }

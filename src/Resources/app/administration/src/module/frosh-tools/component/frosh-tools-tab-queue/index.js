@@ -5,7 +5,7 @@ const { Component, Mixin } = Shopware;
 
 Component.register('frosh-tools-tab-queue', {
     template,
-    inject: ['repositoryFactory', 'froshToolsService'],
+    inject: ['repositoryFactory', 'froshToolsService', 'acl'],
     mixins: [
         Mixin.getByName('notification'),
         Mixin.getByName('frosh-sortable-table'),
