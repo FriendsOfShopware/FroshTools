@@ -1,4 +1,5 @@
 import './component/ft-icon';
+import './component/ft-button';
 import './component/ft-modal';
 import './component/ft-page-head';
 import './component/ft-panel';

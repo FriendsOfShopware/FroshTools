@@ -19,6 +19,36 @@
             },
             "queue": {
                 "title": "Queue",
+                "transports": {
+                    "title": "Transports",
+                    "type": "Type",
+                    "browse": "Browse messages",
+                    "oldest": "Oldest message",
+                    "worker": "Worker",
+                    "workerActive": "Active",
+                    "workerStale": "Last seen {age} ago",
+                    "workerUnknown": "Unknown",
+                    "purge": "Purge",
+                    "purgeSuccess": "The transport \"{name}\" has been purged",
+                    "purgeModal": {
+                        "title": "Purge \"{name}\"",
+                        "description": "All messages in the transport \"{name}\" will be permanently deleted. This cannot be undone."
+                    }
+                },
+                "browse": {
+                    "title": "Messages in \"{name}\"",
+                    "limit": "Messages to fetch",
+                    "fetch": "Get messages",
+                    "hint": "Messages stay in the queue and are not consumed.",
+                    "hintRequeue": "Messages are fetched and requeued: they get marked as redelivered, ordering may change and active workers compete for them.",
+                    "empty": "No messages in this transport",
+                    "retries": "{count} retries",
+                    "failed": "Failed",
+                    "retry": "Retry on \"{transport}\"",
+                    "retrySuccess": "The message has been dispatched to \"{transport}\" again",
+                    "delete": "Delete",
+                    "deleteSuccess": "The message has been deleted"
+                },
                 "reset": {
                     "modal": {
                         "title": "Reset Queue",
