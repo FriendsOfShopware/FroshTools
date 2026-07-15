@@ -1,14 +1,4 @@
-class ApiService {
-    static handleResponse(response) {
-        return response.data;
-    }
-}
-
-global.Shopware = {
-    Classes: { ApiService },
-};
-
-const FroshTools = require('./frosh-tools').default;
+import FroshTools from './frosh-tools';
 
 describe('FroshTools queue API', () => {
     let service;
