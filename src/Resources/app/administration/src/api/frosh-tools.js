@@ -38,10 +38,59 @@ class FroshTools extends ApiService {
             });
     }
 
-    getQueue() {
-        const apiRoute = `${this.getApiBasePath()}/queue/list`;
+    getQueueTransports() {
+        const apiRoute = `${this.getApiBasePath()}/queue/transports`;
         return this.httpClient
             .get(apiRoute, {
+                headers: this.getBasicHeaders(),
+            })
+            .then((response) => {
+                return ApiService.handleResponse(response);
+            });
+    }
+
+    getQueueMessages(name, limit = 10) {
+        const apiRoute = `${this.getApiBasePath()}/queue/transport/${encodeURIComponent(name)}/messages`;
+        return this.httpClient
+            .get(apiRoute, {
+                params: { limit },
+                headers: this.getBasicHeaders(),
+            })
+            .then((response) => {
+                return ApiService.handleResponse(response);
+            });
+    }
+
+    retryQueueMessage(name, id) {
+        const apiRoute = `${this.getApiBasePath()}/queue/transport/${encodeURIComponent(name)}/messages/${encodeURIComponent(id)}/retry`;
+        return this.httpClient
+            .post(
+                apiRoute,
+                {},
+                {
+                    headers: this.getBasicHeaders(),
+                }
+            )
+            .then((response) => {
+                return ApiService.handleResponse(response);
+            });
+    }
+
+    deleteQueueMessage(name, id) {
+        const apiRoute = `${this.getApiBasePath()}/queue/transport/${encodeURIComponent(name)}/messages/${encodeURIComponent(id)}`;
+        return this.httpClient
+            .delete(apiRoute, {
+                headers: this.getBasicHeaders(),
+            })
+            .then((response) => {
+                return ApiService.handleResponse(response);
+            });
+    }
+
+    purgeQueueTransport(name) {
+        const apiRoute = `${this.getApiBasePath()}/queue/transport/${encodeURIComponent(name)}`;
+        return this.httpClient
+            .delete(apiRoute, {
                 headers: this.getBasicHeaders(),
             })
             .then((response) => {

@@ -1,0 +1,11 @@
+<button
+    :class="rootClass"
+    :disabled="disabled"
+    @click="$emit('click', $event)"
+>
+    <ft-icon
+        v-if="icon"
+        :name="icon"
+    />
+    <slot/>
+</button>

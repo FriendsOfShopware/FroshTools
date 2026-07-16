@@ -1,3 +1,189 @@
 .frosh-tab-queue {
     display: block;
+
+    &__transport--browsable {
+        cursor: pointer;
+
+        &:hover {
+            background: var(--ft-surface-hover);
+        }
+    }
+
+    &__transport-action {
+        display: flex;
+        align-items: center;
+        justify-content: flex-end;
+        gap: 8px;
+    }
+
+    &__purge-btn {
+        padding: 4px 8px;
+    }
+
+    &__message-error {
+        color: var(--ft-danger);
+        background: var(--ft-danger-soft);
+        border-radius: var(--ft-radius-sm);
+        padding: 8px 12px;
+        margin-bottom: 10px;
+        font-size: 12.5px;
+        font-family: var(--ft-mono);
+        overflow-wrap: anywhere;
+    }
+
+    &__message-actions {
+        display: flex;
+        gap: 8px;
+        margin-top: 12px;
+    }
+
+    &__browse-controls {
+        display: flex;
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 8px;
+        margin-bottom: 16px;
+    }
+
+    &__browse-fetch {
+        display: flex;
+        align-items: center;
+        flex-wrap: wrap;
+        gap: 10px;
+
+        label {
+            color: var(--ft-text-soft);
+            font-size: 13px;
+        }
+    }
+
+    &__browse-limit {
+        width: 80px;
+        padding: 6px 10px;
+        border: 1px solid var(--ft-border);
+        border-radius: var(--ft-radius-sm);
+        background: var(--ft-surface);
+        color: var(--ft-text);
+        font-size: 13px;
+
+        &:focus {
+            outline: none;
+            border-color: var(--ft-accent);
+        }
+    }
+
+    &__browse-hint {
+        display: block;
+        color: var(--ft-text-muted);
+        font-size: 12px;
+        line-height: 1.45;
+
+        &--warning {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            width: 100%;
+            box-sizing: border-box;
+            padding: 8px 10px;
+            border: 1px solid var(--ft-warning);
+            border-radius: var(--ft-radius-sm);
+            background: var(--ft-warning-soft);
+            color: var(--ft-warning);
+
+            > .ft-icon {
+                flex: 0 0 auto;
+            }
+        }
+    }
+
+    @media (max-width: 540px) {
+        &__browse-fetch {
+            align-items: stretch;
+
+            label {
+                width: 100%;
+            }
+        }
+
+        &__browse-limit {
+            flex: 1;
+        }
+    }
+
+    &__browse-error {
+        color: var(--ft-danger);
+        background: var(--ft-danger-soft);
+        border-radius: var(--ft-radius-md);
+        padding: 12px 14px;
+        font-size: 13px;
+    }
+
+    &__messages {
+        display: flex;
+        flex-direction: column;
+        gap: 8px;
+    }
+
+    &__message {
+        border: 1px solid var(--ft-border);
+        border-radius: var(--ft-radius-md);
+        overflow: hidden;
+    }
+
+    &__message-head {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        width: 100%;
+        padding: 10px 14px;
+        border: 0;
+        background: var(--ft-surface);
+        color: var(--ft-text);
+        font-size: 13px;
+        text-align: left;
+        cursor: pointer;
+
+        &:hover {
+            background: var(--ft-surface-hover);
+        }
+
+        > .ft-icon {
+            margin-left: auto;
+        }
+    }
+
+    &__message-index {
+        color: var(--ft-text-muted);
+        font-family: var(--ft-mono);
+        font-size: 12px;
+        min-width: 20px;
+    }
+
+    &__message-class {
+        font-weight: 600;
+    }
+
+    &__message-id {
+        color: var(--ft-text-muted);
+        font-family: var(--ft-mono);
+        font-size: 12px;
+    }
+
+    &__message-body {
+        border-top: 1px solid var(--ft-divider);
+        padding: 12px 14px;
+
+        pre {
+            margin: 0;
+            white-space: pre-wrap;
+            overflow-wrap: anywhere;
+        }
+    }
+
+    &__message-stamps {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 6px;
+        margin-top: 10px;
+    }
 }

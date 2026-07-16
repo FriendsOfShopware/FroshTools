@@ -19,6 +19,36 @@
             },
             "queue": {
                 "title": "Warteschlange",
+                "transports": {
+                    "title": "Transporte",
+                    "type": "Typ",
+                    "browse": "Nachrichten ansehen",
+                    "oldest": "Älteste Nachricht",
+                    "worker": "Worker",
+                    "workerActive": "Aktiv",
+                    "workerStale": "Zuletzt gesehen vor {age}",
+                    "workerUnknown": "Unbekannt",
+                    "purge": "Leeren",
+                    "purgeSuccess": "Der Transport \"{name}\" wurde geleert",
+                    "purgeModal": {
+                        "title": "\"{name}\" leeren",
+                        "description": "Alle Nachrichten im Transport \"{name}\" werden unwiderruflich gelöscht."
+                    }
+                },
+                "browse": {
+                    "title": "Nachrichten in \"{name}\"",
+                    "limit": "Anzahl Nachrichten",
+                    "fetch": "Nachrichten laden",
+                    "hint": "Nachrichten verbleiben in der Warteschlange und werden nicht konsumiert.",
+                    "hintRequeue": "Nachrichten werden abgeholt und wieder eingereiht: Sie werden als redelivered markiert, die Reihenfolge kann sich ändern und aktive Worker konkurrieren um sie.",
+                    "empty": "Keine Nachrichten in diesem Transport",
+                    "retries": "{count} Wiederholungen",
+                    "failed": "Fehlgeschlagen",
+                    "retry": "Erneut auf \"{transport}\" ausführen",
+                    "retrySuccess": "Die Nachricht wurde erneut an \"{transport}\" gesendet",
+                    "delete": "Löschen",
+                    "deleteSuccess": "Die Nachricht wurde gelöscht"
+                },
                 "reset": {
                     "modal": {
                         "title": "Warteschlange zurücksetzen",
