@@ -39,9 +39,17 @@
 
     &__browse-controls {
         display: flex;
-        align-items: center;
-        gap: 10px;
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 8px;
         margin-bottom: 16px;
+    }
+
+    &__browse-fetch {
+        display: flex;
+        align-items: center;
+        flex-wrap: wrap;
+        gap: 10px;
 
         label {
             color: var(--ft-text-soft);
@@ -65,14 +73,40 @@
     }
 
     &__browse-hint {
+        display: block;
         color: var(--ft-text-muted);
         font-size: 12px;
+        line-height: 1.45;
 
         &--warning {
-            display: inline-flex;
+            display: flex;
             align-items: center;
             gap: 6px;
+            width: 100%;
+            box-sizing: border-box;
+            padding: 8px 10px;
+            border: 1px solid var(--ft-warning);
+            border-radius: var(--ft-radius-sm);
+            background: var(--ft-warning-soft);
             color: var(--ft-warning);
+
+            > .ft-icon {
+                flex: 0 0 auto;
+            }
+        }
+    }
+
+    @media (max-width: 540px) {
+        &__browse-fetch {
+            align-items: stretch;
+
+            label {
+                width: 100%;
+            }
+        }
+
+        &__browse-limit {
+            flex: 1;
         }
     }
 

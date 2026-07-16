@@ -153,31 +153,36 @@
             </h2>
         </template>
         <div class="frosh-tab-queue__browse-controls">
-            <label for="frosh-tab-queue-browse-limit">
-                {{ $t('frosh-tools.tabs.queue.browse.limit') }}
-            </label>
-            <input
-                id="frosh-tab-queue-browse-limit"
-                v-model.number="browseLimit"
-                type="number"
-                min="1"
-                max="100"
-                class="frosh-tab-queue__browse-limit"
-                @keydown.enter="fetchMessages"
-            />
-            <ft-button
-                variant="primary"
-                :disabled="browseLoading"
-                @click="fetchMessages"
-            >
-                {{ $t('frosh-tools.tabs.queue.browse.fetch') }}
-            </ft-button>
+            <div class="frosh-tab-queue__browse-fetch">
+                <label for="frosh-tab-queue-browse-limit">
+                    {{ $t('frosh-tools.tabs.queue.browse.limit') }}
+                </label>
+                <input
+                    id="frosh-tab-queue-browse-limit"
+                    v-model.number="browseLimit"
+                    type="number"
+                    min="1"
+                    max="100"
+                    class="frosh-tab-queue__browse-limit"
+                    @keydown.enter="fetchMessages"
+                />
+                <ft-button
+                    variant="primary"
+                    :disabled="browseLoading"
+                    @click="fetchMessages"
+                >
+                    {{ $t('frosh-tools.tabs.queue.browse.fetch') }}
+                </ft-button>
+            </div>
             <span
                 v-if="browseTransport.requeuesOnBrowse"
                 class="frosh-tab-queue__browse-hint frosh-tab-queue__browse-hint--warning"
+                role="note"
             >
                 <ft-icon name="alert"/>
-                {{ $t('frosh-tools.tabs.queue.browse.hintRequeue') }}
+                <span>
+                    {{ $t('frosh-tools.tabs.queue.browse.hintRequeue') }}
+                </span>
             </span>
             <span
                 v-else
