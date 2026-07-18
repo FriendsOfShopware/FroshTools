@@ -10,7 +10,9 @@ async function createWrapper() {
         search: jest.fn().mockResolvedValue(webhooks),
     };
 
-    const component = await Shopware.Component.build('frosh-tools-webhook-list');
+    const component = await Shopware.Component.build(
+        'frosh-tools-webhook-list'
+    );
 
     const wrapper = mount(component, {
         data() {
