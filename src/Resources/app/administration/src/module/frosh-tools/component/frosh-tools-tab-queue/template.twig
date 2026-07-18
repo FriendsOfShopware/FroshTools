@@ -1,12 +1,11 @@
 <div class="ft frosh-tab-queue">
     <ft-page-head
         :title="$t('frosh-tools.tabs.queue.title')"
-        subtitle="Pending messages waiting to be processed."
+        :subtitle="$t('frosh-tools.tabs.queue.subtitle')"
     >
         <template #actions>
             <ft-refresh-button
                 :loading="isLoading"
-                label="Refresh"
                 @click="refresh"
             />
             <ft-button
@@ -19,14 +18,36 @@
             </ft-button>
         </template>
     </ft-page-head>
+    <ft-hero-state
+        v-if="loadError"
+        variant="danger"
+        icon="alert"
+        :title="$t('frosh-tools.loadError.title')"
+        :body="loadError"
+    >
+        <template #actions>
+            <ft-button
+                icon="refresh"
+                @click="refresh"
+            >
+                {{ $t('frosh-tools.loadError.retry') }}
+            </ft-button>
+        </template>
+    </ft-hero-state>
     <ft-panel
+        v-else
         :title="$t('frosh-tools.tabs.queue.transports.title')"
-        :count="transports.length"
+        :count="visibleTransports.length"
         flush
     >
         <ft-empty
             v-if="isLoading && !transports.length"
             loading
+        />
+        <ft-empty
+            v-else-if="searchTerm && !visibleTransports.length"
+            icon="search"
+            :title="$t('frosh-tools.search.noResults', { term: searchTerm })"
         />
         <div
             v-else
@@ -65,7 +86,7 @@
                 </thead>
                 <tbody>
                     <tr
-                        v-for="transport in sortRows(transports, 'transports')"
+                        v-for="transport in sortRows(visibleTransports, 'transports')"
                         :key="transport.name"
                         :class="{ 'frosh-tab-queue__transport--browsable': transport.browsable }"
                         @click="openBrowseModal(transport)"
@@ -101,13 +122,14 @@
                             </ft-pill>
                         </td>
                         <td class="frosh-tab-queue__transport-action">
-                            <ft-pill
+                            <button
                                 v-if="transport.browsable"
-                                variant="accent"
-                                bare
+                                type="button"
+                                class="frosh-tab-queue__browse-btn"
+                                @click.stop="openBrowseModal(transport)"
                             >
                                 {{ $t('frosh-tools.tabs.queue.transports.browse') }}
-                            </ft-pill>
+                            </button>
                             <ft-button
                                 v-if="transport.purgeable && acl.can('frosh_tools:update')"
                                 variant="danger"

@@ -1,12 +1,11 @@
 <div class="ft frosh-tab-scheduled">
     <ft-page-head
         :title="$t('frosh-tools.tabs.scheduledTaskOverview.title')"
-        subtitle="Inspect, schedule, deactivate and run background tasks."
+        :subtitle="$t('frosh-tools.tabs.scheduledTaskOverview.subtitle')"
     >
         <template #actions>
             <ft-refresh-button
                 :loading="isLoading"
-                label="Refresh"
                 @click="refresh"
             />
             <button
@@ -21,9 +20,26 @@
             </button>
         </template>
     </ft-page-head>
+    <ft-hero-state
+        v-if="loadError"
+        variant="danger"
+        icon="alert"
+        :title="$t('frosh-tools.loadError.title')"
+        :body="loadError"
+    >
+        <template #actions>
+            <ft-button
+                icon="refresh"
+                @click="refresh"
+            >
+                {{ $t('frosh-tools.loadError.retry') }}
+            </ft-button>
+        </template>
+    </ft-hero-state>
     <ft-panel
-        title="Tasks"
-        :count="items ? items.length : null"
+        v-else
+        :title="$t('frosh-tools.tabs.scheduledTaskOverview.tasks')"
+        :count="visibleItems ? visibleItems.length : null"
         flush
     >
         <ft-empty
@@ -32,7 +48,12 @@
         />
         <ft-empty
             v-else-if="!items.length"
-            title="No scheduled tasks registered"
+            :title="$t('frosh-tools.tabs.scheduledTaskOverview.noTasks')"
+        />
+        <ft-empty
+            v-else-if="!visibleItems.length"
+            icon="search"
+            :title="$t('frosh-tools.search.noResults', { term: searchTerm })"
         />
         <div
             v-else
@@ -66,7 +87,7 @@
                 </thead>
                 <tbody>
                     <tr
-                        v-for="item in sortRows(items)"
+                        v-for="item in sortRows(visibleItems)"
                         :key="item.id"
                     >
                         <td>
@@ -105,7 +126,7 @@
                                         @click="onMenu('edit', item)"
                                     >
                                         <ft-icon name="pencil"/>
-                                        Edit interval &amp; next run
+                                        {{ $t('frosh-tools.tabs.scheduledTaskOverview.editInterval') }}
                                     </button>
                                     <button
                                         class="frosh-tab-scheduled__menu-item"
@@ -144,7 +165,7 @@
     </ft-panel>
     <ft-modal
         v-if="editTask"
-        :title="`Edit: ${shortName(editTask.name)}`"
+        :title="$t('frosh-tools.tabs.scheduledTaskOverview.editTitle', { name: shortName(editTask.name) })"
         variant="small"
         @close="closeEdit"
     >
@@ -178,7 +199,9 @@
                     v-if="isSaving"
                     class="ft-spinner"
                 ></span>
-                <span>Save</span>
+                <span>
+                    {{ $t('global.default.save') }}
+                </span>
             </button>
         </template>
     </ft-modal>

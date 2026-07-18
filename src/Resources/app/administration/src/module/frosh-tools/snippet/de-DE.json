@@ -4,7 +4,11 @@
         "tabs": {
             "index": {
                 "title": "System-Status",
+                "subtitle": "Live-Gesundheits- und Performance-Prüfungen für diese Shopware-Instanz.",
                 "performance": "Performance Empfehlungen",
+                "systemHealth": "Systemzustand",
+                "noHealthChecks": "Keine Gesundheitsprüfungen gemeldet",
+                "allClear": "Alles in Ordnung",
                 "info": "Info",
                 "recommendation": {
                     "what": "Worum es geht",
@@ -12,13 +16,22 @@
                 }
             },
             "cache": {
-                "title": "Cache"
+                "title": "Cache",
+                "subtitle": "Cache-Pools, Theme-Kompilierung und PHP-OPcache verwalten.",
+                "pools": "Cache-Pools",
+                "noPools": "Keine Cache-Pools gemeldet"
             },
             "scheduledTaskOverview": {
-                "title": "Geplante Aufgaben"
+                "title": "Geplante Aufgaben",
+                "subtitle": "Hintergrund-Tasks prüfen, planen, deaktivieren und ausführen.",
+                "tasks": "Aufgaben",
+                "noTasks": "Keine geplanten Aufgaben registriert",
+                "editInterval": "Intervall & nächste Ausführung bearbeiten",
+                "editTitle": "Bearbeiten: {name}"
             },
             "queue": {
                 "title": "Warteschlange",
+                "subtitle": "Wartende Nachrichten, die auf Verarbeitung warten.",
                 "transports": {
                     "title": "Transporte",
                     "type": "Typ",
@@ -60,12 +73,19 @@
             },
             "logs": {
                 "title": "Log Viewer",
+                "subtitle": "Einträge aus jeder Logdatei auf der Festplatte streamen und untersuchen.",
+                "panelTitle": "Logdatei",
+                "selectFile": "Logdatei auswählen",
+                "selectFileHint": "Wähle oben eine Datei, um ihre Einträge anzuzeigen.",
+                "noEntries": "Keine Einträge in dieser Datei",
                 "logFileSelect": {
                     "placeholder": "Datei auswählen"
                 }
             },
             "elasticsearch": {
                 "title": "Search",
+                "subtitle": "Cluster-Status, Indizes und eine Low-Level-Query-Konsole.",
+                "noIndices": "Keine Indizes gefunden",
                 "disabled": "Search ist nicht aktiviert",
                 "disabledTitle": "{engine} ist nicht aktiviert",
                 "version": "Version",
@@ -96,6 +116,23 @@
                     "description": "Diese heuristische Bereinigung löscht aliaslose Shopware-Indizes. Indizes, die noch in Storefront- oder Admin-Indexing-Tasks eingetragen sind, werden ausgeschlossen und der Server validiert diese Liste vor dem Löschen erneut.",
                     "delete": "Verwaiste Indizes löschen"
                 },
+                "confirm": {
+                    "deleteIndex": {
+                        "title": "Index \"{name}\" löschen?",
+                        "description": "Der Index \"{name}\" und alle seine Dokumente werden endgültig gelöscht. Die Storefront-Suche kann leer sein, bis ein Reindex abgeschlossen ist.",
+                        "confirm": "Index löschen"
+                    },
+                    "flushAll": {
+                        "title": "Alle Indizes löschen?",
+                        "description": "Alle Indizes, einschließlich der aktiven, werden endgültig gelöscht. Die Storefront-Suche ist leer, bis ein Reindex abgeschlossen ist.",
+                        "confirm": "Alle Indizes löschen"
+                    },
+                    "reset": {
+                        "title": "Suche zurücksetzen?",
+                        "description": "Alle Indizes werden gelöscht und die Index-Aliase werden neu erstellt. Die Storefront-Suche ist leer, bis ein Reindex abgeschlossen ist.",
+                        "confirm": "Suche zurücksetzen"
+                    }
+                },
                 "notification": {
                     "cleanup": {
                         "empty": "Keine ungenutzten Indizes gefunden.",
@@ -117,6 +154,9 @@
             },
             "feature-flags": {
                 "title": "Feature Flags",
+                "subtitle": "Feature-Flags des Shopware-Kerns und registrierter Erweiterungen.",
+                "flags": "Flags",
+                "noFlags": "Keine Feature-Flags registriert",
                 "flag": "Feature Flag",
                 "description": "Beschreibung",
                 "major": "Major",
@@ -217,6 +257,9 @@
             },
             "state-machines": {
                 "title": "State Machine Viewer",
+                "subtitle": "Zustände, Übergänge und Aktionen jeder registrierten State Machine visualisieren.",
+                "noSelection": "Keine State Machine ausgewählt",
+                "noSelectionHint": "Wähle oben eine aus, um ihr Diagramm anzuzeigen.",
                 "label": "State Machine",
                 "orderTitle": "Bestellstatus",
                 "transactionTitle": "Bezahlstatus",
@@ -422,7 +465,38 @@
         "order": "Bestellung",
         "transaction": "Bezahlung",
         "delivery": "Versand",
-        "unknown": "Unbekannt"
+        "unknown": "Unbekannt",
+        "cacheCleared": "Cache \"{name}\" wurde geleert",
+        "refresh": "Aktualisieren",
+        "on": "an",
+        "off": "aus",
+        "yes": "ja",
+        "no": "nein",
+        "sidebar": {
+            "developerConsole": "Entwicklerkonsole"
+        },
+        "nav": {
+            "overview": "Übersicht",
+            "performance": "Performance",
+            "operations": "Betrieb",
+            "diagnostics": "Diagnose",
+            "cdn": "CDN"
+        },
+        "search": {
+            "placeholder": {
+                "cache": "Cache-Pools durchsuchen\u2026",
+                "queue": "Transporte durchsuchen\u2026",
+                "scheduled": "Geplante Aufgaben durchsuchen\u2026",
+                "elasticsearch": "Indizes durchsuchen\u2026",
+                "featureFlags": "Feature-Flags durchsuchen\u2026"
+            },
+            "noResults": "Keine Ergebnisse für \"{term}\""
+        },
+        "loading": "Wird geladen\u2026",
+        "loadError": {
+            "title": "Daten konnten nicht geladen werden",
+            "retry": "Erneut versuchen"
+        }
     },
     "sw-privileges": {
         "additional_permissions": {
@@ -430,6 +504,15 @@
                 "frosh_tools": "Überwachung anzeigen",
                 "label": "Frosh tools"
             }
+        }
+    },
+    "global": {
+        "entities": {
+            "frosh_tools_cache": "Cache",
+            "frosh_tools_queue": "Warteschlange",
+            "frosh_tools_scheduled_task": "Geplante Aufgaben",
+            "frosh_tools_elasticsearch": "Indizes",
+            "frosh_tools_feature_flags": "Feature Flags"
         }
     }
 }

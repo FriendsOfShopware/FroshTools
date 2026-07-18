@@ -20,6 +20,7 @@ Component.register('frosh-tools-tab-state-machines', {
             selectedStateMachine: null,
             stateMachineOptions: [],
             isLoading: true,
+            loadError: null,
             renderCount: 0,
         };
     },
@@ -36,24 +37,33 @@ Component.register('frosh-tools-tab-state-machines', {
 
     methods: {
         async createdComponent() {
+            this.isLoading = true;
+            this.loadError = null;
+
             mermaid.initialize({
                 startOnLoad: false,
                 theme: 'default',
             });
 
-            const criteria = new Criteria();
-            criteria.addSorting(Criteria.sort('name', 'ASC'));
+            try {
+                const criteria = new Criteria();
+                criteria.addSorting(Criteria.sort('name', 'ASC'));
 
-            const stateMachines = await this.stateMachineRepository.search(
-                criteria,
-                Shopware.Context.api
-            );
-            this.stateMachineOptions = stateMachines.map((sm) => ({
-                value: sm.id,
-                label: sm.name,
-            }));
-
-            this.isLoading = false;
+                const stateMachines = await this.stateMachineRepository.search(
+                    criteria,
+                    Shopware.Context.api
+                );
+                this.stateMachineOptions = stateMachines.map((sm) => ({
+                    value: sm.id,
+                    label: sm.name,
+                }));
+            } catch (error) {
+                this.stateMachineOptions = [];
+                this.loadError = error?.response?.data?.error ?? error.message;
+                this.createNotificationError({ message: this.loadError });
+            } finally {
+                this.isLoading = false;
+            }
         },
 
         buildMermaidDiagram(stateMachine) {
@@ -95,31 +105,38 @@ Component.register('frosh-tools-tab-state-machines', {
                 return;
             }
 
-            const criteria = new Criteria([stateMachineChangeId]);
-            criteria.addAssociation('states');
-            criteria.addAssociation('transitions');
-
-            const stateMachine = await this.stateMachineRepository.get(
-                stateMachineChangeId,
-                Shopware.Context.api,
-                criteria
-            );
-
             const container = document.getElementById('state_machine');
 
-            if (!stateMachine) {
+            try {
+                const criteria = new Criteria([stateMachineChangeId]);
+                criteria.addAssociation('states');
+                criteria.addAssociation('transitions');
+
+                const stateMachine = await this.stateMachineRepository.get(
+                    stateMachineChangeId,
+                    Shopware.Context.api,
+                    criteria
+                );
+
+                if (!stateMachine) {
+                    container.innerHTML = '';
+                    return;
+                }
+
+                const diagram = this.buildMermaidDiagram(stateMachine);
+
+                this.renderCount += 1;
+                const { svg } = await mermaid.render(
+                    `mermaid-diagram-${this.renderCount}`,
+                    diagram
+                );
+                container.innerHTML = svg;
+            } catch (error) {
                 container.innerHTML = '';
-                return;
+                this.createNotificationError({
+                    message: error?.response?.data?.error ?? error.message,
+                });
             }
-
-            const diagram = this.buildMermaidDiagram(stateMachine);
-
-            this.renderCount += 1;
-            const { svg } = await mermaid.render(
-                `mermaid-diagram-${this.renderCount}`,
-                diagram
-            );
-            container.innerHTML = svg;
         },
     },
 });

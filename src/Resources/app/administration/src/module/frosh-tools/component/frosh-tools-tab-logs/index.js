@@ -20,6 +20,8 @@ Component.register('frosh-tools-tab-logs', {
             limit: 25,
             page: 1,
             isLoading: true,
+            isLoadingEntries: false,
+            loadError: null,
             displayedLog: null,
         };
     },
@@ -50,14 +52,23 @@ Component.register('frosh-tools-tab-logs', {
         },
 
         async refresh() {
-            this.isLoading = true;
             await this.createdComponent();
             await this.loadLogEntries();
         },
 
         async createdComponent() {
-            this.logFiles = await this.froshToolsService.getLogFiles();
-            this.isLoading = false;
+            this.isLoading = true;
+            this.loadError = null;
+
+            try {
+                this.logFiles = await this.froshToolsService.getLogFiles();
+            } catch (error) {
+                this.logFiles = [];
+                this.loadError = error?.response?.data?.error ?? error.message;
+                this.createNotificationError({ message: this.loadError });
+            } finally {
+                this.isLoading = false;
+            }
         },
 
         async onFileSelected() {
@@ -69,16 +80,29 @@ Component.register('frosh-tools-tab-logs', {
             if (!this.selectedLogFile) {
                 return;
             }
-            const logEntries = await this.froshToolsService.getLogFile(
-                this.selectedLogFile,
-                (this.page - 1) * this.limit,
-                this.limit
-            );
-            this.logEntries = logEntries.data;
-            this.totalLogEntries = parseInt(
-                logEntries.headers['file-size'],
-                10
-            );
+
+            this.isLoadingEntries = true;
+
+            try {
+                const logEntries = await this.froshToolsService.getLogFile(
+                    this.selectedLogFile,
+                    (this.page - 1) * this.limit,
+                    this.limit
+                );
+                this.logEntries = logEntries.data;
+                this.totalLogEntries = parseInt(
+                    logEntries.headers['file-size'],
+                    10
+                );
+            } catch (error) {
+                this.logEntries = [];
+                this.totalLogEntries = 0;
+                this.createNotificationError({
+                    message: error?.response?.data?.error ?? error.message,
+                });
+            } finally {
+                this.isLoadingEntries = false;
+            }
         },
 
         async onPageChange(page) {

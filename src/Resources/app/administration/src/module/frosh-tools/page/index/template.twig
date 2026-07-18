@@ -1,4 +1,17 @@
 <sw-page class="frosh-tools">
+    <template
+        #search-bar
+        v-if="searchTab"
+    >
+        <sw-search-bar
+            :key="$route.name"
+            :initial-search-type="searchTab.type"
+            :placeholder="$t(searchTab.placeholderKey)"
+            :type-search-always-in-container="false"
+            @search="onSearch"
+        />
+    </template>
+
     <template #content>
         <div class="ft ft-shell">
             <aside class="ft-sidebar">
@@ -6,18 +19,20 @@
                     <div class="ft-sidebar__brand-mark">FT</div>
                     <div>
                         <div class="ft-sidebar__brand-title">{{ $t('frosh-tools.title') }}</div>
-                        <div class="ft-sidebar__brand-sub">Developer Console</div>
+                        <div class="ft-sidebar__brand-sub">
+                            {{ $t('frosh-tools.sidebar.developerConsole') }}
+                        </div>
                     </div>
                 </div>
                 <template
                     v-for="group in navGroups"
-                    :key="group.label"
+                    :key="group.labelKey"
                 >
                     <div
                         class="ft-sidebar__group"
                         v-if="group.items.length"
                     >
-                        <div class="ft-sidebar__group-label">{{ group.label }}</div>
+                        <div class="ft-sidebar__group-label">{{ $t(group.labelKey) }}</div>
                         <router-link
                             v-for="item in group.items"
                             :key="item.route"

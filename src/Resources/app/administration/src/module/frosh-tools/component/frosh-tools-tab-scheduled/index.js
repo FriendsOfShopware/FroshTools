@@ -6,7 +6,11 @@ const { Criteria } = Shopware.Data;
 
 Component.register('frosh-tools-tab-scheduled', {
     template,
-    inject: ['repositoryFactory', 'froshToolsService'],
+    inject: {
+        repositoryFactory: { from: 'repositoryFactory' },
+        froshToolsService: { from: 'froshToolsService' },
+        froshToolsSearch: { default: null },
+    },
     mixins: [
         Mixin.getByName('notification'),
         Mixin.getByName('frosh-sortable-table'),
@@ -16,6 +20,7 @@ Component.register('frosh-tools-tab-scheduled', {
         return {
             items: null,
             isLoading: true,
+            loadError: null,
             taskError: null,
             openMenuId: null,
             editTask: null,
@@ -30,13 +35,23 @@ Component.register('frosh-tools-tab-scheduled', {
     created() {
         this.createdComponent();
         document.addEventListener('click', this.closeMenu);
+        document.addEventListener('keydown', this.onMenuKeydown);
     },
 
     unmounted() {
         document.removeEventListener('click', this.closeMenu);
+        document.removeEventListener('keydown', this.onMenuKeydown);
     },
 
     computed: {
+        searchTerm() {
+            return this.froshToolsSearch?.searchTerm ?? '';
+        },
+
+        visibleItems() {
+            return this.filterRows(this.items, this.searchTerm, ['name']);
+        },
+
         scheduledRepository() {
             return this.repositoryFactory.create('scheduled_task');
         },
@@ -81,6 +96,12 @@ Component.register('frosh-tools-tab-scheduled', {
 
         closeMenu() {
             this.openMenuId = null;
+        },
+
+        onMenuKeydown(event) {
+            if (event.key === 'Escape' && this.openMenuId !== null) {
+                this.closeMenu();
+            }
         },
 
         onMenu(action, item) {
@@ -141,18 +162,27 @@ Component.register('frosh-tools-tab-scheduled', {
         },
 
         async refresh() {
-            this.isLoading = true;
             await this.createdComponent();
         },
 
         async createdComponent() {
-            const criteria = new Criteria(1, 500);
-            criteria.addSorting(Criteria.sort('nextExecutionTime', 'ASC'));
-            this.items = await this.scheduledRepository.search(
-                criteria,
-                Shopware.Context.api
-            );
-            this.isLoading = false;
+            this.isLoading = true;
+            this.loadError = null;
+
+            try {
+                const criteria = new Criteria(1, 500);
+                criteria.addSorting(Criteria.sort('nextExecutionTime', 'ASC'));
+                this.items = await this.scheduledRepository.search(
+                    criteria,
+                    Shopware.Context.api
+                );
+            } catch (error) {
+                this.items = null;
+                this.loadError = error?.response?.data?.error ?? error.message;
+                this.createNotificationError({ message: this.loadError });
+            } finally {
+                this.isLoading = false;
+            }
         },
 
         async runTask(item) {

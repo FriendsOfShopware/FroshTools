@@ -1,19 +1,35 @@
 <div class="ft frosh-tab-flags">
     <ft-page-head
         :title="$tc('frosh-tools.tabs.feature-flags.title')"
-        subtitle="Feature flags exposed by Shopware core and registered extensions."
+        :subtitle="$t('frosh-tools.tabs.feature-flags.subtitle')"
     >
         <template #actions>
             <ft-refresh-button
                 :loading="isLoading"
-                label="Refresh"
                 @click="createdComponent"
             />
         </template>
     </ft-page-head>
+    <ft-hero-state
+        v-if="loadError"
+        variant="danger"
+        icon="alert"
+        :title="$t('frosh-tools.loadError.title')"
+        :body="loadError"
+    >
+        <template #actions>
+            <ft-button
+                icon="refresh"
+                @click="refresh"
+            >
+                {{ $t('frosh-tools.loadError.retry') }}
+            </ft-button>
+        </template>
+    </ft-hero-state>
     <ft-panel
-        title="Flags"
-        :count="featureFlags ? featureFlags.length : 0"
+        v-else
+        :title="$t('frosh-tools.tabs.feature-flags.flags')"
+        :count="visibleFlags ? visibleFlags.length : 0"
         flush
     >
         <ft-empty
@@ -22,7 +38,12 @@
         />
         <ft-empty
             v-else-if="!featureFlags || !featureFlags.length"
-            title="No feature flags registered"
+            :title="$t('frosh-tools.tabs.feature-flags.noFlags')"
+        />
+        <ft-empty
+            v-else-if="!visibleFlags.length"
+            icon="search"
+            :title="$t('frosh-tools.search.noResults', { term: searchTerm })"
         />
         <div
             v-else
@@ -57,24 +78,24 @@
                 </thead>
                 <tbody>
                     <tr
-                        v-for="item in sortRows(featureFlags)"
+                        v-for="item in sortRows(visibleFlags)"
                         :key="item.flag"
                     >
                         <td class="ft-table__name ft-mono">{{ item.flag }}</td>
                         <td>{{ item.description }}</td>
                         <td>
                             <ft-pill :variant="item.active ? 'success' : 'muted'">
-                                {{ item.active ? 'on' : 'off' }}
+                                {{ item.active ? $t('frosh-tools.on') : $t('frosh-tools.off') }}
                             </ft-pill>
                         </td>
                         <td>
                             <ft-pill :variant="item.major ? 'accent' : 'muted'">
-                                {{ item.major ? 'yes' : 'no' }}
+                                {{ item.major ? $t('frosh-tools.yes') : $t('frosh-tools.no') }}
                             </ft-pill>
                         </td>
                         <td>
                             <ft-pill :variant="item.default ? 'info' : 'muted'">
-                                {{ item.default ? 'yes' : 'no' }}
+                                {{ item.default ? $t('frosh-tools.yes') : $t('frosh-tools.no') }}
                             </ft-pill>
                         </td>
                     </tr>

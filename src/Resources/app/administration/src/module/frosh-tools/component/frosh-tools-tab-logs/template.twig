@@ -1,18 +1,34 @@
 <div class="ft frosh-tab-logs">
     <ft-page-head
         :title="$t('frosh-tools.tabs.logs.title')"
-        subtitle="Stream and inspect entries from any log file on disk."
+        :subtitle="$t('frosh-tools.tabs.logs.subtitle')"
     >
         <template #actions>
             <ft-refresh-button
                 :loading="isLoading"
-                label="Refresh"
                 @click="refresh"
             />
         </template>
     </ft-page-head>
+    <ft-hero-state
+        v-if="loadError"
+        variant="danger"
+        icon="alert"
+        :title="$t('frosh-tools.loadError.title')"
+        :body="loadError"
+    >
+        <template #actions>
+            <ft-button
+                icon="refresh"
+                @click="refresh"
+            >
+                {{ $t('frosh-tools.loadError.retry') }}
+            </ft-button>
+        </template>
+    </ft-hero-state>
     <ft-panel
-        title="Log file"
+        v-else
+        :title="$t('frosh-tools.tabs.logs.panelTitle')"
         flush
     >
         <template #actions>
@@ -31,16 +47,22 @@
         <ft-empty
             v-if="!selectedLogFile"
             icon="file"
-            title="Select a log file"
-            sub="Choose a file above to view its entries."
+            :title="$t('frosh-tools.tabs.logs.selectFile')"
+            :sub="$t('frosh-tools.tabs.logs.selectFileHint')"
+        />
+        <ft-empty
+            v-else-if="isLoadingEntries && !logEntries.length"
+            loading
         />
         <ft-empty
             v-else-if="!logEntries.length"
-            title="No entries in this file"
+            :title="$t('frosh-tools.tabs.logs.noEntries')"
         />
         <div
             v-else
             class="ft-table-wrap"
+            :class="{ 'ft-loading-overlay': isLoadingEntries }"
+            :aria-busy="isLoadingEntries ? 'true' : null"
         >
             <table class="ft-table">
                 <thead>
@@ -82,10 +104,11 @@
                             <ft-pill :variant="levelVariant(item.level)">{{ item.level }}</ft-pill>
                         </td>
                         <td>
-                            <a
-                                class="ft-link"
+                            <button
+                                type="button"
+                                class="ft-link frosh-tab-logs__message-trigger"
                                 @click="showInfoModal(item)"
-                            >{{ truncate(item.message) }}</a>
+                            >{{ truncate(item.message) }}</button>
                         </td>
                     </tr>
                 </tbody>
