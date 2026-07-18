@@ -167,14 +167,34 @@ Component.register('frosh-tools-tab-security', {
                 });
             } catch (e) {
                 this.createNotificationError({
-                    message:
-                        e?.response?.data?.errors?.[0]?.detail ||
-                        e?.message ||
-                        this.$t('frosh-tools.tabs.security.exportSbomFailed'),
+                    message: await this.sbomExportErrorMessage(e),
                 });
             } finally {
                 this.isExportingSbom = false;
             }
+        },
+
+        /**
+         * Blob responses (responseType: 'blob') wrap JSON error bodies, so the
+         * usual e.response.data.errors path is not available until we decode.
+         */
+        async sbomExportErrorMessage(error) {
+            const fallback = this.$t(
+                'frosh-tools.tabs.security.exportSbomFailed'
+            );
+            const data = error?.response?.data;
+
+            if (data instanceof Blob) {
+                try {
+                    const text = await data.text();
+                    const json = JSON.parse(text);
+                    return json?.errors?.[0]?.detail || text || fallback;
+                } catch {
+                    return error?.message || fallback;
+                }
+            }
+
+            return data?.errors?.[0]?.detail || error?.message || fallback;
         },
 
         dismissNotice() {

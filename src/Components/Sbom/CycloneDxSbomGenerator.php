@@ -22,7 +22,6 @@ class CycloneDxSbomGenerator
     private const TOOL_GROUP = 'frosh';
 
     private ?SpdxLicenses $spdxLicenses = null;
-
     private bool $spdxInitialized = false;
 
     public function __construct(
@@ -71,6 +70,7 @@ class CycloneDxSbomGenerator
         }
 
         $components = [];
+        /** @var array<string, string> $refByName package name => bom-ref */
         $refByName = [];
 
         foreach ($packages as $package) {
@@ -85,6 +85,9 @@ class CycloneDxSbomGenerator
             }
             $components[] = $component;
         }
+
+        $providerByName = $this->buildProviderIndex($packages, $refByName);
+        $rootRequirements = $this->rootRequirements($root, $includeDevDependencies);
 
         $bom = [
             'bomFormat' => self::BOM_FORMAT,
@@ -111,7 +114,7 @@ class CycloneDxSbomGenerator
                 ], static fn ($value) => $value !== null),
             ],
             'components' => $components,
-            'dependencies' => $this->buildDependencies($packages, $refByName, $rootRef),
+            'dependencies' => $this->buildDependencies($packages, $refByName, $providerByName, $rootRef, $rootRequirements),
         ];
 
         return $bom;
@@ -175,6 +178,97 @@ class CycloneDxSbomGenerator
         }
 
         return \is_array($data) ? $data : [];
+    }
+
+    /**
+     * Collects direct root package names from composer.json require / require-dev.
+     *
+     * @param array<string, mixed> $root
+     *
+     * @return list<string>
+     */
+    private function rootRequirements(array $root, bool $includeDevDependencies): array
+    {
+        $names = [];
+
+        foreach ($this->requirementNames($root['require'] ?? null) as $name) {
+            $names[] = $name;
+        }
+
+        if ($includeDevDependencies) {
+            foreach ($this->requirementNames($root['require-dev'] ?? null) as $name) {
+                $names[] = $name;
+            }
+        }
+
+        return array_values(array_unique($names));
+    }
+
+    /**
+     * @return list<string>
+     */
+    private function requirementNames(mixed $require): array
+    {
+        if (!\is_array($require)) {
+            return [];
+        }
+
+        $names = [];
+        foreach (array_keys($require) as $name) {
+            if (!\is_string($name) || $name === '' || $this->isPlatformPackage($name)) {
+                continue;
+            }
+            $names[] = $name;
+        }
+
+        return $names;
+    }
+
+    /**
+     * Maps package names (including provide/replace aliases) to the bom-ref of the
+     * installed package that satisfies them.
+     *
+     * @param array<mixed> $packages
+     * @param array<string, string> $refByName
+     *
+     * @return array<string, string>
+     */
+    private function buildProviderIndex(array $packages, array $refByName): array
+    {
+        $providerByName = $refByName;
+
+        foreach ($packages as $package) {
+            if (!\is_array($package)) {
+                continue;
+            }
+
+            $name = isset($package['name']) && \is_string($package['name']) ? $package['name'] : '';
+            if ($name === '' || !isset($refByName[$name])) {
+                continue;
+            }
+
+            $ref = $refByName[$name];
+
+            foreach (['provide', 'replace'] as $field) {
+                $aliases = $package[$field] ?? null;
+                if (!\is_array($aliases)) {
+                    continue;
+                }
+
+                foreach (array_keys($aliases) as $alias) {
+                    if (!\is_string($alias) || $alias === '' || $this->isPlatformPackage($alias)) {
+                        continue;
+                    }
+
+                    // Prefer a real installed package over an alias when both exist.
+                    if (!isset($providerByName[$alias])) {
+                        $providerByName[$alias] = $ref;
+                    }
+                }
+            }
+        }
+
+        return $providerByName;
     }
 
     /**
@@ -243,20 +337,27 @@ class CycloneDxSbomGenerator
 
     /**
      * @param array<mixed> $packages
-     * @param array<string, string> $refByName
+     * @param array<string, string> $refByName real package name => bom-ref
+     * @param array<string, string> $providerByName package/alias name => bom-ref
+     * @param list<string> $rootRequirements
      *
      * @return list<array{ref: string, dependsOn?: list<string>}>
      */
-    private function buildDependencies(array $packages, array $refByName, string $rootRef): array
-    {
+    private function buildDependencies(
+        array $packages,
+        array $refByName,
+        array $providerByName,
+        string $rootRef,
+        array $rootRequirements,
+    ): array {
         $dependencies = [];
 
-        $rootDeps = array_values($refByName);
-        sort($rootDeps);
-        $dependencies[] = [
-            'ref' => $rootRef,
-            'dependsOn' => $rootDeps,
-        ];
+        $rootDeps = $this->resolveRequirementRefs($rootRequirements, $providerByName);
+        $rootEntry = ['ref' => $rootRef];
+        if ($rootDeps !== []) {
+            $rootEntry['dependsOn'] = $rootDeps;
+        }
+        $dependencies[] = $rootEntry;
 
         foreach ($packages as $package) {
             if (!\is_array($package)) {
@@ -268,19 +369,12 @@ class CycloneDxSbomGenerator
                 continue;
             }
 
-            $dependsOn = [];
             $require = isset($package['require']) && \is_array($package['require']) ? $package['require'] : [];
-            foreach (array_keys($require) as $required) {
-                if (!\is_string($required) || $this->isPlatformPackage($required)) {
-                    continue;
-                }
+            $dependsOn = $this->resolveRequirementRefs(
+                $this->requirementNames($require),
+                $providerByName,
+            );
 
-                if (isset($refByName[$required])) {
-                    $dependsOn[] = $refByName[$required];
-                }
-            }
-
-            sort($dependsOn);
             $entry = ['ref' => $refByName[$name]];
             if ($dependsOn !== []) {
                 $entry['dependsOn'] = $dependsOn;
@@ -289,6 +383,28 @@ class CycloneDxSbomGenerator
         }
 
         return $dependencies;
+    }
+
+    /**
+     * @param list<string> $requirements
+     * @param array<string, string> $providerByName
+     *
+     * @return list<string>
+     */
+    private function resolveRequirementRefs(array $requirements, array $providerByName): array
+    {
+        $refs = [];
+        foreach ($requirements as $required) {
+            if (!isset($providerByName[$required])) {
+                continue;
+            }
+            $refs[] = $providerByName[$required];
+        }
+
+        $refs = array_values(array_unique($refs));
+        sort($refs);
+
+        return $refs;
     }
 
     /**
@@ -362,11 +478,21 @@ class CycloneDxSbomGenerator
         return false;
     }
 
+    /**
+     * Builds a Package URL (purl) with percent-encoded name segments and version
+     * per https://github.com/package-url/purl-spec
+     */
     private function buildPurl(string $name, string $version): string
     {
-        $purl = 'pkg:composer/' . $name;
+        $segments = explode('/', $name);
+        $encoded = [];
+        foreach ($segments as $segment) {
+            $encoded[] = rawurlencode($segment);
+        }
+
+        $purl = 'pkg:composer/' . implode('/', $encoded);
         if ($version !== '') {
-            $purl .= '@' . $version;
+            $purl .= '@' . rawurlencode($version);
         }
 
         return $purl;

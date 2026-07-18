@@ -22,6 +22,13 @@ class CycloneDxSbomGeneratorTest extends TestCase
         file_put_contents($this->projectDir . '/composer.json', json_encode([
             'name' => 'acme/shop',
             'version' => '1.0.0',
+            'require' => [
+                'php' => '>=8.1',
+                'symfony/console' => '^6.3',
+            ],
+            'require-dev' => [
+                'phpunit/phpunit' => '^10.0',
+            ],
         ], \JSON_THROW_ON_ERROR));
 
         file_put_contents($this->projectDir . '/composer.lock', json_encode([
@@ -115,27 +122,111 @@ class CycloneDxSbomGeneratorTest extends TestCase
 
         static::assertCount(3, $bom['components']);
         static::assertNotNull($this->findComponent($bom, 'phpunit'));
+
+        $rootDeps = $this->findDependency($bom, 'app:acme/shop@1.0.0');
+        static::assertSame([
+            'pkg:composer/phpunit/phpunit@10.0.0',
+            'pkg:composer/symfony/console@v6.3.0',
+        ], $rootDeps['dependsOn']);
+    }
+
+    public function testRootDependsOnlyOnDirectRequirements(): void
+    {
+        $bom = $this->generator()->generate();
+
+        $rootDeps = $this->findDependency($bom, 'app:acme/shop@1.0.0');
+        // transitive symfony/string must not appear as a direct root dependency
+        static::assertSame(['pkg:composer/symfony/console@v6.3.0'], $rootDeps['dependsOn']);
     }
 
     public function testDependenciesSkipPlatformRequirements(): void
     {
         $bom = $this->generator()->generate();
 
-        $consoleDeps = null;
-        $rootDeps = null;
-        foreach ($bom['dependencies'] as $dependency) {
-            if ($dependency['ref'] === 'pkg:composer/symfony/console@v6.3.0') {
-                $consoleDeps = $dependency;
-            }
-            if ($dependency['ref'] === 'app:acme/shop@1.0.0') {
-                $rootDeps = $dependency;
-            }
-        }
-
-        static::assertNotNull($consoleDeps);
+        $consoleDeps = $this->findDependency($bom, 'pkg:composer/symfony/console@v6.3.0');
         static::assertSame(['pkg:composer/symfony/string@v6.3.0'], $consoleDeps['dependsOn']);
-        static::assertNotNull($rootDeps);
-        static::assertCount(2, $rootDeps['dependsOn']);
+    }
+
+    public function testProvideAndReplaceResolveDependencyEdges(): void
+    {
+        file_put_contents($this->projectDir . '/composer.json', json_encode([
+            'name' => 'acme/shop',
+            'version' => '1.0.0',
+            'require' => [
+                'psr/log' => '^3.0',
+            ],
+        ], \JSON_THROW_ON_ERROR));
+
+        file_put_contents($this->projectDir . '/composer.lock', json_encode([
+            'packages' => [
+                [
+                    'name' => 'monolog/monolog',
+                    'version' => '3.0.0',
+                    'license' => ['MIT'],
+                    'provide' => [
+                        'psr/log-implementation' => '3.0.0',
+                    ],
+                    'replace' => [
+                        'psr/log' => '3.0.0',
+                    ],
+                    'require' => [],
+                ],
+                [
+                    'name' => 'acme/logger-user',
+                    'version' => '1.0.0',
+                    'license' => ['MIT'],
+                    'require' => [
+                        'psr/log-implementation' => '^3.0',
+                    ],
+                ],
+            ],
+            'packages-dev' => [],
+        ], \JSON_THROW_ON_ERROR));
+
+        $bom = $this->generator()->generate();
+        $monologRef = 'pkg:composer/monolog/monolog@3.0.0';
+
+        $rootDeps = $this->findDependency($bom, 'app:acme/shop@1.0.0');
+        static::assertSame([$monologRef], $rootDeps['dependsOn']);
+
+        $userDeps = $this->findDependency($bom, 'pkg:composer/acme/logger-user@1.0.0');
+        static::assertSame([$monologRef], $userDeps['dependsOn']);
+    }
+
+    public function testPurlEncodesReservedCharacters(): void
+    {
+        file_put_contents($this->projectDir . '/composer.json', json_encode([
+            'name' => 'acme/shop',
+            'version' => '1.0.0',
+            'require' => [
+                'acme/dev-package' => 'dev-feature/foo',
+            ],
+        ], \JSON_THROW_ON_ERROR));
+
+        file_put_contents($this->projectDir . '/composer.lock', json_encode([
+            'packages' => [
+                [
+                    'name' => 'acme/dev-package',
+                    'version' => 'dev-feature/foo',
+                    'license' => ['MIT'],
+                ],
+                [
+                    'name' => 'acme/build-meta',
+                    'version' => '1.0.0+build.1',
+                    'license' => ['MIT'],
+                ],
+            ],
+            'packages-dev' => [],
+        ], \JSON_THROW_ON_ERROR));
+
+        $bom = $this->generator()->generate();
+
+        $dev = $this->findComponent($bom, 'dev-package');
+        static::assertSame('pkg:composer/acme/dev-package@dev-feature%2Ffoo', $dev['purl']);
+        static::assertSame('pkg:composer/acme/dev-package@dev-feature%2Ffoo', $dev['bom-ref']);
+
+        $build = $this->findComponent($bom, 'build-meta');
+        static::assertSame('pkg:composer/acme/build-meta@1.0.0%2Bbuild.1', $build['purl']);
     }
 
     public function testFreeTextLicenseUsesName(): void
@@ -215,5 +306,21 @@ class CycloneDxSbomGeneratorTest extends TestCase
         }
 
         static::fail(\sprintf('Component "%s" not found', $name));
+    }
+
+    /**
+     * @param array<string, mixed> $bom
+     *
+     * @return array<string, mixed>
+     */
+    private function findDependency(array $bom, string $ref): array
+    {
+        foreach ($bom['dependencies'] as $dependency) {
+            if (($dependency['ref'] ?? null) === $ref) {
+                return $dependency;
+            }
+        }
+
+        static::fail(\sprintf('Dependency "%s" not found', $ref));
     }
 }
