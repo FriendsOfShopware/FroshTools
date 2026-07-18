@@ -241,7 +241,7 @@ class CycloneDxSbomGenerator
     }
 
     /**
-     * @param list<mixed> $packages
+     * @param array<mixed> $packages
      * @param array<string, string> $refByName
      *
      * @return list<array{ref: string, dependsOn?: list<string>}>
