@@ -7,7 +7,12 @@ const { Criteria } = Shopware.Data;
 Component.register('frosh-tools-tab-cache', {
     template,
 
-    inject: ['froshToolsService', 'repositoryFactory', 'themeService'],
+    inject: {
+        froshToolsService: { from: 'froshToolsService' },
+        repositoryFactory: { from: 'repositoryFactory' },
+        themeService: { from: 'themeService' },
+        froshToolsSearch: { default: null },
+    },
     mixins: [
         Mixin.getByName('notification'),
         Mixin.getByName('frosh-sortable-table'),
@@ -63,6 +68,17 @@ Component.register('frosh-tools-tab-cache', {
             }
 
             return this.cacheInfo;
+        },
+
+        searchTerm() {
+            return this.froshToolsSearch?.searchTerm ?? '';
+        },
+
+        visibleCacheFolders() {
+            return this.filterRows(this.cacheFolders, this.searchTerm, [
+                'name',
+                'type',
+            ]);
         },
 
         salesChannelRepository() {

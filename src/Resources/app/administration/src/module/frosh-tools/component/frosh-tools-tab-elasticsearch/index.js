@@ -6,7 +6,10 @@ const { Mixin, Component } = Shopware;
 Component.register('frosh-tools-tab-elasticsearch', {
     template,
 
-    inject: ['froshElasticSearch'],
+    inject: {
+        froshElasticSearch: { from: 'froshElasticSearch' },
+        froshToolsSearch: { default: null },
+    },
     mixins: [
         Mixin.getByName('notification'),
         Mixin.getByName('frosh-sortable-table'),
@@ -30,6 +33,14 @@ Component.register('frosh-tools-tab-elasticsearch', {
     },
 
     computed: {
+        searchTerm() {
+            return this.froshToolsSearch?.searchTerm ?? '';
+        },
+
+        visibleIndices() {
+            return this.filterRows(this.indices, this.searchTerm, ['name']);
+        },
+
         engineName() {
             return this.statusInfo.info?.version?.distribution === 'opensearch'
                 ? 'OpenSearch'

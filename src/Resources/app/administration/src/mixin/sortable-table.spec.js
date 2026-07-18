@@ -98,4 +98,50 @@ describe('frosh-sortable-table mixin', () => {
         expect(wrapper.vm.sortRows(rows)).toBe(rows);
         expect(wrapper.vm.sortRows(null)).toBeNull();
     });
+
+    it('returns rows untouched when the filter query is empty', () => {
+        const wrapper = createWrapper();
+        const rows = [{ name: 'b' }, { name: 'a' }];
+
+        expect(wrapper.vm.filterRows(rows, '', ['name'])).toBe(rows);
+        expect(wrapper.vm.filterRows(rows, '   ', ['name'])).toBe(rows);
+        expect(wrapper.vm.filterRows(rows, null, ['name'])).toBe(rows);
+        expect(wrapper.vm.filterRows(null, 'a', ['name'])).toBeNull();
+    });
+
+    it('filters rows case-insensitively across all given keys', () => {
+        const wrapper = createWrapper();
+        const rows = [
+            { name: 'log_entry.cleanup', type: 'messenger' },
+            { name: 'shopware.invalidate_cache', type: 'messenger' },
+            { name: 'app_update', type: 'failed' },
+        ];
+
+        expect(
+            wrapper.vm.filterRows(rows, 'LOG', ['name']).map((row) => row.name)
+        ).toEqual(['log_entry.cleanup']);
+
+        expect(
+            wrapper.vm
+                .filterRows(rows, 'failed', ['name', 'type'])
+                .map((row) => row.name)
+        ).toEqual(['app_update']);
+
+        expect(wrapper.vm.filterRows(rows, 'nomatch', ['name'])).toEqual([]);
+    });
+
+    it('supports dot paths and tolerates missing values when filtering', () => {
+        const wrapper = createWrapper();
+        const rows = [
+            { meta: { label: 'Order states' } },
+            { meta: { label: 'Payment states' } },
+            { name: 'no meta here' },
+        ];
+
+        expect(
+            wrapper.vm
+                .filterRows(rows, 'payment', ['meta.label'])
+                .map((row) => row.meta.label)
+        ).toEqual(['Payment states']);
+    });
 });

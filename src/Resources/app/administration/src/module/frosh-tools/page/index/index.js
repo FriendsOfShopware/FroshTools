@@ -20,14 +20,61 @@ function readSetting(key) {
     }
 }
 
+// Tabs that support filtering their tables through the admin search bar.
+// Maps the route name to the search type tag and placeholder snippet.
+const SEARCHABLE_TABS = {
+    'frosh.tools.index.cache': {
+        type: 'frosh_tools_cache',
+        placeholderKey: 'frosh-tools.search.placeholder.cache',
+    },
+    'frosh.tools.index.queue': {
+        type: 'frosh_tools_queue',
+        placeholderKey: 'frosh-tools.search.placeholder.queue',
+    },
+    'frosh.tools.index.scheduled': {
+        type: 'frosh_tools_scheduled_task',
+        placeholderKey: 'frosh-tools.search.placeholder.scheduled',
+    },
+    'frosh.tools.index.elasticsearch': {
+        type: 'frosh_tools_elasticsearch',
+        placeholderKey: 'frosh-tools.search.placeholder.elasticsearch',
+    },
+    'frosh.tools.index.featureflags': {
+        type: 'frosh_tools_feature_flags',
+        placeholderKey: 'frosh-tools.search.placeholder.featureFlags',
+    },
+};
+
 Component.register('frosh-tools-index', {
     template,
     inject: ['froshToolsService'],
+
+    provide() {
+        // Tabs inject this component as `froshToolsSearch` and read
+        // `searchTerm` from it (reactive because it is component data).
+        return {
+            froshToolsSearch: this,
+        };
+    },
+
+    data() {
+        return {
+            searchTerm: '',
+        };
+    },
 
     metaInfo() {
         return {
             title: this.$createTitle(),
         };
+    },
+
+    watch: {
+        // A new tab shows different data — a stale term would filter it
+        // unexpectedly, so the search starts fresh on every tab switch.
+        '$route.name'() {
+            this.searchTerm = '';
+        },
     },
 
     created() {
@@ -39,6 +86,10 @@ Component.register('frosh-tools-index', {
     },
 
     computed: {
+        searchTab() {
+            return SEARCHABLE_TABS[this.$route.name] ?? null;
+        },
+
         fastlyAvailable() {
             return readSetting('fastlyEnabled');
         },
@@ -128,6 +179,10 @@ Component.register('frosh-tools-index', {
     },
 
     methods: {
+        onSearch(term) {
+            this.searchTerm = term;
+        },
+
         adminMenuStore(action) {
             // Pinia (Shopware 6.7+)
             try {

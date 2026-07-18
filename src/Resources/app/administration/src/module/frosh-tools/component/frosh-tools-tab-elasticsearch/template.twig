@@ -61,7 +61,7 @@
         </div>
         <ft-panel
             :title="$t('frosh-tools.tabs.elasticsearch.indices')"
-            :count="indices ? indices.length : 0"
+            :count="visibleIndices ? visibleIndices.length : 0"
             flush
         >
             <template #actions>
@@ -151,6 +151,11 @@
                 v-if="!indices.length"
                 :title="$t('frosh-tools.tabs.elasticsearch.noIndices')"
             />
+            <ft-empty
+                v-else-if="!visibleIndices.length"
+                icon="search"
+                :title="$t('frosh-tools.search.noResults', { term: searchTerm })"
+            />
             <div
                 v-else
                 class="ft-table-wrap"
@@ -174,7 +179,7 @@
                     </thead>
                     <tbody>
                         <tr
-                            v-for="item in sortRows(indices)"
+                            v-for="item in sortRows(visibleIndices)"
                             :key="item.name"
                         >
                             <td class="ft-table__name">

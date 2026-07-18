@@ -6,7 +6,11 @@ const { Criteria } = Shopware.Data;
 
 Component.register('frosh-tools-tab-scheduled', {
     template,
-    inject: ['repositoryFactory', 'froshToolsService'],
+    inject: {
+        repositoryFactory: { from: 'repositoryFactory' },
+        froshToolsService: { from: 'froshToolsService' },
+        froshToolsSearch: { default: null },
+    },
     mixins: [
         Mixin.getByName('notification'),
         Mixin.getByName('frosh-sortable-table'),
@@ -40,6 +44,14 @@ Component.register('frosh-tools-tab-scheduled', {
     },
 
     computed: {
+        searchTerm() {
+            return this.froshToolsSearch?.searchTerm ?? '';
+        },
+
+        visibleItems() {
+            return this.filterRows(this.items, this.searchTerm, ['name']);
+        },
+
         scheduledRepository() {
             return this.repositoryFactory.create('scheduled_task');
         },

@@ -482,6 +482,16 @@
             "diagnostics": "Diagnose",
             "cdn": "CDN"
         },
+        "search": {
+            "placeholder": {
+                "cache": "Cache-Pools durchsuchen\u2026",
+                "queue": "Transporte durchsuchen\u2026",
+                "scheduled": "Geplante Aufgaben durchsuchen\u2026",
+                "elasticsearch": "Indizes durchsuchen\u2026",
+                "featureFlags": "Feature-Flags durchsuchen\u2026"
+            },
+            "noResults": "Keine Ergebnisse für \"{term}\""
+        },
         "loading": "Wird geladen\u2026",
         "loadError": {
             "title": "Daten konnten nicht geladen werden",
@@ -494,6 +504,15 @@
                 "frosh_tools": "Überwachung anzeigen",
                 "label": "Frosh tools"
             }
+        }
+    },
+    "global": {
+        "entities": {
+            "frosh_tools_cache": "Cache",
+            "frosh_tools_queue": "Warteschlange",
+            "frosh_tools_scheduled_task": "Geplante Aufgaben",
+            "frosh_tools_elasticsearch": "Indizes",
+            "frosh_tools_feature_flags": "Feature Flags"
         }
     }
 }

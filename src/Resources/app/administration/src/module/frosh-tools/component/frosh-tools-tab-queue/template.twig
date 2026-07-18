@@ -37,12 +37,17 @@
     <ft-panel
         v-else
         :title="$t('frosh-tools.tabs.queue.transports.title')"
-        :count="transports.length"
+        :count="visibleTransports.length"
         flush
     >
         <ft-empty
             v-if="isLoading && !transports.length"
             loading
+        />
+        <ft-empty
+            v-else-if="searchTerm && !visibleTransports.length"
+            icon="search"
+            :title="$t('frosh-tools.search.noResults', { term: searchTerm })"
         />
         <div
             v-else
@@ -81,7 +86,7 @@
                 </thead>
                 <tbody>
                     <tr
-                        v-for="transport in sortRows(transports, 'transports')"
+                        v-for="transport in sortRows(visibleTransports, 'transports')"
                         :key="transport.name"
                         :class="{ 'frosh-tab-queue__transport--browsable': transport.browsable }"
                         @click="openBrowseModal(transport)"

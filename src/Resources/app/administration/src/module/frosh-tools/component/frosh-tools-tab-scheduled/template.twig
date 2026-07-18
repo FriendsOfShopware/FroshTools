@@ -39,7 +39,7 @@
     <ft-panel
         v-else
         :title="$t('frosh-tools.tabs.scheduledTaskOverview.tasks')"
-        :count="items ? items.length : null"
+        :count="visibleItems ? visibleItems.length : null"
         flush
     >
         <ft-empty
@@ -49,6 +49,11 @@
         <ft-empty
             v-else-if="!items.length"
             :title="$t('frosh-tools.tabs.scheduledTaskOverview.noTasks')"
+        />
+        <ft-empty
+            v-else-if="!visibleItems.length"
+            icon="search"
+            :title="$t('frosh-tools.search.noResults', { term: searchTerm })"
         />
         <div
             v-else
@@ -82,7 +87,7 @@
                 </thead>
                 <tbody>
                     <tr
-                        v-for="item in sortRows(items)"
+                        v-for="item in sortRows(visibleItems)"
                         :key="item.id"
                     >
                         <td>

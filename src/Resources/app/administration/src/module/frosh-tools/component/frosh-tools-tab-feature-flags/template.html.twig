@@ -29,7 +29,7 @@
     <ft-panel
         v-else
         :title="$t('frosh-tools.tabs.feature-flags.flags')"
-        :count="featureFlags ? featureFlags.length : 0"
+        :count="visibleFlags ? visibleFlags.length : 0"
         flush
     >
         <ft-empty
@@ -39,6 +39,11 @@
         <ft-empty
             v-else-if="!featureFlags || !featureFlags.length"
             :title="$t('frosh-tools.tabs.feature-flags.noFlags')"
+        />
+        <ft-empty
+            v-else-if="!visibleFlags.length"
+            icon="search"
+            :title="$t('frosh-tools.search.noResults', { term: searchTerm })"
         />
         <div
             v-else
@@ -73,7 +78,7 @@
                 </thead>
                 <tbody>
                     <tr
-                        v-for="item in sortRows(featureFlags)"
+                        v-for="item in sortRows(visibleFlags)"
                         :key="item.flag"
                     >
                         <td class="ft-table__name ft-mono">{{ item.flag }}</td>

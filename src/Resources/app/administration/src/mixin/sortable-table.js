@@ -56,6 +56,28 @@ Mixin.register('frosh-sortable-table', {
             return current.dir;
         },
 
+        /**
+         * Case-insensitive contains-filter over the given keys (dot paths
+         * supported, same as sorting). Returns the rows untouched when the
+         * query is empty so tables stay stable while the search is blank.
+         */
+        filterRows(rows, query, keys) {
+            if (!Array.isArray(rows)) return rows;
+
+            const term = String(query ?? '')
+                .trim()
+                .toLowerCase();
+            if (!term) return rows;
+
+            return rows.filter((row) =>
+                keys.some((key) =>
+                    String(resolvePath(row, key) ?? '')
+                        .toLowerCase()
+                        .includes(term)
+                )
+            );
+        },
+
         sortRows(rows, table = 'default') {
             if (!Array.isArray(rows)) return rows;
             const current = this.tableSorts[table];

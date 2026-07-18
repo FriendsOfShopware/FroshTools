@@ -1,4 +1,17 @@
 <sw-page class="frosh-tools">
+    <template
+        #search-bar
+        v-if="searchTab"
+    >
+        <sw-search-bar
+            :key="$route.name"
+            :initial-search-type="searchTab.type"
+            :placeholder="$t(searchTab.placeholderKey)"
+            :type-search-always-in-container="false"
+            @search="onSearch"
+        />
+    </template>
+
     <template #content>
         <div class="ft ft-shell">
             <aside class="ft-sidebar">

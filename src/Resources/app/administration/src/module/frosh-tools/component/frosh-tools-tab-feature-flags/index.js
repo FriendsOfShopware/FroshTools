@@ -5,7 +5,10 @@ const { Component, Mixin } = Shopware;
 
 Component.register('frosh-tools-tab-feature-flags', {
     template,
-    inject: ['froshToolsService'],
+    inject: {
+        froshToolsService: { from: 'froshToolsService' },
+        froshToolsSearch: { default: null },
+    },
     mixins: [
         Mixin.getByName('notification'),
         Mixin.getByName('frosh-sortable-table'),
@@ -21,6 +24,19 @@ Component.register('frosh-tools-tab-feature-flags', {
 
     created() {
         this.createdComponent();
+    },
+
+    computed: {
+        searchTerm() {
+            return this.froshToolsSearch?.searchTerm ?? '';
+        },
+
+        visibleFlags() {
+            return this.filterRows(this.featureFlags, this.searchTerm, [
+                'flag',
+                'description',
+            ]);
+        },
     },
 
     methods: {
