@@ -15,6 +15,7 @@ Component.register('frosh-tools-tab-feature-flags', {
         return {
             featureFlags: null,
             isLoading: true,
+            loadError: null,
         };
     },
 
@@ -29,8 +30,18 @@ Component.register('frosh-tools-tab-feature-flags', {
 
         async createdComponent() {
             this.isLoading = true;
-            this.featureFlags = await this.froshToolsService.getFeatureFlags();
-            this.isLoading = false;
+            this.loadError = null;
+
+            try {
+                this.featureFlags =
+                    await this.froshToolsService.getFeatureFlags();
+            } catch (error) {
+                this.featureFlags = null;
+                this.loadError = error?.response?.data?.error ?? error.message;
+                this.createNotificationError({ message: this.loadError });
+            } finally {
+                this.isLoading = false;
+            }
         },
     },
 });

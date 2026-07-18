@@ -18,5 +18,11 @@
         >
             <slot>{{ body }}</slot>
         </div>
+        <div
+            class="ft-hero-state__actions"
+            v-if="$slots.actions"
+        >
+            <slot name="actions"/>
+        </div>
     </div>
 </div>

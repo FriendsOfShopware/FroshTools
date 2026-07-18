@@ -25,6 +25,12 @@
         animation: ft-modal-pop 180ms cubic-bezier(0.16, 1, 0.3, 1);
         overflow: hidden;
 
+        // The dialog itself only receives focus as a fallback when no
+        // focusable element exists inside — never show a ring on it.
+        &:focus {
+            outline: none;
+        }
+
         &--small {
             max-width: 440px;
         }

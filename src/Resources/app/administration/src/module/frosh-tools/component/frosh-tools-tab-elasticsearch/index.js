@@ -20,6 +20,8 @@ Component.register('frosh-tools-tab-elasticsearch', {
             indices: [],
             consoleInput: 'GET /_cat/indices',
             consoleOutput: {},
+            confirmAction: null,
+            isConfirmingAction: false,
             showOrphanedCleanupModal: false,
             orphanedCleanupIndices: [],
             isLoadingOrphanedPreview: false,
@@ -132,8 +134,53 @@ Component.register('frosh-tools-tab-elasticsearch', {
             return formatted.toFixed(dp) + ' ' + units[index];
         },
 
-        async deleteIndex(indexName) {
-            await this.froshElasticSearch.deleteIndex(indexName);
+        askDeleteIndex(indexName) {
+            this.confirmAction = { key: 'deleteIndex', indexName };
+        },
+
+        askFlushAll() {
+            this.confirmAction = { key: 'flushAll' };
+        },
+
+        askReset() {
+            this.confirmAction = { key: 'reset' };
+        },
+
+        cancelConfirmAction() {
+            if (this.isConfirmingAction) return;
+            this.confirmAction = null;
+        },
+
+        async runConfirmedAction() {
+            const action = this.confirmAction;
+            if (!action) return;
+
+            this.isConfirmingAction = true;
+
+            try {
+                if (action.key === 'deleteIndex') {
+                    await this.froshElasticSearch.deleteIndex(action.indexName);
+                } else if (action.key === 'flushAll') {
+                    await this.froshElasticSearch.flushAll();
+                } else {
+                    await this.froshElasticSearch.reset();
+                }
+
+                this.createNotificationSuccess({
+                    message: this.$t('global.default.success'),
+                });
+                this.confirmAction = null;
+            } catch (e) {
+                this.createNotificationError({
+                    message:
+                        e?.response?.data?.error ??
+                        e?.message ??
+                        this.$t('global.default.error'),
+                });
+            } finally {
+                this.isConfirmingAction = false;
+            }
+
             await this.createdComponent();
         },
 
@@ -154,34 +201,38 @@ Component.register('frosh-tools-tab-elasticsearch', {
         },
 
         async reindex() {
-            await this.froshElasticSearch.reindex();
-            this.createNotificationSuccess({
-                message: this.$t('global.default.success'),
-            });
+            try {
+                await this.froshElasticSearch.reindex();
+                this.createNotificationSuccess({
+                    message: this.$t('global.default.success'),
+                });
+            } catch (e) {
+                this.createNotificationError({
+                    message:
+                        e?.response?.data?.error ??
+                        e?.message ??
+                        this.$t('global.default.error'),
+                });
+            }
+
             await this.createdComponent();
         },
 
         async switchAlias() {
-            await this.froshElasticSearch.switchAlias();
-            this.createNotificationSuccess({
-                message: this.$t('global.default.success'),
-            });
-            await this.createdComponent();
-        },
+            try {
+                await this.froshElasticSearch.switchAlias();
+                this.createNotificationSuccess({
+                    message: this.$t('global.default.success'),
+                });
+            } catch (e) {
+                this.createNotificationError({
+                    message:
+                        e?.response?.data?.error ??
+                        e?.message ??
+                        this.$t('global.default.error'),
+                });
+            }
 
-        async flushAll() {
-            await this.froshElasticSearch.flushAll();
-            this.createNotificationSuccess({
-                message: this.$t('global.default.success'),
-            });
-            await this.createdComponent();
-        },
-
-        async resetElasticsearch() {
-            await this.froshElasticSearch.reset();
-            this.createNotificationSuccess({
-                message: this.$t('global.default.success'),
-            });
             await this.createdComponent();
         },
 

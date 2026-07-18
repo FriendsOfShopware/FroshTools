@@ -29,6 +29,13 @@
         color: var(--ft-text-soft);
     }
 
+    &__actions {
+        display: flex;
+        gap: 8px;
+        flex-wrap: wrap;
+        margin-top: 10px;
+    }
+
     &--success {
         border-color: rgba(22, 163, 74, 0.3);
         background: var(--ft-success-soft);

@@ -4,7 +4,11 @@
         "tabs": {
             "index": {
                 "title": "System-Status",
+                "subtitle": "Live health and performance checks for this Shopware instance.",
                 "performance": "Performance recommendations",
+                "systemHealth": "System Health",
+                "noHealthChecks": "No health checks reported",
+                "allClear": "All clear",
                 "info": "Info",
                 "recommendation": {
                     "what": "What this means",
@@ -12,13 +16,22 @@
                 }
             },
             "cache": {
-                "title": "Cache"
+                "title": "Cache",
+                "subtitle": "Manage cache pools, theme compilation and PHP opcache.",
+                "pools": "Cache pools",
+                "noPools": "No cache pools reported"
             },
             "scheduledTaskOverview": {
-                "title": "Scheduled Tasks"
+                "title": "Scheduled Tasks",
+                "subtitle": "Inspect, schedule, deactivate and run background tasks.",
+                "tasks": "Tasks",
+                "noTasks": "No scheduled tasks registered",
+                "editInterval": "Edit interval & next run",
+                "editTitle": "Edit: {name}"
             },
             "queue": {
                 "title": "Queue",
+                "subtitle": "Pending messages waiting to be processed.",
                 "transports": {
                     "title": "Transports",
                     "type": "Type",
@@ -60,12 +73,19 @@
             },
             "logs": {
                 "title": "Log Viewer",
+                "subtitle": "Stream and inspect entries from any log file on disk.",
+                "panelTitle": "Log file",
+                "selectFile": "Select a log file",
+                "selectFileHint": "Choose a file above to view its entries.",
+                "noEntries": "No entries in this file",
                 "logFileSelect": {
                     "placeholder": "Choose file"
                 }
             },
             "elasticsearch": {
                 "title": "Search",
+                "subtitle": "Cluster status, indices and a low-level query console.",
+                "noIndices": "No indices found",
                 "disabled": "Search is not enabled",
                 "disabledTitle": "{engine} is not enabled",
                 "version": "Version",
@@ -96,6 +116,23 @@
                     "description": "This heuristic cleanup deletes alias-less Shopware-prefixed indices. Indices that are still tracked by storefront or admin indexing tasks are excluded and the server revalidates this list before deletion.",
                     "delete": "Delete orphaned indices"
                 },
+                "confirm": {
+                    "deleteIndex": {
+                        "title": "Delete index \"{name}\"?",
+                        "description": "The index \"{name}\" and all its documents will be permanently deleted. Storefront search may be empty until a reindex finishes.",
+                        "confirm": "Delete index"
+                    },
+                    "flushAll": {
+                        "title": "Delete all indices?",
+                        "description": "All indices, including the active ones, will be permanently deleted. Storefront search will be empty until a reindex finishes.",
+                        "confirm": "Delete all indices"
+                    },
+                    "reset": {
+                        "title": "Reset Search?",
+                        "description": "All indices will be deleted and the index aliases will be recreated from scratch. Storefront search will be empty until a reindex finishes.",
+                        "confirm": "Reset Search"
+                    }
+                },
                 "notification": {
                     "cleanup": {
                         "empty": "No unused indices found.",
@@ -117,6 +154,9 @@
             },
             "feature-flags": {
                 "title": "Feature Flags",
+                "subtitle": "Feature flags exposed by Shopware core and registered extensions.",
+                "flags": "Flags",
+                "noFlags": "No feature flags registered",
                 "flag": "Feature Flag",
                 "description": "Description",
                 "major": "Major",
@@ -217,6 +257,9 @@
             },
             "state-machines": {
                 "title": "State Machine Viewer",
+                "subtitle": "Visualize states, transitions and actions for any registered state machine.",
+                "noSelection": "No state machine selected",
+                "noSelectionHint": "Pick one from the dropdown above to render its diagram.",
                 "label": "State Machine",
                 "orderTitle": "Order status",
                 "transactionTitle": "Transaction status",
@@ -422,7 +465,28 @@
         "order": "Order",
         "transaction": "Payment",
         "delivery": "Delivery",
-        "unknown": "Unknown"
+        "unknown": "Unknown",
+        "cacheCleared": "Cache \"{name}\" has been cleared",
+        "refresh": "Refresh",
+        "on": "on",
+        "off": "off",
+        "yes": "yes",
+        "no": "no",
+        "sidebar": {
+            "developerConsole": "Developer Console"
+        },
+        "nav": {
+            "overview": "Overview",
+            "performance": "Performance",
+            "operations": "Operations",
+            "diagnostics": "Diagnostics",
+            "cdn": "CDN"
+        },
+        "loading": "Loading\u2026",
+        "loadError": {
+            "title": "Could not load data",
+            "retry": "Try again"
+        }
     },
     "sw-privileges": {
         "additional_permissions": {

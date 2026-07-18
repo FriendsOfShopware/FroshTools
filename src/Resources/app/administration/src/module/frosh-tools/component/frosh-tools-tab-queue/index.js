@@ -17,6 +17,7 @@ Component.register('frosh-tools-tab-queue', {
             showResetModal: false,
             purgeTransportCandidate: null,
             isLoading: true,
+            loadError: null,
             browseTransport: null,
             browseLimit: 10,
             browseLoading: false,
@@ -33,22 +34,39 @@ Component.register('frosh-tools-tab-queue', {
 
     methods: {
         async refresh() {
-            this.isLoading = true;
             await this.createdComponent();
         },
         async createdComponent() {
-            this.transports = await this.froshToolsService.getQueueTransports();
-            this.isLoading = false;
+            this.isLoading = true;
+            this.loadError = null;
+
+            try {
+                this.transports =
+                    await this.froshToolsService.getQueueTransports();
+            } catch (error) {
+                this.transports = [];
+                this.loadError = error?.response?.data?.error ?? error.message;
+                this.createNotificationError({ message: this.loadError });
+            } finally {
+                this.isLoading = false;
+            }
         },
         async resetQueue() {
             this.isLoading = true;
-            await this.froshToolsService.resetQueue();
-            this.showResetModal = false;
+
+            try {
+                await this.froshToolsService.resetQueue();
+                this.showResetModal = false;
+                this.createNotificationSuccess({
+                    message: this.$t('frosh-tools.tabs.queue.reset.success'),
+                });
+            } catch (error) {
+                this.createNotificationError({
+                    message: error?.response?.data?.error ?? error.message,
+                });
+            }
+
             await this.createdComponent();
-            this.createNotificationSuccess({
-                message: this.$t('frosh-tools.tabs.queue.reset.success'),
-            });
-            this.isLoading = false;
         },
         openBrowseModal(transport) {
             if (!transport.browsable) {
@@ -149,7 +167,13 @@ Component.register('frosh-tools-tab-queue', {
             await Promise.all([this.fetchMessages(), this.refreshTransports()]);
         },
         async refreshTransports() {
-            this.transports = await this.froshToolsService.getQueueTransports();
+            try {
+                this.transports =
+                    await this.froshToolsService.getQueueTransports();
+            } catch {
+                // Keep showing the previous transport list on refresh errors.
+                return;
+            }
             if (this.browseTransport) {
                 this.browseTransport =
                     this.transports.find(

@@ -1,7 +1,7 @@
 <div class="ft frosh-tab-es">
     <ft-page-head
         :title="engineName"
-        subtitle="Cluster status, indices and a low-level query console."
+        :subtitle="$t('frosh-tools.tabs.elasticsearch.subtitle')"
     >
         <template
             #actions
@@ -9,7 +9,6 @@
         >
             <ft-refresh-button
                 :loading="isLoading"
-                label="Refresh"
                 @click="createdComponent"
             />
         </template>
@@ -137,20 +136,20 @@
                 </button>
                 <button
                     class="ft-btn ft-btn--danger"
-                    @click="flushAll"
+                    @click="askFlushAll"
                 >
                     {{ $t('frosh-tools.tabs.elasticsearch.action.flushAll') }}
                 </button>
                 <button
                     class="ft-btn ft-btn--danger"
-                    @click="resetElasticsearch"
+                    @click="askReset"
                 >
                     {{ $t('frosh-tools.tabs.elasticsearch.action.reset') }}
                 </button>
             </template>
             <ft-empty
                 v-if="!indices.length"
-                title="No indices found"
+                :title="$t('frosh-tools.tabs.elasticsearch.noIndices')"
             />
             <div
                 v-else
@@ -196,7 +195,7 @@
                             <td class="ft-table__actions">
                                 <button
                                     class="ft-btn ft-btn--danger"
-                                    @click="deleteIndex(item.name)"
+                                    @click="askDeleteIndex(item.name)"
                                 >
                                     <ft-icon name="trash"/>
                                     {{ $t('frosh-tools.delete') }}
@@ -238,6 +237,39 @@
             <pre class="ft-diff frosh-tab-es__output">{{ consoleOutput }}</pre>
         </ft-panel>
     </template>
+    <ft-modal
+        v-if="confirmAction"
+        :title="$t(`frosh-tools.tabs.elasticsearch.confirm.${confirmAction.key}.title`, { name: confirmAction.indexName })"
+        variant="small"
+        :close-on-backdrop="!isConfirmingAction"
+        @close="cancelConfirmAction"
+    >
+        {{ $t(`frosh-tools.tabs.elasticsearch.confirm.${confirmAction.key}.description`, { name: confirmAction.indexName }) }}
+        <template #footer>
+            <button
+                class="ft-btn"
+                :disabled="isConfirmingAction"
+                @click="cancelConfirmAction"
+            >
+                {{ $t('global.default.cancel') }}
+            </button>
+            <button
+                class="ft-btn ft-btn--danger"
+                :disabled="isConfirmingAction"
+                @click="runConfirmedAction"
+            >
+                <span
+                    v-if="isConfirmingAction"
+                    class="ft-spinner"
+                ></span>
+                <ft-icon
+                    v-else
+                    name="trash"
+                />
+                {{ $t(`frosh-tools.tabs.elasticsearch.confirm.${confirmAction.key}.confirm`) }}
+            </button>
+        </template>
+    </ft-modal>
     <ft-modal
         v-if="showOrphanedCleanupModal"
         :title="$t('frosh-tools.tabs.elasticsearch.orphanedModal.title')"

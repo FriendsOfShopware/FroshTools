@@ -7,8 +7,13 @@ const { Component } = Shopware;
 Component.register('ft-refresh-button', {
     props: {
         loading: { type: Boolean, default: false },
-        label: { type: String, default: 'Refresh' },
+        label: { type: String, default: '' },
     },
     emits: ['click'],
+    computed: {
+        labelText() {
+            return this.label || this.$t('frosh-tools.refresh');
+        },
+    },
     template,
 });

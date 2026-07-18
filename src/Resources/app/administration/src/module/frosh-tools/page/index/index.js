@@ -118,11 +118,11 @@ Component.register('frosh-tools-index', {
             }
 
             return [
-                { label: 'Overview', items: overview },
-                { label: 'Performance', items: performance },
-                { label: 'Operations', items: operations },
-                { label: 'Diagnostics', items: diagnostics },
-                { label: 'CDN', items: cdn },
+                { labelKey: 'frosh-tools.nav.overview', items: overview },
+                { labelKey: 'frosh-tools.nav.performance', items: performance },
+                { labelKey: 'frosh-tools.nav.operations', items: operations },
+                { labelKey: 'frosh-tools.nav.diagnostics', items: diagnostics },
+                { labelKey: 'frosh-tools.nav.cdn', items: cdn },
             ];
         },
     },
