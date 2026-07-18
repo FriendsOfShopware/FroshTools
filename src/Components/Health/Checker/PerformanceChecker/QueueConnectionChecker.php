@@ -40,9 +40,9 @@ class QueueConnectionChecker implements PerformanceCheckerInterface, CheckerInte
     private function determineState(string $schema): string
     {
         return match ($schema) {
-            'redis', 'rabbitmq' => 'ok',
-            'doctrine', 'sync' => 'warning',
-            default => 'info',
+            'redis', 'rabbitmq' => SettingsResult::GREEN,
+            'doctrine', 'sync' => SettingsResult::WARNING,
+            default => SettingsResult::INFO,
         };
     }
 

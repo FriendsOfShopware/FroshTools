@@ -21,7 +21,7 @@ class MailOverQueueChecker implements PerformanceCheckerInterface, CheckerInterf
     {
         $collection->add(
             SettingsResult::create(
-                !$this->mailerIsOverQueue ? 'warning' : 'ok',
+                !$this->mailerIsOverQueue ? SettingsResult::WARNING : SettingsResult::GREEN,
                 'mail',
                 'Sending mails over queue',
                 $this->mailerIsOverQueue ? 'enabled' : 'disabled',

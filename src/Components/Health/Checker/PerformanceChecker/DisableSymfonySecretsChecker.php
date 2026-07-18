@@ -22,7 +22,7 @@ class DisableSymfonySecretsChecker implements PerformanceCheckerInterface, Check
     {
         $collection->add(
             SettingsResult::create(
-                $this->vault ? 'info' : 'ok',
+                $this->vault ? SettingsResult::INFO : SettingsResult::GREEN,
                 'symfony-secrets',
                 'Disable Symfony Secrets',
                 $this->vault ? 'enabled' : 'disabled',

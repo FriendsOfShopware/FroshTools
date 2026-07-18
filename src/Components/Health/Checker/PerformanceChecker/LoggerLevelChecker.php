@@ -27,7 +27,7 @@ class LoggerLevelChecker implements PerformanceCheckerInterface, CheckerInterfac
     {
         $collection->add(
             SettingsResult::create(
-                $this->businessEventHandlerLevel->isLowerThan(Level::Warning) ? 'warning' : 'ok',
+                $this->businessEventHandlerLevel->isLowerThan(Level::Warning) ? SettingsResult::WARNING : SettingsResult::GREEN,
                 'business_logger',
                 'BusinessEventHandler logging',
                 Logger::toMonologLevel($this->businessEventHandlerLevel)->getName(),

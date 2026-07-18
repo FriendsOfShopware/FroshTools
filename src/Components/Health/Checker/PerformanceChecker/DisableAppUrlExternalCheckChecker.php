@@ -16,7 +16,7 @@ class DisableAppUrlExternalCheckChecker implements PerformanceCheckerInterface, 
         $appUrlCheckDisabled = (bool) EnvironmentHelper::getVariable('APP_URL_CHECK_DISABLED', false);
         $collection->add(
             SettingsResult::create(
-                !$appUrlCheckDisabled ? 'warning' : 'ok',
+                !$appUrlCheckDisabled ? SettingsResult::WARNING : SettingsResult::GREEN,
                 'app-url-check-disabled',
                 'App URL external check',
                 !$appUrlCheckDisabled ? 'enabled' : 'disabled',

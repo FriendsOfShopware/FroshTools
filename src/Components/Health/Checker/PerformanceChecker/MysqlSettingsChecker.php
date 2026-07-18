@@ -45,7 +45,7 @@ class MysqlSettingsChecker implements PerformanceCheckerInterface, CheckerInterf
 
         $collection->add(
             SettingsResult::create(
-                $maxLenNotOk ? 'warning' : 'ok',
+                $maxLenNotOk ? SettingsResult::ERROR : SettingsResult::GREEN,
                 'sql_group_concat_max_len',
                 'MySQL value group_concat_max_len',
                 (string) $groupConcatMaxLen,
@@ -57,13 +57,18 @@ class MysqlSettingsChecker implements PerformanceCheckerInterface, CheckerInterf
     private function checkSqlMode(HealthCollection $collection): void
     {
         $sqlMode = $this->connection->fetchOne('SELECT @@sql_mode');
-        $hasForbiddenMode = \is_string($sqlMode) && \str_contains($sqlMode, self::MYSQL_SQL_MODE_PART);
+
+        if (!\is_string($sqlMode)) {
+            return;
+        }
+
+        $hasForbiddenMode = \str_contains($sqlMode, self::MYSQL_SQL_MODE_PART);
         $collection->add(
             SettingsResult::create(
-                $hasForbiddenMode ? 'error' : 'ok',
+                $hasForbiddenMode ? SettingsResult::ERROR : SettingsResult::GREEN,
                 'sql_mode',
                 'MySQL value sql_mode',
-                (string) $sqlMode,
+                $sqlMode,
                 'No ' . self::MYSQL_SQL_MODE_PART,
             ),
         );
@@ -72,13 +77,18 @@ class MysqlSettingsChecker implements PerformanceCheckerInterface, CheckerInterf
     private function checkTimeZone(HealthCollection $collection): void
     {
         $timeZone = $this->connection->fetchOne('SELECT @@time_zone');
-        $isInvalidTimeZone = \is_string($timeZone) && !\in_array($timeZone, self::MYSQL_TIME_ZONES, true);
+
+        if (!\is_string($timeZone)) {
+            return;
+        }
+
+        $isInvalidTimeZone = !\in_array($timeZone, self::MYSQL_TIME_ZONES, true);
         $collection->add(
             SettingsResult::create(
-                $isInvalidTimeZone ? 'warning' : 'ok',
+                $isInvalidTimeZone ? SettingsResult::WARNING : SettingsResult::GREEN,
                 'sql_time_zone',
                 'MySQL value time_zone',
-                (string) $timeZone,
+                $timeZone,
                 implode(', ', self::MYSQL_TIME_ZONES),
             ),
         );
@@ -95,7 +105,7 @@ class MysqlSettingsChecker implements PerformanceCheckerInterface, CheckerInterf
 
         $collection->add(
             SettingsResult::create(
-                $setSessionVariables ? 'warning' : 'ok',
+                $setSessionVariables ? SettingsResult::WARNING : SettingsResult::GREEN,
                 'sql_set_default_session_variables',
                 'MySQL session vars are set on each connect',
                 $setSessionVariables ? 'enabled' : 'disabled',

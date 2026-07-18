@@ -21,7 +21,7 @@ class AdminWorkerChecker implements PerformanceCheckerInterface, CheckerInterfac
     {
         $collection->add(
             SettingsResult::create(
-                $this->adminWorkerEnabled ? 'warning' : 'ok',
+                $this->adminWorkerEnabled ? SettingsResult::WARNING : SettingsResult::GREEN,
                 'admin-watcher',
                 'Admin-Worker',
                 $this->adminWorkerEnabled ? 'enabled' : 'disabled',

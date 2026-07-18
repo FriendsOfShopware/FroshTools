@@ -24,7 +24,7 @@ class PhpSettingsChecker implements PerformanceCheckerInterface, CheckerInterfac
         $currentValue = $this->iniGetFailover('zend.assertions');
         $collection->add(
             SettingsResult::create(
-                $currentValue !== '-1' ? 'warning' : 'ok',
+                $currentValue !== '-1' ? SettingsResult::WARNING : SettingsResult::GREEN,
                 'zend.assertions',
                 'PHP value zend.assertions',
                 $currentValue,
@@ -39,7 +39,7 @@ class PhpSettingsChecker implements PerformanceCheckerInterface, CheckerInterfac
         $iniFailOver = !$this->isIniEnabled('opcache.enable_file_override');
         $collection->add(
             SettingsResult::create(
-                $iniFailOver ? 'warning' : 'ok',
+                $iniFailOver ? SettingsResult::WARNING : SettingsResult::GREEN,
                 'php.opcache.enable_file_override',
                 'PHP value opcache.enable_file_override',
                 $currentValue,
@@ -54,7 +54,7 @@ class PhpSettingsChecker implements PerformanceCheckerInterface, CheckerInterfac
         $bufferTooSmall = (int) $currentValue < 20;
         $collection->add(
             SettingsResult::create(
-                $bufferTooSmall ? 'warning' : 'ok',
+                $bufferTooSmall ? SettingsResult::WARNING : SettingsResult::GREEN,
                 'php.opcache.interned_strings_buffer',
                 'PHP value opcache.interned_strings_buffer',
                 $currentValue,
@@ -69,7 +69,7 @@ class PhpSettingsChecker implements PerformanceCheckerInterface, CheckerInterfac
         $iniFailOver = $this->isIniEnabled('zend.detect_unicode');
         $collection->add(
             SettingsResult::create(
-                $iniFailOver ? 'warning' : 'ok',
+                $iniFailOver ? SettingsResult::WARNING : SettingsResult::GREEN,
                 'php.zend.detect_unicode',
                 'PHP value zend.detect_unicode',
                 $currentValue,
@@ -84,7 +84,7 @@ class PhpSettingsChecker implements PerformanceCheckerInterface, CheckerInterfac
         $ttlTooLow = (int) $currentValue < 3600;
         $collection->add(
             SettingsResult::create(
-                $ttlTooLow ? 'warning' : 'ok',
+                $ttlTooLow ? SettingsResult::WARNING : SettingsResult::GREEN,
                 'php.zend.realpath_cache_ttl',
                 'PHP value realpath_cache_ttl',
                 $currentValue,

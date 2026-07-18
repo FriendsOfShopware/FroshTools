@@ -22,7 +22,7 @@ class EsChecker implements PerformanceCheckerInterface, CheckerInterface
     {
         $collection->add(
             SettingsResult::create(
-                !$this->esEnabled ? 'info' : 'ok',
+                !$this->esEnabled ? SettingsResult::INFO : SettingsResult::GREEN,
                 'elasticsearch',
                 'Elasticsearch',
                 !$this->esEnabled ? 'disabled' : 'enabled',

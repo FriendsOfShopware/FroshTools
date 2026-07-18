@@ -38,7 +38,7 @@ class FineGrainedCachingChecker implements PerformanceCheckerInterface, CheckerI
         $collection->add(
             // only info, because it only affects redis, varnish etc.
             SettingsResult::create(
-                $fineGrainedCachingEnabled ? 'info' : 'ok',
+                $fineGrainedCachingEnabled ? SettingsResult::INFO : SettingsResult::GREEN,
                 'fine-grained-caching',
                 'Fine-grained caching on Redis, Varnish etc.',
                 $fineGrainedCachingEnabled ? 'enabled' : 'disabled',

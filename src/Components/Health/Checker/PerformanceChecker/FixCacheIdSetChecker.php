@@ -32,7 +32,7 @@ class FixCacheIdSetChecker implements PerformanceCheckerInterface, CheckerInterf
 
         $collection->add(
             SettingsResult::create(
-                $cacheId === '' ? 'warning' : 'ok',
+                $cacheId === '' ? SettingsResult::WARNING : SettingsResult::GREEN,
                 'cache-id',
                 'Fixed cache id',
                 $cacheId === '' ? 'not set' : 'set',

@@ -27,7 +27,7 @@ class MessengerAutoSetupChecker implements PerformanceCheckerInterface, CheckerI
 
         $collection->add(
             SettingsResult::create(
-                $autoSetupState ? 'info' : 'ok',
+                $autoSetupState ? SettingsResult::INFO : SettingsResult::GREEN,
                 'messenger-auto-setup',
                 'Messenger auto_setup',
                 $autoSetupState ? 'enabled' : 'disabled',

@@ -72,17 +72,17 @@ class SettingsResult extends Struct
     }
 
     public static function create(
-        ?string $state,
+        string $state,
         string $id,
         string $snippet,
         string $current = '',
         string $recommended = ''
     ): self {
         return match ($state) {
-            'ok' => self::ok($id, $snippet, $current, $recommended),
-            'warning' => self::warning($id, $snippet, $current, $recommended),
-            'error' => self::error($id, $snippet, $current, $recommended),
-            'info' => self::info($id, $snippet, $current, $recommended),
+            self::GREEN => self::ok($id, $snippet, $current, $recommended),
+            self::WARNING => self::warning($id, $snippet, $current, $recommended),
+            self::ERROR => self::error($id, $snippet, $current, $recommended),
+            self::INFO => self::info($id, $snippet, $current, $recommended),
             default => throw new \InvalidArgumentException("Invalid state: {$state}"),
         };
     }

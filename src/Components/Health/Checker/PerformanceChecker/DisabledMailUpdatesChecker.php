@@ -25,7 +25,7 @@ class DisabledMailUpdatesChecker implements PerformanceCheckerInterface, Checker
 
         $collection->add(
             SettingsResult::create(
-                !$setting ? 'ok' : 'warning',
+                !$setting ? SettingsResult::GREEN : SettingsResult::WARNING,
                 'mail_variables',
                 'MailVariables updates',
                 $setting ? 'enabled' : 'disabled',

@@ -29,7 +29,7 @@ class RedisTagAwareChecker implements PerformanceCheckerInterface, CheckerInterf
 
         $collection->add(
             SettingsResult::create(
-                $notTagAware ? 'warning' : 'ok',
+                $notTagAware ? SettingsResult::WARNING : SettingsResult::GREEN,
                 'redis-tag-aware',
                 'Redis adapter should be TagAware',
                 $httpCacheType,
