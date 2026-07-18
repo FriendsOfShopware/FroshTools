@@ -17,6 +17,7 @@ Component.register('frosh-tools-tab-security', {
     data() {
         return {
             isLoading: true,
+            isExportingSbom: false,
             error: null,
             activeTab: 'overview',
             noticeDismissed: false,
@@ -133,6 +134,48 @@ Component.register('frosh-tools-tab-security', {
 
         async refresh() {
             await this.load();
+        },
+
+        async exportSbom() {
+            if (this.isExportingSbom) {
+                return;
+            }
+
+            this.isExportingSbom = true;
+            try {
+                const response =
+                    await this.froshToolsService.getSecuritySbom();
+                const blob =
+                    response?.data instanceof Blob
+                        ? response.data
+                        : new Blob([response?.data || ''], {
+                              type: 'application/vnd.cyclonedx+json',
+                          });
+
+                const url = window.URL.createObjectURL(blob);
+                const link = document.createElement('a');
+                link.href = url;
+                link.download = 'sbom.cdx.json';
+                document.body.appendChild(link);
+                link.click();
+                link.remove();
+                window.URL.revokeObjectURL(url);
+
+                this.createNotificationSuccess({
+                    message: this.$t(
+                        'frosh-tools.tabs.security.exportSbomSuccess'
+                    ),
+                });
+            } catch (e) {
+                this.createNotificationError({
+                    message:
+                        e?.response?.data?.errors?.[0]?.detail ||
+                        e?.message ||
+                        this.$t('frosh-tools.tabs.security.exportSbomFailed'),
+                });
+            } finally {
+                this.isExportingSbom = false;
+            }
         },
 
         dismissNotice() {

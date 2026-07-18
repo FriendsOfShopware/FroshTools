@@ -25,6 +25,9 @@ The current feature set consists of:
   - Execute Elasticsearch console commands
 - **Log Viewer**
   - Shows the entries of /var/log/*.log files
+- **Security Center**
+  - Dependency advisories, runtime end-of-life checks, and file integrity
+  - Export a CycloneDX 1.7 SBOM (`sbom.cdx.json`) from `composer.lock`
 - **Shopware File Checker**
   - Checks if core files have been changed
 - **State Machine Viewer**

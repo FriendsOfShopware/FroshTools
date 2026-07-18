@@ -202,6 +202,9 @@
                     "healthy": "Alles in Ordnung — keine Probleme gefunden"
                 },
                 "checkFailed": "Sicherheitsprüfung fehlgeschlagen",
+                "exportSbom": "SBOM exportieren",
+                "exportSbomSuccess": "CycloneDX-SBOM heruntergeladen.",
+                "exportSbomFailed": "SBOM konnte nicht exportiert werden.",
                 "allClear": "Keine Sicherheitsprobleme gefunden",
                 "noIssues": "Keine zu behebenden Probleme",
                 "issuesFound": "{count} Sicherheitsprobleme gefunden",

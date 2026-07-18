@@ -302,6 +302,19 @@ class FroshTools extends ApiService {
             });
     }
 
+    /**
+     * Downloads a CycloneDX 1.7 SBOM generated from the project composer.lock.
+     * Returns the raw response so callers can stream the attachment body.
+     */
+    getSecuritySbom(includeDev = false) {
+        const apiRoute = `${this.getApiBasePath()}/security/sbom`;
+        return this.httpClient.get(apiRoute, {
+            headers: this.getBasicHeaders(),
+            params: includeDev ? { includeDev: 1 } : {},
+            responseType: 'blob',
+        });
+    }
+
     getFeatureFlags() {
         const apiRoute = `${this.getApiBasePath()}/feature-flag/list`;
         return this.httpClient
