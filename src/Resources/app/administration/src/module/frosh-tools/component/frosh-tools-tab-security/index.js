@@ -143,8 +143,7 @@ Component.register('frosh-tools-tab-security', {
 
             this.isExportingSbom = true;
             try {
-                const response =
-                    await this.froshToolsService.getSecuritySbom();
+                const response = await this.froshToolsService.getSecuritySbom();
                 const blob =
                     response?.data instanceof Blob
                         ? response.data
