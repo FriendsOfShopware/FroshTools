@@ -1,0 +1,36 @@
+name: PHP
+
+on:
+  pull_request:
+    paths:
+      - '**/*.php'
+      - composer.json
+      - phpunit.xml
+      - .github/workflows/php.yml
+  push:
+    branches:
+      - main
+    paths:
+      - '**/*.php'
+      - composer.json
+      - phpunit.xml
+      - .github/workflows/php.yml
+  workflow_dispatch:
+  schedule:
+    - cron: '0 3 * * *'
+
+jobs:
+  phpunit:
+    strategy:
+      fail-fast: false
+      matrix:
+        shopware-version:
+          - '6.6.x'
+          - 'trunk'
+    uses: shopware/github-actions/.github/workflows/phpunit.yml@main
+    with:
+      extensionName: ${{ github.event.repository.name }}
+      shopwareVersion: ${{ matrix.shopware-version }}
+      uploadCoverage: true
+    secrets:
+      codecovToken: ${{ secrets.CODECOV_TOKEN }}

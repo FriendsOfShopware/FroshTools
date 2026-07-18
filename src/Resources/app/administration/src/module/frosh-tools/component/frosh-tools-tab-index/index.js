@@ -6,13 +6,17 @@ const { Component, Mixin } = Shopware;
 
 Component.register('frosh-tools-tab-index', {
     inject: ['froshToolsService'],
-    mixins: [Mixin.getByName('frosh-sortable-table')],
+    mixins: [
+        Mixin.getByName('notification'),
+        Mixin.getByName('frosh-sortable-table'),
+    ],
     template,
 
     data() {
         return {
             isLoading: true,
             showDone: false,
+            loadError: null,
             health: null,
             performanceStatus: [],
             activeInfo: null,
@@ -79,15 +83,26 @@ Component.register('frosh-tools-tab-index', {
         },
 
         async refresh() {
-            this.isLoading = true;
             await this.createdComponent();
         },
 
         async createdComponent() {
-            this.health = await this.froshToolsService.healthStatus();
-            this.performanceStatus =
-                await this.froshToolsService.performanceStatus();
-            this.isLoading = false;
+            this.isLoading = true;
+            this.loadError = null;
+
+            try {
+                [this.health, this.performanceStatus] = await Promise.all([
+                    this.froshToolsService.healthStatus(),
+                    this.froshToolsService.performanceStatus(),
+                ]);
+            } catch (error) {
+                this.health = null;
+                this.performanceStatus = null;
+                this.loadError = error?.response?.data?.error ?? error.message;
+                this.createNotificationError({ message: this.loadError });
+            } finally {
+                this.isLoading = false;
+            }
         },
     },
 });

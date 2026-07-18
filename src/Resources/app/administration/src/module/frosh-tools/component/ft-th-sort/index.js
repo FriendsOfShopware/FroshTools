@@ -26,6 +26,11 @@ Component.register('ft-th-sort', {
             if (!host || typeof host.sortDirOf !== 'function') return null;
             return host.sortDirOf(this.sortKey, this.table);
         },
+
+        ariaSort() {
+            if (!this.dir) return null;
+            return this.dir === 'ASC' ? 'ascending' : 'descending';
+        },
     },
 
     methods: {

@@ -1,9 +1,28 @@
 <div class="ft frosh-tab-sm">
     <ft-page-head
         :title="$t('frosh-tools.tabs.state-machines.title')"
-        subtitle="Visualize states, transitions and actions for any registered state machine."
+        :subtitle="$t('frosh-tools.tabs.state-machines.subtitle')"
     />
-    <ft-panel :title="$t('frosh-tools.tabs.state-machines.label')">
+    <ft-hero-state
+        v-if="loadError"
+        variant="danger"
+        icon="alert"
+        :title="$t('frosh-tools.loadError.title')"
+        :body="loadError"
+    >
+        <template #actions>
+            <ft-button
+                icon="refresh"
+                @click="createdComponent"
+            >
+                {{ $t('frosh-tools.loadError.retry') }}
+            </ft-button>
+        </template>
+    </ft-hero-state>
+    <ft-panel
+        v-else
+        :title="$t('frosh-tools.tabs.state-machines.label')"
+    >
         <template #actions>
             <div class="frosh-tab-sm__select">
                 <sw-single-select
@@ -20,8 +39,8 @@
             <ft-empty
                 v-if="!selectedStateMachine"
                 icon="flow"
-                title="No state machine selected"
-                sub="Pick one from the dropdown above to render its diagram."
+                :title="$t('frosh-tools.tabs.state-machines.noSelection')"
+                :sub="$t('frosh-tools.tabs.state-machines.noSelectionHint')"
             />
             <div
                 id="state_machine"

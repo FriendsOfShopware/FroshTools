@@ -6,6 +6,14 @@
         }
     }
 
+    &__message-trigger {
+        background: transparent;
+        border: none;
+        padding: 0;
+        font: inherit;
+        text-align: left;
+    }
+
     &__pagination {
         padding: 8px 12px;
         border-top: 1px solid var(--ft-divider);

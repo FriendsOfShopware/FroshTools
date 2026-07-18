@@ -3,9 +3,13 @@ Shopware.Service('privileges').addPrivilegeMappingEntry({
     parent: null,
     key: 'frosh_tools',
     roles: {
-        frosh_tools: {
+        viewer: {
             privileges: ['frosh_tools:read'],
             dependencies: [],
+        },
+        editor: {
+            privileges: ['frosh_tools:update'],
+            dependencies: ['frosh_tools.viewer'],
         },
     },
 });

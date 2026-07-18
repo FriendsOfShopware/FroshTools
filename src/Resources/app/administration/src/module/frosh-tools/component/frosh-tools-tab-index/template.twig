@@ -1,162 +1,179 @@
 <div class="ft frosh-tab-index">
     <ft-page-head
         :title="$t('frosh-tools.tabs.index.title')"
-        subtitle="Live health and performance checks for this Shopware instance."
+        :subtitle="$t('frosh-tools.tabs.index.subtitle')"
     >
         <template #actions>
             <ft-refresh-button
                 :loading="isLoading"
-                label="Refresh"
                 @click="refresh"
             />
         </template>
     </ft-page-head>
-    <ft-panel
-        title="System Health"
-        :count="health ? health.length : 0"
-        flush
-    >
-        <ft-empty
-            v-if="isLoading && !health"
-            loading
-        />
-        <ft-empty
-            v-else-if="!health || health.length === 0"
-            title="No health checks reported"
-        />
-        <div
-            v-else
-            class="ft-table-wrap"
-        >
-            <table class="ft-table">
-                <thead>
-                    <tr>
-                        <ft-th-sort
-                            sort-key="state"
-                            table="health"
-                            style="width: 110px;"
-                        >Status</ft-th-sort>
-                        <ft-th-sort
-                            sort-key="snippet"
-                            table="health"
-                        >{{ $t('frosh-tools.name') }}</ft-th-sort>
-                        <ft-th-sort
-                            sort-key="current"
-                            table="health"
-                        >
-                            {{ $t('frosh-tools.current') }}
-                        </ft-th-sort>
-                        <ft-th-sort
-                            sort-key="recommended"
-                            table="health"
-                        >
-                            {{ $t('frosh-tools.recommended') }}
-                        </ft-th-sort>
-                    </tr>
-                </thead>
-                <tbody>
-                    <tr
-                        v-for="(item, idx) in sortRows(health, 'health')"
-                        :key="`h-${idx}`"
-                    >
-                        <td>
-                            <ft-pill :variant="pillVariant(item.state)">{{ stateLabel(item.state) }}</ft-pill>
-                        </td>
-                        <td class="ft-table__name">
-                            {{ item.snippet }}
-                            <button
-                                v-if="hasInfo(item)"
-                                type="button"
-                                class="ft-link ft-info-trigger"
-                                @click="openInfo(item)"
-                            >
-                                {{ $t('frosh-tools.tabs.index.info') }}
-                            </button>
-                        </td>
-                        <td class="ft-mono">{{ item.current }}</td>
-                        <td class="ft-mono">{{ item.recommended }}</td>
-                    </tr>
-                </tbody>
-            </table>
-        </div>
-    </ft-panel>
-    <ft-panel
-        :title="$t('frosh-tools.tabs.index.performance')"
-        :count="filteredPerformanceStatus.length"
-        :flush="filteredPerformanceStatus.length > 0"
+    <ft-hero-state
+        v-if="loadError"
+        variant="danger"
+        icon="alert"
+        :title="$t('frosh-tools.loadError.title')"
+        :body="loadError"
     >
         <template #actions>
-            <label class="ft-show-done-toggle">
-                <input
-                    type="checkbox"
-                    v-model="showDone"
-                >
-                {{ $t('frosh-tools.showDone') }}
-            </label>
+            <ft-button
+                icon="refresh"
+                @click="refresh"
+            >
+                {{ $t('frosh-tools.loadError.retry') }}
+            </ft-button>
         </template>
-        <ft-hero-state
-            v-if="!isLoading && filteredPerformanceStatus.length === 0"
-            variant="success"
-            icon="check"
-            title="All clear"
-            :body="$t('frosh-tools.noRecommendations')"
-        />
-        <div
-            class="ft-table-wrap"
-            v-else-if="filteredPerformanceStatus.length > 0"
+    </ft-hero-state>
+    <template v-else>
+        <ft-panel
+            :title="$t('frosh-tools.tabs.index.systemHealth')"
+            :count="health ? health.length : 0"
+            flush
         >
-            <table class="ft-table">
-                <thead>
-                    <tr>
-                        <ft-th-sort
-                            sort-key="state"
-                            table="performance"
-                            style="width: 110px;"
-                        >Status</ft-th-sort>
-                        <ft-th-sort
-                            sort-key="snippet"
-                            table="performance"
-                        >{{ $t('frosh-tools.name') }}</ft-th-sort>
-                        <ft-th-sort
-                            sort-key="current"
-                            table="performance"
-                        >
-                            {{ $t('frosh-tools.current') }}
-                        </ft-th-sort>
-                        <ft-th-sort
-                            sort-key="recommended"
-                            table="performance"
-                        >
-                            {{ $t('frosh-tools.recommended') }}
-                        </ft-th-sort>
-                    </tr>
-                </thead>
-                <tbody>
-                    <tr
-                        v-for="(item, idx) in sortRows(filteredPerformanceStatus, 'performance')"
-                        :key="`p-${idx}`"
-                    >
-                        <td>
-                            <ft-pill :variant="pillVariant(item.state)">{{ stateLabel(item.state) }}</ft-pill>
-                        </td>
-                        <td class="ft-table__name">
-                            {{ item.snippet }}
-                            <button
-                                v-if="hasInfo(item)"
-                                type="button"
-                                class="ft-link ft-info-trigger"
-                                @click="openInfo(item)"
+            <ft-empty
+                v-if="isLoading && !health"
+                loading
+            />
+            <ft-empty
+                v-else-if="!health || health.length === 0"
+                :title="$t('frosh-tools.tabs.index.noHealthChecks')"
+            />
+            <div
+                v-else
+                class="ft-table-wrap"
+            >
+                <table class="ft-table">
+                    <thead>
+                        <tr>
+                            <ft-th-sort
+                                sort-key="state"
+                                table="health"
+                                style="width: 110px;"
+                            >{{ $t('frosh-tools.status') }}</ft-th-sort>
+                            <ft-th-sort
+                                sort-key="snippet"
+                                table="health"
+                            >{{ $t('frosh-tools.name') }}</ft-th-sort>
+                            <ft-th-sort
+                                sort-key="current"
+                                table="health"
                             >
-                                {{ $t('frosh-tools.tabs.index.info') }}
-                            </button>
-                        </td>
-                        <td class="ft-mono">{{ item.current }}</td>
-                        <td class="ft-mono">{{ item.recommended }}</td>
-                    </tr>
-                </tbody>
-            </table>
-        </div>
-    </ft-panel>
+                                {{ $t('frosh-tools.current') }}
+                            </ft-th-sort>
+                            <ft-th-sort
+                                sort-key="recommended"
+                                table="health"
+                            >
+                                {{ $t('frosh-tools.recommended') }}
+                            </ft-th-sort>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr
+                            v-for="(item, idx) in sortRows(health, 'health')"
+                            :key="`h-${idx}`"
+                        >
+                            <td>
+                                <ft-pill :variant="pillVariant(item.state)">{{ stateLabel(item.state) }}</ft-pill>
+                            </td>
+                            <td class="ft-table__name">
+                                {{ item.snippet }}
+                                <button
+                                    v-if="hasInfo(item)"
+                                    type="button"
+                                    class="ft-link ft-info-trigger"
+                                    @click="openInfo(item)"
+                                >
+                                    {{ $t('frosh-tools.tabs.index.info') }}
+                                </button>
+                            </td>
+                            <td class="ft-mono">{{ item.current }}</td>
+                            <td class="ft-mono">{{ item.recommended }}</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </ft-panel>
+        <ft-panel
+            :title="$t('frosh-tools.tabs.index.performance')"
+            :count="filteredPerformanceStatus.length"
+            :flush="filteredPerformanceStatus.length > 0"
+        >
+            <template #actions>
+                <label class="ft-show-done-toggle">
+                    <input
+                        type="checkbox"
+                        v-model="showDone"
+                    >
+                    {{ $t('frosh-tools.showDone') }}
+                </label>
+            </template>
+            <ft-hero-state
+                v-if="!isLoading && filteredPerformanceStatus.length === 0"
+                variant="success"
+                icon="check"
+                :title="$t('frosh-tools.tabs.index.allClear')"
+                :body="$t('frosh-tools.noRecommendations')"
+            />
+            <div
+                class="ft-table-wrap"
+                v-else-if="filteredPerformanceStatus.length > 0"
+            >
+                <table class="ft-table">
+                    <thead>
+                        <tr>
+                            <ft-th-sort
+                                sort-key="state"
+                                table="performance"
+                                style="width: 110px;"
+                            >{{ $t('frosh-tools.status') }}</ft-th-sort>
+                            <ft-th-sort
+                                sort-key="snippet"
+                                table="performance"
+                            >{{ $t('frosh-tools.name') }}</ft-th-sort>
+                            <ft-th-sort
+                                sort-key="current"
+                                table="performance"
+                            >
+                                {{ $t('frosh-tools.current') }}
+                            </ft-th-sort>
+                            <ft-th-sort
+                                sort-key="recommended"
+                                table="performance"
+                            >
+                                {{ $t('frosh-tools.recommended') }}
+                            </ft-th-sort>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr
+                            v-for="(item, idx) in sortRows(filteredPerformanceStatus, 'performance')"
+                            :key="`p-${idx}`"
+                        >
+                            <td>
+                                <ft-pill :variant="pillVariant(item.state)">{{ stateLabel(item.state) }}</ft-pill>
+                            </td>
+                            <td class="ft-table__name">
+                                {{ item.snippet }}
+                                <button
+                                    v-if="hasInfo(item)"
+                                    type="button"
+                                    class="ft-link ft-info-trigger"
+                                    @click="openInfo(item)"
+                                >
+                                    {{ $t('frosh-tools.tabs.index.info') }}
+                                </button>
+                            </td>
+                            <td class="ft-mono">{{ item.current }}</td>
+                            <td class="ft-mono">{{ item.recommended }}</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </ft-panel>
+    </template>
     <ft-modal
         v-if="activeInfo"
         :title="activeInfo.snippet"

@@ -72,6 +72,17 @@
                 :is-loading="isLoading"
                 position-identifier="frosh-tools-webhook-list"
             >
+                <template #toolbar>
+                    <sw-simple-search-field
+                        class="frosh-tools-webhook-list__inline-search"
+                        :value="term"
+                        size="small"
+                        variant="form"
+                        :placeholder="$t('frosh-tools-webhook.general.placeholderSearchBar')"
+                        @search-term-change="onSearch"
+                    />
+                </template>
+
                 <template #grid>
                     <sw-entity-listing
                         detail-route="frosh.tools.webhook.detail"

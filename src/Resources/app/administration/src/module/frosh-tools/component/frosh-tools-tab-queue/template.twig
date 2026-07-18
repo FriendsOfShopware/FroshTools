@@ -1,39 +1,53 @@
 <div class="ft frosh-tab-queue">
     <ft-page-head
         :title="$t('frosh-tools.tabs.queue.title')"
-        subtitle="Pending messages waiting to be processed."
+        :subtitle="$t('frosh-tools.tabs.queue.subtitle')"
     >
         <template #actions>
             <ft-refresh-button
                 :loading="isLoading"
-                label="Refresh"
                 @click="refresh"
             />
-            <button
-                class="ft-btn ft-btn--danger"
+            <ft-button
+                v-if="acl.can('frosh_tools:update')"
+                variant="danger"
+                icon="trash"
                 @click="showResetModal = true"
             >
-                <ft-icon name="trash"/>
-                <span>
-                    {{ $t('frosh-tools.resetQueue') }}
-                </span>
-            </button>
+                {{ $t('frosh-tools.resetQueue') }}
+            </ft-button>
         </template>
     </ft-page-head>
+    <ft-hero-state
+        v-if="loadError"
+        variant="danger"
+        icon="alert"
+        :title="$t('frosh-tools.loadError.title')"
+        :body="loadError"
+    >
+        <template #actions>
+            <ft-button
+                icon="refresh"
+                @click="refresh"
+            >
+                {{ $t('frosh-tools.loadError.retry') }}
+            </ft-button>
+        </template>
+    </ft-hero-state>
     <ft-panel
-        title="Active queues"
-        :count="queueEntries.length"
+        v-else
+        :title="$t('frosh-tools.tabs.queue.transports.title')"
+        :count="visibleTransports.length"
         flush
     >
         <ft-empty
-            v-if="isLoading && !queueEntries.length"
+            v-if="isLoading && !transports.length"
             loading
         />
         <ft-empty
-            v-else-if="!queueEntries.length"
-            icon="check"
-            title="No pending messages"
-            sub="All workers are caught up."
+            v-else-if="searchTerm && !visibleTransports.length"
+            icon="search"
+            :title="$t('frosh-tools.search.noResults', { term: searchTerm })"
         />
         <div
             v-else
@@ -42,21 +56,88 @@
             <table class="ft-table">
                 <thead>
                     <tr>
-                        <ft-th-sort sort-key="name">{{ $t('frosh-tools.name') }}</ft-th-sort>
+                        <ft-th-sort
+                            sort-key="name"
+                            table="transports"
+                        >{{ $t('frosh-tools.name') }}</ft-th-sort>
+                        <ft-th-sort
+                            sort-key="type"
+                            table="transports"
+                        >
+                            {{ $t('frosh-tools.tabs.queue.transports.type') }}
+                        </ft-th-sort>
                         <ft-th-sort
                             sort-key="size"
+                            table="transports"
                             class="ft-table__num"
                         >{{ $t('frosh-tools.size') }}</ft-th-sort>
+                        <ft-th-sort
+                            sort-key="oldestMessageAgeSeconds"
+                            table="transports"
+                            class="ft-table__num"
+                        >
+                            {{ $t('frosh-tools.tabs.queue.transports.oldest') }}
+                        </ft-th-sort>
+                        <th>
+                            {{ $t('frosh-tools.tabs.queue.transports.worker') }}
+                        </th>
+                        <th></th>
                     </tr>
                 </thead>
                 <tbody>
                     <tr
-                        v-for="(item, idx) in sortRows(queueEntries)"
-                        :key="idx"
+                        v-for="transport in sortRows(visibleTransports, 'transports')"
+                        :key="transport.name"
+                        :class="{ 'frosh-tab-queue__transport--browsable': transport.browsable }"
+                        @click="openBrowseModal(transport)"
                     >
-                        <td class="ft-table__name">{{ item.name }}</td>
+                        <td class="ft-table__name">{{ transport.name }}</td>
+                        <td>
+                            <ft-pill variant="info">{{ transport.type }}</ft-pill>
+                        </td>
                         <td class="ft-table__num">
-                            {{ Number(item.size).toLocaleString() }}
+                            {{ transport.size === null ? '–' : Number(transport.size).toLocaleString() }}
+                        </td>
+                        <td class="ft-table__num">
+                            {{ formatAge(transport.oldestMessageAgeSeconds) }}
+                        </td>
+                        <td>
+                            <ft-pill
+                                v-if="workerState(transport) === 'active'"
+                                variant="success"
+                            >
+                                {{ $t('frosh-tools.tabs.queue.transports.workerActive') }}
+                            </ft-pill>
+                            <ft-pill
+                                v-else-if="workerState(transport) === 'stale'"
+                                variant="warning"
+                            >
+                                {{ $t('frosh-tools.tabs.queue.transports.workerStale', { age: formatAge(transport.workerLastSeenSeconds) }) }}
+                            </ft-pill>
+                            <ft-pill
+                                v-else
+                                variant="muted"
+                            >
+                                {{ $t('frosh-tools.tabs.queue.transports.workerUnknown') }}
+                            </ft-pill>
+                        </td>
+                        <td class="frosh-tab-queue__transport-action">
+                            <button
+                                v-if="transport.browsable"
+                                type="button"
+                                class="frosh-tab-queue__browse-btn"
+                                @click.stop="openBrowseModal(transport)"
+                            >
+                                {{ $t('frosh-tools.tabs.queue.transports.browse') }}
+                            </button>
+                            <ft-button
+                                v-if="transport.purgeable && acl.can('frosh_tools:update')"
+                                variant="danger"
+                                icon="trash"
+                                class="frosh-tab-queue__purge-btn"
+                                :title="$t('frosh-tools.tabs.queue.transports.purge')"
+                                @click.stop="askPurgeTransport(transport)"
+                            />
                         </td>
                     </tr>
                 </tbody>
@@ -71,18 +152,192 @@
     >
         {{ $t('frosh-tools.tabs.queue.reset.modal.description') }}
         <template #footer>
-            <button
-                class="ft-btn"
-                @click="showResetModal = false"
-            >
+            <ft-button @click="showResetModal = false">
                 {{ $t('global.default.cancel') }}
-            </button>
-            <button
-                class="ft-btn ft-btn--primary"
+            </ft-button>
+            <ft-button
+                variant="primary"
                 @click="resetQueue"
             >
                 {{ $t('frosh-tools.tabs.queue.reset.modal.reset') }}
-            </button>
+            </ft-button>
+        </template>
+    </ft-modal>
+    <ft-modal
+        v-if="browseTransport"
+        variant="large"
+        @close="closeBrowseModal"
+    >
+        <template #header>
+            <h2 class="ft-modal__title">
+                {{ $t('frosh-tools.tabs.queue.browse.title', { name: browseTransport.name }) }}
+                <ft-pill variant="info">{{ browseTransport.type }}</ft-pill>
+            </h2>
+        </template>
+        <div class="frosh-tab-queue__browse-controls">
+            <div class="frosh-tab-queue__browse-fetch">
+                <label for="frosh-tab-queue-browse-limit">
+                    {{ $t('frosh-tools.tabs.queue.browse.limit') }}
+                </label>
+                <input
+                    id="frosh-tab-queue-browse-limit"
+                    v-model.number="browseLimit"
+                    type="number"
+                    min="1"
+                    max="100"
+                    class="frosh-tab-queue__browse-limit"
+                    @keydown.enter="fetchMessages"
+                />
+                <ft-button
+                    variant="primary"
+                    :disabled="browseLoading"
+                    @click="fetchMessages"
+                >
+                    {{ $t('frosh-tools.tabs.queue.browse.fetch') }}
+                </ft-button>
+            </div>
+            <span
+                v-if="browseTransport.requeuesOnBrowse"
+                class="frosh-tab-queue__browse-hint frosh-tab-queue__browse-hint--warning"
+                role="note"
+            >
+                <ft-icon name="alert"/>
+                <span>
+                    {{ $t('frosh-tools.tabs.queue.browse.hintRequeue') }}
+                </span>
+            </span>
+            <span
+                v-else
+                class="frosh-tab-queue__browse-hint"
+            >
+                {{ $t('frosh-tools.tabs.queue.browse.hint') }}
+            </span>
+        </div>
+        <ft-empty
+            v-if="browseLoading"
+            loading
+        />
+        <div
+            v-else-if="browseError"
+            class="frosh-tab-queue__browse-error"
+        >
+            {{ browseError }}
+        </div>
+        <ft-empty
+            v-else-if="browseMessages && !browseMessages.length"
+            icon="check"
+            :title="$t('frosh-tools.tabs.queue.browse.empty')"
+        />
+        <div
+            v-else-if="browseMessages"
+            class="frosh-tab-queue__messages"
+        >
+            <div
+                v-for="(message, index) in browseMessages"
+                :key="index"
+                class="frosh-tab-queue__message"
+            >
+                <button
+                    class="frosh-tab-queue__message-head"
+                    @click="toggleMessage(index)"
+                >
+                    <span class="frosh-tab-queue__message-index">{{ index + 1 }}</span>
+                    <span
+                        class="frosh-tab-queue__message-class"
+                        :title="message.messageClass"
+                    >
+                        {{ shortClassName(message.messageClass) }}
+                    </span>
+                    <ft-pill
+                        v-if="message.retryCount > 0"
+                        variant="warning"
+                    >
+                        {{ $t('frosh-tools.tabs.queue.browse.retries', { count: message.retryCount }) }}
+                    </ft-pill>
+                    <ft-pill
+                        v-if="message.errorMessage"
+                        variant="danger"
+                    >
+                        {{ $t('frosh-tools.tabs.queue.browse.failed') }}
+                    </ft-pill>
+                    <span
+                        v-if="message.id"
+                        class="frosh-tab-queue__message-id"
+                    >{{ message.id }}</span>
+                    <ft-icon
+                        :name="expandedMessages[index] ? 'chevron-up' : 'chevron-down'"
+                    />
+                </button>
+                <div
+                    v-if="expandedMessages[index]"
+                    class="frosh-tab-queue__message-body"
+                >
+                    <div
+                        v-if="message.errorMessage"
+                        class="frosh-tab-queue__message-error"
+                    >
+                        {{ message.errorMessage }}
+                    </div>
+                    <pre class="ft-diff">{{ formatBody(message.body) }}</pre>
+                    <div
+                        v-if="message.stamps && message.stamps.length"
+                        class="frosh-tab-queue__message-stamps"
+                    >
+                        <ft-pill
+                            v-for="stamp in message.stamps"
+                            :key="stamp"
+                            variant="muted"
+                        >{{ stamp }}</ft-pill>
+                    </div>
+                    <div
+                        v-if="message.id && acl.can('frosh_tools:update') && (browseTransport.retryable || browseTransport.removable)"
+                        class="frosh-tab-queue__message-actions"
+                    >
+                        <ft-button
+                            v-if="browseTransport.retryable && message.originalTransport"
+                            variant="primary"
+                            icon="play"
+                            :disabled="messageActionsBusy"
+                            @click="retryMessage(message)"
+                        >
+                            {{ $t('frosh-tools.tabs.queue.browse.retry', { transport: message.originalTransport }) }}
+                        </ft-button>
+                        <ft-button
+                            v-if="browseTransport.removable"
+                            variant="danger"
+                            icon="trash"
+                            :disabled="messageActionsBusy"
+                            @click="deleteMessage(message)"
+                        >
+                            {{ $t('frosh-tools.tabs.queue.browse.delete') }}
+                        </ft-button>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <template #footer>
+            <ft-button @click="closeBrowseModal">
+                {{ $t('global.default.close') }}
+            </ft-button>
+        </template>
+    </ft-modal>
+    <ft-modal
+        v-if="purgeTransportCandidate"
+        :title="$t('frosh-tools.tabs.queue.transports.purgeModal.title', { name: purgeTransportCandidate.name })"
+        variant="small"
+        @close="purgeTransportCandidate = null"
+    >
+        {{ $t('frosh-tools.tabs.queue.transports.purgeModal.description', { name: purgeTransportCandidate.name }) }}
+        <template #footer>
+            <ft-button @click="purgeTransportCandidate = null">
+                {{ $t('global.default.cancel') }}
+            </ft-button>
+            <ft-button
+                variant="danger"
+                @click="purgeTransport"
+            >
+                {{ $t('frosh-tools.tabs.queue.transports.purge') }}
+            </ft-button>
         </template>
     </ft-modal>
 </div>

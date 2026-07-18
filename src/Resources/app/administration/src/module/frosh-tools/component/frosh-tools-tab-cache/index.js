@@ -7,7 +7,12 @@ const { Criteria } = Shopware.Data;
 Component.register('frosh-tools-tab-cache', {
     template,
 
-    inject: ['froshToolsService', 'repositoryFactory', 'themeService'],
+    inject: {
+        froshToolsService: { from: 'froshToolsService' },
+        repositoryFactory: { from: 'repositoryFactory' },
+        themeService: { from: 'themeService' },
+        froshToolsSearch: { default: null },
+    },
     mixins: [
         Mixin.getByName('notification'),
         Mixin.getByName('frosh-sortable-table'),
@@ -17,6 +22,7 @@ Component.register('frosh-tools-tab-cache', {
         return {
             cacheInfo: null,
             isLoading: true,
+            loadError: null,
             numberFormater: null,
         };
     },
@@ -64,6 +70,17 @@ Component.register('frosh-tools-tab-cache', {
             return this.cacheInfo;
         },
 
+        searchTerm() {
+            return this.froshToolsSearch?.searchTerm ?? '';
+        },
+
+        visibleCacheFolders() {
+            return this.filterRows(this.cacheFolders, this.searchTerm, [
+                'name',
+                'type',
+            ]);
+        },
+
         salesChannelRepository() {
             return this.repositoryFactory.create('sales_channel');
         },
@@ -72,8 +89,17 @@ Component.register('frosh-tools-tab-cache', {
     methods: {
         async createdComponent() {
             this.isLoading = true;
-            this.cacheInfo = await this.froshToolsService.getCacheInfo();
-            this.isLoading = false;
+            this.loadError = null;
+
+            try {
+                this.cacheInfo = await this.froshToolsService.getCacheInfo();
+            } catch (error) {
+                this.cacheInfo = null;
+                this.loadError = error?.response?.data?.error ?? error.message;
+                this.createNotificationError({ message: this.loadError });
+            } finally {
+                this.isLoading = false;
+            }
         },
 
         formatSize(bytes) {
@@ -84,7 +110,20 @@ Component.register('frosh-tools-tab-cache', {
 
         async clearCache(item) {
             this.isLoading = true;
-            await this.froshToolsService.clearCache(item.name);
+
+            try {
+                await this.froshToolsService.clearCache(item.name);
+                this.createNotificationSuccess({
+                    message: this.$t('frosh-tools.cacheCleared', {
+                        name: item.name,
+                    }),
+                });
+            } catch (error) {
+                this.createNotificationError({
+                    message: error?.response?.data?.error ?? error.message,
+                });
+            }
+
             await this.createdComponent();
         },
 
@@ -93,34 +132,48 @@ Component.register('frosh-tools-tab-cache', {
             criteria.addAssociation('themes');
             this.isLoading = true;
 
-            let salesChannels = await this.salesChannelRepository.search(
-                criteria,
-                Shopware.Context.api
-            );
+            try {
+                let salesChannels = await this.salesChannelRepository.search(
+                    criteria,
+                    Shopware.Context.api
+                );
 
-            for (let salesChannel of salesChannels) {
-                const theme = salesChannel.extensions.themes.first();
+                for (let salesChannel of salesChannels) {
+                    const theme = salesChannel.extensions.themes.first();
 
-                if (theme) {
-                    await this.themeService.assignTheme(
-                        theme.id,
-                        salesChannel.id
-                    );
-                    this.createNotificationSuccess({
-                        message: `${salesChannel.translated.name}: ${this.$t('frosh-tools.themeCompiled')}`,
-                    });
+                    if (theme) {
+                        await this.themeService.assignTheme(
+                            theme.id,
+                            salesChannel.id
+                        );
+                        this.createNotificationSuccess({
+                            message: `${salesChannel.translated.name}: ${this.$t('frosh-tools.themeCompiled')}`,
+                        });
+                    }
                 }
+            } catch (error) {
+                this.createNotificationError({
+                    message: error?.response?.data?.error ?? error.message,
+                });
+            } finally {
+                this.isLoading = false;
             }
-
-            this.isLoading = false;
         },
 
         async clearOPcache() {
             this.isLoading = true;
-            await this.froshToolsService.clearOPcache();
-            this.createNotificationSuccess({
-                message: this.$t('frosh-tools.clearedOpcache'),
-            });
+
+            try {
+                await this.froshToolsService.clearOPcache();
+                this.createNotificationSuccess({
+                    message: this.$t('frosh-tools.clearedOpcache'),
+                });
+            } catch (error) {
+                this.createNotificationError({
+                    message: error?.response?.data?.error ?? error.message,
+                });
+            }
+
             await this.createdComponent();
         },
     },

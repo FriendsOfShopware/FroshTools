@@ -1,6 +1,15 @@
-<div class="ft-empty">
+<div
+    class="ft-empty"
+    :role="loading ? 'status' : null"
+>
     <template v-if="loading">
-        <span class="ft-spinner"></span>
+        <span
+            class="ft-spinner"
+            aria-hidden="true"
+        ></span>
+        <span class="ft-sr-only">
+            {{ $t('frosh-tools.loading') }}
+        </span>
     </template>
 
     <template v-else>

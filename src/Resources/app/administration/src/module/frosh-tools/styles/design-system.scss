@@ -433,6 +433,10 @@ body.dark .ft {
         font-variant-numeric: tabular-nums;
         font-family: var(--ft-mono);
         text-align: right;
+
+        .ft-table__sort-btn {
+            justify-content: flex-end;
+        }
     }
 
     &__name {
@@ -453,7 +457,6 @@ body.dark .ft {
     }
 
     &__sortable {
-        cursor: pointer;
         user-select: none;
 
         &:hover {
@@ -464,13 +467,49 @@ body.dark .ft {
         &.is-active {
             color: var(--ft-text);
         }
+    }
+
+    &__sort-btn {
+        display: flex;
+        align-items: center;
+        justify-content: flex-start;
+        gap: 4px;
+        width: 100%;
+        padding: 12px 16px;
+        background: transparent;
+        border: none;
+        border-radius: 0;
+        font-family: inherit;
+        font-size: inherit;
+        font-weight: inherit;
+        font-style: inherit;
+        text-transform: inherit;
+        letter-spacing: inherit;
+        color: inherit;
+        cursor: pointer;
+        text-align: left;
+
+        @media (max-width: 540px) {
+            padding: 10px 10px;
+        }
+
+        &:focus-visible {
+            outline: 2px solid var(--ft-accent);
+            outline-offset: -2px;
+        }
 
         .ft-icon {
             display: inline-flex;
-            margin-left: 4px;
-            vertical-align: middle;
+            flex-shrink: 0;
         }
     }
+}
+
+// Let the sort button fill the whole header cell so the pointer/keyboard
+// target spans the full column header. Must come after .ft-table so the
+// equal-specificity padding override wins.
+th.ft-table__sortable {
+    padding: 0;
 }
 
 .ft-table-wrap {
@@ -565,6 +604,19 @@ body.dark .ft {
     }
 }
 
+// Visually hidden, but announced by screen readers.
+.ft-sr-only {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    padding: 0;
+    margin: -1px;
+    overflow: hidden;
+    clip-path: inset(50%);
+    white-space: nowrap;
+    border: 0;
+}
+
 .ft-spinner {
     width: 18px;
     height: 18px;
@@ -582,7 +634,8 @@ body.dark .ft {
         content: '';
         position: absolute;
         inset: 0;
-        background: rgba(255, 255, 255, 0.55);
+        // Derived from the surface token so the dim layer also works in dark mode.
+        background: color-mix(in srgb, var(--ft-surface) 55%, transparent);
         backdrop-filter: blur(1px);
         pointer-events: none;
     }
