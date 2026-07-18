@@ -22,6 +22,7 @@ class CycloneDxSbomGenerator
     private const TOOL_GROUP = 'frosh';
 
     private ?SpdxLicenses $spdxLicenses = null;
+
     private bool $spdxInitialized = false;
 
     public function __construct(
