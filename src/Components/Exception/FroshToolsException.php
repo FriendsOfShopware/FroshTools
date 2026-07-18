@@ -27,4 +27,23 @@ class FroshToolsException extends HttpException
             ['output' => $errorOutput],
         );
     }
+
+    public static function composerLockMissing(): self
+    {
+        return new self(
+            Response::HTTP_NOT_FOUND,
+            'FROSH_TOOLS__COMPOSER_LOCK_MISSING',
+            'composer.lock was not found or is not readable in the project root',
+        );
+    }
+
+    public static function composerLockInvalid(string $reason): self
+    {
+        return new self(
+            Response::HTTP_UNPROCESSABLE_ENTITY,
+            'FROSH_TOOLS__COMPOSER_LOCK_INVALID',
+            'composer.lock could not be parsed: {{ reason }}',
+            ['reason' => $reason],
+        );
+    }
 }

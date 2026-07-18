@@ -17,6 +17,7 @@ Component.register('frosh-tools-tab-security', {
     data() {
         return {
             isLoading: true,
+            isExportingSbom: false,
             error: null,
             activeTab: 'overview',
             noticeDismissed: false,
@@ -133,6 +134,67 @@ Component.register('frosh-tools-tab-security', {
 
         async refresh() {
             await this.load();
+        },
+
+        async exportSbom() {
+            if (this.isExportingSbom) {
+                return;
+            }
+
+            this.isExportingSbom = true;
+            try {
+                const response = await this.froshToolsService.getSecuritySbom();
+                const blob =
+                    response?.data instanceof Blob
+                        ? response.data
+                        : new Blob([response?.data || ''], {
+                              type: 'application/vnd.cyclonedx+json',
+                          });
+
+                const url = window.URL.createObjectURL(blob);
+                const link = document.createElement('a');
+                link.href = url;
+                link.download = 'sbom.cdx.json';
+                document.body.appendChild(link);
+                link.click();
+                link.remove();
+                window.URL.revokeObjectURL(url);
+
+                this.createNotificationSuccess({
+                    message: this.$t(
+                        'frosh-tools.tabs.security.exportSbomSuccess'
+                    ),
+                });
+            } catch (e) {
+                this.createNotificationError({
+                    message: await this.sbomExportErrorMessage(e),
+                });
+            } finally {
+                this.isExportingSbom = false;
+            }
+        },
+
+        /**
+         * Blob responses (responseType: 'blob') wrap JSON error bodies, so the
+         * usual e.response.data.errors path is not available until we decode.
+         */
+        async sbomExportErrorMessage(error) {
+            const fallback = this.$t(
+                'frosh-tools.tabs.security.exportSbomFailed'
+            );
+            const data = error?.response?.data;
+
+            if (data instanceof Blob) {
+                try {
+                    const text = await data.text();
+                    const json = JSON.parse(text);
+                    return json?.errors?.[0]?.detail || text || fallback;
+                } catch {
+                    return error?.message || fallback;
+                }
+            }
+
+            return data?.errors?.[0]?.detail || error?.message || fallback;
         },
 
         dismissNotice() {

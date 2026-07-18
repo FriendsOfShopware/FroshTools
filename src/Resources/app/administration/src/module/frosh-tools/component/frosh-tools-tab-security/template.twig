@@ -4,6 +4,15 @@
         :subtitle="$t('frosh-tools.tabs.security.subtitle')"
     >
         <template #actions>
+            <ft-button
+                variant="ghost"
+                icon="download"
+                :disabled="isExportingSbom || isLoading"
+                :title="$t('frosh-tools.tabs.security.exportSbom')"
+                @click="exportSbom"
+            >
+                {{ $t('frosh-tools.tabs.security.exportSbom') }}
+            </ft-button>
             <ft-refresh-button
                 :loading="isLoading"
                 @click="refresh"

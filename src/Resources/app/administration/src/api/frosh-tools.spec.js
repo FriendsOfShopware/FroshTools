@@ -43,4 +43,28 @@ describe('FroshTools queue API', () => {
             expect.any(Object)
         );
     });
+
+    it('requests the security SBOM as a blob attachment', async () => {
+        await service.getSecuritySbom();
+        await service.getSecuritySbom(true);
+
+        expect(service.httpClient.get).toHaveBeenNthCalledWith(
+            1,
+            '/_action/frosh-tools/security/sbom',
+            {
+                headers: {},
+                params: {},
+                responseType: 'blob',
+            }
+        );
+        expect(service.httpClient.get).toHaveBeenNthCalledWith(
+            2,
+            '/_action/frosh-tools/security/sbom',
+            {
+                headers: {},
+                params: { includeDev: 1 },
+                responseType: 'blob',
+            }
+        );
+    });
 });
