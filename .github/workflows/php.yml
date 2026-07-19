@@ -38,6 +38,13 @@ jobs:
           extensionName: ${{ github.event.repository.name }}
           shopwareVersion: ${{ matrix.shopware-version }}
           mysqlVersion: ${{ matrix.mysql-version }}
+          extraRepositories: |-
+            {
+              "local-plugins": {
+                "type": "path",
+                "url": "custom/plugins/*"
+              }
+            }
 
       - name: Run PHPUnit
         uses: shopware/github-actions/phpunit@main
@@ -72,6 +79,13 @@ jobs:
         uses: shopware/github-actions/setup-extension@main
         with:
           extensionName: ${{ github.event.repository.name }}
+          extraRepositories: |-
+            {
+              "local-plugins": {
+                "type": "path",
+                "url": "custom/plugins/*"
+              }
+            }
 
       - name: Run PHPUnit
         uses: shopware/github-actions/phpunit@main
