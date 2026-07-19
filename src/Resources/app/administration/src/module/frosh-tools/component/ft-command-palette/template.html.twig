@@ -1,0 +1,159 @@
+<teleport to="body">
+    <div
+        class="ft ft-command-palette"
+        @mousedown.self="close"
+    >
+        <div
+            ref="dialog"
+            class="ft-command-palette__dialog"
+            role="dialog"
+            aria-modal="true"
+            :aria-labelledby="titleId"
+            tabindex="-1"
+        >
+            <header class="ft-command-palette__head">
+                <ft-icon
+                    name="search"
+                    :size="16"
+                />
+                <input
+                    ref="input"
+                    class="ft-command-palette__input"
+                    type="search"
+                    autocomplete="off"
+                    spellcheck="false"
+                    :id="titleId"
+                    :placeholder="$t('frosh-tools.commandPalette.placeholder')"
+                    :aria-label="$t('frosh-tools.commandPalette.placeholder')"
+                    :aria-controls="listboxId"
+                    :aria-activedescendant="activeOptionId"
+                    aria-autocomplete="list"
+                    role="combobox"
+                    aria-expanded="true"
+                    :value="query"
+                    :disabled="isRunning"
+                    @input="onInput"
+                    @keydown="onInputKeydown"
+                />
+                <kbd class="ft-command-palette__kbd">esc</kbd>
+            </header>
+
+            <div
+                v-if="pendingConfirm"
+                class="ft-command-palette__confirm"
+            >
+                <div class="ft-command-palette__confirm-title">
+                    {{ $t('frosh-tools.commandPalette.confirmTitle') }}
+                </div>
+                <p class="ft-command-palette__confirm-text">
+                    {{ pendingConfirmLabel }}
+                </p>
+                <div class="ft-command-palette__confirm-actions">
+                    <button
+                        type="button"
+                        class="ft-btn"
+                        :disabled="isRunning"
+                        @click="cancelConfirm"
+                    >
+                        {{ $t('frosh-tools.commandPalette.cancel') }}
+                    </button>
+                    <button
+                        type="button"
+                        class="ft-btn ft-btn--danger"
+                        :disabled="isRunning"
+                        @click="confirmAndRun"
+                    >
+                        {{ $t('frosh-tools.commandPalette.confirm') }}
+                    </button>
+                </div>
+            </div>
+
+            <div
+                v-else
+                class="ft-command-palette__body"
+            >
+                <div
+                    v-if="visibleCommands.length === 0"
+                    class="ft-command-palette__empty"
+                >
+                    {{ $t('frosh-tools.commandPalette.noResults', { term: query }) }}
+                </div>
+
+                <div
+                    v-else
+                    :id="listboxId"
+                    class="ft-command-palette__results"
+                    role="listbox"
+                    :aria-label="$t('frosh-tools.commandPalette.placeholder')"
+                >
+                    <div
+                        v-for="section in groupedCommands"
+                        :key="section.group"
+                        class="ft-command-palette__group"
+                    >
+                        <div class="ft-command-palette__group-label">
+                            {{ section.groupLabel }}
+                        </div>
+                        <div
+                            v-for="command in section.items"
+                            :id="optionId(command.id)"
+                            :key="command.id"
+                            class="ft-command-palette__item"
+                            :class="{ 'is-active': command.id === activeId }"
+                            role="option"
+                            :aria-selected="command.id === activeId ? 'true' : 'false'"
+                            @mouseenter="setActive(command.id)"
+                            @mousedown.prevent="runCommand(command)"
+                        >
+                            <span class="ft-command-palette__item-icon">
+                                <ft-icon
+                                    :name="command.icon"
+                                    :size="14"
+                                />
+                            </span>
+                            <span class="ft-command-palette__item-text">
+                                <span class="ft-command-palette__item-label">
+                                    {{ command.label }}
+                                </span>
+                                <span
+                                    v-if="command.description"
+                                    class="ft-command-palette__item-description"
+                                >
+                                    {{ command.description }}
+                                </span>
+                            </span>
+                            <span
+                                v-if="command.type === 'action'"
+                                class="ft-command-palette__item-badge"
+                            >
+                                {{ $t('frosh-tools.commandPalette.actionBadge') }}
+                            </span>
+                            <kbd
+                                v-else
+                                class="ft-command-palette__kbd ft-command-palette__kbd--muted"
+                            >
+                                ↵
+                            </kbd>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <footer class="ft-command-palette__foot">
+                <span>
+                    <kbd class="ft-command-palette__kbd">↑</kbd>
+                    <kbd class="ft-command-palette__kbd">↓</kbd>
+                    {{ $t('frosh-tools.commandPalette.hintNavigate') }}
+                </span>
+                <span>
+                    <kbd class="ft-command-palette__kbd">↵</kbd>
+                    {{ $t('frosh-tools.commandPalette.hintRun') }}
+                </span>
+                <span>
+                    <kbd class="ft-command-palette__kbd">esc</kbd>
+                    {{ $t('frosh-tools.commandPalette.hintClose') }}
+                </span>
+            </footer>
+        </div>
+    </div>
+</teleport>

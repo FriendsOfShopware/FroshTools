@@ -1,23 +1,11 @@
-import { mount } from '@vue/test-utils';
-import './index';
+import { mountFrosh } from 'frosh-test/mount';
 
 async function createWrapper({ props = {}, slots = {} } = {}) {
-    const component = await Shopware.Component.build('ft-modal');
-
-    return mount(component, {
+    return mountFrosh('ft-modal', {
         props,
         slots: {
             default: '<p>Body content</p>',
             ...slots,
-        },
-        global: {
-            stubs: {
-                'ft-icon': true,
-                teleport: true,
-            },
-            mocks: {
-                $t: (key) => key,
-            },
         },
         attachTo: document.body,
     });
@@ -40,6 +28,11 @@ describe('ft-modal', () => {
         const titleId = dialog.attributes('aria-labelledby');
         expect(titleId).toBeTruthy();
         expect(wrapper.find(`#${titleId}`).text()).toBe('Confirm action');
+
+        // The close button is labelled with the real core snippet.
+        expect(
+            wrapper.find('.ft-modal__close').attributes('aria-label')
+        ).toBe('Close');
     });
 
     it('emits close when Escape is pressed', async () => {

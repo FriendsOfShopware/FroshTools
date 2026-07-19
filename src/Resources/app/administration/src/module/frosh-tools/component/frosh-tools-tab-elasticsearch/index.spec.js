@@ -1,6 +1,4 @@
-import { mount } from '@vue/test-utils';
-import '../../../../mixin/sortable-table';
-import '../ft-modal';
+import { mountFrosh } from 'frosh-test/mount';
 import './index';
 
 function createService() {
@@ -18,41 +16,40 @@ function createService() {
     };
 }
 
+/**
+ * Mounts the tab with the real ft-* component tree (including the real
+ * ft-modal for the confirmation dialog) and real translations. Only the
+ * elasticsearch API service (the HTTP boundary) is faked; the Shopware
+ * core code editor stays stubbed.
+ */
 async function createWrapper(service) {
-    const [component, ftModal] = await Promise.all([
-        Shopware.Component.build('frosh-tools-tab-elasticsearch'),
-        Shopware.Component.build('ft-modal'),
-    ]);
-
-    return mount(component, {
-        global: {
-            provide: { froshElasticSearch: service },
-            components: { 'ft-modal': ftModal },
-            stubs: [
-                'ft-page-head',
-                'ft-panel',
-                'ft-empty',
-                'ft-hero-state',
-                'ft-pill',
-                'ft-icon',
-                'ft-th-sort',
-                'ft-refresh-button',
-                'sw-code-editor',
-                'teleport',
-            ],
-            mocks: {
-                $t: (key) => key,
-                $tc: (key) => key,
-            },
-            directives: {
-                tooltip: {},
-            },
-        },
+    return mountFrosh('frosh-tools-tab-elasticsearch', {
+        provide: { froshElasticSearch: service },
+        stubs: ['sw-code-editor'],
         attachTo: document.body,
     });
 }
 
+/**
+ * Success notifications are growl-only and never persisted; errors are
+ * persisted. Read both store slices to see what the user was shown.
+ */
+function notificationsOfVariant(variant) {
+    const store = Shopware.Store.get('notification');
+
+    return [
+        ...Object.values(store.growlNotifications),
+        ...Object.values(store.notifications),
+    ].filter((notification) => notification.variant === variant);
+}
+
 describe('frosh-tools-tab-elasticsearch destructive actions', () => {
+    beforeEach(() => {
+        const store = Shopware.Store.get('notification');
+        store.growlNotifications = {};
+        store.notifications = {};
+    });
+
     afterEach(() => {
         document.body.innerHTML = '';
     });
@@ -71,14 +68,10 @@ describe('frosh-tools-tab-elasticsearch destructive actions', () => {
         });
         expect(service.deleteIndex).not.toHaveBeenCalled();
 
-        // The confirm modal renders the matching snippet for the action.
+        // The confirm modal renders the real snippets for the action.
         const modalText = wrapper.find('[role="dialog"]').text();
-        expect(modalText).toContain(
-            'frosh-tools.tabs.elasticsearch.confirm.deleteIndex.title'
-        );
-        expect(modalText).toContain(
-            'frosh-tools.tabs.elasticsearch.confirm.deleteIndex.confirm'
-        );
+        expect(modalText).toContain('Delete index "shopware-product"?');
+        expect(modalText).toContain('Delete index');
     });
 
     it('does not run the action when the confirmation is cancelled', async () => {
@@ -98,17 +91,12 @@ describe('frosh-tools-tab-elasticsearch destructive actions', () => {
         const wrapper = await createWrapper(service);
         await flushPromises();
 
-        const notifySuccess = jest.spyOn(
-            wrapper.vm,
-            'createNotificationSuccess'
-        );
-
         wrapper.vm.askFlushAll();
         await wrapper.vm.runConfirmedAction();
         await flushPromises();
 
         expect(service.flushAll).toHaveBeenCalledTimes(1);
-        expect(notifySuccess).toHaveBeenCalled();
+        expect(notificationsOfVariant('success')).toHaveLength(1);
         expect(wrapper.vm.confirmAction).toBeNull();
         // Refreshed status + indices after the action.
         expect(service.status).toHaveBeenCalledTimes(2);
@@ -121,13 +109,13 @@ describe('frosh-tools-tab-elasticsearch destructive actions', () => {
         const wrapper = await createWrapper(service);
         await flushPromises();
 
-        const notifyError = jest.spyOn(wrapper.vm, 'createNotificationError');
-
         wrapper.vm.askReset();
         await wrapper.vm.runConfirmedAction();
 
         expect(service.reset).toHaveBeenCalledTimes(1);
-        expect(notifyError).toHaveBeenCalledWith({ message: 'boom' });
+        expect(
+            notificationsOfVariant('error').map((n) => n.message)
+        ).toContain('boom');
         expect(wrapper.vm.confirmAction).not.toBeNull();
         expect(wrapper.vm.isConfirmingAction).toBe(false);
     });

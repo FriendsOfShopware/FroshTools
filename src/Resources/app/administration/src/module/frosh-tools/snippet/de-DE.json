@@ -478,6 +478,47 @@
         "sidebar": {
             "developerConsole": "Entwicklerkonsole"
         },
+        "commandPalette": {
+            "trigger": "Befehle suchen\u2026",
+            "placeholder": "Befehl oder Seite eingeben\u2026",
+            "noResults": "Keine Befehle f\u00fcr \"{term}\"",
+            "actionBadge": "Ausf\u00fchren",
+            "confirmTitle": "Aktion best\u00e4tigen",
+            "confirm": "Best\u00e4tigen",
+            "cancel": "Abbrechen",
+            "hintNavigate": "navigieren",
+            "hintRun": "ausf\u00fchren",
+            "hintClose": "schlie\u00dfen",
+            "groups": {
+                "recent": "Zuletzt",
+                "navigate": "Gehe zu",
+                "cache": "Cache",
+                "queue": "Warteschlange",
+                "tasks": "Geplante Aufgaben"
+            },
+            "descriptions": {
+                "shopmon": "Diesen Shop mit dem Shopmon-Monitoring verbinden.",
+                "fastly": "Fastly-CDN-Cache f\u00fcr diesen Shop leeren."
+            },
+            "actions": {
+                "clearAllCaches": "Alle Cache-Pools leeren",
+                "clearAllCachesDescription": "Jeden gemeldeten Cache-Pool der Reihe nach leeren.",
+                "clearAllCachesConfirm": "Dadurch werden alle vom Cache-Manager gemeldeten Pools geleert. Fortfahren?",
+                "clearAllCachesSuccess": "{count} Cache-Pool(s) geleert",
+                "clearHttpCache": "HTTP-Cache leeren",
+                "clearHttpCacheDescription": "HTTP-/Reverse-Proxy-Cache leeren, falls vorhanden.",
+                "clearObjectCache": "Objekt-/App-Cache leeren",
+                "clearObjectCacheDescription": "Anwendungs-Objektcache leeren, falls vorhanden.",
+                "clearOpcacheDescription": "PHP-OPcache f\u00fcr diesen Runtime zur\u00fccksetzen.",
+                "compileThemeDescription": "Storefront-Themes f\u00fcr alle Verkaufskan\u00e4le neu kompilieren.",
+                "compileThemeNone": "Kein Verkaufskanal mit zugewiesenem Theme gefunden.",
+                "resetQueueDescription": "Alle ausstehenden Messenger-Nachrichten aus allen Transporten entfernen.",
+                "resetQueueConfirm": "Dadurch werden alle ausstehenden Warteschlangennachrichten endg\u00fcltig gel\u00f6scht. Fortfahren?",
+                "registerTasks": "Geplante Aufgaben registrieren",
+                "registerTasksDescription": "Geplante Aufgaben aus Core und aktiven Plugins neu registrieren.",
+                "cachePoolNotFound": "Kein Cache-Pool gefunden f\u00fcr: {names}"
+            }
+        },
         "nav": {
             "overview": "Übersicht",
             "performance": "Performance",

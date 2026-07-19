@@ -1,5 +1,4 @@
-import { mount } from '@vue/test-utils';
-import '../../../../mixin/sortable-table';
+import { mountFrosh } from 'frosh-test/mount';
 import './index';
 
 const TASKS = [
@@ -21,44 +20,27 @@ const TASKS = [
     },
 ];
 
-const STUBS = {
-    // The panel must render its default slot — the table lives inside it.
-    'ft-panel': { template: '<section><slot /></section>' },
-    'ft-page-head': true,
-    'ft-empty': true,
-    'ft-hero-state': true,
-    'ft-th-sort': { template: '<th><slot /></th>' },
-    'ft-pill': true,
-    'ft-icon': true,
-    'ft-modal': true,
-    'ft-button': true,
-    'ft-refresh-button': true,
-    'sw-number-field': true,
-    'sw-datepicker': true,
-};
-
+/**
+ * Mounts the tab with the real ft-* component tree (panel, table headers,
+ * empty states, modals) and real translations. Only the system boundaries
+ * are faked: the repository (HTTP) and the shared admin search. Shopware
+ * core form fields inside the edit modal stay stubbed.
+ */
 async function createWrapper({ searchTerm = '' } = {}) {
     const scheduledRepository = {
         search: jest.fn().mockResolvedValue(TASKS),
         save: jest.fn().mockResolvedValue({}),
     };
 
-    const component = await Shopware.Component.build(
-        'frosh-tools-tab-scheduled'
-    );
-
-    return mount(component, {
-        global: {
-            provide: {
-                repositoryFactory: { create: () => scheduledRepository },
-                froshToolsService: {},
-                froshToolsSearch: { searchTerm },
-            },
-            stubs: STUBS,
-            mocks: {
-                $t: (key) => key,
-                $tc: (key) => key,
-            },
+    return mountFrosh('frosh-tools-tab-scheduled', {
+        provide: {
+            repositoryFactory: { create: () => scheduledRepository },
+            froshToolsService: {},
+            froshToolsSearch: { searchTerm },
+        },
+        stubs: {
+            'sw-number-field': true,
+            'sw-datepicker': true,
         },
     });
 }
@@ -90,6 +72,8 @@ describe('frosh-tools-tab-scheduled search', () => {
 
         expect(wrapper.vm.visibleItems).toHaveLength(0);
         expect(wrapper.findAll('tbody tr')).toHaveLength(0);
-        expect(wrapper.find('ft-empty-stub').exists()).toBe(true);
+
+        const emptyState = wrapper.find('.ft-empty');
+        expect(emptyState.exists()).toBe(true);
     });
 });

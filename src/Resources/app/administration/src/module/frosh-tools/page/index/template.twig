@@ -24,6 +24,22 @@
                         </div>
                     </div>
                 </div>
+
+                <button
+                    type="button"
+                    class="ft-sidebar__command"
+                    @click="openCommandPalette"
+                >
+                    <ft-icon
+                        name="search"
+                        :size="14"
+                    />
+                    <span class="ft-sidebar__command-label">
+                        {{ $t('frosh-tools.commandPalette.trigger') }}
+                    </span>
+                    <kbd class="ft-sidebar__command-kbd">{{ commandPaletteShortcut }}</kbd>
+                </button>
+
                 <template
                     v-for="group in navGroups"
                     :key="group.labelKey"
@@ -49,6 +65,14 @@
             <main class="ft-main">
                 <router-view></router-view>
             </main>
+
+            <ft-command-palette
+                v-if="commandPaletteOpen"
+                :elasticsearch-available="elasticsearchAvailable"
+                :logs-available="logsAvailable"
+                :fastly-available="fastlyAvailable"
+                @close="closeCommandPalette"
+            />
         </div>
     </template>
 </sw-page>
