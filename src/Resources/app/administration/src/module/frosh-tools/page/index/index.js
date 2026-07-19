@@ -60,6 +60,7 @@ Component.register('frosh-tools-index', {
     data() {
         return {
             searchTerm: '',
+            commandPaletteOpen: false,
         };
     },
 
@@ -79,9 +80,11 @@ Component.register('frosh-tools-index', {
 
     created() {
         this.adminMenuStore('collapseSidebar');
+        document.addEventListener('keydown', this.onGlobalKeydown, true);
     },
 
     unmounted() {
+        document.removeEventListener('keydown', this.onGlobalKeydown, true);
         this.adminMenuStore('expandSidebar');
     },
 
@@ -176,11 +179,47 @@ Component.register('frosh-tools-index', {
                 { labelKey: 'frosh-tools.nav.cdn', items: cdn },
             ];
         },
+
+        commandPaletteShortcut() {
+            const platform =
+                typeof navigator !== 'undefined'
+                    ? navigator.platform || navigator.userAgent || ''
+                    : '';
+
+            if (/Mac|iPhone|iPad|iPod/i.test(platform)) {
+                return '⌘K';
+            }
+
+            return 'Ctrl K';
+        },
     },
 
     methods: {
         onSearch(term) {
             this.searchTerm = term;
+        },
+
+        openCommandPalette() {
+            this.commandPaletteOpen = true;
+        },
+
+        closeCommandPalette() {
+            this.commandPaletteOpen = false;
+        },
+
+        onGlobalKeydown(event) {
+            // Ignore plain key presses inside editable fields except when the
+            // palette itself is open (it handles Escape/arrows on its own).
+            const isModifier = event.metaKey || event.ctrlKey;
+            const key = String(event.key || '').toLowerCase();
+
+            if (isModifier && key === 'k') {
+                // Only capture while FroshTools is the active page so we do not
+                // fight the rest of the admin when the user navigates away.
+                event.preventDefault();
+                event.stopPropagation();
+                this.commandPaletteOpen = !this.commandPaletteOpen;
+            }
         },
 
         adminMenuStore(action) {

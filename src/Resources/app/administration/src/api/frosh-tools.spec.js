@@ -1,17 +1,25 @@
-import FroshTools from './frosh-tools';
+import FroshToolsService from './frosh-tools';
 
-describe('FroshTools queue API', () => {
+/**
+ * The service is constructed the same way the DI container does it, with the
+ * HTTP client as the only mock — that is the system boundary. Base path and
+ * auth headers are the real implementation.
+ */
+describe('FroshTools API service', () => {
+    let httpClient;
     let service;
 
     beforeEach(() => {
-        service = Object.create(FroshTools.prototype);
-        service.httpClient = {
+        httpClient = {
             get: jest.fn().mockResolvedValue({ data: {} }),
             post: jest.fn().mockResolvedValue({ data: {} }),
             delete: jest.fn().mockResolvedValue({ data: {} }),
         };
-        service.getApiBasePath = () => '/_action/frosh-tools';
-        service.getBasicHeaders = () => ({});
+
+        service = new FroshToolsService(httpClient, {
+            getToken: () => 'test-token',
+            isLoggedIn: () => true,
+        });
     });
 
     it('encodes transport names in every queue route', async () => {
@@ -23,24 +31,40 @@ describe('FroshTools queue API', () => {
         await service.deleteQueueMessage(name, 'message/id');
         await service.purgeQueueTransport(name);
 
-        expect(service.httpClient.get).toHaveBeenCalledWith(
-            `/_action/frosh-tools/queue/transport/${encodedName}/messages`,
-            expect.any(Object)
+        expect(httpClient.get).toHaveBeenCalledWith(
+            `_action/frosh-tools/queue/transport/${encodedName}/messages`,
+            expect.objectContaining({
+                headers: expect.objectContaining({
+                    Authorization: 'Bearer test-token',
+                }),
+            })
         );
-        expect(service.httpClient.post).toHaveBeenCalledWith(
-            `/_action/frosh-tools/queue/transport/${encodedName}/messages/message%2Fid/retry`,
+        expect(httpClient.post).toHaveBeenCalledWith(
+            `_action/frosh-tools/queue/transport/${encodedName}/messages/message%2Fid/retry`,
             {},
-            expect.any(Object)
+            expect.objectContaining({
+                headers: expect.objectContaining({
+                    Authorization: 'Bearer test-token',
+                }),
+            })
         );
-        expect(service.httpClient.delete).toHaveBeenNthCalledWith(
+        expect(httpClient.delete).toHaveBeenNthCalledWith(
             1,
-            `/_action/frosh-tools/queue/transport/${encodedName}/messages/message%2Fid`,
-            expect.any(Object)
+            `_action/frosh-tools/queue/transport/${encodedName}/messages/message%2Fid`,
+            expect.objectContaining({
+                headers: expect.objectContaining({
+                    Authorization: 'Bearer test-token',
+                }),
+            })
         );
-        expect(service.httpClient.delete).toHaveBeenNthCalledWith(
+        expect(httpClient.delete).toHaveBeenNthCalledWith(
             2,
-            `/_action/frosh-tools/queue/transport/${encodedName}`,
-            expect.any(Object)
+            `_action/frosh-tools/queue/transport/${encodedName}`,
+            expect.objectContaining({
+                headers: expect.objectContaining({
+                    Authorization: 'Bearer test-token',
+                }),
+            })
         );
     });
 
@@ -48,23 +72,21 @@ describe('FroshTools queue API', () => {
         await service.getSecuritySbom();
         await service.getSecuritySbom(true);
 
-        expect(service.httpClient.get).toHaveBeenNthCalledWith(
+        expect(httpClient.get).toHaveBeenNthCalledWith(
             1,
-            '/_action/frosh-tools/security/sbom',
-            {
-                headers: {},
+            '_action/frosh-tools/security/sbom',
+            expect.objectContaining({
                 params: {},
                 responseType: 'blob',
-            }
+            })
         );
-        expect(service.httpClient.get).toHaveBeenNthCalledWith(
+        expect(httpClient.get).toHaveBeenNthCalledWith(
             2,
-            '/_action/frosh-tools/security/sbom',
-            {
-                headers: {},
+            '_action/frosh-tools/security/sbom',
+            expect.objectContaining({
                 params: { includeDev: 1 },
                 responseType: 'blob',
-            }
+            })
         );
     });
 });

@@ -478,6 +478,47 @@
         "sidebar": {
             "developerConsole": "Developer Console"
         },
+        "commandPalette": {
+            "trigger": "Search commands\u2026",
+            "placeholder": "Type a command or page\u2026",
+            "noResults": "No commands match \"{term}\"",
+            "actionBadge": "Run",
+            "confirmTitle": "Confirm action",
+            "confirm": "Confirm",
+            "cancel": "Cancel",
+            "hintNavigate": "to navigate",
+            "hintRun": "to run",
+            "hintClose": "to close",
+            "groups": {
+                "recent": "Recent",
+                "navigate": "Go to",
+                "cache": "Cache",
+                "queue": "Queue",
+                "tasks": "Scheduled tasks"
+            },
+            "descriptions": {
+                "shopmon": "Connect this shop to the Shopmon monitoring dashboard.",
+                "fastly": "Purge Fastly CDN cache for this shop."
+            },
+            "actions": {
+                "clearAllCaches": "Clear all cache pools",
+                "clearAllCachesDescription": "Iterate every reported cache pool and clear it.",
+                "clearAllCachesConfirm": "This clears every cache pool reported by the cache manager. Continue?",
+                "clearAllCachesSuccess": "Cleared {count} cache pool(s)",
+                "clearHttpCache": "Clear HTTP cache",
+                "clearHttpCacheDescription": "Clear the HTTP / reverse-proxy cache pool if present.",
+                "clearObjectCache": "Clear object / app cache",
+                "clearObjectCacheDescription": "Clear the application object cache pool if present.",
+                "clearOpcacheDescription": "Reset PHP OPcache for this runtime.",
+                "compileThemeDescription": "Recompile storefront themes for all sales channels.",
+                "compileThemeNone": "No sales channel with an assigned theme was found.",
+                "resetQueueDescription": "Remove all pending messenger messages from every transport.",
+                "resetQueueConfirm": "This permanently deletes every pending queue message. Continue?",
+                "registerTasks": "Register scheduled tasks",
+                "registerTasksDescription": "Re-register scheduled tasks from all active plugins and core.",
+                "cachePoolNotFound": "No cache pool matching: {names}"
+            }
+        },
         "nav": {
             "overview": "Overview",
             "performance": "Performance",

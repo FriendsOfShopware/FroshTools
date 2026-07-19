@@ -1,6 +1,7 @@
 import './component/ft-icon';
 import './component/ft-button';
 import './component/ft-modal';
+import './component/ft-command-palette';
 import './component/ft-page-head';
 import './component/ft-panel';
 import './component/ft-pill';

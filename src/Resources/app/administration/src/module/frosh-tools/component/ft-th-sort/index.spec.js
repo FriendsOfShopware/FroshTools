@@ -1,4 +1,5 @@
 import { mount } from '@vue/test-utils';
+import { froshComponents, froshI18nMocks } from 'frosh-test/mount';
 import '../../../../mixin/sortable-table';
 import './index';
 
@@ -8,7 +9,10 @@ import './index';
  * real combination instead of mocking the host.
  */
 async function createWrapper({ sortKey = 'name', table = 'default' } = {}) {
-    const thSort = await Shopware.Component.build('ft-th-sort');
+    const [thSort, realComponents] = await Promise.all([
+        Shopware.Component.build('ft-th-sort'),
+        froshComponents('ft-icon'),
+    ]);
 
     const host = {
         template: `
@@ -39,7 +43,8 @@ async function createWrapper({ sortKey = 'name', table = 'default' } = {}) {
 
     return mount(host, {
         global: {
-            stubs: { 'ft-icon': true },
+            components: realComponents,
+            mocks: froshI18nMocks(),
         },
     });
 }
@@ -87,12 +92,16 @@ describe('ft-th-sort', () => {
     });
 
     it('works without a sort host', async () => {
-        const thSort = await Shopware.Component.build('ft-th-sort');
+        const [thSort, realComponents] = await Promise.all([
+            Shopware.Component.build('ft-th-sort'),
+            froshComponents('ft-icon'),
+        ]);
         const wrapper = mount(thSort, {
             props: { sortKey: 'name' },
             slots: { default: 'Name' },
             global: {
-                stubs: { 'ft-icon': true },
+                components: realComponents,
+                mocks: froshI18nMocks(),
             },
         });
 

@@ -34,6 +34,9 @@ The current feature set consists of:
   - basic view of order, transaction and delivery states
 - **Override system config by config files**
   - Overwrite any system config value with static or environment values
+- **Command Palette**
+  - Open with `Ctrl/⌘ + K` (or the sidebar search control)
+  - Jump to any Tools tab and run common actions (clear caches, compile themes, reset queue, register tasks)
 
 ## Installation
 
