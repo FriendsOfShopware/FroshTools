@@ -19,15 +19,14 @@ class MailOverQueueChecker implements PerformanceCheckerInterface, CheckerInterf
 
     public function collect(HealthCollection $collection): void
     {
-        if (!$this->mailerIsOverQueue) {
-            $collection->add(
-                SettingsResult::warning(
-                    'mail',
-                    'Sending mails over queue',
-                    'disabled',
-                    'enabled',
-                ),
-            );
-        }
+        $collection->add(
+            SettingsResult::create(
+                !$this->mailerIsOverQueue ? SettingsResult::WARNING : SettingsResult::GREEN,
+                'mail',
+                'Sending mails over queue',
+                $this->mailerIsOverQueue ? 'enabled' : 'disabled',
+                'enabled',
+            ),
+        );
     }
 }

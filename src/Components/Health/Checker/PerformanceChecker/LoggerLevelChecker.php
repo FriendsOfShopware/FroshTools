@@ -25,13 +25,14 @@ class LoggerLevelChecker implements PerformanceCheckerInterface, CheckerInterfac
 
     public function collect(HealthCollection $collection): void
     {
-        if ($this->businessEventHandlerLevel->isLowerThan(Level::Warning)) {
-            $collection->add(SettingsResult::warning(
+        $collection->add(
+            SettingsResult::create(
+                $this->businessEventHandlerLevel->isLowerThan(Level::Warning) ? SettingsResult::WARNING : SettingsResult::GREEN,
                 'business_logger',
                 'BusinessEventHandler logging',
                 Logger::toMonologLevel($this->businessEventHandlerLevel)->getName(),
                 'min WARNING',
-            ));
-        }
+            ),
+        );
     }
 }

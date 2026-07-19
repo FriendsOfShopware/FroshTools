@@ -21,17 +21,19 @@ class IncrementStorageChecker implements PerformanceCheckerInterface, CheckerInt
 
     public function collect(HealthCollection $collection): void
     {
-        $recommended = 'array or redis';
+        $usesMysql = $this->userActivity === 'mysql' || $this->queueActivity === 'mysql';
+        $current = $this->userActivity === $this->queueActivity
+            ? $this->userActivity
+            : $this->userActivity . ', ' . $this->queueActivity;
 
-        if ($this->userActivity === 'mysql' || $this->queueActivity === 'mysql') {
-            $collection->add(
-                SettingsResult::warning(
-                    'increment-storage',
-                    'Increment storage',
-                    'mysql',
-                    $recommended,
-                ),
-            );
-        }
+        $collection->add(
+            SettingsResult::create(
+                $usesMysql ? SettingsResult::WARNING : SettingsResult::GREEN,
+                'increment-storage',
+                'Increment storage',
+                $current,
+                'array or redis',
+            ),
+        );
     }
 }

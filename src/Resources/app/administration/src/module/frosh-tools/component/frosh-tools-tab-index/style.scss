@@ -11,6 +11,19 @@
     font-weight: 500;
 }
 
+.ft-show-done-toggle {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    font-size: 13px;
+    color: var(--ft-text-muted);
+    cursor: pointer;
+
+    input {
+        margin: 0;
+    }
+}
+
 .ft-info-modal {
     display: flex;
     flex-direction: column;

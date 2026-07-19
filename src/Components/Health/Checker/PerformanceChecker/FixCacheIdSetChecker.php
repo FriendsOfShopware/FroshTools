@@ -30,15 +30,14 @@ class FixCacheIdSetChecker implements PerformanceCheckerInterface, CheckerInterf
 
         $cacheId = (string) EnvironmentHelper::getVariable('SHOPWARE_CACHE_ID', '');
 
-        if ($cacheId === '') {
-            $collection->add(
-                SettingsResult::warning(
-                    'cache-id',
-                    'Fixed cache id',
-                    'not set',
-                    'set',
-                ),
-            );
-        }
+        $collection->add(
+            SettingsResult::create(
+                $cacheId === '' ? SettingsResult::WARNING : SettingsResult::GREEN,
+                'cache-id',
+                'Fixed cache id',
+                $cacheId === '' ? 'not set' : 'set',
+                'set',
+            ),
+        );
     }
 }

@@ -20,15 +20,14 @@ class EsChecker implements PerformanceCheckerInterface, CheckerInterface
 
     public function collect(HealthCollection $collection): void
     {
-        if (!$this->esEnabled) {
-            $collection->add(
-                SettingsResult::info(
-                    'elasticsearch',
-                    'Elasticsearch',
-                    'disabled',
-                    'enabled',
-                ),
-            );
-        }
+        $collection->add(
+            SettingsResult::create(
+                !$this->esEnabled ? SettingsResult::INFO : SettingsResult::GREEN,
+                'elasticsearch',
+                'Elasticsearch',
+                !$this->esEnabled ? 'disabled' : 'enabled',
+                'enabled',
+            )
+        );
     }
 }
