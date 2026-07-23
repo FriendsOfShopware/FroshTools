@@ -45,7 +45,7 @@ class RedisTagAwareChecker implements PerformanceCheckerInterface, CheckerInterf
             SettingsResult::warning(
                 'redis-tag-aware',
                 'HTTP cache (cache.http) Redis adapter should be TagAware',
-                $httpCacheType !== '' ? $httpCacheType : CacheAdapter::TYPE_REDIS,
+                $httpCacheType,
                 CacheAdapter::TYPE_REDIS_TAG_AWARE,
             ),
         );
