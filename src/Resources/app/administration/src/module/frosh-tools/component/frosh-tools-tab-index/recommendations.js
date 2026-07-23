@@ -244,8 +244,9 @@ export default {
     },
     'redis-tag-aware': {
         description:
-            'The HTTP cache uses the plain Redis adapter, which stores cache tags inefficiently. The TagAware Redis adapter is optimised for tag-based invalidation as used by Shopware.',
+            'This check looks at the HTTP cache pool (cache.http) only — not cache.object or other pools. The plain Redis adapter stores cache tags inefficiently; RedisTagAware is optimised for Shopware’s tag-based HTTP cache invalidation. Using plain Redis for cache.object on purpose is fine and will not trigger this warning.',
         solution:
-            'Switch the cache adapter to the TagAware Redis adapter ("redis++").',
+            'Configure the HTTP cache pool (or the default app adapter that cache.http inherits) to use the TagAware Redis adapter.',
+        code: '# config/packages/cache.yaml\nframework:\n    cache:\n        app: cache.adapter.redis_tag_aware\n        default_redis_provider: \'redis://localhost\'\n        # optional: keep object cache on plain Redis if you prefer\n        pools:\n            cache.object:\n                adapter: cache.adapter.redis',
     },
 };
