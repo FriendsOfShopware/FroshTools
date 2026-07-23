@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Frosh\Tools\Components\Health\Checker\HealthChecker;
 
+use Doctrine\DBAL\ArrayParameterType;
 use Doctrine\DBAL\Connection;
 use Frosh\Tools\Components\Health\Checker\CheckerInterface;
 use Frosh\Tools\Components\Health\HealthCollection;
@@ -67,27 +68,28 @@ class QueueChecker implements HealthCheckerInterface, CheckerInterface
      */
     private function fetchOldestPendingMessage(bool $excludeFailed, array $queues): ?array
     {
-        $sql = 'SELECT available_at, queue_name FROM messenger_messages WHERE available_at <= UTC_TIMESTAMP()';
-        $params = [];
+        $query = $this->connection->createQueryBuilder()
+            ->select('available_at', 'queue_name')
+            ->from('messenger_messages')
+            ->where('available_at <= UTC_TIMESTAMP()')
+            ->orderBy('available_at', 'ASC')
+            ->setMaxResults(1);
 
         if ($excludeFailed) {
             // Symfony failure transport names typically contain "failed" (e.g. async_failed).
-            $sql .= ' AND queue_name NOT LIKE ?';
-            $params[] = '%failed%';
+            $query
+                ->andWhere('queue_name NOT LIKE :failedPattern')
+                ->setParameter('failedPattern', '%failed%');
         }
 
         if ($queues !== []) {
-            $placeholders = \implode(', ', \array_fill(0, \count($queues), '?'));
-            $sql .= \sprintf(' AND queue_name IN (%s)', $placeholders);
-            foreach ($queues as $queue) {
-                $params[] = $queue;
-            }
+            $query
+                ->andWhere('queue_name IN (:queues)')
+                ->setParameter('queues', $queues, ArrayParameterType::STRING);
         }
 
-        $sql .= ' ORDER BY available_at ASC LIMIT 1';
-
         /** @var array{available_at: string, queue_name: string}|false $row */
-        $row = $this->connection->fetchAssociative($sql, $params);
+        $row = $query->fetchAssociative();
 
         return \is_array($row) ? $row : null;
     }
