@@ -21,10 +21,10 @@ export default {
     },
     queue: {
         description:
-            'Messages have been waiting in the message queue longer than the configured grace time. That almost always means no worker is consuming the queue, so asynchronous tasks (mails, indexing, …) pile up.',
+            'Messages have been waiting in a monitored messenger queue longer than the configured grace time. That almost always means no worker is consuming that queue, so asynchronous tasks (mails, indexing, …) pile up. Failed queues (names containing "failed") are ignored by default because they are usually drained manually.',
         solution:
-            'Make sure a CLI worker is running and supervised (e.g. via systemd or Supervisor) so the queue is drained continuously.',
-        code: 'bin/console messenger:consume async low_priority failed',
+            'Make sure a CLI worker is running and supervised (e.g. via systemd or Supervisor) so the queue is drained continuously. Adjust monitored queues and per-queue grace times under Settings → Extensions → Frosh Tools if needed.',
+        code: 'bin/console messenger:consume async low_priority\n# Extension config examples:\n# monitorQueues = async, low_priority\n# monitorQueueGraceTimes = async:15, low_priority:60\n# monitorExcludeFailedQueues = true',
     },
     'mysql-timezone': {
         description:
