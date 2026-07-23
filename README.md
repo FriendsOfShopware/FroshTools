@@ -206,7 +206,10 @@ frosh_tools:
 Plugin system config (Admin → Extensions → Frosh Tools):
 
 - **Monitor mail address** — recipient for `frosh:monitor`
-- **Queue grace time** (minutes) — when a queue is considered stuck
+- **Default queue grace time** (minutes) — when a pending message is considered stuck
+- **Exclude failed queues** — ignore transports whose name contains `failed` (default on)
+- **Queues to monitor** — optional allowlist, e.g. `async, low_priority`
+- **Per-queue grace times** — optional overrides, e.g. `async:15, low_priority:60`
 - **Task grace time** (minutes) — when a scheduled task is considered stuck
 
 JSON Schema for IDE validation: [`frosh-tools-schema.json`](frosh-tools-schema.json).
