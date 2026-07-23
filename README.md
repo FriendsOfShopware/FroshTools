@@ -29,73 +29,69 @@ Compatible with **Shopware 6.6 and 6.7**.
 
 ## Screenshots
 
-Captured on Shopware 6.7 Administration (current UI).
+Full HD (1920×1080) captures from Shopware **6.7** Administration. Images are WebP for a smaller repo footprint.
+
+Only screens that show real product value are included — empty states (disabled Elasticsearch, unconfigured Shopmon marketing CTA) are omitted on purpose.
 
 ### System Status
 
 Live health checks (PHP, MySQL, queue, tasks, …) plus performance recommendations with documentation-oriented guidance.
 
-![System Status](docs/images/system-status.png)
+![System Status](docs/images/system-status.webp)
 
 ### Security Center
 
 Dependency advisories, runtime end-of-life checks, configuration risks, file integrity — and **Export SBOM** (CycloneDX 1.7 from `composer.lock`).
 
-![Security Center](docs/images/security-center.png)
+![Security Center](docs/images/security-center.webp)
 
 ### Cache Manager
 
 List cache pools, clear individual pools, compile the theme, and clear PHP OPcache.
 
-![Cache Manager](docs/images/cache.png)
+![Cache Manager](docs/images/cache.webp)
 
 ### Statistics
 
 OPcache hit rate/memory, cache backend metrics, and database server statistics.
 
-![Statistics](docs/images/statistics.png)
+![Statistics](docs/images/statistics.webp)
 
 ### Queue Manager
 
 Transport overview (Doctrine, Redis, AMQP, …), message sizes, worker heartbeat, browse/retry/delete messages, purge or reset.
 
-![Queue Manager](docs/images/queue.png)
+![Queue Manager](docs/images/queue.webp)
 
 ### Scheduled Tasks
 
 Inspect all tasks, edit interval & next run, run a single task, register missing tasks.
 
-![Scheduled Tasks](docs/images/scheduled-tasks.png)
+![Scheduled Tasks](docs/images/scheduled-tasks.webp)
 
 ### State Machine Viewer
 
 Interactive diagrams for order, payment, delivery, and other registered state machines.
 
-![State Machine Viewer](docs/images/state-machines.png)
+![State Machine Viewer](docs/images/state-machines.webp)
 
 ### Log Viewer
 
 Browse any file under `var/log/` from the Admin.
 
-![Log Viewer](docs/images/log-viewer.png)
+![Log Viewer](docs/images/log-viewer.webp)
 
 ### Feature Flags
 
 List core and extension feature flags; toggle where supported.
 
-![Feature Flags](docs/images/feature-flags.png)
+![Feature Flags](docs/images/feature-flags.webp)
 
 ### Webhooks
 
 Dedicated list/detail UI for Shopware webhooks (including inline search).
 
-![Webhooks](docs/images/webhooks.png)
-
-### Elasticsearch / OpenSearch
-
-Cluster status, index list, reindex & alias actions, unused/orphaned index cleanup, and a low-level query console (when search is enabled).
-
-![Elasticsearch](docs/images/elasticsearch.png)
+![Webhooks](docs/images/webhooks.webp)
 
 ---
 
