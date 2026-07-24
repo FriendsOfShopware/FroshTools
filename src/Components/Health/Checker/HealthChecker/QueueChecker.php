@@ -127,16 +127,15 @@ class QueueChecker implements HealthCheckerInterface, CheckerInterface
             }
 
             // Overdue always beats healthy.
-            if ($candidate['overdue'] && !$worst['overdue']) {
-                $worst = $candidate;
-                continue;
-            }
-            if (!$candidate['overdue'] && $worst['overdue']) {
+            if ($candidate['overdue'] !== $worst['overdue']) {
+                if ($candidate['overdue']) {
+                    $worst = $candidate;
+                }
                 continue;
             }
 
-            // Both overdue: the one furthest past its own grace.
-            if ($candidate['overdue'] && $worst['overdue']) {
+            // Same state: both overdue → furthest past grace; both healthy → oldest age.
+            if ($candidate['overdue']) {
                 if ($candidate['overBy'] > $worst['overBy']
                     || ($candidate['overBy'] === $worst['overBy'] && $candidate['ageMinutes'] > $worst['ageMinutes'])) {
                     $worst = $candidate;
@@ -144,7 +143,6 @@ class QueueChecker implements HealthCheckerInterface, CheckerInterface
                 continue;
             }
 
-            // Both healthy: report the oldest pending age for visibility.
             if ($candidate['ageMinutes'] > $worst['ageMinutes']) {
                 $worst = $candidate;
             }
