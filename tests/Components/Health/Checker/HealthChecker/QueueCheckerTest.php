@@ -115,6 +115,21 @@ class QueueCheckerTest extends IntegrationTestCase
         static::assertSame('max 120 mins', $result->recommended);
     }
 
+    public function testShorterGraceQueueIsNotMaskedByOlderLooserQueue(): void
+    {
+        $this->configService->set('FroshTools.config.monitorQueueGraceTime', 15);
+        $this->configService->set('FroshTools.config.monitorQueueGraceTimes', 'async:10, low_priority:120');
+        // Older message on a loose queue must not hide a newer overdue tight queue.
+        $this->insertMessage('UTC_TIMESTAMP() - INTERVAL 90 MINUTE', 'low_priority');
+        $this->insertMessage('UTC_TIMESTAMP() - INTERVAL 20 MINUTE', 'async');
+
+        $result = $this->collectQueueResult();
+
+        static::assertSame(SettingsResult::WARNING, $result->state);
+        static::assertStringContainsString('async', $result->current);
+        static::assertSame('max 10 mins', $result->recommended);
+    }
+
     private function insertMessage(string $availableAt, string $queueName = 'default'): void
     {
         $this->connection->executeStatement(

@@ -25,7 +25,7 @@ class QueueCheckerUnitTest extends TestCase
     public function testEmptyQueueResultsInInfoState(): void
     {
         $result = $this->collect(
-            connectionRows: false,
+            connectionRows: [],
             config: [],
         );
 
@@ -37,8 +37,10 @@ class QueueCheckerUnitTest extends TestCase
     {
         $result = $this->collect(
             connectionRows: [
-                'available_at' => (new \DateTimeImmutable('-2 hours', new \DateTimeZone('UTC')))->format('Y-m-d H:i:s'),
-                'queue_name' => 'async',
+                [
+                    'available_at' => (new \DateTimeImmutable('-2 hours', new \DateTimeZone('UTC')))->format('Y-m-d H:i:s'),
+                    'queue_name' => 'async',
+                ],
             ],
             config: ['FroshTools.config.monitorQueueGraceTime' => 15],
         );
@@ -51,8 +53,10 @@ class QueueCheckerUnitTest extends TestCase
     {
         $result = $this->collect(
             connectionRows: [
-                'available_at' => (new \DateTimeImmutable('-1 minute', new \DateTimeZone('UTC')))->format('Y-m-d H:i:s'),
-                'queue_name' => 'async',
+                [
+                    'available_at' => (new \DateTimeImmutable('-1 minute', new \DateTimeZone('UTC')))->format('Y-m-d H:i:s'),
+                    'queue_name' => 'async',
+                ],
             ],
             config: ['FroshTools.config.monitorQueueGraceTime' => 15],
         );
@@ -65,8 +69,10 @@ class QueueCheckerUnitTest extends TestCase
         // Regression: previous formula effectively required age > 2 * grace.
         $result = $this->collect(
             connectionRows: [
-                'available_at' => (new \DateTimeImmutable('-20 minutes', new \DateTimeZone('UTC')))->format('Y-m-d H:i:s'),
-                'queue_name' => 'async',
+                [
+                    'available_at' => (new \DateTimeImmutable('-20 minutes', new \DateTimeZone('UTC')))->format('Y-m-d H:i:s'),
+                    'queue_name' => 'async',
+                ],
             ],
             config: ['FroshTools.config.monitorQueueGraceTime' => 15],
         );
@@ -76,7 +82,7 @@ class QueueCheckerUnitTest extends TestCase
 
     public function testFailedQueuesAreExcludedByDefault(): void
     {
-        $query = $this->createQueryBuilderMock(false);
+        $query = $this->createQueryBuilderMock([]);
         $query->expects(static::once())
             ->method('andWhere')
             ->with('queue_name NOT LIKE :failedPattern')
@@ -97,8 +103,10 @@ class QueueCheckerUnitTest extends TestCase
     public function testFailedQueuesCanBeIncluded(): void
     {
         $query = $this->createQueryBuilderMock([
-            'available_at' => (new \DateTimeImmutable('-2 hours', new \DateTimeZone('UTC')))->format('Y-m-d H:i:s'),
-            'queue_name' => 'async_failed',
+            [
+                'available_at' => (new \DateTimeImmutable('-2 hours', new \DateTimeZone('UTC')))->format('Y-m-d H:i:s'),
+                'queue_name' => 'async_failed',
+            ],
         ]);
         $query->expects(static::never())->method('andWhere');
 
@@ -114,8 +122,10 @@ class QueueCheckerUnitTest extends TestCase
     public function testAllowlistRestrictsMonitoredQueues(): void
     {
         $query = $this->createQueryBuilderMock([
-            'available_at' => (new \DateTimeImmutable('-5 minutes', new \DateTimeZone('UTC')))->format('Y-m-d H:i:s'),
-            'queue_name' => 'async',
+            [
+                'available_at' => (new \DateTimeImmutable('-5 minutes', new \DateTimeZone('UTC')))->format('Y-m-d H:i:s'),
+                'queue_name' => 'async',
+            ],
         ]);
 
         $andWhere = [];
@@ -156,8 +166,10 @@ class QueueCheckerUnitTest extends TestCase
     {
         $result = $this->collect(
             connectionRows: [
-                'available_at' => (new \DateTimeImmutable('-30 minutes', new \DateTimeZone('UTC')))->format('Y-m-d H:i:s'),
-                'queue_name' => 'low_priority',
+                [
+                    'available_at' => (new \DateTimeImmutable('-30 minutes', new \DateTimeZone('UTC')))->format('Y-m-d H:i:s'),
+                    'queue_name' => 'low_priority',
+                ],
             ],
             config: [
                 'FroshTools.config.monitorQueueGraceTime' => 15,
@@ -174,8 +186,10 @@ class QueueCheckerUnitTest extends TestCase
     {
         $result = $this->collect(
             connectionRows: [
-                'available_at' => (new \DateTimeImmutable('-12 minutes', new \DateTimeZone('UTC')))->format('Y-m-d H:i:s'),
-                'queue_name' => 'async',
+                [
+                    'available_at' => (new \DateTimeImmutable('-12 minutes', new \DateTimeZone('UTC')))->format('Y-m-d H:i:s'),
+                    'queue_name' => 'async',
+                ],
             ],
             config: [
                 'FroshTools.config.monitorQueueGraceTime' => 15,
@@ -187,11 +201,37 @@ class QueueCheckerUnitTest extends TestCase
         static::assertSame('max 10 mins', $result->recommended);
     }
 
+    public function testShorterGraceQueueIsNotMaskedByOlderLooserQueue(): void
+    {
+        // Greptile P1: oldest global message was on low_priority (grace 120), which masked
+        // a newer async message that already exceeded async's shorter grace (10).
+        $result = $this->collect(
+            connectionRows: [
+                [
+                    'available_at' => (new \DateTimeImmutable('-90 minutes', new \DateTimeZone('UTC')))->format('Y-m-d H:i:s'),
+                    'queue_name' => 'low_priority',
+                ],
+                [
+                    'available_at' => (new \DateTimeImmutable('-20 minutes', new \DateTimeZone('UTC')))->format('Y-m-d H:i:s'),
+                    'queue_name' => 'async',
+                ],
+            ],
+            config: [
+                'FroshTools.config.monitorQueueGraceTime' => 15,
+                'FroshTools.config.monitorQueueGraceTimes' => 'async:10, low_priority:120',
+            ],
+        );
+
+        static::assertSame(SettingsResult::WARNING, $result->state);
+        static::assertStringContainsString('async', $result->current);
+        static::assertSame('max 10 mins', $result->recommended);
+    }
+
     /**
-     * @param array{available_at: string, queue_name: string}|false $connectionRows
+     * @param list<array{available_at: string, queue_name: string}> $connectionRows
      * @param array<string, mixed> $config
      */
-    private function collect(array|false $connectionRows, array $config): SettingsResult
+    private function collect(array $connectionRows, array $config): SettingsResult
     {
         return $this->collectWith(
             connection: $this->connectionReturning($this->createQueryBuilderMock($connectionRows)),
@@ -228,19 +268,20 @@ class QueueCheckerUnitTest extends TestCase
     }
 
     /**
-     * @param array{available_at: string, queue_name: string}|false $row
+     * @param list<array{available_at: string, queue_name: string}> $rows
      */
-    private function createQueryBuilderMock(array|false $row): QueryBuilder&MockObject
+    private function createQueryBuilderMock(array $rows): QueryBuilder&MockObject
     {
         $query = $this->createMock(QueryBuilder::class);
         $query->method('select')->willReturnSelf();
         $query->method('from')->willReturnSelf();
         $query->method('where')->willReturnSelf();
         $query->method('andWhere')->willReturnSelf();
+        $query->method('groupBy')->willReturnSelf();
         $query->method('orderBy')->willReturnSelf();
         $query->method('setMaxResults')->willReturnSelf();
         $query->method('setParameter')->willReturnSelf();
-        $query->method('fetchAssociative')->willReturn($row);
+        $query->method('fetchAllAssociative')->willReturn($rows);
 
         return $query;
     }

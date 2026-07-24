@@ -33,9 +33,9 @@ class QueueChecker implements HealthCheckerInterface, CheckerInterface
         $graceByQueue = $this->parseGraceMap($this->configService->getString(self::CONFIG_GRACE_TIMES));
 
         $snippet = 'Open Queues';
-        $row = $this->fetchOldestPendingMessage($excludeFailed, $queues);
+        $pendingByQueue = $this->fetchOldestPendingMessagePerQueue($excludeFailed, $queues);
 
-        if ($row === null) {
+        if ($pendingByQueue === []) {
             $collection->add(SettingsResult::info(
                 'queue',
                 $snippet,
@@ -46,13 +46,11 @@ class QueueChecker implements HealthCheckerInterface, CheckerInterface
             return;
         }
 
-        $queueName = (string) $row['queue_name'];
-        $grace = $graceByQueue[$queueName] ?? $defaultGrace;
-        $recommended = \sprintf('max %d mins', $grace);
-        $ageMinutes = $this->ageInMinutes((string) $row['available_at']);
-        $current = \sprintf('%d mins (%s)', $ageMinutes, $queueName);
+        $worst = $this->selectWorstQueue($pendingByQueue, $graceByQueue, $defaultGrace);
+        $recommended = \sprintf('max %d mins', $worst['grace']);
+        $current = \sprintf('%d mins (%s)', $worst['ageMinutes'], $worst['queueName']);
 
-        if ($ageMinutes > $grace) {
+        if ($worst['overdue']) {
             $collection->add(SettingsResult::warning('queue', $snippet, $current, $recommended));
 
             return;
@@ -64,16 +62,18 @@ class QueueChecker implements HealthCheckerInterface, CheckerInterface
     /**
      * @param list<string> $queues
      *
-     * @return array{available_at: string, queue_name: string}|null
+     * @return list<array{available_at: string, queue_name: string}>
      */
-    private function fetchOldestPendingMessage(bool $excludeFailed, array $queues): ?array
+    private function fetchOldestPendingMessagePerQueue(bool $excludeFailed, array $queues): array
     {
+        // One row per queue (oldest pending message). Evaluating each queue against its
+        // own grace avoids masking a tighter queue behind an older message on a looser one.
         $query = $this->connection->createQueryBuilder()
-            ->select('available_at', 'queue_name')
+            ->select('queue_name', 'MIN(available_at) AS available_at')
             ->from('messenger_messages')
             ->where('available_at <= UTC_TIMESTAMP()')
-            ->orderBy('available_at', 'ASC')
-            ->setMaxResults(1);
+            ->groupBy('queue_name')
+            ->orderBy('available_at', 'ASC');
 
         if ($excludeFailed) {
             // Symfony failure transport names typically contain "failed" (e.g. async_failed).
@@ -88,10 +88,76 @@ class QueueChecker implements HealthCheckerInterface, CheckerInterface
                 ->setParameter('queues', $queues, ArrayParameterType::STRING);
         }
 
-        /** @var array{available_at: string, queue_name: string}|false $row */
-        $row = $query->fetchAssociative();
+        /** @var list<array{available_at: string, queue_name: string}> $rows */
+        $rows = $query->fetchAllAssociative();
 
-        return \is_array($row) ? $row : null;
+        return $rows;
+    }
+
+    /**
+     * Prefer any overdue queue (highest minutes-over-grace); otherwise the oldest pending age.
+     *
+     * @param list<array{available_at: string, queue_name: string}> $pendingByQueue
+     * @param array<string, int> $graceByQueue
+     *
+     * @return array{queueName: string, ageMinutes: int, grace: int, overdue: bool}
+     */
+    private function selectWorstQueue(array $pendingByQueue, array $graceByQueue, int $defaultGrace): array
+    {
+        $worst = null;
+
+        foreach ($pendingByQueue as $row) {
+            $queueName = (string) $row['queue_name'];
+            $grace = $graceByQueue[$queueName] ?? $defaultGrace;
+            $ageMinutes = $this->ageInMinutes((string) $row['available_at']);
+            $overdue = $ageMinutes > $grace;
+            $overBy = $overdue ? $ageMinutes - $grace : 0;
+
+            $candidate = [
+                'queueName' => $queueName,
+                'ageMinutes' => $ageMinutes,
+                'grace' => $grace,
+                'overdue' => $overdue,
+                'overBy' => $overBy,
+            ];
+
+            if ($worst === null) {
+                $worst = $candidate;
+                continue;
+            }
+
+            // Overdue always beats healthy.
+            if ($candidate['overdue'] && !$worst['overdue']) {
+                $worst = $candidate;
+                continue;
+            }
+            if (!$candidate['overdue'] && $worst['overdue']) {
+                continue;
+            }
+
+            // Both overdue: the one furthest past its own grace.
+            if ($candidate['overdue'] && $worst['overdue']) {
+                if ($candidate['overBy'] > $worst['overBy']
+                    || ($candidate['overBy'] === $worst['overBy'] && $candidate['ageMinutes'] > $worst['ageMinutes'])) {
+                    $worst = $candidate;
+                }
+                continue;
+            }
+
+            // Both healthy: report the oldest pending age for visibility.
+            if ($candidate['ageMinutes'] > $worst['ageMinutes']) {
+                $worst = $candidate;
+            }
+        }
+
+        \assert($worst !== null);
+
+        return [
+            'queueName' => $worst['queueName'],
+            'ageMinutes' => $worst['ageMinutes'],
+            'grace' => $worst['grace'],
+            'overdue' => $worst['overdue'],
+        ];
     }
 
     private function ageInMinutes(string $availableAt): int
