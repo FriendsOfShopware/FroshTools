@@ -16,11 +16,38 @@
 
         <input-field type="int">
             <name>monitorQueueGraceTime</name>
-            <label>Scheduled queue grace time</label>
-            <label lang="de-DE">Geplante Karenzzeit der Queue</label>
-            <helpText>After X minutes a queue is considered stuck / faulty</helpText>
-            <helpText lang="de-DE">Nach X Minuten gilt eine Queue als festgefahren / fehlerhaft</helpText>
+            <label>Default queue grace time (minutes)</label>
+            <label lang="de-DE">Standard-Karenzzeit der Queue (Minuten)</label>
+            <helpText>After this many minutes a pending message is considered stuck. Used when no per-queue override matches.</helpText>
+            <helpText lang="de-DE">Nach so vielen Minuten gilt eine ausstehende Nachricht als festgefahren. Gilt, wenn kein Queue-Override greift.</helpText>
             <defaultValue>15</defaultValue>
+        </input-field>
+
+        <input-field type="bool">
+            <name>monitorExcludeFailedQueues</name>
+            <label>Exclude failed queues</label>
+            <label lang="de-DE">Failed-Queues ausschließen</label>
+            <helpText>Ignore messenger queues whose name contains "failed" (e.g. async_failed). Those are usually drained manually and would otherwise cause false positives.</helpText>
+            <helpText lang="de-DE">Ignoriert Messenger-Queues, deren Name "failed" enthält (z. B. async_failed). Diese werden meist manuell abgearbeitet und würden sonst Fehlalarme auslösen.</helpText>
+            <defaultValue>true</defaultValue>
+        </input-field>
+
+        <input-field type="text">
+            <name>monitorQueues</name>
+            <label>Queues to monitor</label>
+            <label lang="de-DE">Zu überwachende Queues</label>
+            <helpText>Optional comma-separated allowlist (e.g. async, low_priority). Leave empty to monitor all queues (except failed ones when exclusion is enabled).</helpText>
+            <helpText lang="de-DE">Optionale kommaseparierte Allowlist (z. B. async, low_priority). Leer lassen, um alle Queues zu überwachen (außer Failed-Queues, wenn der Ausschluss aktiv ist).</helpText>
+            <placeholder>async, low_priority</placeholder>
+        </input-field>
+
+        <input-field type="text">
+            <name>monitorQueueGraceTimes</name>
+            <label>Per-queue grace times</label>
+            <label lang="de-DE">Karenzzeiten pro Queue</label>
+            <helpText>Optional overrides as queue:minutes pairs (e.g. async:15, low_priority:60). Queues not listed use the default grace time.</helpText>
+            <helpText lang="de-DE">Optionale Overrides als Queue:Minuten-Paare (z. B. async:15, low_priority:60). Nicht gelistete Queues nutzen die Standard-Karenzzeit.</helpText>
+            <placeholder>async:15, low_priority:60</placeholder>
         </input-field>
 
         <input-field type="int">
