@@ -129,7 +129,7 @@ class EndOfLifeService
 
         $support = $entry['support'] ?? null;
         $supportEnded = false;
-        if ($support === true) {
+        if ($support === false) {
             $supportEnded = true;
         } elseif (\is_string($support) && $support !== '') {
             try {
