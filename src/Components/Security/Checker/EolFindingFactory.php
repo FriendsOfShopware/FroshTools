@@ -54,8 +54,8 @@ class EolFindingFactory
                 $id,
                 SecurityFinding::CATEGORY_RUNTIME,
                 $title,
-                \sprintf('%s (end-of-life since %s)', $currentVersion, $eol->format('Y-m-d')),
-                $upgradeHint ?? 'Upgrade to a supported release that still receives security fixes',
+                \sprintf('%s (official end-of-life since %s)', $currentVersion, $eol->format('Y-m-d')),
+                $upgradeHint ?? 'Upgrade to a release that still receives official security fixes',
                 $docUrl,
             );
         }
@@ -65,8 +65,8 @@ class EolFindingFactory
                 $id,
                 SecurityFinding::CATEGORY_RUNTIME,
                 $title,
-                \sprintf('%s (end-of-life on %s, less than 3 months)', $currentVersion, $eol->format('Y-m-d')),
-                $upgradeHint ?? 'Plan an upgrade before this release reaches end-of-life',
+                \sprintf('%s (official end-of-life on %s, less than 3 months)', $currentVersion, $eol->format('Y-m-d')),
+                $upgradeHint ?? 'Plan an upgrade before official support ends',
                 $docUrl,
             );
         }
