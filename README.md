@@ -29,10 +29,6 @@ Compatible with **Shopware 6.6 and 6.7**.
 
 ## Screenshots
 
-Full HD (1920×1080) captures from Shopware **6.7** Administration. Images are WebP for a smaller repo footprint.
-
-Only screens that show real product value are included — empty states (disabled Elasticsearch, unconfigured Shopmon marketing CTA) are omitted on purpose.
-
 ### System Status
 
 Live health checks (PHP, MySQL, queue, tasks, …) plus performance recommendations with documentation-oriented guidance.
