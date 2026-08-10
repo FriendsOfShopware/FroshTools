@@ -154,7 +154,7 @@ final class NativeLibraryLocator
         }
 
         // Inspect what PHP itself is linked against
-        if (\defined('PHP_BINARY') && \is_string(\PHP_BINARY) && \PHP_BINARY !== '' && is_readable(\PHP_BINARY)) {
+        if (is_readable(\PHP_BINARY)) {
             $ldd = self::safeLdd(\PHP_BINARY);
             if ($ldd !== null) {
                 if (str_contains($ldd, 'musl')) {
@@ -222,7 +222,7 @@ final class NativeLibraryLocator
     private static function safeLdd(string $binary): ?string
     {
         // Avoid shell if disabled; skip in restricted SAPIs
-        if (!\function_exists('shell_exec') || !\is_callable('shell_exec')) {
+        if (!\function_exists('shell_exec')) {
             return null;
         }
 

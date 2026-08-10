@@ -6,5 +6,23 @@ parameters:
     ignoreErrors:
         -
             message: "#no value type specified in iterable type array#"
+        # FFI symbols and CData fields are defined by the native CDEF at runtime.
+        -
+            message: "#Call to an undefined method FFI::#"
+            paths:
+                - src/Components/Log/FfiMonologLogReader.php
+                - src/Components/Log/FfiMonologParser.php
+        -
+            message: "#Access to an undefined property FFI\\\\CData::#"
+            paths:
+                - src/Components/Log/FfiMonologLogReader.php
+                - src/Components/Log/FfiMonologParser.php
+        -
+            message: "#Strict comparison using === between FFI\\\\CData and null will always evaluate to false.#"
+            path: src/Components/Log/FfiMonologLogReader.php
+        # EntityRepository::search() returns EntitySearchResult on supported 6.6/6.7 releases.
+        # Its v6.8 hierarchy transition is handled by Shopware core; this plugin only reads entities.
+        -
+            message: '#Call to method (getEntities|first)\(\) of deprecated class Shopware\\Core\\Framework\\DataAbstractionLayer\\Search\\EntitySearchResult#'
     excludePaths:
         - vendor (?)
