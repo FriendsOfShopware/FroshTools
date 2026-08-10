@@ -112,7 +112,7 @@ CDEF;
             $count = (int) $this->ffi->monolog_page_count($pagePtr);
             $entries = [];
 
-            for ($i = 0; $i < $count; $i++) {
+            for ($i = 0; $i < $count; ++$i) {
                 $entry = $this->ffi->monolog_page_entry($pagePtr, $i);
                 if ($entry === null) {
                     continue;

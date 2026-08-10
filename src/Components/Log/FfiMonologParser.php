@@ -113,7 +113,9 @@ CDEF;
         return (string) $this->ffi->monolog_parser_version();
     }
 
-    /** @deprecated use NativeLibraryLocator::locate() */
+    /**
+     * @deprecated use NativeLibraryLocator::locate()
+     */
     public static function detectLibraryPath(): ?string
     {
         return NativeLibraryLocator::locate();

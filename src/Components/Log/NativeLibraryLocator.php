@@ -191,7 +191,7 @@ final class NativeLibraryLocator
             if ($p['arch'] === 'arm64') {
                 $names[] = 'libmonolog_parser-linux-aarch64.so';
             }
-            // Do not fall back to musl on glibc — wrong ABI
+        // Do not fall back to musl on glibc — wrong ABI
         } else {
             $names[] = \sprintf('libmonolog_parser-%s-%s.%s', $p['os'], $p['arch'], $p['ext']);
         }

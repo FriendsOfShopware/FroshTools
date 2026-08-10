@@ -32,7 +32,9 @@ final class MonologLineParserFactory
         return self::$cached;
     }
 
-    /** @internal tests */
+    /**
+     * @internal tests
+     */
     public static function reset(): void
     {
         self::$cached = null;
