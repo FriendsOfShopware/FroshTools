@@ -5,3 +5,12 @@
 /src/Resources/public/
 /src/Resources/app/administration/node_modules/
 /src/Resources/app/administration/.tmp/
+# monolog_parser local build only — keep packaged native/lib/*-linux-*.so / *-darwin-*.dylib
+/native/monolog_parser/src/*.o
+/native/monolog_parser/tests/test_parser
+/native/monolog_parser/bench/bench
+/native/monolog_parser/libmonolog_parser.so
+/native/monolog_parser/libmonolog_parser.dylib
+# generic alias from `make install` (optional local convenience)
+/native/lib/libmonolog_parser.so
+/native/lib/libmonolog_parser.dylib

@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace Frosh\Tools\Controller;
 
-use Frosh\Tools\Components\LineReader;
+use Frosh\Tools\Components\Log\MonologLogReaderInterface;
 use Shopware\Core\Framework\Routing\RoutingException;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\DependencyInjection\Attribute\Autowire;
@@ -17,14 +17,12 @@ use Symfony\Component\Routing\Attribute\Route;
 #[Route(path: '/api/_action/frosh-tools', defaults: ['_routeScope' => ['api'], '_acl' => ['frosh_tools:read']])]
 class LogController extends AbstractController
 {
-    // https://regex101.com/r/bp4YYL/1
-    private const LINE_MATCH = '/\[(?<date>.*)] (?<channel>.*)\.(?<level>(DEBUG|INFO|NOTICE|WARNING|ERROR|CRITICAL|ALERT|EMERGENCY)):(?<message>.*)/m';
-
     private readonly string $logDir;
 
     public function __construct(
         #[Autowire(param: 'kernel.logs_dir')]
         string $logDir,
+        private readonly MonologLogReaderInterface $monologLogReader,
     ) {
         $this->logDir = rtrim($logDir, '/') . '/';
     }
@@ -42,36 +40,14 @@ class LogController extends AbstractController
         $offset = $request->query->getInt('offset');
         $limit = $request->query->getInt('limit', 20);
 
-        $lineGenerator = LineReader::readLinesBackwards($filePath);
-        $file = new \SplFileObject($filePath, 'r');
-        $file->seek(\PHP_INT_MAX);
+        // Native path: open file in C, reverse-scan + SIMD parse, return page.
+        // Fallback path: PHP LineReader + preg_match (same response shape).
+        $page = $this->monologLogReader->readBackwards($filePath, $offset, $limit);
 
-        $reader = new \LimitIterator($lineGenerator, $offset, $limit);
-
-        $result = [];
-
-        /** @var string $item */
-        foreach ($reader as $item) {
-            if (preg_match(self::LINE_MATCH, $item, $matches) !== 1) {
-                $result[] = [
-                    'message' => $item,
-                    'channel' => 'unknown',
-                    'date' => 'unknown',
-                    'level' => 'unknown',
-                ];
-
-                continue;
-            }
-
-            $result[] = [
-                'message' => $matches['message'],
-                'channel' => $matches['channel'],
-                'date' => $matches['date'],
-                'level' => $matches['level'],
-            ];
-        }
-
-        return new JsonResponse($result, Response::HTTP_OK, ['file-size' => $file->key()]);
+        return new JsonResponse($page['entries'], Response::HTTP_OK, [
+            'file-size' => $page['total'],
+            'x-monolog-parser' => $this->monologLogReader->backend(),
+        ]);
     }
 
     private function getFilePathByBag(Request $request): string

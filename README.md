@@ -104,7 +104,7 @@ Dedicated list/detail UI for Shopware webhooks (including inline search).
 | **Queue** | Multi-transport support (Doctrine, Redis, AMQP, fallback); browse without consuming (or fetch+requeue); retry failed messages; purge transport; reset queue. |
 | **Scheduled Tasks** | List, run, deactivate; edit interval & next execution; register tasks. |
 | **State Machines** | Diagram viewer for any registered state machine. |
-| **Log Viewer** | Read `var/log/*.log` in the browser. |
+| **Log Viewer** | Read `var/log/*.log` in the browser. Optional SIMD C parser via PHP FFI (`native/monolog_parser`). |
 | **Feature Flags** | Inspect and toggle flags from core/plugins. |
 | **Elasticsearch** | Status, indices, reindex, alias switch, unused/orphaned cleanup, console. Optional `show_all_indices`. |
 | **Fastly** | Purge all / by URL and basic stats when Fastly is configured. |

@@ -46,6 +46,9 @@
     "require-dev": {
         "shopware/elasticsearch": "~6.6.0 || ~6.7.0"
     },
+    "suggest": {
+        "ext-ffi": "Optional: load native/lib/libmonolog_parser.so for SIMD-accelerated Monolog log parsing"
+    },
     "config": {
         "allow-plugins": {
             "symfony/runtime": true
@@ -54,6 +57,7 @@
     "scripts": {
         "format": "docker run --rm -v $(pwd):/ext shopware/shopware-cli:latest extension format /ext",
         "check": "docker run --rm -v $(pwd):/ext shopware/shopware-cli:latest extension validate --full /ext",
-        "phpunit": "../../../vendor/bin/phpunit -c phpunit.xml"
+        "phpunit": "../../../vendor/bin/phpunit -c phpunit.xml",
+        "build-native": "make -C native/monolog_parser install"
     }
 }
