@@ -42,6 +42,14 @@ class Configuration implements ConfigurationInterface
                         ->end()
                     ->end()
                 ->end()
+                ->arrayNode('composer')
+                    ->addDefaultsIfNotSet()
+                    ->children()
+                        ->stringNode('graphviz_path')
+                            ->defaultNull()
+                        ->end()
+                    ->end()
+                ->end()
             ->end()
         ;
 
