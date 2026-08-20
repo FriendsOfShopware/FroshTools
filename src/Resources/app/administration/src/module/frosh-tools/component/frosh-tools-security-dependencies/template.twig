@@ -163,6 +163,35 @@
             v-if="hasAdvisories"
             class="frosh-security-dependencies__list"
         >
+            <div class="frosh-security-dependencies__graph-frame">
+                <img v-if="!!graphData"
+                     class="frosh-security-dependencies__graph-image"
+                     :src="graphData"
+                     :alt="$t('frosh-tools.tabs.composerAudit.graph.imageAlt')"
+                />
+
+                <div>
+                    <ft-refresh-button
+                        :loading="isLoadingGraph"
+                        :label="!!graphData
+                            ? $t('frosh-tools.tabs.composerAudit.graph.reload')
+                            : $t('frosh-tools.tabs.composerAudit.graph.load')
+                        "
+                        @click="loadGraph()"
+                    />
+
+                    <ft-button
+                        v-if="!!graphData"
+                        icon="trash"
+                        @click="graphData = null"
+                    >
+                        <span>
+                            {{ $t('frosh-tools.tabs.composerAudit.graph.unload') }}
+                        </span>
+                    </ft-button>
+                </div>
+            </div>
+
             <div
                 v-for="group in groupedAdvisories"
                 :key="group.packageName"

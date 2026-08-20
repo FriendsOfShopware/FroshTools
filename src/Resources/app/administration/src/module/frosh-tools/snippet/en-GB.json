@@ -256,6 +256,12 @@
                     "step4": "Commit the updated composer.lock and deploy. The check above re-runs automatically (cached up to 1 hour — use Refresh to force it).",
                     "copy": "Copy to clipboard",
                     "note": "Some advisories are fixed only in a newer major version. If a constraint in your composer.json blocks the update, you may need to raise it (e.g. \"^2.0\") before Composer can install the patched release."
+                },
+                "graph": {
+                    "load": "Load dependency graph",
+                    "reload": "Reload dependency graph",
+                    "unload": "Hide dependency graph",
+                    "imageAlt": "Dependency graph"
                 }
             },
             "state-machines": {
