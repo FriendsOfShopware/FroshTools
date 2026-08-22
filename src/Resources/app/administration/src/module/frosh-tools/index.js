@@ -14,6 +14,7 @@ import './component/frosh-tools-tab-queue';
 import './component/frosh-tools-tab-scheduled';
 import './component/frosh-tools-tab-elasticsearch';
 import './component/frosh-tools-tab-feature-flags';
+import './component/frosh-tools-tab-database-diff';
 import './component/frosh-tools-tab-logs';
 import './component/frosh-tools-tab-state-machines';
 import './component/ft-severity-bar';
@@ -84,6 +85,14 @@ Shopware.Module.register('frosh-tools', {
                 featureflags: {
                     component: 'frosh-tools-tab-feature-flags',
                     path: 'feature-flags',
+                    meta: {
+                        privilege: 'frosh_tools:read',
+                        parentPath: 'frosh.tools.index.index',
+                    },
+                },
+                databasediff: {
+                    component: 'frosh-tools-tab-database-diff',
+                    path: 'database-diff',
                     meta: {
                         privilege: 'frosh_tools:read',
                         parentPath: 'frosh.tools.index.index',

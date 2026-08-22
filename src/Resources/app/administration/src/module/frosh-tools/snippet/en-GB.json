@@ -164,6 +164,21 @@
                 "deactivate": "Deactivate",
                 "activate": "Activate"
             },
+            "database-diff": {
+                "title": "Database Diff",
+                "subtitle": "A comparison of the current and a target database schema version of Shopware.",
+                "diff": "Diff",
+                "noInfo": "No information available",
+                "selectedVersion":  "v6.X.Y.Z",
+                "selectedVersionLabel": "Selected Shopware version",
+                "table": "Table name",
+                "label": "Type",
+                "type": "Category",
+                "name": "Name",
+                "valueA": "Current version",
+                "valueB": "Version {version}",
+                "introspection": "Live introspection"
+            },
             "files": {
                 "title": "Shopware File Checker",
                 "allFilesOk": "No files modified",
@@ -499,7 +514,8 @@
                 "queue": "Search transports\u2026",
                 "scheduled": "Search scheduled tasks\u2026",
                 "elasticsearch": "Search indices\u2026",
-                "featureFlags": "Search feature flags\u2026"
+                "featureFlags": "Search feature flags\u2026",
+                "databaseDiff": "Search database differences\u2026"
             },
             "noResults": "No results for \"{term}\""
         },
@@ -523,7 +539,8 @@
             "frosh_tools_queue": "Queue",
             "frosh_tools_scheduled_task": "Scheduled Tasks",
             "frosh_tools_elasticsearch": "Search indices",
-            "frosh_tools_feature_flags": "Feature Flags"
+            "frosh_tools_feature_flags": "Feature Flags",
+            "frosh_tools_database_diff": "Database Diff"
         }
     }
 }

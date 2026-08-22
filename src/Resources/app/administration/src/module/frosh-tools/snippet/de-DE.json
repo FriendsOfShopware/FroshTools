@@ -164,6 +164,21 @@
                 "deactivate": "Deaktivieren",
                 "activate": "Aktivieren"
             },
+            "database-diff": {
+                "title": "Datenbank Vergleich",
+                "subtitle": "Ein Vergleich der aktuellen und einer beliebigen Datenbank Schema Version von Shopware.",
+                "diff": "Unterscheide",
+                "noInfo": "Keine Information verfügbar",
+                "selectedVersion":  "v6.X.Y.Z",
+                "selectedVersionLabel": "Ausgewählt Shopware Version",
+                "table": "Tabelle",
+                "label": "Art",
+                "type": "Kategorie",
+                "name": "Name",
+                "valueA": "Aktuelle Version",
+                "valueB": "Version {version}",
+                "introspection": "Live Analyse"
+            },
             "files": {
                 "title": "Shopware Dateien Checker",
                 "allFilesOk": "Alle Dateien entsprechen den Originalen, es wurden keine Manipulationen erkannt",
@@ -499,7 +514,8 @@
                 "queue": "Transporte durchsuchen\u2026",
                 "scheduled": "Geplante Aufgaben durchsuchen\u2026",
                 "elasticsearch": "Indizes durchsuchen\u2026",
-                "featureFlags": "Feature-Flags durchsuchen\u2026"
+                "featureFlags": "Feature-Flags durchsuchen\u2026",
+                "databaseDiff": "Datenbank-Schema Unterschiede durchsuchen\u2026"
             },
             "noResults": "Keine Ergebnisse für \"{term}\""
         },
@@ -523,7 +539,8 @@
             "frosh_tools_queue": "Warteschlange",
             "frosh_tools_scheduled_task": "Geplante Aufgaben",
             "frosh_tools_elasticsearch": "Indizes",
-            "frosh_tools_feature_flags": "Feature Flags"
+            "frosh_tools_feature_flags": "Feature Flags",
+            "frosh_tools_database_diff": "Datenbank Unterschiede"
         }
     }
 }

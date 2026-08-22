@@ -1,0 +1,125 @@
+<div class="ft frosh-tab-swdb">
+    <ft-page-head
+        :title="$tc('frosh-tools.tabs.database-diff.title')"
+        :subtitle="$t('frosh-tools.tabs.database-diff.subtitle')"
+    >
+        <template #actions>
+            <!-- TODO: Use combined textbox + button component. -->
+            <sw-text-field
+                v-model:value="version.target"
+                :placeholder="$t('frosh-tools.tabs.database-diff.selectedVersion')"
+                :label="$t('frosh-tools.tabs.database-diff.selectedVersionLabel')"
+                key="string"
+                name="sw-field--selectedVersion"
+                size="small"
+                @update:value="onVersionChange"
+                class="sw-text-field__swdb-version"
+            />
+            <sw-checkbox-field
+                :value="introspection"
+                @update:value="onChangeIntrospection"
+            >
+                <template #label>
+                    {{ $tc('frosh-tools.tabs.database-diff.introspection') }}
+                </template>
+            </sw-checkbox-field>
+            <ft-refresh-button
+                :loading="isLoading"
+                @click="createdComponent"
+            />
+        </template>
+    </ft-page-head>
+    <ft-panel v-if="diff || loadError"
+              class="frosh-tab-swdb__hero">
+        <ft-severity-bar
+            v-if="diff"
+            :summary="summary"
+            :loading="isLoading"
+        />
+        <ft-hero-state
+            v-if="loadError"
+            variant="danger"
+            icon="alert"
+            :title="$t('frosh-tools.loadError.title')"
+            :body="loadError"
+        >
+            <template #actions>
+                <ft-button
+                    icon="refresh"
+                    @click="refresh"
+                >
+                    {{ $t('frosh-tools.loadError.retry') }}
+                </ft-button>
+            </template>
+        </ft-hero-state>
+    </ft-panel>
+    <ft-panel
+        v-if="diff"
+        :title="$t('frosh-tools.tabs.database-diff.diff')"
+        :count="visibleTables ? visibleTables.length : 0"
+        flush
+    >
+        <ft-empty
+            v-if="isLoading && !diff"
+            loading
+        />
+        <ft-empty
+            v-else-if="!diff || !diff.length"
+            :title="$t('frosh-tools.tabs.database-diff.noInfo')"
+        />
+        <ft-empty
+            v-else-if="!visibleTables.length"
+            icon="search"
+            :title="$t('frosh-tools.search.noResults', { term: searchTerm })"
+        />
+        <div
+            v-else
+            class="ft-table-wrap"
+        >
+            <table class="ft-table">
+                <thead>
+                    <tr>
+                        <ft-th-sort
+                            sort-key="table"
+                            style="width: 110px;"
+                        >{{ $t('frosh-tools.tabs.database-diff.table') }}</ft-th-sort>
+                        <ft-th-sort
+                            sort-key="label"
+                        >{{ $t('frosh-tools.tabs.database-diff.label') }}</ft-th-sort>
+                        <ft-th-sort
+                            sort-key="type"
+                        >{{ $t('frosh-tools.tabs.database-diff.type') }}</ft-th-sort>
+                        <ft-th-sort
+                            sort-key="name"
+                        >{{ $t('frosh-tools.tabs.database-diff.name') }}</ft-th-sort>
+                        <th>{{ $t('frosh-tools.tabs.database-diff.valueA') }}</th>
+                        <th>{{ $t('frosh-tools.tabs.database-diff.valueB', {
+                                'version': version.selected,
+                            }) }}</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr
+                        v-for="item in sortRows(visibleTables)"
+                        :key="`${item.table}.${item.type}.${item.name}:${item.label}`"
+                    >
+                        <td class="ft-table__table">
+                            <code class="ft-mono">{{ item.table }}</code>
+                        </td>
+                        <td class="ft-table__label">
+                            <sw-label
+                                size="medium"
+                                appearance="pill"
+                                :variant="variantForLabel(item.label)"
+                            >{{ item.label }}</sw-label>
+                        </td>
+                        <td class="ft-table__type ft-mono">{{ item.type }}</td>
+                        <td class="ft-table__name ft-mono">{{ item.name }}</td>
+                        <td class="ft-table__value-A ft-mono">{{ item.valueA }}</td>
+                        <td class="ft-table__value-B ft-mono">{{ item.valueB }}</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </ft-panel>
+</div>
