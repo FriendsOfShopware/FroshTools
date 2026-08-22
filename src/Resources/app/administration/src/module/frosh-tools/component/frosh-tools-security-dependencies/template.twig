@@ -177,7 +177,7 @@
                             ? $t('frosh-tools.tabs.composerAudit.graph.reload')
                             : $t('frosh-tools.tabs.composerAudit.graph.load')
                         "
-                        @click="loadGraph()"
+                        @click="loadGraph(!!graphData)"
                     />
 
                     <ft-button

@@ -296,7 +296,7 @@ class FroshTools extends ApiService {
         return this.httpClient
             .get(apiRoute, {
                 headers: this.getBasicHeaders(),
-                params: { packages, withDevDependencies, strict, forceRefresh },
+                params: { packages, withDevDependencies, strict, refresh: forceRefresh },
             })
             .then((response) => {
                 return ApiService.handleResponse(response);

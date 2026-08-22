@@ -139,6 +139,11 @@ class ComposerGraphService
     private function setGraphLayout(Graph $graph, array $advisory, array $layout): void
     {
         $packageName = $advisory['packageName'];
+
+        if (!$graph->hasVertex($packageName)) {
+            return;
+        }
+
         $vertex      = $graph->getVertex($packageName);
         $bag         = new AttributeBagNamespaced($vertex->getAttributeBag(), 'graphviz.');
         $identifier  = $advisory['cve'] ?: $advisory['advisoryId'];
