@@ -54,15 +54,15 @@ class SymfonySchedulerChecker implements HealthCheckerInterface, CheckerInterfac
         foreach ($schedules as $schedule) {
             // A schedule that failed to build, or that keeps no state, cannot tell us whether a
             // worker consumes it.
-            if ($schedule->getError() !== null || !$schedule->isStateful()) {
+            if ($schedule->error !== null || !$schedule->stateful) {
                 continue;
             }
 
             ++$evaluated;
 
-            $checkpoint = $schedule->getCheckpoint();
+            $checkpoint = $schedule->checkpoint;
             if ($checkpoint === null) {
-                $neverRun[] = $schedule->getName();
+                $neverRun[] = $schedule->name;
                 continue;
             }
 
@@ -74,7 +74,7 @@ class SymfonySchedulerChecker implements HealthCheckerInterface, CheckerInterfac
             $overdueMinutes = (int) \floor(($now->getTimestamp() - $dueAt->getTimestamp()) / 60);
             if ($overdueMinutes > $worstMinutes) {
                 $worstMinutes = $overdueMinutes;
-                $worstName = $schedule->getName();
+                $worstName = $schedule->name;
             }
         }
 
@@ -116,8 +116,8 @@ class SymfonySchedulerChecker implements HealthCheckerInterface, CheckerInterfac
     private function firstDueDate(ScheduleStruct $schedule): ?\DateTimeImmutable
     {
         $dates = array_filter(array_map(
-            static fn (RecurringMessageStruct $message) => $message->getNextRunDate(),
-            $schedule->getMessages(),
+            static fn (RecurringMessageStruct $message) => $message->nextRunDate,
+            $schedule->messages,
         ));
 
         if ($dates === []) {

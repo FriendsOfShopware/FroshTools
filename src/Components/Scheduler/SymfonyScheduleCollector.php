@@ -102,8 +102,8 @@ class SymfonyScheduleCollector
         );
 
         usort($messages, static function (RecurringMessageStruct $a, RecurringMessageStruct $b): int {
-            $aDate = $a->getNextRunDate();
-            $bDate = $b->getNextRunDate();
+            $aDate = $a->nextRunDate;
+            $bDate = $b->nextRunDate;
 
             if ($aDate === null || $bDate === null) {
                 return ($aDate === null ? 1 : 0) <=> ($bDate === null ? 1 : 0);
