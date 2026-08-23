@@ -41,23 +41,23 @@ class SymfonyScheduleCollectorTest extends TestCase
         $schedules = (new SymfonyScheduleCollector($this->createLocator('example', $schedule)))->collect();
 
         static::assertCount(1, $schedules);
-        static::assertSame('example', $schedules[0]->getName());
-        static::assertFalse($schedules[0]->isStateful());
-        static::assertNull($schedules[0]->getCheckpoint());
-        static::assertNull($schedules[0]->getError());
+        static::assertSame('example', $schedules[0]->name);
+        static::assertFalse($schedules[0]->stateful);
+        static::assertNull($schedules[0]->checkpoint);
+        static::assertNull($schedules[0]->error);
 
-        $messages = $schedules[0]->getMessages();
+        $messages = $schedules[0]->messages;
         static::assertCount(1, $messages);
 
         $message = $messages[0];
-        static::assertSame('app:cleanup:orders', $message->getLabel());
-        static::assertSame(RunCommandMessage::class, $message->getMessageClass());
-        static::assertSame(['low_priority'], $message->getTransports());
-        static::assertSame('35 3 * * *', $message->getTrigger());
-        static::assertSame('cron', $message->getTriggerType());
-        static::assertFalse($message->isTerminated());
-        static::assertNotNull($message->getNextRunDate());
-        static::assertNotSame('', $message->getId());
+        static::assertSame('app:cleanup:orders', $message->label);
+        static::assertSame(RunCommandMessage::class, $message->messageClass);
+        static::assertSame(['low_priority'], $message->transports);
+        static::assertSame('35 3 * * *', $message->trigger);
+        static::assertSame('cron', $message->triggerType);
+        static::assertFalse($message->terminated);
+        static::assertNotNull($message->nextRunDate);
+        static::assertNotSame('', $message->id);
     }
 
     public function testCollectDescribesPeriodicTasks(): void
@@ -66,12 +66,12 @@ class SymfonyScheduleCollectorTest extends TestCase
             RecurringMessage::every('1 hour', new RunCommandMessage('app:stock:update')),
         );
 
-        $messages = (new SymfonyScheduleCollector($this->createLocator('example', $schedule)))->collect()[0]->getMessages();
+        $messages = (new SymfonyScheduleCollector($this->createLocator('example', $schedule)))->collect()[0]->messages;
 
         static::assertCount(1, $messages);
-        static::assertSame('periodic', $messages[0]->getTriggerType());
-        static::assertSame('app:stock:update', $messages[0]->getLabel());
-        static::assertSame([], $messages[0]->getTransports());
+        static::assertSame('periodic', $messages[0]->triggerType);
+        static::assertSame('app:stock:update', $messages[0]->label);
+        static::assertSame([], $messages[0]->transports);
     }
 
     public function testCollectSortsTerminatedMessagesLast(): void
@@ -81,13 +81,13 @@ class SymfonyScheduleCollectorTest extends TestCase
             RecurringMessage::every('1 hour', new RunCommandMessage('app:active')),
         );
 
-        $messages = (new SymfonyScheduleCollector($this->createLocator('example', $schedule)))->collect()[0]->getMessages();
+        $messages = (new SymfonyScheduleCollector($this->createLocator('example', $schedule)))->collect()[0]->messages;
 
         static::assertSame(['app:active', 'app:terminated'], array_map(
-            static fn (RecurringMessageStruct $message) => $message->getLabel(),
+            static fn (RecurringMessageStruct $message) => $message->label,
             $messages,
         ));
-        static::assertTrue($messages[1]->isTerminated());
+        static::assertTrue($messages[1]->terminated);
     }
 
     public function testCollectKeepsGoingWhenAProviderFails(): void
@@ -104,9 +104,9 @@ class SymfonyScheduleCollectorTest extends TestCase
         ])))->collect();
 
         static::assertCount(1, $schedules);
-        static::assertSame('broken', $schedules[0]->getName());
-        static::assertSame('provider is broken', $schedules[0]->getError());
-        static::assertSame([], $schedules[0]->getMessages());
+        static::assertSame('broken', $schedules[0]->name);
+        static::assertSame('provider is broken', $schedules[0]->error);
+        static::assertSame([], $schedules[0]->messages);
     }
 
     public function testCollectSkipsTheShopwareScheduledTaskBridge(): void
