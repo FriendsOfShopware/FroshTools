@@ -26,6 +26,13 @@ export default {
             'Make sure a CLI worker is running and supervised (e.g. via systemd or Supervisor) so the queue is drained continuously. Adjust monitored queues and per-queue grace times under Settings → Extensions → Frosh Tools if needed.',
         code: 'bin/console messenger:consume async low_priority\n# Extension config examples:\n# monitorQueues = async, low_priority\n# monitorQueueGraceTimes = async:15, low_priority:60\n# monitorExcludeFailedQueues = true',
     },
+    symfony_scheduler: {
+        description:
+            'A symfony/scheduler schedule has not dispatched the message that was already due, or has never dispatched anything at all. Each schedule is consumed through its own messenger transport named "scheduler_<name>", which is separate from the regular queues — a worker consuming only "async" will not run it. The check compares the schedule\'s stored checkpoint with the first message due after it, so a task that simply runs weekly is not reported.',
+        solution:
+            'Run a supervised CLI worker for the scheduler transport of every schedule. The grace time is shared with the scheduled task check under Settings → Extensions → Frosh Tools.',
+        code: 'bin/console debug:scheduler\nbin/console messenger:consume scheduler_<name>',
+    },
     'mysql-timezone': {
         description:
             'The MySQL time zone tables are not loaded, so CONVERT_TZ() and named time zones (e.g. "Europe/Berlin") do not work. Features that rely on time zone conversion can silently return wrong results.',

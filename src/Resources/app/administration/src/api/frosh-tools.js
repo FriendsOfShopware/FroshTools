@@ -171,6 +171,32 @@ class FroshTools extends ApiService {
             });
     }
 
+    getSymfonySchedules() {
+        const apiRoute = `${this.getApiBasePath()}/symfony-scheduler`;
+        return this.httpClient
+            .get(apiRoute, {
+                headers: this.getBasicHeaders(),
+            })
+            .then((response) => {
+                return ApiService.handleResponse(response);
+            });
+    }
+
+    runSymfonySchedulerTask(schedule, id) {
+        const apiRoute = `${this.getApiBasePath()}/symfony-scheduler/${schedule}/${id}/run`;
+        return this.httpClient
+            .post(
+                apiRoute,
+                {},
+                {
+                    headers: this.getBasicHeaders(),
+                }
+            )
+            .then((response) => {
+                return ApiService.handleResponse(response);
+            });
+    }
+
     healthStatus(cached = false) {
         if (!this.loginService.isLoggedIn()) {
             return;
