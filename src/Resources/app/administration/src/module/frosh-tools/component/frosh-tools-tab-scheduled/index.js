@@ -19,6 +19,7 @@ Component.register('frosh-tools-tab-scheduled', {
     data() {
         return {
             items: null,
+            schedules: null,
             isLoading: true,
             loadError: null,
             taskError: null,
@@ -59,9 +60,34 @@ Component.register('frosh-tools-tab-scheduled', {
         dateFilter() {
             return Shopware.Filter.getByName('date');
         },
+
+        visibleSchedules() {
+            if (!Array.isArray(this.schedules)) return [];
+
+            return this.schedules.filter(
+                (schedule) =>
+                    schedule.error ||
+                    this.filterScheduleMessages(schedule).length > 0
+            );
+        },
     },
 
     methods: {
+        filterScheduleMessages(schedule) {
+            return this.filterRows(schedule.messages || [], this.searchTerm, [
+                'label',
+                'messageClass',
+                'trigger',
+            ]);
+        },
+
+        sortScheduleMessages(schedule) {
+            return this.sortRows(
+                this.filterScheduleMessages(schedule),
+                `symfony-${schedule.name}`
+            );
+        },
+
         shortName(fqn) {
             if (!fqn) return '';
             return fqn.split('\\').pop();
@@ -169,20 +195,65 @@ Component.register('frosh-tools-tab-scheduled', {
             this.isLoading = true;
             this.loadError = null;
 
-            try {
-                const criteria = new Criteria(1, 500);
-                criteria.addSorting(Criteria.sort('nextExecutionTime', 'ASC'));
-                this.items = await this.scheduledRepository.search(
-                    criteria,
-                    Shopware.Context.api
-                );
-            } catch (error) {
+            const criteria = new Criteria(1, 500);
+            criteria.addSorting(Criteria.sort('nextExecutionTime', 'ASC'));
+
+            const [tasks, schedules] = await Promise.allSettled([
+                this.scheduledRepository.search(criteria, Shopware.Context.api),
+                this.loadSymfonySchedules(),
+            ]);
+
+            if (tasks.status === 'fulfilled') {
+                this.items = tasks.value;
+            } else {
+                const error = tasks.reason;
                 this.items = null;
                 this.loadError = error?.response?.data?.error ?? error.message;
                 this.createNotificationError({ message: this.loadError });
-            } finally {
-                this.isLoading = false;
             }
+
+            // A failing scheduler lookup must not blank the Shopware task table,
+            // so it only drops the additional panels.
+            this.schedules =
+                schedules.status === 'fulfilled' ? schedules.value : null;
+
+            this.isLoading = false;
+        },
+
+        async loadSymfonySchedules() {
+            const schedules =
+                await this.froshToolsService.getSymfonySchedules();
+
+            return Array.isArray(schedules) ? schedules : null;
+        },
+
+        async runSymfonyTask(item) {
+            this.isLoading = true;
+            try {
+                this.createNotificationInfo({
+                    message: this.$t('frosh-tools.scheduledTaskStarted', {
+                        name: item.label,
+                    }),
+                });
+                await this.froshToolsService.runSymfonySchedulerTask(
+                    item.scheduleName,
+                    item.id
+                );
+                this.createNotificationSuccess({
+                    message: this.$t(
+                        'frosh-tools.symfonyScheduler.dispatched',
+                        { name: item.label }
+                    ),
+                });
+            } catch (e) {
+                this.createNotificationError({
+                    message: this.$t('frosh-tools.scheduledTaskFailed', {
+                        name: item.label,
+                    }),
+                });
+                this.taskError = e.response?.data;
+            }
+            this.createdComponent();
         },
 
         async runTask(item) {
