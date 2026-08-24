@@ -44,7 +44,7 @@ async function createWrapper({ searchTerm = '', canUpdate = true } = {}) {
     };
 
     const component = await Shopware.Component.build(
-        'frosh-tools-tab-scheduled'
+        'frosh-tools-tab-scheduled',
     );
 
     return mount(component, {
@@ -54,7 +54,8 @@ async function createWrapper({ searchTerm = '', canUpdate = true } = {}) {
                 froshToolsService: {},
                 acl: {
                     can: (privilege) =>
-                        canUpdate || privilege !== 'frosh_tools_scheduled_task:update',
+                        canUpdate ||
+                        privilege !== 'frosh_tools_scheduled_task:update',
                 },
                 froshToolsSearch: { searchTerm },
             },
@@ -94,7 +95,7 @@ describe('frosh-tools-tab-scheduled search', () => {
 
         expect(wrapper.vm.canUpdate).toBe(false);
         expect(wrapper.find('.frosh-tab-scheduled__menu-wrap').exists()).toBe(
-            false
+            false,
         );
     });
 

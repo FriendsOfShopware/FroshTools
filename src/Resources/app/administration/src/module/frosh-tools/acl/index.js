@@ -2,7 +2,13 @@ import { PRIVILEGE } from './privileges';
 
 const privileges = Shopware.Service('privileges');
 
-function registerArea({ key, viewer, editor = null, extraViewer = [], extraEditor = [] }) {
+function registerArea({
+    key,
+    viewer,
+    editor = null,
+    extraViewer = [],
+    extraEditor = [],
+}) {
     const roles = {
         viewer: {
             privileges: [viewer, PRIVILEGE.READ, ...extraViewer],

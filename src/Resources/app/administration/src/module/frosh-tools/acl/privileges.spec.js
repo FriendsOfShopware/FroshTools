@@ -12,10 +12,10 @@ describe('frosh-tools privileges', () => {
         expect(new Set(reads).size).toBe(reads.length);
         expect(new Set(updates).size).toBe(updates.length);
         expect(reads.some((privilege) => updates.includes(privilege))).toBe(
-            false
+            false,
         );
-        expect(updates.every((privilege) => privilege.endsWith(':update'))).toBe(
-            true
-        );
+        expect(
+            updates.every((privilege) => privilege.endsWith(':update')),
+        ).toBe(true);
     });
 });
