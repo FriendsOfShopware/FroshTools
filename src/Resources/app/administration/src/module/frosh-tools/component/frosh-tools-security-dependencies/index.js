@@ -20,6 +20,8 @@ Component.register('frosh-tools-security-dependencies', {
                 error: null,
                 cachedAt: null,
             },
+            isLoadingGraph: false,
+            graphData: null,
         };
     },
 
@@ -97,6 +99,9 @@ Component.register('frosh-tools-security-dependencies', {
                     cachedAt: null,
                 };
             } finally {
+                this.isLoadingGraph = false;
+                this.graphData = null;
+
                 this.isLoading = false;
             }
         },
@@ -165,6 +170,26 @@ Component.register('frosh-tools-security-dependencies', {
                 this.createNotificationError({
                     message: command,
                 });
+            }
+        },
+
+        async loadGraph(forceRefresh = false) {
+            this.isLoadingGraph = true;
+            try {
+                const packages = this.groupedAdvisories.map((advisory) => advisory.packageName);
+
+                // TODO: Remove base64 encoding, use `data:image/svg+xml;charset=utf-8,<%3Fxml%20version%3D...` instead.
+                this.graphData = 'data:image/svg+xml;base64,' + window.btoa(
+                    await this.froshToolsService.getComposerGraph([], true, true, forceRefresh)
+                );
+            } catch {
+                this.createNotificationError({
+                    message: 'Graph',
+                });
+
+                this.graphData = null;
+            } finally {
+                this.isLoadingGraph = false;
             }
         },
     },

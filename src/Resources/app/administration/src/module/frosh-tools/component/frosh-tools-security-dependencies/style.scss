@@ -284,3 +284,20 @@
         color: var(--ft-text-muted);
     }
 }
+
+.frosh-security-dependencies__graph {
+    &-frame {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        flex-direction: column;
+        margin-bottom: 10px;
+    }
+
+    &-image {
+        height: 250px;
+        width: 100%;
+        display: block;
+        object-fit: contain;
+    }
+}

@@ -256,6 +256,12 @@
                     "step4": "Committen Sie die aktualisierte composer.lock und deployen Sie. Die obige Prüfung läuft automatisch erneut (bis zu 1 Stunde zwischengespeichert — nutzen Sie Aktualisieren, um sie zu erzwingen).",
                     "copy": "In die Zwischenablage kopieren",
                     "note": "Manche Advisories werden erst in einer neueren Major-Version behoben. Falls eine Einschränkung in Ihrer composer.json das Update blockiert, müssen Sie diese ggf. anheben (z. B. \"^2.0\"), bevor Composer das gepatchte Release installieren kann."
+                },
+                "graph": {
+                    "load": "Abhängigkeits-Diagramm laden",
+                    "reload": "Abhängigkeits-Diagramm neu laden",
+                    "unload": "Abhängigkeits-Diagramm verbergen",
+                    "imageAlt": "Abhängigkeits-Diagramm"
                 }
             },
             "state-machines": {

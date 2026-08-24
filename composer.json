@@ -1,6 +1,6 @@
 {
     "name": "frosh/tools",
-    "version": "3.12.0",
+    "version": "dev-feat/composer-graph",
     "description": "Provides some basic things for managing the Shopware Installation",
     "type": "shopware-platform-plugin",
     "license": "MIT",
@@ -41,7 +41,8 @@
     },
     "require": {
         "shopware/core": "~6.6.0 || ~6.7.0",
-        "symfony/var-dumper": "^6.0 || ^7.0 || ^8.0"
+        "symfony/var-dumper": "^6.0 || ^7.0 || ^8.0",
+        "clue/graph-composer": "dev-feature/filter"
     },
     "require-dev": {
         "shopware/elasticsearch": "~6.6.0 || ~6.7.0"
@@ -49,11 +50,20 @@
     "config": {
         "allow-plugins": {
             "symfony/runtime": true
+        },
+        "platform": {
+            "php": "8.3"
         }
     },
     "scripts": {
         "format": "docker run --rm -v $(pwd):/ext shopware/shopware-cli:latest extension format /ext",
         "check": "docker run --rm -v $(pwd):/ext shopware/shopware-cli:latest extension validate --full /ext",
         "phpunit": "../../../vendor/bin/phpunit -c phpunit.xml"
+    },
+    "repositories": {
+        "mromeike/graph-composer": {
+            "type": "git",
+            "url": "https://github.com/mromeike/graph-composer.git"
+        }
     }
 }
