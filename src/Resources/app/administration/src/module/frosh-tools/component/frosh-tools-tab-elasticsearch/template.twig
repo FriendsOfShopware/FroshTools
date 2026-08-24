@@ -66,12 +66,14 @@
         >
             <template #actions>
                 <button
+                    v-if="canUpdate"
                     class="ft-btn ft-btn--primary"
                     @click="reindex"
                 >
                     {{ $t('frosh-tools.tabs.elasticsearch.action.reindex') }}
                 </button>
                 <button
+                    v-if="canUpdate"
                     class="ft-btn"
                     @click="switchAlias"
                 >
@@ -95,6 +97,7 @@
                     {{ $t('frosh-tools.tabs.elasticsearch.action.showUnused') }}
                 </button>
                 <button
+                    v-if="canUpdate"
                     class="ft-btn"
                     v-tooltip="{
                         showDelay: 300,
@@ -112,6 +115,7 @@
                     {{ $t('frosh-tools.tabs.elasticsearch.action.cleanup') }}
                 </button>
                 <button
+                    v-if="canUpdate"
                     class="ft-btn ft-btn--danger"
                     v-tooltip="{
                         showDelay: 300,
@@ -135,12 +139,14 @@
                     {{ $t('frosh-tools.tabs.elasticsearch.action.cleanupOrphaned') }}
                 </button>
                 <button
+                    v-if="canUpdate"
                     class="ft-btn ft-btn--danger"
                     @click="askFlushAll"
                 >
                     {{ $t('frosh-tools.tabs.elasticsearch.action.flushAll') }}
                 </button>
                 <button
+                    v-if="canUpdate"
                     class="ft-btn ft-btn--danger"
                     @click="askReset"
                 >
@@ -172,7 +178,10 @@
                                 sort-key="docs"
                                 class="ft-table__num"
                             >{{ $t('frosh-tools.docs') }}</ft-th-sort>
-                            <th class="ft-table__actions">
+                            <th
+                                v-if="canUpdate"
+                                class="ft-table__actions"
+                            >
                                 {{ $t('frosh-tools.actions') }}
                             </th>
                         </tr>
@@ -197,7 +206,10 @@
                             <td class="ft-table__num">
                                 {{ Number(item.docs).toLocaleString() }}
                             </td>
-                            <td class="ft-table__actions">
+                            <td
+                                v-if="canUpdate"
+                                class="ft-table__actions"
+                            >
                                 <button
                                     class="ft-btn ft-btn--danger"
                                     @click="askDeleteIndex(item.name)"
@@ -212,6 +224,7 @@
             </div>
         </ft-panel>
         <ft-panel
+            v-if="canUpdate"
             :title="$t('frosh-tools.tabs.elasticsearch.console.title', { engine: engineName })"
         >
             <template #actions>

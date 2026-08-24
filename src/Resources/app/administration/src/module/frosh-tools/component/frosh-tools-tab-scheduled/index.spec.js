@@ -37,7 +37,7 @@ const STUBS = {
     'sw-datepicker': true,
 };
 
-async function createWrapper({ searchTerm = '' } = {}) {
+async function createWrapper({ searchTerm = '', canUpdate = true } = {}) {
     const scheduledRepository = {
         search: jest.fn().mockResolvedValue(TASKS),
         save: jest.fn().mockResolvedValue({}),
@@ -52,6 +52,10 @@ async function createWrapper({ searchTerm = '' } = {}) {
             provide: {
                 repositoryFactory: { create: () => scheduledRepository },
                 froshToolsService: {},
+                acl: {
+                    can: (privilege) =>
+                        canUpdate || privilege !== 'frosh_tools_scheduled_task:update',
+                },
                 froshToolsSearch: { searchTerm },
             },
             stubs: STUBS,
@@ -82,6 +86,16 @@ describe('frosh-tools-tab-scheduled search', () => {
         const rows = wrapper.findAll('tbody tr');
         expect(rows).toHaveLength(1);
         expect(rows[0].text()).toContain('log_entry.cleanup');
+    });
+
+    it('hides task actions when the user cannot update', async () => {
+        const wrapper = await createWrapper({ canUpdate: false });
+        await flushPromises();
+
+        expect(wrapper.vm.canUpdate).toBe(false);
+        expect(wrapper.find('.frosh-tab-scheduled__menu-wrap').exists()).toBe(
+            false
+        );
     });
 
     it('shows a no-results state when nothing matches', async () => {

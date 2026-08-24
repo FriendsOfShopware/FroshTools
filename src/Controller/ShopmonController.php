@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Frosh\Tools\Controller;
 
+use Frosh\Tools\Acl\FroshToolsPrivileges;
 use Shopware\Core\DevOps\Environment\EnvironmentHelper;
 use Shopware\Core\Framework\Api\Acl\Role\AclRoleCollection;
 use Shopware\Core\Framework\Api\Util\AccessKeyHelper;
@@ -17,7 +18,7 @@ use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
 
-#[Route(path: '/api/_action/frosh-tools', defaults: ['_routeScope' => ['api'], '_acl' => ['frosh_tools:read']])]
+#[Route(path: '/api/_action/frosh-tools', defaults: ['_routeScope' => ['api'], '_acl' => [FroshToolsPrivileges::SHOPMON_READ]])]
 class ShopmonController extends AbstractController
 {
     // Fixed id keeps setup idempotent and lets us find/remove the integration again.
@@ -35,7 +36,7 @@ class ShopmonController extends AbstractController
     ) {
     }
 
-    #[Route(path: '/shopmon', name: 'api.frosh.tools.shopmon.setup', methods: ['POST'])]
+    #[Route(path: '/shopmon', name: 'api.frosh.tools.shopmon.setup', defaults: ['_acl' => [FroshToolsPrivileges::SHOPMON_UPDATE]], methods: ['POST'])]
     public function setup(Context $context): JsonResponse
     {
         $accessKey = EnvironmentHelper::getVariable('SHOPMON_ACCESS_KEY', AccessKeyHelper::generateAccessKey('integration'));
@@ -57,10 +58,15 @@ class ShopmonController extends AbstractController
                                 'app:read',
                                 'plugin:read',
                                 'scheduled_task:read',
-                                'frosh_tools:read',
+                                'scheduled_task:update',
+                                FroshToolsPrivileges::READ,
+                                FroshToolsPrivileges::CACHE_READ,
+                                FroshToolsPrivileges::CACHE_UPDATE,
+                                FroshToolsPrivileges::SCHEDULED_TASK_READ,
+                                FroshToolsPrivileges::SCHEDULED_TASK_UPDATE,
+                                FroshToolsPrivileges::SECURITY_READ,
                                 'system:clear:cache',
                                 'system:cache:info',
-                                'scheduled_task:update',
                             ],
                         ],
                     ],
@@ -88,7 +94,7 @@ class ShopmonController extends AbstractController
         return new JsonResponse($this->buildStatus($context));
     }
 
-    #[Route(path: '/shopmon', name: 'api.frosh.tools.shopmon.remove', methods: ['DELETE'])]
+    #[Route(path: '/shopmon', name: 'api.frosh.tools.shopmon.remove', defaults: ['_acl' => [FroshToolsPrivileges::SHOPMON_UPDATE]], methods: ['DELETE'])]
     public function remove(Context $context): JsonResponse
     {
         $context->scope(Context::SYSTEM_SCOPE, function (Context $context): void {

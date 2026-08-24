@@ -4,13 +4,14 @@ declare(strict_types=1);
 
 namespace Frosh\Tools\Controller;
 
+use Frosh\Tools\Acl\FroshToolsPrivileges;
 use Frosh\Tools\Components\CacheStatisticsService;
 use Frosh\Tools\Components\DatabaseStatisticsService;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\Routing\Attribute\Route;
 
-#[Route(path: '/api/_action/frosh-tools/statistics', defaults: ['_routeScope' => ['api'], '_acl' => ['frosh_tools:read']])]
+#[Route(path: '/api/_action/frosh-tools/statistics', defaults: ['_routeScope' => ['api'], '_acl' => [FroshToolsPrivileges::READ]])]
 class StatisticsController extends AbstractController
 {
     public function __construct(

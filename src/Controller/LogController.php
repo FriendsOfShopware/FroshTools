@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Frosh\Tools\Controller;
 
+use Frosh\Tools\Acl\FroshToolsPrivileges;
 use Frosh\Tools\Components\LineReader;
 use Shopware\Core\Framework\Routing\RoutingException;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -14,7 +15,7 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
 
-#[Route(path: '/api/_action/frosh-tools', defaults: ['_routeScope' => ['api'], '_acl' => ['frosh_tools:read']])]
+#[Route(path: '/api/_action/frosh-tools', defaults: ['_routeScope' => ['api'], '_acl' => [FroshToolsPrivileges::LOGS_READ]])]
 class LogController extends AbstractController
 {
     // https://regex101.com/r/bp4YYL/1

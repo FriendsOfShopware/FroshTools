@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Frosh\Tools\Controller;
 
+use Frosh\Tools\Acl\FroshToolsPrivileges;
 use Shopware\Core\Framework\Adapter\Cache\ReverseProxy\AbstractReverseProxyGateway;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\DependencyInjection\Attribute\Autowire;
@@ -13,7 +14,7 @@ use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
 use Symfony\Contracts\HttpClient\HttpClientInterface;
 
-#[Route(path: '/api/_action/frosh-tools/fastly', defaults: ['_routeScope' => ['api'], '_acl' => ['frosh_tools:read']])]
+#[Route(path: '/api/_action/frosh-tools/fastly', defaults: ['_routeScope' => ['api'], '_acl' => [FroshToolsPrivileges::FASTLY_READ]])]
 class FastlyController extends AbstractController
 {
     public function __construct(
@@ -122,7 +123,7 @@ class FastlyController extends AbstractController
         return new JsonResponse($response->toArray());
     }
 
-    #[Route(path: '/purge', name: 'api.frosh.tools.fastly.purge', methods: ['POST'])]
+    #[Route(path: '/purge', name: 'api.frosh.tools.fastly.purge', defaults: ['_acl' => [FroshToolsPrivileges::FASTLY_UPDATE]], methods: ['POST'])]
     public function purge(Request $request): JsonResponse
     {
         if (!$this->reverseProxyGateway || !$this->isFastlyEnabled()) {
@@ -140,7 +141,7 @@ class FastlyController extends AbstractController
         return new JsonResponse(null, Response::HTTP_NO_CONTENT);
     }
 
-    #[Route(path: '/purge-all', name: 'api.frosh.tools.fastly.purge_all', methods: ['POST'])]
+    #[Route(path: '/purge-all', name: 'api.frosh.tools.fastly.purge_all', defaults: ['_acl' => [FroshToolsPrivileges::FASTLY_UPDATE]], methods: ['POST'])]
     public function purgeAll(): JsonResponse
     {
         if (!$this->reverseProxyGateway || !$this->isFastlyEnabled()) {

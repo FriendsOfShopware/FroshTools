@@ -26,6 +26,7 @@ import './component/frosh-tools-tab-statistics';
 import './component/frosh-tools-tab-shopmon';
 import './page/index';
 import './acl';
+import { PRIVILEGE } from './acl/privileges';
 
 Shopware.Module.register('frosh-tools', {
     type: 'plugin',
@@ -45,7 +46,7 @@ Shopware.Module.register('frosh-tools', {
                     component: 'frosh-tools-tab-index',
                     path: 'index',
                     meta: {
-                        privilege: 'frosh_tools:read',
+                        privilege: PRIVILEGE.READ,
                         parentPath: 'sw.settings.index.plugins',
                     },
                 },
@@ -53,7 +54,7 @@ Shopware.Module.register('frosh-tools', {
                     component: 'frosh-tools-tab-cache',
                     path: 'cache',
                     meta: {
-                        privilege: 'frosh_tools:read',
+                        privilege: PRIVILEGE.CACHE_READ,
                         parentPath: 'sw.settings.index.plugins',
                     },
                 },
@@ -61,7 +62,7 @@ Shopware.Module.register('frosh-tools', {
                     component: 'frosh-tools-tab-queue',
                     path: 'queue',
                     meta: {
-                        privilege: 'frosh_tools:read',
+                        privilege: PRIVILEGE.QUEUE_READ,
                         parentPath: 'sw.settings.index.plugins',
                     },
                 },
@@ -69,7 +70,7 @@ Shopware.Module.register('frosh-tools', {
                     component: 'frosh-tools-tab-scheduled',
                     path: 'scheduled',
                     meta: {
-                        privilege: 'frosh_tools:read',
+                        privilege: PRIVILEGE.SCHEDULED_TASK_READ,
                         parentPath: 'sw.settings.index.plugins',
                     },
                 },
@@ -77,7 +78,7 @@ Shopware.Module.register('frosh-tools', {
                     component: 'frosh-tools-tab-elasticsearch',
                     path: 'elasticsearch',
                     meta: {
-                        privilege: 'frosh_tools:read',
+                        privilege: PRIVILEGE.ELASTICSEARCH_READ,
                         parentPath: 'sw.settings.index.plugins',
                     },
                 },
@@ -85,7 +86,7 @@ Shopware.Module.register('frosh-tools', {
                     component: 'frosh-tools-tab-feature-flags',
                     path: 'feature-flags',
                     meta: {
-                        privilege: 'frosh_tools:read',
+                        privilege: PRIVILEGE.READ,
                         parentPath: 'frosh.tools.index.index',
                     },
                 },
@@ -93,7 +94,7 @@ Shopware.Module.register('frosh-tools', {
                     component: 'frosh-tools-tab-logs',
                     path: 'logs',
                     meta: {
-                        privilege: 'frosh_tools:read',
+                        privilege: PRIVILEGE.LOGS_READ,
                         parentPath: 'sw.settings.index.plugins',
                     },
                 },
@@ -101,7 +102,7 @@ Shopware.Module.register('frosh-tools', {
                     component: 'frosh-tools-tab-security',
                     path: 'security',
                     meta: {
-                        privilege: 'frosh_tools:read',
+                        privilege: PRIVILEGE.SECURITY_READ,
                         parentPath: 'sw.settings.index.plugins',
                     },
                 },
@@ -109,7 +110,7 @@ Shopware.Module.register('frosh-tools', {
                     component: 'frosh-tools-tab-state-machines',
                     path: 'state-machines',
                     meta: {
-                        privilege: 'frosh_tools:read',
+                        privilege: PRIVILEGE.READ,
                         parentPath: 'sw.settings.index.plugins',
                     },
                 },
@@ -117,7 +118,7 @@ Shopware.Module.register('frosh-tools', {
                     component: 'frosh-tools-tab-fastly',
                     path: 'fastly',
                     meta: {
-                        privilege: 'frosh_tools:read',
+                        privilege: PRIVILEGE.FASTLY_READ,
                         parentPath: 'sw.settings.index.plugins',
                     },
                 },
@@ -125,7 +126,7 @@ Shopware.Module.register('frosh-tools', {
                     component: 'frosh-tools-tab-statistics',
                     path: 'statistics',
                     meta: {
-                        privilege: 'frosh_tools:read',
+                        privilege: PRIVILEGE.READ,
                         parentPath: 'sw.settings.index.plugins',
                     },
                 },
@@ -133,7 +134,7 @@ Shopware.Module.register('frosh-tools', {
                     component: 'frosh-tools-tab-shopmon',
                     path: 'shopmon',
                     meta: {
-                        privilege: 'frosh_tools:read',
+                        privilege: PRIVILEGE.SHOPMON_READ,
                         parentPath: 'sw.settings.index.plugins',
                     },
                 },
@@ -144,11 +145,11 @@ Shopware.Module.register('frosh-tools', {
     settingsItem: [
         {
             group: 'plugins',
-            to: 'frosh.tools.index.cache',
+            to: 'frosh.tools.index.index',
             icon: 'regular-cog',
             name: 'frosh-tools',
             label: 'frosh-tools.title',
-            privilege: 'frosh_tools:read',
+            privilege: PRIVILEGE.READ,
         },
     ],
 });

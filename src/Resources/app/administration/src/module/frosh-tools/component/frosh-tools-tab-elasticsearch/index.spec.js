@@ -18,7 +18,7 @@ function createService() {
     };
 }
 
-async function createWrapper(service) {
+async function createWrapper(service, { canUpdate = true } = {}) {
     const [component, ftModal] = await Promise.all([
         Shopware.Component.build('frosh-tools-tab-elasticsearch'),
         Shopware.Component.build('ft-modal'),
@@ -26,7 +26,14 @@ async function createWrapper(service) {
 
     return mount(component, {
         global: {
-            provide: { froshElasticSearch: service },
+            provide: {
+                froshElasticSearch: service,
+                acl: {
+                    can: (privilege) =>
+                        canUpdate ||
+                        privilege !== 'frosh_tools_elasticsearch:update',
+                },
+            },
             components: { 'ft-modal': ftModal },
             stubs: [
                 'ft-page-head',
@@ -55,6 +62,18 @@ async function createWrapper(service) {
 describe('frosh-tools-tab-elasticsearch destructive actions', () => {
     afterEach(() => {
         document.body.innerHTML = '';
+    });
+
+    it('hides destructive index actions when the user cannot update', async () => {
+        const service = createService();
+        service.indices.mockResolvedValue([
+            { name: 'shopware-product', aliases: [], indexSize: 1, docs: 1 },
+        ]);
+        const wrapper = await createWrapper(service, { canUpdate: false });
+        await flushPromises();
+
+        expect(wrapper.vm.canUpdate).toBe(false);
+        expect(wrapper.find('.ft-table__actions').exists()).toBe(false);
     });
 
     it('asks for confirmation before deleting an index', async () => {

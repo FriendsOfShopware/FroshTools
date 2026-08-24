@@ -9,6 +9,7 @@
                 @click="refresh"
             />
             <button
+                v-if="canUpdate"
                 class="ft-btn ft-btn--primary"
                 :disabled="isLoading"
                 @click="registerScheduledTasks"
@@ -80,6 +81,7 @@
                             style="width: 130px;"
                         >{{ $t('frosh-tools.status') }}</ft-th-sort>
                         <th
+                            v-if="canUpdate"
                             class="ft-table__actions"
                             style="width: 60px;"
                         ></th>
@@ -106,7 +108,10 @@
                         <td>
                             <ft-pill :variant="statusVariant(item.status)">{{ item.status }}</ft-pill>
                         </td>
-                        <td class="ft-table__actions">
+                        <td
+                            v-if="canUpdate"
+                            class="ft-table__actions"
+                        >
                             <div class="frosh-tab-scheduled__menu-wrap">
                                 <button
                                     class="ft-btn ft-btn--ghost ft-btn--icon"

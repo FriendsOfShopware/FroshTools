@@ -9,6 +9,7 @@
                 @click="createdComponent"
             />
             <button
+                v-if="canUpdate"
                 class="ft-btn"
                 @click="compileTheme"
                 :disabled="isLoading"
@@ -19,6 +20,7 @@
                 </span>
             </button>
             <button
+                v-if="canUpdate"
                 class="ft-btn ft-btn--primary"
                 @click="clearOPcache"
                 :disabled="isLoading"
@@ -81,7 +83,10 @@
                             sort-key="freeSpace"
                             class="ft-table__num"
                         >{{ $t('frosh-tools.free') }}</ft-th-sort>
-                        <th class="ft-table__actions">
+                        <th
+                            v-if="canUpdate"
+                            class="ft-table__actions"
+                        >
                             {{ $t('frosh-tools.actions') }}
                         </th>
                     </tr>
@@ -121,7 +126,10 @@
                                 {{ formatSize(item.freeSpace) }}
                             </template>
                         </td>
-                        <td class="ft-table__actions">
+                        <td
+                            v-if="canUpdate"
+                            class="ft-table__actions"
+                        >
                             <button
                                 class="ft-btn ft-btn--danger"
                                 @click="clearCache(item)"

@@ -9,7 +9,7 @@
                 @click="refresh"
             />
             <ft-button
-                v-if="acl.can('frosh_tools:update')"
+                v-if="canUpdate"
                 variant="danger"
                 icon="trash"
                 @click="showResetModal = true"
@@ -131,7 +131,7 @@
                                 {{ $t('frosh-tools.tabs.queue.transports.browse') }}
                             </button>
                             <ft-button
-                                v-if="transport.purgeable && acl.can('frosh_tools:update')"
+                                v-if="transport.purgeable && canUpdate"
                                 variant="danger"
                                 icon="trash"
                                 class="frosh-tab-queue__purge-btn"
@@ -290,7 +290,7 @@
                         >{{ stamp }}</ft-pill>
                     </div>
                     <div
-                        v-if="message.id && acl.can('frosh_tools:update') && (browseTransport.retryable || browseTransport.removable)"
+                        v-if="message.id && canUpdate && (browseTransport.retryable || browseTransport.removable)"
                         class="frosh-tab-queue__message-actions"
                     >
                         <ft-button

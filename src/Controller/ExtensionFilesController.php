@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Frosh\Tools\Controller;
 
+use Frosh\Tools\Acl\FroshToolsPrivileges;
 use Frosh\Tools\Components\ExtensionChecksum\ExtensionFileHashService;
 use Frosh\Tools\Components\ExtensionChecksum\Struct\ExtensionChecksumCheckResult;
 use Psr\Log\LoggerInterface;
@@ -17,7 +18,7 @@ use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\Routing\Attribute\Route;
 
 #[AutoconfigureTag('monolog.logger', ['channel' => 'frosh-tools'])]
-#[Route(path: '/api/_action/frosh-tools', defaults: ['_routeScope' => ['api'], '_acl' => ['frosh_tools:read']])]
+#[Route(path: '/api/_action/frosh-tools', defaults: ['_routeScope' => ['api'], '_acl' => [FroshToolsPrivileges::SECURITY_READ]])]
 class ExtensionFilesController extends AbstractController
 {
     /**

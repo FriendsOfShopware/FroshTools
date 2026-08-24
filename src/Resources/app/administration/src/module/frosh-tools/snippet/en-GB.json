@@ -502,10 +502,33 @@
         }
     },
     "sw-privileges": {
-        "additional_permissions": {
+        "permissions": {
             "frosh_tools": {
-                "frosh_tools": "View monitoring",
-                "label": "Frosh tools"
+                "label": "Frosh Tools"
+            },
+            "frosh_tools_cache": {
+                "label": "Frosh Tools — Cache"
+            },
+            "frosh_tools_queue": {
+                "label": "Frosh Tools — Queue"
+            },
+            "frosh_tools_scheduled_task": {
+                "label": "Frosh Tools — Scheduled tasks"
+            },
+            "frosh_tools_elasticsearch": {
+                "label": "Frosh Tools — Search indices"
+            },
+            "frosh_tools_logs": {
+                "label": "Frosh Tools — Logs"
+            },
+            "frosh_tools_security": {
+                "label": "Frosh Tools — Security"
+            },
+            "frosh_tools_fastly": {
+                "label": "Frosh Tools — Fastly"
+            },
+            "frosh_tools_shopmon": {
+                "label": "Frosh Tools — Shopmon"
             }
         }
     },
