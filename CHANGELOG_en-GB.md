@@ -1,0 +1,10 @@
+# 3.13.0
+- [chore: prepare release 3.13.0](https://github.com/FriendsOfShopware/FroshTools/commit/38b116f)
+- [chore: change structs to public properties](https://github.com/FriendsOfShopware/FroshTools/commit/f221689)
+- [feat: show symfony scheduler](https://github.com/FriendsOfShopware/FroshTools/commit/8e4a98f)
+- [Delete .github/workflows/pullfrog.yml](https://github.com/FriendsOfShopware/FroshTools/commit/15c6e42)
+- [Add Pullfrog workflow for agent execution](https://github.com/FriendsOfShopware/FroshTools/commit/3cb2227)
+- [Remove unnecessary comment in README.md (#454)](https://github.com/FriendsOfShopware/FroshTools/commit/4cbdc7e)
+- [Add ionCube Loader performance warning (#453)](https://github.com/FriendsOfShopware/FroshTools/commit/f734c30)
+- [fix: no longer report actively supported releases as end of active support (#451) (#452)](https://github.com/FriendsOfShopware/FroshTools/commit/86e4cc2)
+- [fix: clarify EOL findings track official support only (#445) (#450)](https://github.com/FriendsOfShopware/FroshTools/commit/9b1064e)
