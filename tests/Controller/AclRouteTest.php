@@ -19,6 +19,7 @@ use Frosh\Tools\Controller\SecurityController;
 use Frosh\Tools\Controller\ShopmonController;
 use Frosh\Tools\Controller\ShopwareFilesController;
 use Frosh\Tools\Controller\StatisticsController;
+use Frosh\Tools\Controller\SymfonySchedulerController;
 use PHPUnit\Framework\Attributes\CoversNothing;
 use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\TestCase;
@@ -88,6 +89,8 @@ class AclRouteTest extends TestCase
         yield 'scheduled.schedule' => [ScheduledTaskController::class, 'scheduleTask', FroshToolsPrivileges::SCHEDULED_TASK_UPDATE];
         yield 'scheduled.deactivate' => [ScheduledTaskController::class, 'deactivateTask', FroshToolsPrivileges::SCHEDULED_TASK_UPDATE];
         yield 'scheduled.register' => [ScheduledTaskController::class, 'registerTasks', FroshToolsPrivileges::SCHEDULED_TASK_UPDATE];
+        yield 'scheduler.list' => [SymfonySchedulerController::class, 'list', FroshToolsPrivileges::SCHEDULED_TASK_READ];
+        yield 'scheduler.run' => [SymfonySchedulerController::class, 'runTask', FroshToolsPrivileges::SCHEDULED_TASK_UPDATE];
 
         yield 'es.status' => [ElasticsearchController::class, 'status', FroshToolsPrivileges::ELASTICSEARCH_READ];
         yield 'es.indices' => [ElasticsearchController::class, 'indices', FroshToolsPrivileges::ELASTICSEARCH_READ];

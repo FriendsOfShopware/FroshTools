@@ -453,6 +453,14 @@
         "scheduledTasksRegisterStarted": "Register scheduled tasks",
         "scheduledTasksRegisterSucceed": "Scheduled tasks registered",
         "scheduledTasksRegisterFailed": "Scheduled tasks registration failed",
+        "symfonyScheduler": {
+            "title": "Symfony Scheduler: {name}",
+            "trigger": "Trigger",
+            "transports": "Transports",
+            "checkpoint": "Last worker checkpoint",
+            "terminated": "Terminated",
+            "dispatched": "\"{name}\" has been dispatched"
+        },
         "size": "Size",
         "docs": "Documents",
         "delete": "Delete",

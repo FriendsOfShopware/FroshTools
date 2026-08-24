@@ -1,4 +1,10 @@
 .frosh-tab-scheduled {
+    &__checkpoint {
+        font-size: 12px;
+        color: var(--ft-text-muted);
+        white-space: nowrap;
+    }
+
     &__menu-wrap {
         position: relative;
         display: inline-block;

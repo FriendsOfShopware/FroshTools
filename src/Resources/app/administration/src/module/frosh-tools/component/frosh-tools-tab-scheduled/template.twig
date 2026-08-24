@@ -168,6 +168,109 @@
             </table>
         </div>
     </ft-panel>
+    <ft-panel
+        v-for="schedule in visibleSchedules"
+        :key="schedule.name"
+        :title="$t('frosh-tools.symfonyScheduler.title', { name: schedule.name })"
+        :count="schedule.messages ? schedule.messages.length : null"
+        flush
+    >
+        <template #actions>
+            <span class="frosh-tab-scheduled__checkpoint">
+                {{ $t('frosh-tools.symfonyScheduler.checkpoint') }}
+                :
+                <span class="ft-mono">
+                    {{ formatDate(schedule.checkpoint) }}
+                </span>
+            </span>
+        </template>
+        <ft-empty
+            v-if="schedule.error"
+            icon="alert"
+            :title="schedule.error"
+        />
+        <div
+            v-else
+            class="ft-table-wrap"
+        >
+            <table class="ft-table">
+                <thead>
+                    <tr>
+                        <ft-th-sort
+                            sort-key="label"
+                            :table="'symfony-' + schedule.name"
+                        >{{ $t('frosh-tools.name') }}</ft-th-sort>
+                        <ft-th-sort
+                            sort-key="trigger"
+                            :table="'symfony-' + schedule.name"
+                        >
+                            {{ $t('frosh-tools.symfonyScheduler.trigger') }}
+                        </ft-th-sort>
+                        <th style="width: 160px;">
+                            {{ $t('frosh-tools.symfonyScheduler.transports') }}
+                        </th>
+                        <ft-th-sort
+                            sort-key="nextRunDate"
+                            :table="'symfony-' + schedule.name"
+                        >
+                            {{ $t('frosh-tools.nextExecutionTime') }}
+                        </ft-th-sort>
+                        <th
+                            v-if="canUpdate"
+                            class="ft-table__actions"
+                            style="width: 60px;"
+                        ></th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr
+                        v-for="item in sortScheduleMessages(schedule)"
+                        :key="item.id"
+                    >
+                        <td>
+                            <div class="ft-table__name">
+                                {{ item.label }}
+                                <div class="ft-table__name-sub">{{ item.messageClass }}</div>
+                            </div>
+                        </td>
+                        <td class="ft-mono">{{ item.trigger }}</td>
+                        <td>
+                            <ft-pill
+                                v-for="transport in item.transports"
+                                :key="transport"
+                                variant="muted"
+                            >{{ transport }}</ft-pill>
+                            <span v-if="!item.transports.length">&mdash;</span>
+                        </td>
+                        <td class="ft-mono">
+                            <ft-pill
+                                v-if="item.terminated"
+                                variant="muted"
+                            >
+                                {{ $t('frosh-tools.symfonyScheduler.terminated') }}
+                            </ft-pill>
+                            <template v-else>
+                                {{ formatDate(item.nextRunDate) }}
+                            </template>
+                        </td>
+                        <td
+                            v-if="canUpdate"
+                            class="ft-table__actions"
+                        >
+                            <button
+                                class="ft-btn ft-btn--ghost ft-btn--icon"
+                                :disabled="isLoading"
+                                :title="$t('frosh-tools.runManually')"
+                                @click="runSymfonyTask(item)"
+                            >
+                                <ft-icon name="play"/>
+                            </button>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </ft-panel>
     <ft-modal
         v-if="editTask"
         :title="$t('frosh-tools.tabs.scheduledTaskOverview.editTitle', { name: shortName(editTask.name) })"
