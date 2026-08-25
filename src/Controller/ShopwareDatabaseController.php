@@ -12,6 +12,8 @@ use Symfony\Component\DependencyInjection\Attribute\Autowire;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Routing\Attribute\Route;
+use Symfony\Contracts\Cache\CacheInterface;
+use Symfony\Contracts\Cache\ItemInterface;
 
 /**
  * Provide integration for `swdb.dev` Shopware version comparison.
@@ -19,40 +21,73 @@ use Symfony\Component\Routing\Attribute\Route;
 #[Route(path: '/api/_action/frosh-tools', defaults: ['_routeScope' => ['api'], '_acl' => ['frosh_tools:read']])]
 class ShopwareDatabaseController extends AbstractController
 {
+    private const CACHE_KEY_AVAILABLE_VERSIONS = 'frosh-tools-database-diff-available-versions';
+    private const CACHE_KEY_DIFF               = 'frosh-tools-database-diff';
+    private const CACHE_TTL_SECONDS            = 3600;
+
     public function __construct(
         #[Autowire(param: 'kernel.shopware_version')]
         private readonly string $shopwareVersion,
         private readonly DatabaseDiffService $databaseDiffService,
         private readonly DatabaseIntrospectionService $databaseIntrospectionService,
+        private readonly CacheInterface $cacheObject,
     ) {
     }
 
     #[Route(path: '/shopware-database-diff/available-versions', name: 'api.frosh.tools.shopware-database-diff.version', methods: ['GET'])]
-    public function fetchAvailableVersions(): JsonResponse
+    public function fetchAvailableVersions(Request $request): JsonResponse
     {
-        return new JsonResponse($this->databaseDiffService->getAvailableVersions());
+        if ($request->query->getBoolean('forceRefresh')) {
+            $this->cacheObject->deleteItem(self::CACHE_KEY_AVAILABLE_VERSIONS);
+        }
+
+        $availableVersions = $this->cacheObject->get(self::CACHE_KEY_AVAILABLE_VERSIONS, function (ItemInterface $cacheItem): array {
+            $cacheItem->expiresAfter(self::CACHE_TTL_SECONDS);
+
+            return $this->databaseDiffService->getAvailableVersions();
+        });
+
+        return new JsonResponse($availableVersions);
     }
 
     #[Route(path: '/shopware-database-diff/{version}', name: 'api.frosh.tools.shopware-database-diff.show', methods: ['GET'])]
     public function showDatabaseDiff(Request $request, string $version): JsonResponse
     {
-        if ($request->query->getBoolean('introspection')) {
-            $schemaA = $this->databaseIntrospectionService->getDatabaseSchema();
+        if ($introspection = $request->query->getBoolean('introspection')) {
+            $shopwareVersion = null;
         } else {
             $shopwareVersion = $this->getShopwareVersion();
 
             if (Kernel::SHOPWARE_FALLBACK_VERSION === $shopwareVersion) {
                 $shopwareVersion = \substr($shopwareVersion, 0,
-                    // Only use "6.6", and append ".0.0".
-                    \strpos($shopwareVersion, '.', 1 + \strpos($shopwareVersion, '.'))
-                ) . '.0.0';
+                        // Only use "6.6", and append ".0.0".
+                        \strpos($shopwareVersion, '.', 1 + \strpos($shopwareVersion, '.'))
+                    ) . '.0.0';
             }
-
-            $schemaA = $this->databaseDiffService->getDatabaseSchema($shopwareVersion);
         }
-        $schemaB = $this->databaseDiffService->getDatabaseSchema($version);
 
-        return new JsonResponse($this->databaseDiffService->createSchemaDiff($schemaA, $schemaB));
+        $version  = $this->databaseDiffService->parseVersionSlug($version);
+        $cacheKey = \sprintf('%s(%s:%s)%d', self::CACHE_KEY_DIFF,
+            $shopwareVersion ?? 'introspection', $version, (int)$introspection,
+        );
+
+
+        if ($request->query->getBoolean('forceRefresh')) {
+            $this->cacheObject->deleteItem($cacheKey);
+        }
+
+        $diff = $this->cacheObject->get($cacheKey, function (ItemInterface $cacheItem) use ($introspection, $shopwareVersion, $version) {
+            $cacheItem->expiresAfter(self::CACHE_TTL_SECONDS);
+
+            $schemaA = $shopwareVersion
+                ? $this->databaseDiffService->getDatabaseSchema($shopwareVersion)
+                : $this->databaseIntrospectionService->getDatabaseSchema();
+            $schemaB = $this->databaseDiffService->getDatabaseSchema($version);
+
+            return $this->databaseDiffService->createSchemaDiff($schemaA, $schemaB);
+        });
+
+        return new JsonResponse($diff);
     }
 
     private function getShopwareVersion(): string

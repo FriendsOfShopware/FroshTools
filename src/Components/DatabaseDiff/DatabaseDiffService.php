@@ -88,9 +88,7 @@ class DatabaseDiffService
     public function getDatabaseSchema(string $version): Schema
     {
         // TODO: Add resolution to the next higher/lower version available. Also, maybe handle the DEV version alias.
-        $version = \str_replace('RC', 'rc',
-            \ltrim(Feature::normalizeName($version), 'v')
-        );
+        $version = $this->parseVersionSlug($version);
         $url     = 'https://swdb.dev/api/schemas/%s.schema.json';
 
         try {
@@ -109,6 +107,13 @@ class DatabaseDiffService
             throw new \RuntimeException(\sprintf('Failed to load or create schema for version %s', $version),
                 previous: $error);
         }
+    }
+
+    public function parseVersionSlug(string $version): string
+    {
+        return \str_replace('RC', 'rc',
+            \ltrim(Feature::normalizeName($version), 'v')
+        );
     }
 
     /**
