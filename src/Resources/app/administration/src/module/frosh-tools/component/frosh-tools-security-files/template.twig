@@ -98,6 +98,7 @@
                 {{ $t('global.default.close') }}
             </button>
             <button
+                v-if="canUpdate"
                 class="ft-btn ft-btn--danger"
                 @click="restoreFile(diffData.file.name)"
                 :disabled="diffData.file.expected"

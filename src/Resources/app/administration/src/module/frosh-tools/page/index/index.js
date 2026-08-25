@@ -1,6 +1,7 @@
 import '../../styles/design-system.scss';
 import './frosh-tools.scss';
 import template from './template.twig';
+import { PRIVILEGE } from '../../acl/privileges';
 
 const { Component } = Shopware;
 
@@ -47,7 +48,7 @@ const SEARCHABLE_TABS = {
 
 Component.register('frosh-tools-index', {
     template,
-    inject: ['froshToolsService'],
+    inject: ['froshToolsService', 'acl'],
 
     provide() {
         // Tabs inject this component as `froshToolsSearch` and read
@@ -105,14 +106,17 @@ Component.register('frosh-tools-index', {
                 {
                     route: 'frosh.tools.index.index',
                     labelKey: 'frosh-tools.tabs.index.title',
+                    privilege: PRIVILEGE.READ,
                 },
                 {
                     route: 'frosh.tools.index.security',
                     labelKey: 'frosh-tools.tabs.security.title',
+                    privilege: PRIVILEGE.SECURITY_READ,
                 },
                 {
                     route: 'frosh.tools.index.shopmon',
                     labelKey: 'frosh-tools.tabs.shopmon.title',
+                    privilege: PRIVILEGE.SHOPMON_READ,
                 },
             ];
 
@@ -120,16 +124,19 @@ Component.register('frosh-tools-index', {
                 {
                     route: 'frosh.tools.index.cache',
                     labelKey: 'frosh-tools.tabs.cache.title',
+                    privilege: PRIVILEGE.CACHE_READ,
                 },
                 {
                     route: 'frosh.tools.index.statistics',
                     labelKey: 'frosh-tools.tabs.statistics.title',
+                    privilege: PRIVILEGE.READ,
                 },
             ];
             if (this.elasticsearchAvailable) {
                 performance.push({
                     route: 'frosh.tools.index.elasticsearch',
                     labelKey: 'frosh-tools.tabs.elasticsearch.title',
+                    privilege: PRIVILEGE.ELASTICSEARCH_READ,
                 });
             }
 
@@ -137,14 +144,17 @@ Component.register('frosh-tools-index', {
                 {
                     route: 'frosh.tools.index.queue',
                     labelKey: 'frosh-tools.tabs.queue.title',
+                    privilege: PRIVILEGE.QUEUE_READ,
                 },
                 {
                     route: 'frosh.tools.index.scheduled',
                     labelKey: 'frosh-tools.tabs.scheduledTaskOverview.title',
+                    privilege: PRIVILEGE.SCHEDULED_TASK_READ,
                 },
                 {
                     route: 'frosh.tools.index.statemachines',
                     labelKey: 'frosh-tools.tabs.state-machines.title',
+                    privilege: PRIVILEGE.READ,
                 },
             ];
 
@@ -153,11 +163,13 @@ Component.register('frosh-tools-index', {
                 diagnostics.push({
                     route: 'frosh.tools.index.logs',
                     labelKey: 'frosh-tools.tabs.logs.title',
+                    privilege: PRIVILEGE.LOGS_READ,
                 });
             }
             diagnostics.push({
                 route: 'frosh.tools.index.featureflags',
                 labelKey: 'frosh-tools.tabs.feature-flags.title',
+                privilege: PRIVILEGE.READ,
             });
 
             const cdn = [];
@@ -165,6 +177,7 @@ Component.register('frosh-tools-index', {
                 cdn.push({
                     route: 'frosh.tools.index.fastly',
                     labelKey: 'frosh-tools.tabs.fastly.title',
+                    privilege: PRIVILEGE.FASTLY_READ,
                 });
             }
 
@@ -174,7 +187,14 @@ Component.register('frosh-tools-index', {
                 { labelKey: 'frosh-tools.nav.operations', items: operations },
                 { labelKey: 'frosh-tools.nav.diagnostics', items: diagnostics },
                 { labelKey: 'frosh-tools.nav.cdn', items: cdn },
-            ];
+            ]
+                .map((group) => ({
+                    ...group,
+                    items: group.items.filter((item) =>
+                        this.acl.can(item.privilege)
+                    ),
+                }))
+                .filter((group) => group.items.length);
         },
     },
 

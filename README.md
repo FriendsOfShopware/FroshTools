@@ -137,7 +137,13 @@ The Shopware version indicator is extended with a compact **health status** (suc
 
 - Shopware **6.6** or **6.7**
 - PHP version required by your Shopware minor
-- Admin ACL privilege `frosh_tools:read` (and webhook privileges where applicable)
+- Admin ACL privileges under **Settings → Users & permissions** (Viewer / Editor per area):
+  - **Frosh Tools** — system status, statistics, feature flags, state machines. Editor grants every Tools write privilege (and pulls in the other viewers).
+  - **Cache / Queue / Scheduled tasks / Search indices / Security / Fastly / Shopmon** — Viewer to open the tab, Editor for mutations (clear cache, retry/purge, run tasks, reindex, restore files, purge CDN, setup integration).
+  - **Logs** — Viewer only (production log contents).
+  - Webhook privileges remain a separate CRUD row.
+
+  Existing roles that only had `frosh_tools:read` keep the overview tabs; re-open the role and tick the area viewers/editors they should keep. Super-admin is unchanged.
 
 ---
 

@@ -1,6 +1,7 @@
 import template from './template.twig';
 import './style.scss';
 import DiffMatchPatch from 'diff-match-patch';
+import { PRIVILEGE } from '../../acl/privileges';
 
 const { Component, Mixin } = Shopware;
 
@@ -9,7 +10,7 @@ const { Component, Mixin } = Shopware;
 // so it lives on its own sub-tab inside the Security Center.
 Component.register('frosh-tools-security-files', {
     template,
-    inject: ['froshToolsService'],
+    inject: ['froshToolsService', 'acl'],
     mixins: [
         Mixin.getByName('notification'),
         Mixin.getByName('frosh-sortable-table'),
@@ -26,6 +27,12 @@ Component.register('frosh-tools-security-files', {
             },
             showModal: false,
         };
+    },
+
+    computed: {
+        canUpdate() {
+            return this.acl.can(PRIVILEGE.SECURITY_UPDATE);
+        },
     },
 
     created() {

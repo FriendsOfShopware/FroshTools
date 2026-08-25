@@ -1,5 +1,6 @@
 import template from './template.twig';
 import './style.scss';
+import { PRIVILEGE } from '../../acl/privileges';
 
 const { Component, Mixin } = Shopware;
 
@@ -47,6 +48,10 @@ Component.register('frosh-tools-tab-queue', {
                 'name',
                 'type',
             ]);
+        },
+
+        canUpdate() {
+            return this.acl.can(PRIVILEGE.QUEUE_UPDATE);
         },
     },
 

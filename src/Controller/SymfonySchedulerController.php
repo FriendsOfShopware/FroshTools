@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Frosh\Tools\Controller;
 
+use Frosh\Tools\Acl\FroshToolsPrivileges;
 use Frosh\Tools\Components\Scheduler\SymfonyScheduleCollector;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
@@ -14,7 +15,7 @@ use Symfony\Component\Routing\Attribute\Route;
 use Symfony\Component\Scheduler\Generator\MessageContext;
 use Symfony\Component\Scheduler\Messenger\ScheduledStamp;
 
-#[Route(path: '/api/_action/frosh-tools', defaults: ['_routeScope' => ['api'], '_acl' => ['frosh_tools:read']])]
+#[Route(path: '/api/_action/frosh-tools', defaults: ['_routeScope' => ['api'], '_acl' => [FroshToolsPrivileges::SCHEDULED_TASK_READ]])]
 class SymfonySchedulerController extends AbstractController
 {
     public function __construct(
@@ -29,7 +30,7 @@ class SymfonySchedulerController extends AbstractController
         return new JsonResponse($this->collector->collect());
     }
 
-    #[Route(path: '/symfony-scheduler/{schedule}/{id}/run', name: 'api.frosh.tools.symfony.scheduler.run', methods: ['POST'])]
+    #[Route(path: '/symfony-scheduler/{schedule}/{id}/run', name: 'api.frosh.tools.symfony.scheduler.run', defaults: ['_acl' => [FroshToolsPrivileges::SCHEDULED_TASK_UPDATE]], methods: ['POST'])]
     public function runTask(string $schedule, string $id): Response
     {
         $recurringMessage = $this->collector->findRecurringMessage($schedule, $id);

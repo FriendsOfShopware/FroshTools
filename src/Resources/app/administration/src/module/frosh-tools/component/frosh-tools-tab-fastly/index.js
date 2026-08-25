@@ -1,11 +1,12 @@
 import template from './template.twig';
 import './frosh-tools-tab-fastly.scss';
+import { PRIVILEGE } from '../../acl/privileges';
 
 const { Component, Mixin } = Shopware;
 
 Component.register('frosh-tools-tab-fastly', {
     template,
-    inject: ['froshToolsService'],
+    inject: ['froshToolsService', 'acl'],
     mixins: [
         Mixin.getByName('notification'),
         Mixin.getByName('frosh-sortable-table'),
@@ -51,6 +52,10 @@ Component.register('frosh-tools-tab-fastly', {
                     label: this.$t('frosh-tools.tabs.fastly.timeframes.30d'),
                 },
             ];
+        },
+
+        canUpdate() {
+            return this.acl.can(PRIVILEGE.FASTLY_UPDATE);
         },
     },
 

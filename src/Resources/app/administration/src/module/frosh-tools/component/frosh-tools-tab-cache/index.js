@@ -1,5 +1,6 @@
 import template from './template.twig';
 import './style.scss';
+import { PRIVILEGE } from '../../acl/privileges';
 
 const { Component, Mixin } = Shopware;
 const { Criteria } = Shopware.Data;
@@ -11,6 +12,7 @@ Component.register('frosh-tools-tab-cache', {
         froshToolsService: { from: 'froshToolsService' },
         repositoryFactory: { from: 'repositoryFactory' },
         themeService: { from: 'themeService' },
+        acl: { from: 'acl' },
         froshToolsSearch: { default: null },
     },
     mixins: [
@@ -83,6 +85,10 @@ Component.register('frosh-tools-tab-cache', {
 
         salesChannelRepository() {
             return this.repositoryFactory.create('sales_channel');
+        },
+
+        canUpdate() {
+            return this.acl.can(PRIVILEGE.CACHE_UPDATE);
         },
     },
 

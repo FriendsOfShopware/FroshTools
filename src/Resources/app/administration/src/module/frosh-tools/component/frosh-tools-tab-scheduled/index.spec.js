@@ -74,6 +74,7 @@ const STUBS = {
 
 async function createWrapper({
     searchTerm = '',
+    canUpdate = true,
     schedules = [],
     froshToolsService = null,
 } = {}) {
@@ -93,6 +94,11 @@ async function createWrapper({
                 froshToolsService: froshToolsService ?? {
                     getSymfonySchedules: jest.fn().mockResolvedValue(schedules),
                     runSymfonySchedulerTask: jest.fn().mockResolvedValue({}),
+                },
+                acl: {
+                    can: (privilege) =>
+                        canUpdate ||
+                        privilege !== 'frosh_tools_scheduled_task:update',
                 },
                 froshToolsSearch: { searchTerm },
             },
@@ -124,6 +130,16 @@ describe('frosh-tools-tab-scheduled search', () => {
         const rows = wrapper.findAll('tbody tr');
         expect(rows).toHaveLength(1);
         expect(rows[0].text()).toContain('log_entry.cleanup');
+    });
+
+    it('hides task actions when the user cannot update', async () => {
+        const wrapper = await createWrapper({ canUpdate: false });
+        await flushPromises();
+
+        expect(wrapper.vm.canUpdate).toBe(false);
+        expect(wrapper.find('.frosh-tab-scheduled__menu-wrap').exists()).toBe(
+            false
+        );
     });
 
     it('shows a no-results state when nothing matches', async () => {
@@ -203,6 +219,16 @@ describe('frosh-tools-tab-scheduled symfony scheduler', () => {
         expect(wrapper.vm.schedules).toBeNull();
         expect(wrapper.vm.visibleSchedules).toHaveLength(0);
         expect(wrapper.vm.visibleItems).toHaveLength(TASKS.length);
+    });
+
+    it('hides scheduler run actions when the user cannot update', async () => {
+        const wrapper = await createWrapper({
+            schedules: SCHEDULES,
+            canUpdate: false,
+        });
+        await flushPromises();
+
+        expect(wrapper.findAll('.ft-table__actions')).toHaveLength(0);
     });
 
     it('dispatches a recurring message through the api service', async () => {

@@ -1,5 +1,6 @@
 import template from './template.twig';
 import './style.scss';
+import { PRIVILEGE } from '../../acl/privileges';
 
 const { Mixin, Component } = Shopware;
 
@@ -8,6 +9,7 @@ Component.register('frosh-tools-tab-elasticsearch', {
 
     inject: {
         froshElasticSearch: { from: 'froshElasticSearch' },
+        acl: { from: 'acl' },
         froshToolsSearch: { default: null },
     },
     mixins: [
@@ -39,6 +41,10 @@ Component.register('frosh-tools-tab-elasticsearch', {
 
         visibleIndices() {
             return this.filterRows(this.indices, this.searchTerm, ['name']);
+        },
+
+        canUpdate() {
+            return this.acl.can(PRIVILEGE.ELASTICSEARCH_UPDATE);
         },
 
         engineName() {

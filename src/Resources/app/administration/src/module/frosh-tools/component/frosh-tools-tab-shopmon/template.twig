@@ -24,6 +24,7 @@
             </p>
             <div class="frosh-tab-shopmon__cta">
                 <button
+                    v-if="canUpdate"
                     class="frosh-tab-shopmon__cta-primary"
                     :disabled="isSettingUp"
                     @click="setup"
@@ -115,6 +116,7 @@
                     </span>
                 </a>
                 <button
+                    v-if="canUpdate"
                     class="ft-btn ft-btn--danger"
                     @click="showRemoveModal = true"
                 >

@@ -510,10 +510,33 @@
         }
     },
     "sw-privileges": {
-        "additional_permissions": {
+        "permissions": {
             "frosh_tools": {
-                "frosh_tools": "Überwachung anzeigen",
-                "label": "Frosh tools"
+                "label": "Frosh Tools"
+            },
+            "frosh_tools_cache": {
+                "label": "Frosh Tools — Cache"
+            },
+            "frosh_tools_queue": {
+                "label": "Frosh Tools — Warteschlange"
+            },
+            "frosh_tools_scheduled_task": {
+                "label": "Frosh Tools — Geplante Aufgaben"
+            },
+            "frosh_tools_elasticsearch": {
+                "label": "Frosh Tools — Suchindizes"
+            },
+            "frosh_tools_logs": {
+                "label": "Frosh Tools — Logs"
+            },
+            "frosh_tools_security": {
+                "label": "Frosh Tools — Sicherheit"
+            },
+            "frosh_tools_fastly": {
+                "label": "Frosh Tools — Fastly"
+            },
+            "frosh_tools_shopmon": {
+                "label": "Frosh Tools — Shopmon"
             }
         }
     },

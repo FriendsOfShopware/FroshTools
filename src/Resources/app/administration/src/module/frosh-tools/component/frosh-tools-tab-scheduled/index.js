@@ -1,5 +1,6 @@
 import template from './template.twig';
 import './style.scss';
+import { PRIVILEGE } from '../../acl/privileges';
 
 const { Component, Mixin } = Shopware;
 const { Criteria } = Shopware.Data;
@@ -9,6 +10,7 @@ Component.register('frosh-tools-tab-scheduled', {
     inject: {
         repositoryFactory: { from: 'repositoryFactory' },
         froshToolsService: { from: 'froshToolsService' },
+        acl: { from: 'acl' },
         froshToolsSearch: { default: null },
     },
     mixins: [
@@ -59,6 +61,10 @@ Component.register('frosh-tools-tab-scheduled', {
 
         dateFilter() {
             return Shopware.Filter.getByName('date');
+        },
+
+        canUpdate() {
+            return this.acl.can(PRIVILEGE.SCHEDULED_TASK_UPDATE);
         },
 
         visibleSchedules() {

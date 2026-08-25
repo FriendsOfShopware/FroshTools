@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Frosh\Tools\Tests\Controller;
 
+use Frosh\Tools\Acl\FroshToolsPrivileges;
 use Frosh\Tools\Controller\QueueController;
 use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\Attributes\DataProvider;
@@ -19,7 +20,7 @@ class QueueControllerTest extends TestCase
         $attributes = (new \ReflectionMethod(QueueController::class, $method))->getAttributes(Route::class);
 
         static::assertCount(1, $attributes);
-        static::assertSame(['_acl' => ['frosh_tools:update']], $attributes[0]->newInstance()->defaults);
+        static::assertSame(['_acl' => [FroshToolsPrivileges::QUEUE_UPDATE]], $attributes[0]->newInstance()->defaults);
     }
 
     /**

@@ -1,11 +1,12 @@
 import template from './template.twig';
 import './style.scss';
+import { PRIVILEGE } from '../../acl/privileges';
 
 const { Component, Mixin } = Shopware;
 
 Component.register('frosh-tools-tab-shopmon', {
     template,
-    inject: ['froshToolsService'],
+    inject: ['froshToolsService', 'acl'],
     mixins: [Mixin.getByName('notification')],
 
     data() {
@@ -21,6 +22,10 @@ Component.register('frosh-tools-tab-shopmon', {
     computed: {
         isConfigured() {
             return this.status?.configured === true;
+        },
+
+        canUpdate() {
+            return this.acl.can(PRIVILEGE.SHOPMON_UPDATE);
         },
     },
 

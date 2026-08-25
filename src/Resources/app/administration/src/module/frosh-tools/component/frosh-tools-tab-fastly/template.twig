@@ -50,7 +50,10 @@
             <dd>{{ formatNumber(stats.hits) }}</dd>
         </dl>
     </ft-panel>
-    <ft-panel title="Purge controls">
+    <ft-panel
+        v-if="canUpdate"
+        title="Purge controls"
+    >
         <p class="frosh-tab-fastly__desc">
             {{ $t('frosh-tools.tabs.fastly.description') }}
         </p>

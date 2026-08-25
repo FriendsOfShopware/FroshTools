@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Frosh\Tools\Controller;
 
+use Frosh\Tools\Acl\FroshToolsPrivileges;
 use Frosh\Tools\Components\Elasticsearch\ElasticsearchManager;
 use Frosh\Tools\Components\Exception\FroshToolsException;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -12,7 +13,7 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
 
-#[Route(path: '/api/_action/frosh-tools/elasticsearch', defaults: ['_routeScope' => ['api'], '_acl' => ['frosh_tools:read']])]
+#[Route(path: '/api/_action/frosh-tools/elasticsearch', defaults: ['_routeScope' => ['api'], '_acl' => [FroshToolsPrivileges::ELASTICSEARCH_READ]])]
 class ElasticsearchController extends AbstractController
 {
     public function __construct(private readonly ElasticsearchManager $manager)
@@ -39,7 +40,7 @@ class ElasticsearchController extends AbstractController
         return new JsonResponse($this->manager->indices());
     }
 
-    #[Route(path: '/index/{indexName}', name: 'api.frosh.tools.elasticsearch.delete_index', methods: ['DELETE'])]
+    #[Route(path: '/index/{indexName}', name: 'api.frosh.tools.elasticsearch.delete_index', defaults: ['_acl' => [FroshToolsPrivileges::ELASTICSEARCH_UPDATE]], methods: ['DELETE'])]
     public function deleteIndex(string $indexName): Response
     {
         if (!$this->manager->isEnabled()) {
@@ -49,7 +50,7 @@ class ElasticsearchController extends AbstractController
         return new JsonResponse($this->manager->deleteIndex($indexName));
     }
 
-    #[Route(path: '/console/{path}', name: 'api.frosh.tools.elasticsearch.proxy', requirements: ['path' => '.*'])]
+    #[Route(path: '/console/{path}', name: 'api.frosh.tools.elasticsearch.proxy', requirements: ['path' => '.*'], defaults: ['_acl' => [FroshToolsPrivileges::ELASTICSEARCH_UPDATE]])]
     public function console(Request $request, string $path): Response
     {
         if (!$this->manager->isEnabled()) {
@@ -69,7 +70,7 @@ class ElasticsearchController extends AbstractController
         return new JsonResponse($data);
     }
 
-    #[Route(path: '/flush_all', name: 'api.frosh.tools.elasticsearch.flush', methods: ['POST'])]
+    #[Route(path: '/flush_all', name: 'api.frosh.tools.elasticsearch.flush', defaults: ['_acl' => [FroshToolsPrivileges::ELASTICSEARCH_UPDATE]], methods: ['POST'])]
     public function flushAll(): Response
     {
         $this->manager->flushAll();
@@ -77,7 +78,7 @@ class ElasticsearchController extends AbstractController
         return new Response('', Response::HTTP_NO_CONTENT);
     }
 
-    #[Route(path: '/reindex', name: 'api.frosh.tools.elasticsearch.reindex', methods: ['POST'])]
+    #[Route(path: '/reindex', name: 'api.frosh.tools.elasticsearch.reindex', defaults: ['_acl' => [FroshToolsPrivileges::ELASTICSEARCH_UPDATE]], methods: ['POST'])]
     public function reindex(): Response
     {
         $this->manager->reindex();
@@ -85,7 +86,7 @@ class ElasticsearchController extends AbstractController
         return new Response('', Response::HTTP_NO_CONTENT);
     }
 
-    #[Route(path: '/switch_alias', name: 'api.frosh.tools.elasticsearch.switch_alias', methods: ['POST'])]
+    #[Route(path: '/switch_alias', name: 'api.frosh.tools.elasticsearch.switch_alias', defaults: ['_acl' => [FroshToolsPrivileges::ELASTICSEARCH_UPDATE]], methods: ['POST'])]
     public function switchAlias(): Response
     {
         $this->manager->switchAlias();
@@ -113,7 +114,7 @@ class ElasticsearchController extends AbstractController
         return new JsonResponse($this->manager->getOrphanedIndices());
     }
 
-    #[Route(path: '/cleanup', name: 'api.frosh.tools.elasticsearch.cleanup', methods: ['POST'])]
+    #[Route(path: '/cleanup', name: 'api.frosh.tools.elasticsearch.cleanup', defaults: ['_acl' => [FroshToolsPrivileges::ELASTICSEARCH_UPDATE]], methods: ['POST'])]
     public function deleteUnusedIndices(): Response
     {
         if (!$this->manager->isEnabled()) {
@@ -123,7 +124,7 @@ class ElasticsearchController extends AbstractController
         return new JsonResponse($this->manager->deleteUnusedIndices());
     }
 
-    #[Route(path: '/cleanup_orphaned', name: 'api.frosh.tools.elasticsearch.cleanup_orphaned', methods: ['POST'])]
+    #[Route(path: '/cleanup_orphaned', name: 'api.frosh.tools.elasticsearch.cleanup_orphaned', defaults: ['_acl' => [FroshToolsPrivileges::ELASTICSEARCH_UPDATE]], methods: ['POST'])]
     public function deleteOrphanedIndices(Request $request): Response
     {
         if (!$this->manager->isEnabled()) {
@@ -157,7 +158,7 @@ class ElasticsearchController extends AbstractController
         return new JsonResponse($this->manager->deleteOrphanedIndices($indices));
     }
 
-    #[Route(path: '/reset', name: 'api.frosh.tools.elasticsearch.reset', methods: ['POST'])]
+    #[Route(path: '/reset', name: 'api.frosh.tools.elasticsearch.reset', defaults: ['_acl' => [FroshToolsPrivileges::ELASTICSEARCH_UPDATE]], methods: ['POST'])]
     public function reset(): Response
     {
         $this->manager->reset();

@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Frosh\Tools\Controller;
 
+use Frosh\Tools\Acl\FroshToolsPrivileges;
 use Frosh\Tools\Components\CacheHelper;
 use Frosh\Tools\Components\CacheRegistry;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -12,7 +13,7 @@ use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
 
-#[Route(path: '/api/_action/frosh-tools', defaults: ['_routeScope' => ['api'], '_acl' => ['frosh_tools:read']])]
+#[Route(path: '/api/_action/frosh-tools', defaults: ['_routeScope' => ['api'], '_acl' => [FroshToolsPrivileges::CACHE_READ]])]
 class CacheController extends AbstractController
 {
     public function __construct(
@@ -72,7 +73,7 @@ class CacheController extends AbstractController
         return new JsonResponse($result);
     }
 
-    #[Route(path: '/cache/{folder}', name: 'api.frosh.tools.cache.clear', methods: ['DELETE'])]
+    #[Route(path: '/cache/{folder}', name: 'api.frosh.tools.cache.clear', defaults: ['_acl' => [FroshToolsPrivileges::CACHE_UPDATE]], methods: ['DELETE'])]
     public function clearCache(string $folder): JsonResponse
     {
         if ($this->cacheRegistry->has($folder)) {
@@ -84,7 +85,7 @@ class CacheController extends AbstractController
         return new JsonResponse(null, Response::HTTP_NO_CONTENT);
     }
 
-    #[Route(path: '/cache_clear_opcache', name: 'api.frosh.tools.cache.clear_opcache', methods: ['DELETE'])]
+    #[Route(path: '/cache_clear_opcache', name: 'api.frosh.tools.cache.clear_opcache', defaults: ['_acl' => [FroshToolsPrivileges::CACHE_UPDATE]], methods: ['DELETE'])]
     public function clearOpCache(): JsonResponse
     {
         if (\function_exists('opcache_reset')) {

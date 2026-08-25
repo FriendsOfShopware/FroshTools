@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Frosh\Tools\Controller;
 
+use Frosh\Tools\Acl\FroshToolsPrivileges;
 use Psr\Log\LoggerInterface;
 use Shopware\Core\Framework\Api\Context\AdminApiSource;
 use Shopware\Core\Framework\Context;
@@ -23,7 +24,7 @@ use Symfony\Component\Routing\Attribute\Route;
 use Symfony\Contracts\HttpClient\HttpClientInterface;
 
 #[AutoconfigureTag('monolog.logger', ['channel' => 'frosh-tools'])]
-#[Route(path: '/api/_action/frosh-tools', defaults: ['_routeScope' => ['api'], '_acl' => ['frosh_tools:read']])]
+#[Route(path: '/api/_action/frosh-tools', defaults: ['_routeScope' => ['api'], '_acl' => [FroshToolsPrivileges::SECURITY_READ]])]
 class ShopwareFilesController extends AbstractController
 {
     private const STATUS_OK = 0;
@@ -141,7 +142,7 @@ class ShopwareFilesController extends AbstractController
         ]);
     }
 
-    #[Route(path: '/shopware-file/restore', name: 'api.frosh.tools.shopware-file.restore', methods: ['GET'])]
+    #[Route(path: '/shopware-file/restore', name: 'api.frosh.tools.shopware-file.restore', defaults: ['_acl' => [FroshToolsPrivileges::SECURITY_UPDATE]], methods: ['GET'])]
     public function restoreShopwareFile(Request $request, Context $context): JsonResponse
     {
         if ($this->shopwareVersion === Kernel::SHOPWARE_FALLBACK_VERSION) {
