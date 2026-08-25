@@ -5,7 +5,7 @@
     >
         <template #actions>
             <sw-select-field
-                v-model:value="version.target"
+                v-model="selectedVersion"
                 name="sw-field--selectedVersion"
                 size="small"
                 @update:value="onVersionChanged"
@@ -93,7 +93,7 @@
                         >{{ $t('frosh-tools.tabs.database-diff.name') }}</ft-th-sort>
                         <th>{{ $t('frosh-tools.tabs.database-diff.valueA') }}</th>
                         <th>{{ $t('frosh-tools.tabs.database-diff.valueB', {
-                                'version': version.selected,
+                                version: version.selected?.version,
                             }) }}</th>
                     </tr>
                 </thead>
@@ -121,4 +121,16 @@
             </table>
         </div>
     </ft-panel>
+    <p class="swdb-external-link">
+        <a v-if="version.selected"
+           class="ft-link"
+           @click="openLinkForVersion(version.selected)"
+        >
+            {{ $t('frosh-tools.tabs.database-diff.externalLink', {
+                version: version.selected?.version,
+            }) }}
+
+            <ft-icon name="external-link"/>
+        </a>
+    </p>
 </div>

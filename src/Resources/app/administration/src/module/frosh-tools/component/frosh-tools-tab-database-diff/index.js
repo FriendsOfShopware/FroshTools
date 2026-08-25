@@ -20,7 +20,6 @@ Component.register('frosh-tools-tab-database-diff', {
             isLoading: true,
             loadError: null,
             version: {
-                // current latest: 2026-08-21
                 selected: null,
                 target: null,
                 available: [],
@@ -61,9 +60,13 @@ Component.register('frosh-tools-tab-database-diff', {
 
         availableVersions() {
             return this.version.available.map((item) => ({
-                id:   item.version,
+                id:   item.slug,
                 name: item.version,
             }));
+        },
+
+        selectedVersion() {
+            return this.version.target?.slug;
         },
     },
 
@@ -82,27 +85,42 @@ Component.register('frosh-tools-tab-database-diff', {
 
             try {
                 if (forceRefresh || !this.version.available.length) {
-                    this.version.available = Object.values(await this.froshToolsService.getDatabaseVersions());
-                    this.version.target  ??= (this.version.available[this.version.available.length - 1] ?? null)?.version;
+                    await this.loadVersions();
                 }
 
-                const version = this.version.target;
-                this.diff     = await this.froshToolsService.getDatabaseDiff(version, this.introspection);
+                const version = this.version.target?.version;
+                if (!version) {
+                    throw new Error('No target version selected');
+                }
 
-                this.version.selected  = version;
+                this.diff = await this.froshToolsService.getDatabaseDiff(version, this.introspection);
+
+                this.version.selected = this.version.target;
             } catch (error) {
                 this.diff = null;
                 this.loadError = error?.response?.data?.error ?? error.message;
 
                 this.createNotificationError({ message: this.loadError });
 
-                throw error;
+                //throw error;
             } finally {
                 this.isLoading = false;
             }
         },
 
-        async onVersionChanged() {
+        async loadVersions() {
+            this.version.available = Object.values(await this.froshToolsService.getDatabaseVersions());
+
+            if (this.version.target) {
+                return;
+            }
+
+            this.version.target    = this.version.available[this.version.available.length - 1] ?? null;
+        },
+
+        async onVersionChanged(slug) {
+            this.version.target = this.version.available.find(item => item.slug === slug) ?? null;
+
             await this.load();
         },
 
@@ -136,6 +154,14 @@ Component.register('frosh-tools-tab-database-diff', {
                 default:
                     throw new Error(`Unknown label type ${label}`);
             }
+        },
+
+        openLinkForVersion(version) {
+            if (!version.slug) return;
+
+            const url = `https://swdb.dev/version/${version.slug}/`;
+
+            window.open(url, '_blank');
         },
     },
 });

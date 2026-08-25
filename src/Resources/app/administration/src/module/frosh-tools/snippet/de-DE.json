@@ -177,7 +177,8 @@
                 "name": "Name",
                 "valueA": "Aktuelle Version",
                 "valueB": "Version {version}",
-                "introspection": "Live Analyse"
+                "introspection": "Live Analyse",
+                "externalLink": "Die Dokumentation aller Tabellen der Version {version} gibt es auf swdb.dev"
             },
             "files": {
                 "title": "Shopware Dateien Checker",
