@@ -37,12 +37,49 @@ class DatabaseDiffService
             $json = \trim((string) $json);
             $data = Json::decodeToList($json);
 
-            // TODO: Adapt validation after endpoint is available.
-            //return \array_filter($data, 'is_string');
+            [$data, $errors] = $this->createVersions($data);
             return $data;
         } catch (\Throwable $error) {
             throw new \RuntimeException('Failed to load available versions', previous: $error);
         }
+    }
+
+    /**
+     * Separates valid from invalid entries in the version list response.
+     *
+     * @return array{0: array, 1: array}
+     */
+    private function createVersions(array $data): array
+    {
+        // TODO: Implement full validation definition.
+        $definition = (new DataValidationDefinition('frosh_tools.shopware_database_schema.version'))
+            ->add('version', new Assert\Type('string'))
+            ->add('slug', new Assert\Type('string'))
+            ->add('major', new Assert\Type('int'), new Assert\GreaterThanOrEqual(6))
+            ->add('minor', new Assert\Type('int'))
+            ->add('majorMinor', new Assert\Type('string'))
+            ->add('tableCount', new Assert\Type('integer'))
+            ->add('url', new Assert\Type('string'), new Assert\Url())
+            ->add('schemaUrl', new Assert\Type('string'), new Assert\Url());
+
+        $versions = [];
+        $errors   = [];
+
+        foreach ($data as $versionInfo) {
+            try {
+                $this->validator->validate($versionInfo, $definition);
+
+                $versions[$versionInfo['version']] = $versionInfo;
+            } catch (ConstraintViolationException $exception) {
+                $errors[$versionInfo['version']] = [
+                    'error'      => $exception->getMessage(),
+                    'violations' => (string) $exception->getViolations(),
+                    'data'       => $versionInfo,
+                ];
+            }
+        }
+
+        return [$versions, $errors];
     }
 
     /**
@@ -51,7 +88,9 @@ class DatabaseDiffService
     public function getDatabaseSchema(string $version): Schema
     {
         // TODO: Add resolution to the next higher/lower version available. Also, maybe handle the DEV version alias.
-        $version = \ltrim(Feature::normalizeName($version), 'v');
+        $version = \str_replace('RC', 'rc',
+            \ltrim(Feature::normalizeName($version), 'v')
+        );
         $url     = 'https://swdb.dev/api/schemas/%s.schema.json';
 
         try {

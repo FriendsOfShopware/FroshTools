@@ -22,9 +22,8 @@ Component.register('frosh-tools-tab-database-diff', {
             version: {
                 // current latest: 2026-08-21
                 selected: null,
-                target: '6.7.12.2',
-                // TODO: Populate
-                current: null,
+                target: null,
+                available: [],
             },
             introspection: false,
         };
@@ -59,30 +58,38 @@ Component.register('frosh-tools-tab-database-diff', {
             }
             return summary;
         },
+
+        availableVersions() {
+            return this.version.available.map((item) => ({
+                id:   item.version,
+                name: item.version,
+            }));
+        },
     },
 
     methods: {
         async refresh() {
-            await this.load();
+            await this.load(true);
         },
 
         async createdComponent() {
-            await this.load();
+            await this.load(true);
         },
 
-        async load() {
+        async load(forceRefresh = false) {
             this.isLoading = true;
             this.loadError = null;
 
-            // TODO: Only refresh if matching version number pattern "6|5.X.Y.Z".
-
             try {
-                const version = this.version.target;
-                // TODO: Add support for "introspection" query parameter and current database inspection.
-                this.diff =
-                    await this.froshToolsService.getDatabaseDiff(version, this.introspection);
+                if (forceRefresh || !this.version.available.length) {
+                    this.version.available = Object.values(await this.froshToolsService.getDatabaseVersions());
+                    this.version.target  ??= (this.version.available[this.version.available.length - 1] ?? null)?.version;
+                }
 
-                this.version.selected = version;
+                const version = this.version.target;
+                this.diff     = await this.froshToolsService.getDatabaseDiff(version, this.introspection);
+
+                this.version.selected  = version;
             } catch (error) {
                 this.diff = null;
                 this.loadError = error?.response?.data?.error ?? error.message;
@@ -95,15 +102,14 @@ Component.register('frosh-tools-tab-database-diff', {
             }
         },
 
-        onVersionChange(version) {
-            // TODO: Validate pattern?
-            // TODO: Or switch to sw-select component (with available-versions endpoint).
+        async onVersionChanged() {
+            await this.load();
         },
 
-        onChangeIntrospection(introspection) {
+        async onChangeIntrospection(introspection) {
             this.introspection = introspection;
 
-            this.refresh();
+            await this.load();
         },
 
         variantForLabel(label) {

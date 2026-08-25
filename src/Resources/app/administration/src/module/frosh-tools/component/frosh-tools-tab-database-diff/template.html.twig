@@ -4,16 +4,16 @@
         :subtitle="$t('frosh-tools.tabs.database-diff.subtitle')"
     >
         <template #actions>
-            <!-- TODO: Use combined textbox + button component. -->
-            <sw-text-field
+            <sw-select-field
                 v-model:value="version.target"
-                :placeholder="$t('frosh-tools.tabs.database-diff.selectedVersion')"
-                :label="$t('frosh-tools.tabs.database-diff.selectedVersionLabel')"
-                key="string"
                 name="sw-field--selectedVersion"
                 size="small"
-                @update:value="onVersionChange"
+                @update:value="onVersionChanged"
                 class="sw-text-field__swdb-version"
+                :placeholder="$t('frosh-tools.tabs.database-diff.selectedVersion')"
+                :label="$t('frosh-tools.tabs.database-diff.selectedVersionLabel')"
+                :is-loading="isLoading"
+                :options="availableVersions"
             />
             <sw-checkbox-field
                 :value="introspection"
@@ -54,7 +54,6 @@
         </ft-hero-state>
     </ft-panel>
     <ft-panel
-        v-if="diff"
         :title="$t('frosh-tools.tabs.database-diff.diff')"
         :count="visibleTables ? visibleTables.length : 0"
         flush

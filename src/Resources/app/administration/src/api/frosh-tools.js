@@ -352,6 +352,17 @@ class FroshTools extends ApiService {
             });
     }
 
+    getDatabaseVersions() {
+        const apiRoute = `${this.getApiBasePath()}/shopware-database-diff/available-versions`;
+        return this.httpClient
+            .get(apiRoute, {
+                headers: this.getBasicHeaders(),
+            })
+            .then((response) => {
+                return ApiService.handleResponse(response);
+            });
+    }
+
     getDatabaseDiff(version, introspection = false) {
         const apiRoute = `${this.getApiBasePath()}/shopware-database-diff/${version}`;
         return this.httpClient
