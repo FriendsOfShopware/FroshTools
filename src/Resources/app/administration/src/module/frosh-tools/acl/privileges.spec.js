@@ -1,3 +1,4 @@
+import { describe, expect, it } from 'vitest';
 import { PRIVILEGE } from './privileges';
 
 describe('frosh-tools privileges', () => {

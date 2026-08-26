@@ -1,5 +1,10 @@
-import { mount } from '@vue/test-utils';
+import { describe, expect, it } from 'vitest';
+import {
+    mount,
+    mountShopwareComponent,
+} from '@friendsofshopware/vitest-shopware-admin-bridge/test-utils';
 import '../../../../mixin/sortable-table';
+import '../ft-icon';
 import './index';
 
 /**
@@ -37,11 +42,7 @@ async function createWrapper({ sortKey = 'name', table = 'default' } = {}) {
         },
     };
 
-    return mount(host, {
-        global: {
-            stubs: { 'ft-icon': true },
-        },
-    });
+    return mount(host);
 }
 
 describe('ft-th-sort', () => {
@@ -87,18 +88,13 @@ describe('ft-th-sort', () => {
     });
 
     it('works without a sort host', async () => {
-        const thSort = await Shopware.Component.build('ft-th-sort');
-        const wrapper = mount(thSort, {
+        const wrapper = await mountShopwareComponent('ft-th-sort', {
             props: { sortKey: 'name' },
             slots: { default: 'Name' },
-            global: {
-                stubs: { 'ft-icon': true },
-            },
         });
 
         expect(wrapper.find('th').attributes('aria-sort')).toBeUndefined();
 
-        // Clicking must not explode when no host is provided.
         await wrapper.find('button').trigger('click');
         expect(wrapper.vm.dir).toBeNull();
     });

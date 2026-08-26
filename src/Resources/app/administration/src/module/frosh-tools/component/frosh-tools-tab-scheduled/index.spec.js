@@ -1,4 +1,6 @@
-import { mount } from '@vue/test-utils';
+import { describe, expect, it, vi } from 'vitest';
+import { flushPromises } from '@friendsofshopware/vitest-shopware-admin-bridge/test-utils';
+import { createAcl, mountRegistered } from '../../../../../test/helpers';
 import '../../../../mixin/sortable-table';
 import './index';
 
@@ -56,22 +58,6 @@ const SCHEDULES = [
     },
 ];
 
-const STUBS = {
-    // The panel must render its default slot — the table lives inside it.
-    'ft-panel': { template: '<section><slot /></section>' },
-    'ft-page-head': true,
-    'ft-empty': true,
-    'ft-hero-state': true,
-    'ft-th-sort': { template: '<th><slot /></th>' },
-    'ft-pill': true,
-    'ft-icon': true,
-    'ft-modal': true,
-    'ft-button': true,
-    'ft-refresh-button': true,
-    'sw-number-field': true,
-    'sw-datepicker': true,
-};
-
 async function createWrapper({
     searchTerm = '',
     canUpdate = true,
@@ -79,34 +65,23 @@ async function createWrapper({
     froshToolsService = null,
 } = {}) {
     const scheduledRepository = {
-        search: jest.fn().mockResolvedValue(TASKS),
-        save: jest.fn().mockResolvedValue({}),
+        search: vi.fn().mockResolvedValue(TASKS),
+        save: vi.fn().mockResolvedValue({}),
     };
 
-    const component = await Shopware.Component.build(
-        'frosh-tools-tab-scheduled'
-    );
-
-    return mount(component, {
-        global: {
-            provide: {
-                repositoryFactory: { create: () => scheduledRepository },
-                froshToolsService: froshToolsService ?? {
-                    getSymfonySchedules: jest.fn().mockResolvedValue(schedules),
-                    runSymfonySchedulerTask: jest.fn().mockResolvedValue({}),
-                },
-                acl: {
-                    can: (privilege) =>
-                        canUpdate ||
-                        privilege !== 'frosh_tools_scheduled_task:update',
-                },
-                froshToolsSearch: { searchTerm },
+    return mountRegistered('frosh-tools-tab-scheduled', {
+        provide: {
+            repositoryFactory: { create: () => scheduledRepository },
+            froshToolsService: froshToolsService ?? {
+                getSymfonySchedules: vi.fn().mockResolvedValue(schedules),
+                runSymfonySchedulerTask: vi.fn().mockResolvedValue({}),
             },
-            stubs: STUBS,
-            mocks: {
-                $t: (key) => key,
-                $tc: (key) => key,
-            },
+            acl: createAcl(canUpdate, 'frosh_tools_scheduled_task:update'),
+            froshToolsSearch: { searchTerm },
+        },
+        stubs: {
+            'sw-number-field': true,
+            'sw-datepicker': true,
         },
     });
 }
@@ -209,7 +184,7 @@ describe('frosh-tools-tab-scheduled symfony scheduler', () => {
     it('keeps the shopware task table when the scheduler lookup fails', async () => {
         const wrapper = await createWrapper({
             froshToolsService: {
-                getSymfonySchedules: jest
+                getSymfonySchedules: vi
                     .fn()
                     .mockRejectedValue(new Error('nope')),
             },
@@ -232,10 +207,10 @@ describe('frosh-tools-tab-scheduled symfony scheduler', () => {
     });
 
     it('dispatches a recurring message through the api service', async () => {
-        const runSymfonySchedulerTask = jest.fn().mockResolvedValue({});
+        const runSymfonySchedulerTask = vi.fn().mockResolvedValue({});
         const wrapper = await createWrapper({
             froshToolsService: {
-                getSymfonySchedules: jest.fn().mockResolvedValue(SCHEDULES),
+                getSymfonySchedules: vi.fn().mockResolvedValue(SCHEDULES),
                 runSymfonySchedulerTask,
             },
         });

@@ -54,6 +54,7 @@
     "scripts": {
         "format": "docker run --rm -v $(pwd):/ext shopware/shopware-cli:latest extension format /ext",
         "check": "docker run --rm -v $(pwd):/ext shopware/shopware-cli:latest extension validate --full /ext",
-        "phpunit": "../../../vendor/bin/phpunit -c phpunit.xml"
+        "phpunit": "../../../vendor/bin/phpunit -c phpunit.xml",
+        "test:admin": "npm --prefix src/Resources/app/administration run test:unit"
     }
 }

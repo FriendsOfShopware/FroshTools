@@ -1,55 +1,40 @@
-import { mount } from '@vue/test-utils';
+import { afterEach, describe, expect, it, vi } from 'vitest';
+import {
+    flushPromises,
+    mountShopwareComponent,
+} from '@friendsofshopware/vitest-shopware-admin-bridge/test-utils';
+import { createAcl, FT_STUBS } from '../../../../../test/helpers';
 import '../../../../mixin/sortable-table';
 import '../ft-modal';
 import './index';
 
 function createService() {
     return {
-        status: jest.fn().mockResolvedValue({
+        status: vi.fn().mockResolvedValue({
             info: { version: { number: '8.11.0' } },
             health: { status: 'green', number_of_nodes: 1 },
         }),
-        indices: jest.fn().mockResolvedValue([]),
-        deleteIndex: jest.fn().mockResolvedValue({}),
-        flushAll: jest.fn().mockResolvedValue({}),
-        reset: jest.fn().mockResolvedValue({}),
-        reindex: jest.fn().mockResolvedValue({}),
-        switchAlias: jest.fn().mockResolvedValue({}),
+        indices: vi.fn().mockResolvedValue([]),
+        deleteIndex: vi.fn().mockResolvedValue({}),
+        flushAll: vi.fn().mockResolvedValue({}),
+        reset: vi.fn().mockResolvedValue({}),
+        reindex: vi.fn().mockResolvedValue({}),
+        switchAlias: vi.fn().mockResolvedValue({}),
     };
 }
 
 async function createWrapper(service, { canUpdate = true } = {}) {
-    const [component, ftModal] = await Promise.all([
-        Shopware.Component.build('frosh-tools-tab-elasticsearch'),
-        Shopware.Component.build('ft-modal'),
-    ]);
-
-    return mount(component, {
+    return mountShopwareComponent('frosh-tools-tab-elasticsearch', {
         global: {
             provide: {
                 froshElasticSearch: service,
-                acl: {
-                    can: (privilege) =>
-                        canUpdate ||
-                        privilege !== 'frosh_tools_elasticsearch:update',
-                },
+                acl: createAcl(canUpdate, 'frosh_tools_elasticsearch:update'),
             },
-            components: { 'ft-modal': ftModal },
-            stubs: [
-                'ft-page-head',
-                'ft-panel',
-                'ft-empty',
-                'ft-hero-state',
-                'ft-pill',
-                'ft-icon',
-                'ft-th-sort',
-                'ft-refresh-button',
-                'sw-code-editor',
-                'teleport',
-            ],
-            mocks: {
-                $t: (key) => key,
-                $tc: (key) => key,
+            stubs: {
+                ...FT_STUBS,
+                'ft-modal': false,
+                'sw-code-editor': true,
+                teleport: true,
             },
             directives: {
                 tooltip: {},
@@ -90,7 +75,6 @@ describe('frosh-tools-tab-elasticsearch destructive actions', () => {
         });
         expect(service.deleteIndex).not.toHaveBeenCalled();
 
-        // The confirm modal renders the matching snippet for the action.
         const modalText = wrapper.find('[role="dialog"]').text();
         expect(modalText).toContain(
             'frosh-tools.tabs.elasticsearch.confirm.deleteIndex.title'
@@ -117,10 +101,7 @@ describe('frosh-tools-tab-elasticsearch destructive actions', () => {
         const wrapper = await createWrapper(service);
         await flushPromises();
 
-        const notifySuccess = jest.spyOn(
-            wrapper.vm,
-            'createNotificationSuccess'
-        );
+        const notifySuccess = vi.spyOn(wrapper.vm, 'createNotificationSuccess');
 
         wrapper.vm.askFlushAll();
         await wrapper.vm.runConfirmedAction();
@@ -129,7 +110,6 @@ describe('frosh-tools-tab-elasticsearch destructive actions', () => {
         expect(service.flushAll).toHaveBeenCalledTimes(1);
         expect(notifySuccess).toHaveBeenCalled();
         expect(wrapper.vm.confirmAction).toBeNull();
-        // Refreshed status + indices after the action.
         expect(service.status).toHaveBeenCalledTimes(2);
         expect(service.indices).toHaveBeenCalledTimes(2);
     });
@@ -140,7 +120,7 @@ describe('frosh-tools-tab-elasticsearch destructive actions', () => {
         const wrapper = await createWrapper(service);
         await flushPromises();
 
-        const notifyError = jest.spyOn(wrapper.vm, 'createNotificationError');
+        const notifyError = vi.spyOn(wrapper.vm, 'createNotificationError');
 
         wrapper.vm.askReset();
         await wrapper.vm.runConfirmedAction();
@@ -149,5 +129,20 @@ describe('frosh-tools-tab-elasticsearch destructive actions', () => {
         expect(notifyError).toHaveBeenCalledWith({ message: 'boom' });
         expect(wrapper.vm.confirmAction).not.toBeNull();
         expect(wrapper.vm.isConfirmingAction).toBe(false);
+    });
+
+    it('labels OpenSearch and maps cluster health variants', async () => {
+        const service = createService();
+        service.status.mockResolvedValue({
+            info: { version: { number: '2.11.0', distribution: 'opensearch' } },
+            health: { status: 'yellow', number_of_nodes: 3 },
+        });
+        const wrapper = await createWrapper(service);
+        await flushPromises();
+
+        expect(wrapper.vm.engineName).toBe('OpenSearch');
+        expect(wrapper.vm.engineVersion).toBe('2.11.0');
+        expect(wrapper.vm.healthVariant).toBe('warning');
+        expect(wrapper.vm.nodeCount).toBe(3);
     });
 });

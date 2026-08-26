@@ -241,6 +241,14 @@ composer check
 
 # PHPUnit (from a Shopware project that requires this plugin)
 composer phpunit
+
+# Administration unit tests (Shopware 6.6 and 6.7)
+# Requires the Administration source + its node_modules; see
+# https://github.com/FriendsOfShopware/vitest-shopware-admin-bridge
+cd src/Resources/app/administration
+npm ci
+npm run test:unit:doctor
+npm run test:unit
 ```
 
 Admin sources live under `src/Resources/app/administration`. Rebuild with:
