@@ -9,6 +9,22 @@ async function createWrapper({
     canRead = true,
     health = [{ state: 'STATE_OK' }],
 } = {}) {
+    const version = '6.6.10.23';
+
+    try {
+        Shopware.Store.get('context').app.config.version = version;
+    } catch {
+        /* Shopware 6.6 uses Vuex */
+    }
+
+    try {
+        Shopware.State.get('context').app.config.version = version;
+    } catch {
+        /* Store-only runtimes */
+    }
+
+    Shopware.Context.app.config.version = version;
+
     await loadShopwareComponent('sw-version');
     await import('./index');
 

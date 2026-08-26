@@ -8,13 +8,35 @@ import '../../../../mixin/sortable-table';
 import './index';
 
 const CACHE_STATS = {
-    opcache: { hitRate: 97.5, hits: 1000, misses: 10, memoryUsage: 50 },
+    opcache: {
+        hitRate: 97.5,
+        hits: 1000,
+        misses: 10,
+        usedMemory: 50,
+        wastedMemory: 5,
+        wastedPercentage: 1.2,
+        totalMemory: 128,
+        cachedScripts: 10,
+        maxCachedScripts: 20,
+        internedStringsUsedMemory: 2,
+        internedStringsFreeMemory: 4,
+        lastRestart: null,
+    },
+    redis: [],
 };
 
 const DB_STATS = {
+    server: {
+        version: '8.0.36',
+        uptime: 3600,
+        queriesPerSecond: 1.2,
+        threads: 4,
+        slowQueries: 0,
+        questions: 100,
+    },
     tables: [
-        { name: 'product', totalSize: 100 },
-        { name: 'order', totalSize: 40 },
+        { name: 'product', engine: 'InnoDB', rows: 10, dataSize: 80, indexSize: 20, totalSize: 100 },
+        { name: 'order', engine: 'InnoDB', rows: 4, dataSize: 30, indexSize: 10, totalSize: 40 },
     ],
 };
 

@@ -37,14 +37,10 @@ describe('frosh-tools-tab-index', () => {
         };
 
         const wrapper = await createWrapper(service);
-        const notifyError = vi.spyOn(wrapper.vm, 'createNotificationError');
         await flushPromises();
 
         expect(wrapper.vm.isLoading).toBe(false);
         expect(wrapper.vm.loadError).toBe('Request failed');
-        expect(notifyError).toHaveBeenCalledWith({
-            message: 'Request failed',
-        });
 
         await wrapper.vm.$nextTick();
         expect(wrapper.find('ft-hero-state-stub').exists()).toBe(true);

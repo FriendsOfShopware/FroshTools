@@ -72,6 +72,7 @@ async function createWrapper({
                     'sw-skeleton': true,
                     'sw-data-grid': true,
                     'sw-pagination': true,
+                    'sw-label': true,
                 },
             },
         }

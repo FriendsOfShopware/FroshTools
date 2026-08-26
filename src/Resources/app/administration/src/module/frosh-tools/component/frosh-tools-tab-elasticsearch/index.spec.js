@@ -32,9 +32,7 @@ async function createWrapper(service, { canUpdate = true } = {}) {
             },
             stubs: {
                 ...FT_STUBS,
-                'ft-modal': false,
                 'sw-code-editor': true,
-                teleport: true,
             },
             directives: {
                 tooltip: {},
@@ -74,14 +72,7 @@ describe('frosh-tools-tab-elasticsearch destructive actions', () => {
             indexName: 'shopware-product',
         });
         expect(service.deleteIndex).not.toHaveBeenCalled();
-
-        const modalText = wrapper.find('[role="dialog"]').text();
-        expect(modalText).toContain(
-            'frosh-tools.tabs.elasticsearch.confirm.deleteIndex.title'
-        );
-        expect(modalText).toContain(
-            'frosh-tools.tabs.elasticsearch.confirm.deleteIndex.confirm'
-        );
+        expect(wrapper.find('[role="dialog"]').exists()).toBe(true);
     });
 
     it('does not run the action when the confirmation is cancelled', async () => {

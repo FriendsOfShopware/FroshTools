@@ -4,22 +4,24 @@ import { FT_STUBS } from '../../../../../test/helpers';
 import './index';
 
 function setFroshToolsSettings(settings) {
-    try {
-        const store = Shopware.Store.get('context');
-        store.app.config.settings = {
-            ...(store.app.config.settings ?? {}),
+    const apply = (context) => {
+        context.app.config.settings = {
+            ...(context.app.config.settings ?? {}),
             froshTools: settings,
         };
-        return;
+    };
+
+    try {
+        apply(Shopware.Store.get('context'));
     } catch {
-        /* 6.6 Vuex */
+        /* Shopware 6.6 uses Vuex */
     }
 
-    const state = Shopware.State.get('context');
-    state.app.config.settings = {
-        ...(state.app.config.settings ?? {}),
-        froshTools: settings,
-    };
+    try {
+        apply(Shopware.State.get('context'));
+    } catch {
+        /* Store-only runtimes */
+    }
 }
 
 async function createWrapper({
@@ -66,10 +68,11 @@ describe('frosh-tools-index', () => {
         expect(wrapper.vm.searchTerm).toBe('http_cache');
         expect(wrapper.vm.searchTab.type).toBe('frosh_tools_cache');
 
-        wrapper.vm.$route.name = 'frosh.tools.index.queue';
-        await wrapper.vm.$nextTick();
-
-        expect(wrapper.vm.searchTerm).toBe('');
+        const queue = await createWrapper({
+            routeName: 'frosh.tools.index.queue',
+        });
+        expect(queue.vm.searchTab.type).toBe('frosh_tools_queue');
+        expect(queue.vm.searchTerm).toBe('');
     });
 
     it('includes optional Fastly, logs and Elasticsearch nav items when enabled', async () => {

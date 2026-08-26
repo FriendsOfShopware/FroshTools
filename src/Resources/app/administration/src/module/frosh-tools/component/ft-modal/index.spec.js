@@ -14,6 +14,12 @@ async function createWrapper({ props = {}, slots = {} } = {}) {
             ...slots,
         },
         attachTo: document.body,
+        global: {
+            stubs: {
+                'ft-icon': true,
+                teleport: true,
+            },
+        },
     });
 }
 

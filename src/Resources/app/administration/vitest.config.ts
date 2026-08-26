@@ -4,4 +4,9 @@ export default defineShopwareConfig({
     runtime: {
         strictConsole: true,
     },
+    vitest: {
+        test: {
+            setupFiles: ['./test/setup.js'],
+        },
+    },
 });

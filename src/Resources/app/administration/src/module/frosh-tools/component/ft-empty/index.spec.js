@@ -7,6 +7,7 @@ describe('ft-empty', () => {
     it('shows a status spinner while loading', async () => {
         const wrapper = await mountShopwareComponent('ft-empty', {
             props: { loading: true, title: 'Hidden while loading' },
+            global: { stubs: { 'ft-icon': true } },
         });
 
         expect(wrapper.attributes('role')).toBe('status');
@@ -21,10 +22,11 @@ describe('ft-empty', () => {
                 title: 'No results',
                 sub: 'Try another term',
             },
+            global: { stubs: { 'ft-icon': true } },
         });
 
         expect(wrapper.find('.ft-empty__title').text()).toBe('No results');
         expect(wrapper.find('.ft-empty__sub').text()).toBe('Try another term');
-        expect(wrapper.find('.ft-icon').exists()).toBe(true);
+        expect(wrapper.find('ft-icon-stub').exists()).toBe(true);
     });
 });

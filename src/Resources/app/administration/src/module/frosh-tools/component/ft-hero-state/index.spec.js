@@ -13,6 +13,7 @@ describe('ft-hero-state', () => {
                 body: 'Network error',
             },
             slots: { actions: '<button type="button">Retry</button>' },
+            global: { stubs: { 'ft-icon': true } },
         });
 
         expect(wrapper.classes()).toContain('ft-hero-state--danger');

@@ -1,4 +1,5 @@
-import { describe, expect, it } from 'vitest';
+import { describe, expect, it, vi } from 'vitest';
+import { mockShopwareService } from '@friendsofshopware/vitest-shopware-admin-bridge/test-utils';
 
 const REGISTERED_COMPONENTS = [
     'ft-icon',
@@ -34,6 +35,13 @@ const REGISTERED_COMPONENTS = [
 
 describe('Administration entry point', () => {
     it('registers every Frosh Tools component and both modules', async () => {
+        mockShopwareService('privileges', {
+            addPrivilegeMappingEntry: vi.fn(),
+        });
+        mockShopwareService('searchTypeService', {
+            upsertType: vi.fn(),
+        });
+
         await import('./main');
 
         const registry = Shopware.Component.getComponentRegistry();

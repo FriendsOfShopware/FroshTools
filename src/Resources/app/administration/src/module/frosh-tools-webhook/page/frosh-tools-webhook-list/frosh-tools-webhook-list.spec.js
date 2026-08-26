@@ -86,6 +86,11 @@ async function createWrapper() {
                 },
                 'sw-entity-listing': true,
                 'sw-empty-state': true,
+                'sw-button': true,
+                'sw-sidebar': true,
+                'sw-sidebar-item': true,
+                'sw-sidebar-filter-panel': true,
+                'sw-context-menu-item': true,
             },
         },
     });

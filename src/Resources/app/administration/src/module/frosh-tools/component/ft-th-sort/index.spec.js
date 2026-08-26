@@ -42,7 +42,11 @@ async function createWrapper({ sortKey = 'name', table = 'default' } = {}) {
         },
     };
 
-    return mount(host);
+    return mount(host, {
+        global: {
+            stubs: { 'ft-icon': true },
+        },
+    });
 }
 
 describe('ft-th-sort', () => {
@@ -91,6 +95,7 @@ describe('ft-th-sort', () => {
         const wrapper = await mountShopwareComponent('ft-th-sort', {
             props: { sortKey: 'name' },
             slots: { default: 'Name' },
+            global: { stubs: { 'ft-icon': true } },
         });
 
         expect(wrapper.find('th').attributes('aria-sort')).toBeUndefined();

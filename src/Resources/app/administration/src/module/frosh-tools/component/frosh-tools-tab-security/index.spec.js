@@ -75,6 +75,9 @@ describe('frosh-tools-tab-security', () => {
         const createObjectURL = vi.fn().mockReturnValue('blob:sbom');
         const revokeObjectURL = vi.fn();
         vi.stubGlobal('URL', { createObjectURL, revokeObjectURL });
+        const click = vi
+            .spyOn(HTMLAnchorElement.prototype, 'click')
+            .mockImplementation(() => {});
 
         const wrapper = await createWrapper();
         await flushPromises();
@@ -82,7 +85,9 @@ describe('frosh-tools-tab-security', () => {
         await wrapper.vm.exportSbom();
 
         expect(createObjectURL).toHaveBeenCalled();
+        expect(click).toHaveBeenCalled();
         expect(revokeObjectURL).toHaveBeenCalledWith('blob:sbom');
+        click.mockRestore();
         vi.unstubAllGlobals();
     });
 });

@@ -23,7 +23,11 @@ async function createWrapper({
             froshToolsService: service,
             acl: createAcl(canUpdate, 'frosh_tools_fastly:update'),
         },
-        stubs: { 'sw-code-editor': true, 'sw-text-field': true },
+        stubs: {
+            'sw-code-editor': true,
+            'sw-text-field': true,
+            'sw-single-select': true,
+        },
     });
 }
 

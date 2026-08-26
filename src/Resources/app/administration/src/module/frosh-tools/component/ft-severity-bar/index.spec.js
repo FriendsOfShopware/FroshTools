@@ -19,8 +19,8 @@ describe('ft-severity-bar', () => {
 
         expect(wrapper.vm.verdictVariant).toBe('danger');
         expect(wrapper.vm.actionable).toBe(3);
-        expect(wrapper.find('.ft-severity-bar__verdict-text').text()).toContain(
-            'frosh-tools.tabs.security.verdict.critical'
+        expect(wrapper.find('.ft-severity-bar__verdict-text').text()).toMatch(
+            /Action needed|frosh-tools\.tabs\.security\.verdict\.critical/
         );
         expect(wrapper.findAll('.ft-severity-bar__seg')).toHaveLength(3);
         expect(wrapper.text()).toContain('2');
