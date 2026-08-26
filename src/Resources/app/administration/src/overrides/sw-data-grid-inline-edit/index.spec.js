@@ -15,7 +15,9 @@ describe('sw-data-grid-inline-edit override', () => {
 
         expect(component).toBeTruthy();
         expect(String(component.template ?? component)).toEqual(
-            expect.stringMatching(/inlineEdit === 'date'|inline-edit === 'date'/i)
+            expect.stringMatching(
+                /inlineEdit === 'date'|inline-edit === 'date'/i
+            )
         );
     });
 });

@@ -25,9 +25,9 @@ describe('frosh-tools-security-overview', () => {
             'runtime',
             'configuration',
         ]);
-        expect(wrapper.vm.groupedFindings[0].findings.map((f) => f.title)).toEqual(
-            ['EOL', 'PHP']
-        );
+        expect(
+            wrapper.vm.groupedFindings[0].findings.map((f) => f.title)
+        ).toEqual(['EOL', 'PHP']);
         expect(wrapper.vm.dependencyIssueCount).toBe(1);
         expect(wrapper.vm.dependencySummary).toEqual([
             { severity: 'high', count: 1 },

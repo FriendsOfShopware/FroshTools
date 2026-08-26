@@ -88,7 +88,10 @@ describe('frosh-tools-tab-queue', () => {
         });
         await flushPromises();
 
-        expect(service.retryQueueMessage).toHaveBeenCalledWith('async', 'msg-1');
+        expect(service.retryQueueMessage).toHaveBeenCalledWith(
+            'async',
+            'msg-1'
+        );
     });
 
     it('does not open the browse modal for non-browsable transports', async () => {

@@ -35,8 +35,22 @@ const DB_STATS = {
         questions: 100,
     },
     tables: [
-        { name: 'product', engine: 'InnoDB', rows: 10, dataSize: 80, indexSize: 20, totalSize: 100 },
-        { name: 'order', engine: 'InnoDB', rows: 4, dataSize: 30, indexSize: 10, totalSize: 40 },
+        {
+            name: 'product',
+            engine: 'InnoDB',
+            rows: 10,
+            dataSize: 80,
+            indexSize: 20,
+            totalSize: 100,
+        },
+        {
+            name: 'order',
+            engine: 'InnoDB',
+            rows: 4,
+            dataSize: 30,
+            indexSize: 10,
+            totalSize: 40,
+        },
     ],
 };
 

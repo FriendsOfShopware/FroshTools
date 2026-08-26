@@ -45,38 +45,35 @@ async function createWrapper({
         webhook_event_log: eventLogRepository,
     });
 
-    const wrapper = await mountShopwareComponent(
-        'frosh-tools-webhook-detail',
-        {
-            props: { webhookId },
-            global: {
-                provide: {
-                    acl: {
-                        can: (privilege) => privileges.includes(privilege),
-                    },
-                },
-                mocks: {
-                    $createTitle: (identifier) => identifier || 'Webhook',
-                    $device: { getSystemKey: () => 'CTRL' },
-                    $router: { push: vi.fn() },
-                },
-                stubs: {
-                    'sw-button': true,
-                    'sw-button-process': true,
-                    'sw-card': { template: '<div><slot /></div>' },
-                    'sw-card-view': { template: '<div><slot /></div>' },
-                    'sw-container': { template: '<div><slot /></div>' },
-                    'sw-text-field': true,
-                    'sw-switch-field': true,
-                    'sw-alert': true,
-                    'sw-skeleton': true,
-                    'sw-data-grid': true,
-                    'sw-pagination': true,
-                    'sw-label': true,
+    const wrapper = await mountShopwareComponent('frosh-tools-webhook-detail', {
+        props: { webhookId },
+        global: {
+            provide: {
+                acl: {
+                    can: (privilege) => privileges.includes(privilege),
                 },
             },
-        }
-    );
+            mocks: {
+                $createTitle: (identifier) => identifier || 'Webhook',
+                $device: { getSystemKey: () => 'CTRL' },
+                $router: { push: vi.fn() },
+            },
+            stubs: {
+                'sw-button': true,
+                'sw-button-process': true,
+                'sw-card': { template: '<div><slot /></div>' },
+                'sw-card-view': { template: '<div><slot /></div>' },
+                'sw-container': { template: '<div><slot /></div>' },
+                'sw-text-field': true,
+                'sw-switch-field': true,
+                'sw-alert': true,
+                'sw-skeleton': true,
+                'sw-data-grid': true,
+                'sw-pagination': true,
+                'sw-label': true,
+            },
+        },
+    });
 
     await flushPromises();
 

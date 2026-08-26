@@ -42,6 +42,8 @@ describe('ft-severity-bar', () => {
         });
 
         expect(wrapper.vm.verdictVariant).toBe('success');
-        expect(wrapper.find('.ft-severity-bar__seg--empty').exists()).toBe(true);
+        expect(wrapper.find('.ft-severity-bar__seg--empty').exists()).toBe(
+            true
+        );
     });
 });

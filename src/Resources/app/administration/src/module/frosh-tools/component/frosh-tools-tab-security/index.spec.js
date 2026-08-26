@@ -22,10 +22,7 @@ function createService(overrides = {}) {
     };
 }
 
-async function createWrapper({
-    service = createService(),
-    query = {},
-} = {}) {
+async function createWrapper({ service = createService(), query = {} } = {}) {
     return mountRegistered('frosh-tools-tab-security', {
         provide: { froshToolsService: service },
         stubs: {
