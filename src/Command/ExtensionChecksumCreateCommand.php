@@ -5,8 +5,8 @@ declare(strict_types=1);
 namespace Frosh\Tools\Command;
 
 use Frosh\Tools\Components\ExtensionChecksum\ExtensionFileHashService;
-use Shopware\Core\Framework\Adapter\Console\ShopwareStyle;
 use Shopware\Core\Framework\Context;
+use Symfony\Component\Console\Style\SymfonyStyle;
 use Shopware\Core\Framework\DataAbstractionLayer\Entity;
 use Shopware\Core\Framework\DataAbstractionLayer\EntityRepository;
 use Shopware\Core\Framework\DataAbstractionLayer\Search\Criteria;
@@ -45,7 +45,7 @@ class ExtensionChecksumCreateCommand extends Command
      */
     protected function execute(InputInterface $input, OutputInterface $output): int
     {
-        $io = new ShopwareStyle($input, $output);
+        $io = new SymfonyStyle($input, $output);
         // @phpstan-ignore-next-line
         $context = method_exists(Context::class, 'createCLIContext') ? Context::createCLIContext() : Context::createDefaultContext();
 

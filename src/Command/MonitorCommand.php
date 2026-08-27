@@ -10,8 +10,8 @@ use Frosh\Tools\Components\Health\HealthCollection;
 use Frosh\Tools\Components\Health\SettingsResult;
 use Shopware\Core\Content\Mail\Service\AbstractMailSender;
 use Shopware\Core\Content\Mail\Service\MailSender;
-use Shopware\Core\Framework\Adapter\Console\ShopwareStyle;
 use Shopware\Core\System\SystemConfig\SystemConfigService;
+use Symfony\Component\Console\Style\SymfonyStyle;
 use Symfony\Component\Console\Attribute\AsCommand;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputArgument;
@@ -46,7 +46,7 @@ class MonitorCommand extends Command
 
     protected function execute(InputInterface $input, OutputInterface $output): int
     {
-        $io = new ShopwareStyle($input, $output);
+        $io = new SymfonyStyle($input, $output);
 
         if ($input->getArgument('sales-channel')) {
             $io->warning('The sales channel argument is deprecated and has no effect. It will be removed in a future release.');

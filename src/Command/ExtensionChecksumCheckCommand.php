@@ -5,8 +5,8 @@ declare(strict_types=1);
 namespace Frosh\Tools\Command;
 
 use Frosh\Tools\Components\ExtensionChecksum\ExtensionFileHashService;
-use Shopware\Core\Framework\Adapter\Console\ShopwareStyle;
 use Shopware\Core\Framework\Context;
+use Symfony\Component\Console\Style\SymfonyStyle;
 use Shopware\Core\Framework\DataAbstractionLayer\EntityRepository;
 use Shopware\Core\Framework\DataAbstractionLayer\Search\Criteria;
 use Shopware\Core\Framework\DataAbstractionLayer\Search\Filter\EqualsFilter;
@@ -44,7 +44,7 @@ class ExtensionChecksumCheckCommand extends Command
      */
     protected function execute(InputInterface $input, OutputInterface $output): int
     {
-        $io = new ShopwareStyle($input, $output);
+        $io = new SymfonyStyle($input, $output);
 
         $extensions = $this->getExtension((string) $input->getArgument('extension'), $io);
         if ($extensions->count() < 1) {
@@ -93,7 +93,7 @@ class ExtensionChecksumCheckCommand extends Command
         return $success ? self::SUCCESS : self::FAILURE;
     }
 
-    private function getExtension(string $name, ShopwareStyle $io): PluginCollection
+    private function getExtension(string $name, SymfonyStyle $io): PluginCollection
     {
         // @phpstan-ignore-next-line
         $context = method_exists(Context::class, 'createCLIContext') ? Context::createCLIContext() : Context::createDefaultContext();
@@ -124,7 +124,7 @@ class ExtensionChecksumCheckCommand extends Command
     /**
      * @param string[] $files
      */
-    private function outputFileChanges(ShopwareStyle $io, string $text, array $files): void
+    private function outputFileChanges(SymfonyStyle $io, string $text, array $files): void
     {
         if ($files) {
             $io->warning($text);
