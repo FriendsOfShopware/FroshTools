@@ -68,6 +68,12 @@ export default {
         description:
             'The highest amount of memory a single PHP-FPM worker has used. This is informational — use it to size memory_limit and to decide how many workers (pm.max_children) fit into the available RAM.',
     },
+    'shopware-installer': {
+        description:
+            'The Shopware web installer (shopware-installer.phar.php) is still in the public directory. Anyone who can request that URL can start a reinstall and overwrite the shop, so it is a security risk to leave it there after installation.',
+        solution:
+            'Delete public/shopware-installer.phar.php from the shop. The installer is only needed during the initial setup and must not stay publicly accessible.',
+    },
     'composer-conflicts-repository': {
         description:
             'The Shopware conflicts repository (https://shopware.github.io/conflicts/) is not registered in the "repositories" section of your root composer.json. This repository declares combinations of packages and versions that are known to be incompatible. With it in place, Composer refuses to install or update to a broken combination before it reaches production; without it those guard rails are missing.',
