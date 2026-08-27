@@ -236,13 +236,13 @@ class ShopwareFilesController extends AbstractController
 
     private function getUserNameByUserId(string $userId, Context $context): ?string
     {
-        /** @var UserEntity|null $userEntity */
-        $userEntity = $this->userRepository->search(
+        $searchResult = $this->userRepository->search(
             new Criteria([$userId]),
             $context,
         );
+        /** @var UserEntity|null $userEntity */
         // @phpstan-ignore-next-line phpstan/method.deprecatedClass
-        $userEntity = $userEntity->getEntities()->first();
+        $userEntity = $searchResult->getEntities()->first();
 
         if (!$userEntity instanceof UserEntity) {
             return null;
@@ -253,13 +253,13 @@ class ShopwareFilesController extends AbstractController
 
     private function getNameByIntegrationId(string $integrationId, Context $context): ?string
     {
-        /** @var IntegrationEntity|null $integrationEntity */
-        $integrationEntity = $this->integrationRepository->search(
+        $searchResult = $this->integrationRepository->search(
             new Criteria([$integrationId]),
             $context,
         );
+        /** @var IntegrationEntity|null $integrationEntity */
         // @phpstan-ignore-next-line phpstan/method.deprecatedClass
-        $integrationEntity = $integrationEntity->getEntities()->first();
+        $integrationEntity = $searchResult->getEntities()->first();
 
         if (!$integrationEntity instanceof IntegrationEntity) {
             return null;
