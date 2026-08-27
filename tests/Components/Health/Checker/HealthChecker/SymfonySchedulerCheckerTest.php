@@ -72,7 +72,7 @@ class SymfonySchedulerCheckerTest extends TestCase
             $this->schedule(name: 'example', checkpoint: null, dueDates: ['+1 day']),
         ]);
 
-        static::assertSame(SettingsResult::WARNING, $result->state);
+        static::assertSame(SettingsResult::INFO, $result->state);
         static::assertSame('never consumed (example)', $result->current);
     }
 
@@ -84,7 +84,7 @@ class SymfonySchedulerCheckerTest extends TestCase
         ]);
 
         static::assertSame(SettingsResult::INFO, $result->state);
-        static::assertSame('not monitored', $result->current);
+        static::assertSame('nothing to monitor', $result->current);
     }
 
     public function testTheWorstScheduleIsReported(): void
