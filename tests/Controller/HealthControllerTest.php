@@ -40,6 +40,7 @@ class HealthControllerTest extends IntegrationTestCase
         static::assertContains('queue', $ids);
         static::assertContains('scheduled_task', $ids);
         static::assertContains('system-time', $ids);
+        static::assertContains('shopware-installer', $ids);
     }
 
     public function testPerformanceStatusReturnsValidResultList(): void

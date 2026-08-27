@@ -38,12 +38,15 @@ class SecurityControllerTest extends IntegrationTestCase
         }
 
         static::assertIsArray($data['findings']);
+        $ids = [];
         foreach ($data['findings'] as $finding) {
             static::assertIsArray($finding);
             static::assertArrayHasKey('id', $finding);
             static::assertArrayHasKey('severity', $finding);
             static::assertArrayHasKey('category', $finding);
+            $ids[] = $finding['id'];
         }
+        static::assertContains('shopware-installer', $ids);
     }
 
     public function testSbomReturnsCycloneDxJsonAttachment(): void
