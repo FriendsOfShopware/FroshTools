@@ -79,13 +79,13 @@ class SymfonySchedulerChecker implements HealthCheckerInterface, CheckerInterfac
         }
 
         if ($evaluated === 0) {
-            $collection->add(SettingsResult::info('symfony_scheduler', self::SNIPPET, 'not monitored', $recommended));
+            $collection->add(SettingsResult::info('symfony_scheduler', self::SNIPPET, 'nothing to monitor', $recommended));
 
             return;
         }
 
         if ($neverRun !== []) {
-            $collection->add(SettingsResult::warning(
+            $collection->add(SettingsResult::info(
                 'symfony_scheduler',
                 self::SNIPPET,
                 \sprintf('never consumed (%s)', implode(', ', $neverRun)),
