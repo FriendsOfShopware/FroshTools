@@ -6,7 +6,6 @@ namespace Frosh\Tools\Command;
 
 use Frosh\Tools\Components\ExtensionChecksum\ExtensionFileHashService;
 use Shopware\Core\Framework\Context;
-use Symfony\Component\Console\Style\SymfonyStyle;
 use Shopware\Core\Framework\DataAbstractionLayer\EntityRepository;
 use Shopware\Core\Framework\DataAbstractionLayer\Search\Criteria;
 use Shopware\Core\Framework\DataAbstractionLayer\Search\Filter\EqualsFilter;
@@ -17,6 +16,7 @@ use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
+use Symfony\Component\Console\Style\SymfonyStyle;
 
 #[AsCommand(
     name: 'frosh:extension:checksum:check',
@@ -111,7 +111,7 @@ class ExtensionChecksumCheckCommand extends Command
 
         $criteria = new Criteria();
         $criteria->addFilter(new EqualsFilter('name', $name));
-        $extension = $this->pluginRepository->search($criteria, $context)->first();
+        $extension = $this->pluginRepository->search($criteria, $context)->getEntities()->first();
         if ($extension instanceof PluginEntity) {
             $extensions->add($extension);
         } else {

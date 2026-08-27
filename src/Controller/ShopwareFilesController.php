@@ -240,7 +240,7 @@ class ShopwareFilesController extends AbstractController
         $userEntity = $this->userRepository->search(
             new Criteria([$userId]),
             $context,
-        )->first();
+        )->getEntities()->first();
 
         if (!$userEntity instanceof UserEntity) {
             return null;
@@ -255,7 +255,7 @@ class ShopwareFilesController extends AbstractController
         $integrationEntity = $this->integrationRepository->search(
             new Criteria([$integrationId]),
             $context,
-        )->first();
+        )->getEntities()->first();
 
         if (!$integrationEntity instanceof IntegrationEntity) {
             return null;

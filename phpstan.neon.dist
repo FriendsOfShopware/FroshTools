@@ -6,5 +6,9 @@ parameters:
     ignoreErrors:
         -
             message: "#no value type specified in iterable type array#"
+        # getEntities() remains in 6.8; ClassHierarchyChange still flags the call.
+        -
+            identifier: method.deprecatedClass
+            message: "#Call to method getEntities\\(\\) of deprecated class Shopware\\\\Core\\\\Framework\\\\DataAbstractionLayer\\\\Search\\\\EntitySearchResult#"
     excludePaths:
         - vendor (?)
