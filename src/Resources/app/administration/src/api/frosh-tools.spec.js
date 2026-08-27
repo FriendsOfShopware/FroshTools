@@ -1,3 +1,4 @@
+import { beforeEach, describe, expect, it, vi } from 'vitest';
 import FroshTools from './frosh-tools';
 
 describe('FroshTools queue API', () => {
@@ -6,9 +7,9 @@ describe('FroshTools queue API', () => {
     beforeEach(() => {
         service = Object.create(FroshTools.prototype);
         service.httpClient = {
-            get: jest.fn().mockResolvedValue({ data: {} }),
-            post: jest.fn().mockResolvedValue({ data: {} }),
-            delete: jest.fn().mockResolvedValue({ data: {} }),
+            get: vi.fn().mockResolvedValue({ data: {} }),
+            post: vi.fn().mockResolvedValue({ data: {} }),
+            delete: vi.fn().mockResolvedValue({ data: {} }),
         };
         service.getApiBasePath = () => '/_action/frosh-tools';
         service.getBasicHeaders = () => ({});

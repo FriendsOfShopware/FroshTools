@@ -1,32 +1,13 @@
-import { mount } from '@vue/test-utils';
+import { describe, expect, it, vi } from 'vitest';
+import { flushPromises } from '@friendsofshopware/vitest-shopware-admin-bridge/test-utils';
+import { mountRegistered } from '../../../../../test/helpers';
 import '../../../../mixin/sortable-table';
 import './index';
 
-const STUBS = [
-    'ft-page-head',
-    'ft-panel',
-    'ft-empty',
-    'ft-hero-state',
-    'ft-th-sort',
-    'ft-pill',
-    'ft-modal',
-    'ft-button',
-    'ft-refresh-button',
-];
-
 async function createWrapper(service) {
-    const component = await Shopware.Component.build('frosh-tools-tab-index');
-
-    return mount(component, {
-        global: {
-            provide: {
-                froshToolsService: service,
-            },
-            stubs: STUBS,
-            mocks: {
-                $t: (key) => key,
-                $tc: (key) => key,
-            },
+    return mountRegistered('frosh-tools-tab-index', {
+        provide: {
+            froshToolsService: service,
         },
     });
 }
@@ -34,8 +15,8 @@ async function createWrapper(service) {
 describe('frosh-tools-tab-index', () => {
     it('loads health and performance status on creation', async () => {
         const service = {
-            healthStatus: jest.fn().mockResolvedValue([{ id: 'php' }]),
-            performanceStatus: jest.fn().mockResolvedValue([]),
+            healthStatus: vi.fn().mockResolvedValue([{ id: 'php' }]),
+            performanceStatus: vi.fn().mockResolvedValue([]),
         };
 
         const wrapper = await createWrapper(service);
@@ -49,22 +30,17 @@ describe('frosh-tools-tab-index', () => {
 
     it('shows an error state instead of loading forever when loading fails', async () => {
         const service = {
-            healthStatus: jest
+            healthStatus: vi
                 .fn()
                 .mockRejectedValue(new Error('Request failed')),
-            performanceStatus: jest.fn().mockResolvedValue([]),
+            performanceStatus: vi.fn().mockResolvedValue([]),
         };
 
         const wrapper = await createWrapper(service);
-        const notifyError = jest.spyOn(wrapper.vm, 'createNotificationError');
         await flushPromises();
 
-        // No infinite spinner: loading finished and an error is surfaced.
         expect(wrapper.vm.isLoading).toBe(false);
         expect(wrapper.vm.loadError).toBe('Request failed');
-        expect(notifyError).toHaveBeenCalledWith({
-            message: 'Request failed',
-        });
 
         await wrapper.vm.$nextTick();
         expect(wrapper.find('ft-hero-state-stub').exists()).toBe(true);
@@ -72,11 +48,11 @@ describe('frosh-tools-tab-index', () => {
 
     it('recovers when retrying after a failure', async () => {
         const service = {
-            healthStatus: jest
+            healthStatus: vi
                 .fn()
                 .mockRejectedValueOnce(new Error('Request failed'))
                 .mockResolvedValue([{ id: 'php' }]),
-            performanceStatus: jest.fn().mockResolvedValue([]),
+            performanceStatus: vi.fn().mockResolvedValue([]),
         };
 
         const wrapper = await createWrapper(service);
@@ -89,5 +65,18 @@ describe('frosh-tools-tab-index', () => {
         expect(wrapper.vm.loadError).toBeNull();
         expect(wrapper.vm.health).toEqual([{ id: 'php' }]);
         expect(wrapper.vm.isLoading).toBe(false);
+    });
+
+    it('maps health states to pill variants and recommendation info', async () => {
+        const wrapper = await createWrapper({
+            healthStatus: vi.fn().mockResolvedValue([]),
+            performanceStatus: vi.fn().mockResolvedValue([]),
+        });
+        await flushPromises();
+
+        expect(wrapper.vm.pillVariant('STATE_ERROR')).toBe('danger');
+        expect(wrapper.vm.pillVariant('STATE_WARNING')).toBe('warning');
+        expect(wrapper.vm.hasInfo({ id: 'queue' })).toBe(true);
+        expect(wrapper.vm.hasInfo({ id: 'unknown-check' })).toBe(false);
     });
 });

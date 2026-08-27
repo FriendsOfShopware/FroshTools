@@ -1,25 +1,25 @@
-import { mount } from '@vue/test-utils';
+import { afterEach, describe, expect, it } from 'vitest';
+import {
+    flushPromises,
+    mountShopwareComponent,
+} from '@friendsofshopware/vitest-shopware-admin-bridge/test-utils';
+import '../ft-icon';
 import './index';
 
 async function createWrapper({ props = {}, slots = {} } = {}) {
-    const component = await Shopware.Component.build('ft-modal');
-
-    return mount(component, {
+    return mountShopwareComponent('ft-modal', {
         props,
         slots: {
             default: '<p>Body content</p>',
             ...slots,
         },
+        attachTo: document.body,
         global: {
             stubs: {
                 'ft-icon': true,
                 teleport: true,
             },
-            mocks: {
-                $t: (key) => key,
-            },
         },
-        attachTo: document.body,
     });
 }
 
@@ -79,7 +79,6 @@ describe('ft-modal', () => {
         const focusable = wrapper.vm.focusableElements();
         expect(focusable.length).toBeGreaterThan(1);
 
-        // Tab on the last element wraps to the first.
         const last = focusable[focusable.length - 1];
         last.focus();
         const event = new KeyboardEvent('keydown', {
@@ -92,7 +91,6 @@ describe('ft-modal', () => {
         expect(event.defaultPrevented).toBe(true);
         expect(document.activeElement).toBe(focusable[0]);
 
-        // Shift+Tab on the first element wraps to the last.
         const shiftEvent = new KeyboardEvent('keydown', {
             key: 'Tab',
             shiftKey: true,

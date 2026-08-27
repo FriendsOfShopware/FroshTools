@@ -1,5 +1,8 @@
-import { mount } from '@vue/test-utils';
-
+import { describe, expect, it, vi } from 'vitest';
+import {
+    flushPromises,
+    mountShopwareComponent,
+} from '@friendsofshopware/vitest-shopware-admin-bridge/test-utils';
 import './index';
 
 async function createWrapper() {
@@ -7,14 +10,10 @@ async function createWrapper() {
     Object.assign(webhooks, { total: 1 });
 
     const repository = {
-        search: jest.fn().mockResolvedValue(webhooks),
+        search: vi.fn().mockResolvedValue(webhooks),
     };
 
-    const component = await Shopware.Component.build(
-        'frosh-tools-webhook-list'
-    );
-
-    const wrapper = mount(component, {
+    const wrapper = await mountShopwareComponent('frosh-tools-webhook-list', {
         data() {
             return {
                 disableRouteParams: true,
@@ -34,9 +33,10 @@ async function createWrapper() {
                     },
                 },
                 $router: {
-                    push: jest.fn(),
-                    replace: jest.fn(),
+                    push: vi.fn(),
+                    replace: vi.fn(),
                 },
+                $createTitle: () => 'Webhooks',
             },
             provide: {
                 repositoryFactory: {
@@ -86,6 +86,11 @@ async function createWrapper() {
                 },
                 'sw-entity-listing': true,
                 'sw-empty-state': true,
+                'sw-button': true,
+                'sw-sidebar': true,
+                'sw-sidebar-item': true,
+                'sw-sidebar-filter-panel': true,
+                'sw-context-menu-item': true,
             },
         },
     });
