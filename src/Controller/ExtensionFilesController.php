@@ -37,6 +37,7 @@ class ExtensionFilesController extends AbstractController
         $extensionResults = [];
 
         /** @var PluginCollection $extensions */
+        // @phpstan-ignore-next-line phpstan/method.deprecatedClass
         $extensions = $this->pluginRepository->search(new Criteria(), $context)->getEntities();
         foreach ($extensions as $extension) {
             try {

@@ -5,7 +5,6 @@ declare(strict_types=1);
 namespace Frosh\Tools\Command;
 
 use Frosh\Tools\Components\ExtensionChecksum\ExtensionFileHashService;
-use Shopware\Core\Framework\Adapter\Console\ShopwareStyle;
 use Shopware\Core\Framework\Context;
 use Shopware\Core\Framework\DataAbstractionLayer\EntityRepository;
 use Shopware\Core\Framework\DataAbstractionLayer\Search\Criteria;
@@ -17,6 +16,7 @@ use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
+use Symfony\Component\Console\Style\SymfonyStyle;
 
 #[AsCommand(
     name: 'frosh:extension:checksum:check',
@@ -44,7 +44,7 @@ class ExtensionChecksumCheckCommand extends Command
      */
     protected function execute(InputInterface $input, OutputInterface $output): int
     {
-        $io = new ShopwareStyle($input, $output);
+        $io = new SymfonyStyle($input, $output);
 
         $extensions = $this->getExtension((string) $input->getArgument('extension'), $io);
         if ($extensions->count() < 1) {
@@ -93,7 +93,7 @@ class ExtensionChecksumCheckCommand extends Command
         return $success ? self::SUCCESS : self::FAILURE;
     }
 
-    private function getExtension(string $name, ShopwareStyle $io): PluginCollection
+    private function getExtension(string $name, SymfonyStyle $io): PluginCollection
     {
         // @phpstan-ignore-next-line
         $context = method_exists(Context::class, 'createCLIContext') ? Context::createCLIContext() : Context::createDefaultContext();
@@ -102,6 +102,7 @@ class ExtensionChecksumCheckCommand extends Command
             $io->info('Checking all extensions');
 
             /** @var PluginCollection $extensions */
+            // @phpstan-ignore-next-line phpstan/method.deprecatedClass
             $extensions = $this->pluginRepository->search(new Criteria(), $context)->getEntities();
 
             return $extensions;
@@ -111,7 +112,8 @@ class ExtensionChecksumCheckCommand extends Command
 
         $criteria = new Criteria();
         $criteria->addFilter(new EqualsFilter('name', $name));
-        $extension = $this->pluginRepository->search($criteria, $context)->first();
+        // @phpstan-ignore-next-line phpstan/method.deprecatedClass
+        $extension = $this->pluginRepository->search($criteria, $context)->getEntities()->first();
         if ($extension instanceof PluginEntity) {
             $extensions->add($extension);
         } else {
@@ -124,7 +126,7 @@ class ExtensionChecksumCheckCommand extends Command
     /**
      * @param string[] $files
      */
-    private function outputFileChanges(ShopwareStyle $io, string $text, array $files): void
+    private function outputFileChanges(SymfonyStyle $io, string $text, array $files): void
     {
         if ($files) {
             $io->warning($text);

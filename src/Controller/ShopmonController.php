@@ -135,6 +135,8 @@ class ShopmonController extends AbstractController
         $context->scope(Context::SYSTEM_SCOPE, function (Context $context) use (&$integration): void {
             $integration = $this->integrationRepository
                 ->search(new Criteria([self::INTEGRATION_ID]), $context)
+                // @phpstan-ignore-next-line phpstan/method.deprecatedClass
+                ->getEntities()
                 ->first();
         });
 

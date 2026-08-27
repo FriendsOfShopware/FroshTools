@@ -110,6 +110,7 @@ class ScheduledTaskController extends AbstractController
     {
         $criteria = new Criteria([$id]);
 
+        // @phpstan-ignore-next-line phpstan/method.deprecatedClass
         return $this->scheduledTaskRepository->search($criteria, $context)->getEntities()->first();
     }
 }

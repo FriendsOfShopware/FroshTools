@@ -240,7 +240,9 @@ class ShopwareFilesController extends AbstractController
         $userEntity = $this->userRepository->search(
             new Criteria([$userId]),
             $context,
-        )->first();
+        );
+        // @phpstan-ignore-next-line phpstan/method.deprecatedClass
+        $userEntity = $userEntity->getEntities()->first();
 
         if (!$userEntity instanceof UserEntity) {
             return null;
@@ -255,7 +257,9 @@ class ShopwareFilesController extends AbstractController
         $integrationEntity = $this->integrationRepository->search(
             new Criteria([$integrationId]),
             $context,
-        )->first();
+        );
+        // @phpstan-ignore-next-line phpstan/method.deprecatedClass
+        $integrationEntity = $integrationEntity->getEntities()->first();
 
         if (!$integrationEntity instanceof IntegrationEntity) {
             return null;
