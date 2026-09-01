@@ -5,7 +5,7 @@ import {
 } from '@friendsofshopware/vitest-shopware-admin-bridge/test-utils';
 
 describe('sw-admin-menu override', () => {
-    it('injects the health badge into the trunk sidebar title status slot', async () => {
+    it('wraps the trunk sidebar title so a health badge can replace Administration', async () => {
         await loadShopwareComponent('sw-admin-menu');
         await import('./index');
 
@@ -14,12 +14,12 @@ describe('sw-admin-menu override', () => {
         expect(component).toBeTruthy();
 
         const template = String(component.template ?? component);
-        const hasTrunkStatusSlot =
-            template.includes('sw_admin_menu_header_title_status') ||
+        const hasTrunkTitle =
+            template.includes('sw_admin_menu_header_title') ||
             template.includes('sw-admin-menu__title') ||
             template.includes('frosh-tools-health-status');
 
-        if (!hasTrunkStatusSlot) {
+        if (!hasTrunkTitle) {
             // Shopware 6.6 / 6.7 keep the badge on sw-version instead.
             return;
         }

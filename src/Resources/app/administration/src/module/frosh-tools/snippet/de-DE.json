@@ -482,7 +482,11 @@
         "healthStatus": {
             "ok": "Shop-Status: OK",
             "warning": "Shop-Status: Probleme, Systemstatus prüfen",
-            "error": "Shop-Status: Möglicher Ausfall, Systemstatus prüfen"
+            "error": "Shop-Status: Möglicher Ausfall, Systemstatus prüfen",
+            "badge": {
+                "warning": "Probleme",
+                "error": "Ausfall"
+            }
         },
         "on": "an",
         "off": "aus",

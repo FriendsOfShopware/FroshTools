@@ -1,3 +1,5 @@
-{% block sw_admin_menu_header_title_status %}
-<frosh-tools-health-status />
+{% block sw_admin_menu_header_title %}
+<frosh-tools-health-status>
+    {% parent() %}
+</frosh-tools-health-status>
 {% endblock %}

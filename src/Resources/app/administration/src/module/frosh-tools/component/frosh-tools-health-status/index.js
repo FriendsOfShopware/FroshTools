@@ -25,30 +25,9 @@ Component.register('frosh-tools-health-status', {
     },
 
     computed: {
-        healthVariant() {
-            let variant = 'success';
-
+        healthKey() {
             if (!this.health) {
-                return variant;
-            }
-
-            for (const item of this.health) {
-                if (item.state === 'STATE_ERROR') {
-                    variant = 'error';
-                    continue;
-                }
-
-                if (item.state === 'STATE_WARNING' && variant === 'success') {
-                    variant = 'warning';
-                }
-            }
-
-            return variant;
-        },
-
-        healthPlaceholder() {
-            if (!this.health) {
-                return this.$t('frosh-tools.healthStatus.ok');
+                return 'ok';
             }
 
             let key = 'ok';
@@ -64,7 +43,23 @@ Component.register('frosh-tools-health-status', {
                 }
             }
 
-            return this.$t(`frosh-tools.healthStatus.${key}`);
+            return key;
+        },
+
+        isException() {
+            return this.healthKey === 'warning' || this.healthKey === 'error';
+        },
+
+        meteorVariant() {
+            return this.healthKey === 'error' ? 'critical' : 'attention';
+        },
+
+        badgeLabel() {
+            return this.$t(`frosh-tools.healthStatus.badge.${this.healthKey}`);
+        },
+
+        healthPlaceholder() {
+            return this.$t(`frosh-tools.healthStatus.${this.healthKey}`);
         },
     },
 

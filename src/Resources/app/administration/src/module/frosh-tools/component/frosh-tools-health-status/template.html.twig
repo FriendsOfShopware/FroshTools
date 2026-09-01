@@ -1,15 +1,23 @@
-<router-link
-    v-if="hasPermission"
-    :to="{ name: 'frosh.tools.index.index' }"
-    class="frosh-tools-health-status"
-    :class="{ 'is--collapsed': collapsed }"
-    v-tooltip="{
-        showDelay: 300,
-        message: healthPlaceholder
-    }"
->
-    <sw-color-badge
-        :variant="healthVariant"
-        :rounded="true"
-    />
-</router-link>
+<template v-if="hasPermission && isException">
+    <router-link
+        :to="{ name: 'frosh.tools.index.index' }"
+        class="frosh-tools-health-status"
+        :class="{ 'is--collapsed': collapsed }"
+        :aria-label="healthPlaceholder"
+        v-tooltip="{
+            showDelay: 300,
+            message: healthPlaceholder
+        }"
+    >
+        <mt-badge
+            :variant="meteorVariant"
+            size="s"
+            :status-indicator="true"
+        >
+            {{ badgeLabel }}
+        </mt-badge>
+    </router-link>
+</template>
+<template v-else>
+    <slot></slot>
+</template>
