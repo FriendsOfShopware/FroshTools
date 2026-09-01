@@ -479,6 +479,11 @@
         "unknown": "Unknown",
         "cacheCleared": "Cache \"{name}\" has been cleared",
         "refresh": "Refresh",
+        "healthStatus": {
+            "ok": "Shop Status: Ok",
+            "warning": "Shop Status: Issues, Check System Status",
+            "error": "Shop Status: May outage, Check System Status"
+        },
         "on": "on",
         "off": "off",
         "yes": "yes",

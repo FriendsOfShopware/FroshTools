@@ -1,0 +1,15 @@
+<router-link
+    v-if="hasPermission"
+    :to="{ name: 'frosh.tools.index.index' }"
+    class="frosh-tools-health-status"
+    :class="{ 'is--collapsed': collapsed }"
+    v-tooltip="{
+        showDelay: 300,
+        message: healthPlaceholder
+    }"
+>
+    <sw-color-badge
+        :variant="healthVariant"
+        :rounded="true"
+    />
+</router-link>

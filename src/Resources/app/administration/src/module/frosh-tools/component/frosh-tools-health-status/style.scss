@@ -1,0 +1,18 @@
+.frosh-tools-health-status {
+    display: inline-flex;
+    align-items: center;
+    margin-inline-start: 4px;
+    vertical-align: middle;
+    line-height: 0;
+    text-decoration: none;
+
+    .sw-color-badge {
+        display: inline-block;
+        margin: 0;
+    }
+}
+
+.sw-admin-menu.is--collapsed .frosh-tools-health-status,
+.frosh-tools-health-status.is--collapsed {
+    margin-inline-start: 0;
+}

@@ -17,6 +17,7 @@ import './component/frosh-tools-tab-feature-flags';
 import './component/frosh-tools-tab-logs';
 import './component/frosh-tools-tab-state-machines';
 import './component/ft-severity-bar';
+import './component/frosh-tools-health-status';
 import './component/frosh-tools-security-overview';
 import './component/frosh-tools-security-dependencies';
 import './component/frosh-tools-security-files';

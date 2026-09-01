@@ -111,9 +111,9 @@ Dedicated list/detail UI for Shopware webhooks (including inline search).
 | **Shopmon** | Optional integration setup for external Shopmon monitoring. |
 | **Webhooks** | Separate Admin module to create, search, and manage webhooks. |
 
-### Status badge in the Admin header
+### Status badge in the Admin sidebar
 
-The Shopware version indicator is extended with a compact **health status** (success / warning / error) so problems surface without opening Tools.
+A compact **health status** (success / warning / error) sits next to the Administration title in the sidebar so problems surface without opening Tools. On Shopware 6.6 / 6.7 this uses the `sw-version` status slot; on current trunk it uses the `sw-admin-menu` header title status slot.
 
 ### Console commands
 
@@ -242,7 +242,7 @@ composer check
 # PHPUnit (from a Shopware project that requires this plugin)
 composer phpunit
 
-# Administration unit tests (Shopware 6.6 and 6.7)
+# Administration unit tests (Shopware 6.6, 6.7, and trunk)
 # Requires the Administration source + its node_modules; see
 # https://github.com/FriendsOfShopware/vitest-shopware-admin-bridge
 cd src/Resources/app/administration
