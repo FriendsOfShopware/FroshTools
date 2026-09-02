@@ -88,7 +88,9 @@ describe('frosh-tools-tab-apps', () => {
         const service = createService({
             getAppsStatus: vi
                 .fn()
-                .mockResolvedValue(createStatus({ store: { loggedIn: false } })),
+                .mockResolvedValue(
+                    createStatus({ store: { loggedIn: false } })
+                ),
         });
         const wrapper = await createWrapper({ service });
         await flushPromises();
