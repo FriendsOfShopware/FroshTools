@@ -25,6 +25,7 @@ import './component/frosh-tools-tab-security/index.js';
 import './component/frosh-tools-tab-fastly/index.js';
 import './component/frosh-tools-tab-statistics/index.js';
 import './component/frosh-tools-tab-shopmon/index.js';
+import './component/frosh-tools-tab-apps/index.js';
 import './page/index/index.js';
 import './acl/index.js';
 import { PRIVILEGE } from './acl/privileges.js';
@@ -136,6 +137,14 @@ Shopware.Module.register('frosh-tools', {
                     path: 'shopmon',
                     meta: {
                         privilege: PRIVILEGE.SHOPMON_READ,
+                        parentPath: 'sw.settings.index.plugins',
+                    },
+                },
+                apps: {
+                    component: 'frosh-tools-tab-apps',
+                    path: 'apps',
+                    meta: {
+                        privilege: PRIVILEGE.APPS_READ,
                         parentPath: 'sw.settings.index.plugins',
                     },
                 },

@@ -26,4 +26,7 @@ export const PRIVILEGE = {
 
     SHOPMON_READ: 'frosh_tools_shopmon:read',
     SHOPMON_UPDATE: 'frosh_tools_shopmon:update',
+
+    APPS_READ: 'frosh_tools_apps:read',
+    APPS_UPDATE: 'frosh_tools_apps:update',
 };

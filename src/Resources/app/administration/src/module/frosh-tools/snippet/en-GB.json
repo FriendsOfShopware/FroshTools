@@ -416,6 +416,64 @@
                     }
                 },
                 "copyError": "Could not copy to clipboard"
+            },
+            "apps": {
+                "title": "Apps",
+                "subtitle": "App system status: shop reachability, Shopware account and shop identity.",
+                "installedApps": "Installed apps",
+                "noApps": "No apps installed",
+                "label": "Label",
+                "version": "Version",
+                "copy": "Copy",
+                "copied": "Copied",
+                "copyError": "Could not copy to clipboard",
+                "reachability": {
+                    "title": "External reachability",
+                    "appUrl": "Shop URL (APP_URL)",
+                    "lastCheck": "Last checked",
+                    "checkNow": "Check now",
+                    "checking": "Checking…",
+                    "checkError": "The reachability check could not be started",
+                    "status": {
+                        "pass": "Reachable",
+                        "soft_fail": "Temporarily unreachable",
+                        "hard_fail": "Not reachable",
+                        "unknown": "Unknown"
+                    }
+                },
+                "store": {
+                    "title": "Shopware Account",
+                    "loggedIn": "Logged in",
+                    "loggedOut": "Not logged in",
+                    "loggedOutHint": "This shop is not connected to a Shopware account. Log in under Extensions → Store to install and license apps.",
+                    "noDetails": "Logged in, but the account details could not be loaded."
+                },
+                "shopId": {
+                    "title": "Shop App ID",
+                    "hint": "Apps use this ID to identify this shop at their app servers.",
+                    "show": "Show",
+                    "hide": "Hide",
+                    "none": "Not available"
+                },
+                "dangerZone": {
+                    "title": "Danger zone",
+                    "resetTitle": "Reset Shop App ID",
+                    "resetDescription": "Uninstalls all apps and regenerates the Shop App ID. Useful when the shop was copied or the app registration is broken.",
+                    "resetButton": "Reset App ID"
+                },
+                "reset": {
+                    "success": "The Shop App ID has been reset and {count} app(s) were uninstalled",
+                    "failed": "These apps could not be uninstalled: {apps}",
+                    "error": "The Shop App ID could not be reset",
+                    "modal": {
+                        "title": "Reset Shop App ID",
+                        "description": "This uninstalls {count} app(s) and generates a new Shop App ID. App servers will no longer recognize this shop under the old ID. This cannot be undone.",
+                        "keepUserData": "Keep app user data",
+                        "cancel": "Cancel",
+                        "confirm": "Uninstall all & reset",
+                        "running": "Resetting…"
+                    }
+                }
             }
         },
         "clear": "Clear",
