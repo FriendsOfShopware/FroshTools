@@ -416,6 +416,64 @@
                     }
                 },
                 "copyError": "Konnte nicht in die Zwischenablage kopieren"
+            },
+            "apps": {
+                "title": "Apps",
+                "subtitle": "Status des App-Systems: Erreichbarkeit des Shops, Shopware-Account und Shop-Identität.",
+                "installedApps": "Installierte Apps",
+                "noApps": "Keine Apps installiert",
+                "label": "Bezeichnung",
+                "version": "Version",
+                "copy": "Kopieren",
+                "copied": "Kopiert",
+                "copyError": "Konnte nicht in die Zwischenablage kopieren",
+                "reachability": {
+                    "title": "Externe Erreichbarkeit",
+                    "appUrl": "Shop-URL (APP_URL)",
+                    "lastCheck": "Zuletzt geprüft",
+                    "checkNow": "Jetzt prüfen",
+                    "checking": "Prüfe…",
+                    "checkError": "Die Erreichbarkeitsprüfung konnte nicht gestartet werden",
+                    "status": {
+                        "pass": "Erreichbar",
+                        "soft_fail": "Vorübergehend nicht erreichbar",
+                        "hard_fail": "Nicht erreichbar",
+                        "unknown": "Unbekannt"
+                    }
+                },
+                "store": {
+                    "title": "Shopware-Account",
+                    "loggedIn": "Angemeldet",
+                    "loggedOut": "Nicht angemeldet",
+                    "loggedOutHint": "Dieser Shop ist nicht mit einem Shopware-Account verbunden. Melde dich unter Erweiterungen → Store an, um Apps zu installieren und zu lizenzieren.",
+                    "noDetails": "Angemeldet, aber die Account-Daten konnten nicht geladen werden."
+                },
+                "shopId": {
+                    "title": "Shop-App-ID",
+                    "hint": "Apps nutzen diese ID, um diesen Shop bei ihren App-Servern zu identifizieren.",
+                    "show": "Anzeigen",
+                    "hide": "Verbergen",
+                    "none": "Nicht verfügbar"
+                },
+                "dangerZone": {
+                    "title": "Gefahrenbereich",
+                    "resetTitle": "Shop-App-ID zurücksetzen",
+                    "resetDescription": "Deinstalliert alle Apps und erzeugt eine neue Shop-App-ID. Nützlich, wenn der Shop kopiert wurde oder die App-Registrierung defekt ist.",
+                    "resetButton": "App-ID zurücksetzen"
+                },
+                "reset": {
+                    "success": "Die Shop-App-ID wurde zurückgesetzt und {count} App(s) wurden deinstalliert",
+                    "failed": "Diese Apps konnten nicht deinstalliert werden: {apps}",
+                    "error": "Die Shop-App-ID konnte nicht zurückgesetzt werden",
+                    "modal": {
+                        "title": "Shop-App-ID zurücksetzen",
+                        "description": "Dies deinstalliert {count} App(s) und erzeugt eine neue Shop-App-ID. App-Server erkennen diesen Shop unter der alten ID nicht mehr. Dies kann nicht rückgängig gemacht werden.",
+                        "keepUserData": "Benutzerdaten der Apps behalten",
+                        "cancel": "Abbrechen",
+                        "confirm": "Alle deinstallieren & zurücksetzen",
+                        "running": "Setze zurück…"
+                    }
+                }
             }
         },
         "clear": "Leeren",

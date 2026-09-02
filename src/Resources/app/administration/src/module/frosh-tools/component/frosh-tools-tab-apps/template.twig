@@ -1,0 +1,267 @@
+<div class="ft frosh-tab-apps">
+    <ft-page-head
+        :title="$t('frosh-tools.tabs.apps.title')"
+        :subtitle="$t('frosh-tools.tabs.apps.subtitle')"
+    >
+        <template #actions>
+            <ft-refresh-button
+                :loading="isLoading"
+                @click="loadStatus"
+            />
+        </template>
+    </ft-page-head>
+    <ft-hero-state
+        v-if="loadError"
+        variant="danger"
+        icon="alert"
+        :title="$t('frosh-tools.loadError.title')"
+        :body="loadError"
+    >
+        <template #actions>
+            <ft-button
+                icon="refresh"
+                @click="loadStatus"
+            >
+                {{ $t('frosh-tools.loadError.retry') }}
+            </ft-button>
+        </template>
+    </ft-hero-state>
+    <ft-empty
+        v-else-if="isLoading && !status"
+        loading
+    />
+    <template v-else-if="status">
+        <div class="frosh-tab-apps__grid">
+            <ft-panel
+                class="frosh-tab-apps__card"
+                :title="$t('frosh-tools.tabs.apps.reachability.title')"
+            >
+                <template #actions>
+                    <ft-pill :variant="reachabilityVariant">
+                        {{ reachabilityLabel }}
+                    </ft-pill>
+                </template>
+                <dl class="frosh-tab-apps__facts">
+                    <div class="frosh-tab-apps__fact">
+                        <dt>
+                            {{ $t('frosh-tools.tabs.apps.reachability.appUrl') }}
+                        </dt>
+                        <dd class="ft-mono">{{ status.appUrl || '—' }}</dd>
+                    </div>
+                    <div
+                        v-if="reachabilityCheckedAt"
+                        class="frosh-tab-apps__fact"
+                    >
+                        <dt>
+                            {{ $t('frosh-tools.tabs.apps.reachability.lastCheck') }}
+                        </dt>
+                        <dd>{{ reachabilityCheckedAt }}</dd>
+                    </div>
+                </dl>
+                <p
+                    v-if="reachability && reachability.info"
+                    class="frosh-tab-apps__info"
+                >{{ reachability.info }}</p>
+                <div class="frosh-tab-apps__card-actions">
+                    <ft-button
+                        icon="refresh"
+                        :disabled="isChecking"
+                        @click="checkReachability"
+                    >
+                        {{ isChecking ? $t('frosh-tools.tabs.apps.reachability.checking') : $t('frosh-tools.tabs.apps.reachability.checkNow') }}
+                    </ft-button>
+                </div>
+            </ft-panel>
+            <ft-panel
+                class="frosh-tab-apps__card"
+                :title="$t('frosh-tools.tabs.apps.store.title')"
+            >
+                <template #actions>
+                    <ft-pill :variant="store && store.loggedIn ? 'success' : 'muted'">
+                        {{ store && store.loggedIn ? $t('frosh-tools.tabs.apps.store.loggedIn') : $t('frosh-tools.tabs.apps.store.loggedOut') }}
+                    </ft-pill>
+                </template>
+
+                <template v-if="store && store.loggedIn">
+                    <div
+                        v-if="storeUser === undefined"
+                        class="frosh-tab-apps__account-loading"
+                    >
+                        <span
+                            class="ft-spinner"
+                            aria-hidden="true"
+                        ></span>
+                    </div>
+                    <div
+                        v-else-if="storeUser"
+                        class="frosh-tab-apps__account"
+                    >
+                        <img
+                            v-if="storeUser.avatarUrl"
+                            class="frosh-tab-apps__avatar"
+                            :src="storeUser.avatarUrl"
+                            :alt="storeUser.name || ''"
+                        />
+                        <div>
+                            <div class="frosh-tab-apps__account-name">{{ storeUser.name || '—' }}</div>
+                            <div class="frosh-tab-apps__account-mail">
+                                {{ storeUser.email || '—' }}
+                            </div>
+                        </div>
+                    </div>
+                    <p
+                        v-else
+                        class="frosh-tab-apps__hint"
+                    >
+                        {{ $t('frosh-tools.tabs.apps.store.noDetails') }}
+                    </p>
+                </template>
+                <p
+                    v-else
+                    class="frosh-tab-apps__hint"
+                >
+                    {{ $t('frosh-tools.tabs.apps.store.loggedOutHint') }}
+                </p>
+            </ft-panel>
+            <ft-panel
+                class="frosh-tab-apps__card"
+                :title="$t('frosh-tools.tabs.apps.shopId.title')"
+            >
+                <p class="frosh-tab-apps__hint">
+                    {{ $t('frosh-tools.tabs.apps.shopId.hint') }}
+                </p>
+                <div class="frosh-tab-apps__shopid">
+                    <code class="frosh-tab-apps__shopid-value">{{ shopIdDisplay }}</code>
+                </div>
+                <div class="frosh-tab-apps__card-actions">
+                    <ft-button
+                        v-if="shopId"
+                        :icon="shopIdVisible ? 'eye-off' : 'eye'"
+                        @click="shopIdVisible = !shopIdVisible"
+                    >
+                        {{ shopIdVisible ? $t('frosh-tools.tabs.apps.shopId.hide') : $t('frosh-tools.tabs.apps.shopId.show') }}
+                    </ft-button>
+                    <ft-button
+                        v-if="shopId && shopIdVisible"
+                        :icon="copiedField === 'shopId' ? 'check' : 'copy'"
+                        @click="copy('shopId', shopId)"
+                    >
+                        {{ copiedField === 'shopId' ? $t('frosh-tools.tabs.apps.copied') : $t('frosh-tools.tabs.apps.copy') }}
+                    </ft-button>
+                </div>
+            </ft-panel>
+        </div>
+        <ft-panel
+            :title="$t('frosh-tools.tabs.apps.installedApps')"
+            :count="apps.length"
+            flush
+        >
+            <ft-empty
+                v-if="!apps.length"
+                icon="info"
+                :title="$t('frosh-tools.tabs.apps.noApps')"
+            />
+            <div
+                v-else
+                class="ft-table-wrap"
+            >
+                <table class="ft-table">
+                    <thead>
+                        <tr>
+                            <th>{{ $t('frosh-tools.name') }}</th>
+                            <th>
+                                {{ $t('frosh-tools.tabs.apps.label') }}
+                            </th>
+                            <th style="width: 120px;">
+                                {{ $t('frosh-tools.tabs.apps.version') }}
+                            </th>
+                            <th style="width: 110px;">{{ $t('frosh-tools.active') }}</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr
+                            v-for="app in apps"
+                            :key="app.name"
+                        >
+                            <td class="ft-table__name ft-mono">{{ app.name }}</td>
+                            <td>{{ app.label || '—' }}</td>
+                            <td class="ft-mono">{{ app.version }}</td>
+                            <td>
+                                <ft-pill :variant="app.active ? 'success' : 'muted'">
+                                    {{ app.active ? $t('frosh-tools.on') : $t('frosh-tools.off') }}
+                                </ft-pill>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </ft-panel>
+        <ft-panel
+            v-if="canUpdate"
+            class="frosh-tab-apps__danger"
+            :title="$t('frosh-tools.tabs.apps.dangerZone.title')"
+        >
+            <div class="frosh-tab-apps__danger-row">
+                <div>
+                    <div class="frosh-tab-apps__danger-title">
+                        {{ $t('frosh-tools.tabs.apps.dangerZone.resetTitle') }}
+                    </div>
+                    <p class="frosh-tab-apps__hint">
+                        {{ $t('frosh-tools.tabs.apps.dangerZone.resetDescription') }}
+                    </p>
+                </div>
+                <ft-button
+                    variant="danger"
+                    icon="trash"
+                    @click="showResetModal = true"
+                >
+                    {{ $t('frosh-tools.tabs.apps.dangerZone.resetButton') }}
+                </ft-button>
+            </div>
+        </ft-panel>
+    </template>
+    <ft-modal
+        v-if="showResetModal"
+        variant="small"
+        :title="$t('frosh-tools.tabs.apps.reset.modal.title')"
+        @close="showResetModal = false"
+    >
+        <p class="frosh-tab-apps__modal-text">
+            {{ $t('frosh-tools.tabs.apps.reset.modal.description', { count: apps.length }) }}
+        </p>
+        <ul
+            v-if="apps.length"
+            class="frosh-tab-apps__modal-apps"
+        >
+            <li
+                v-for="app in apps"
+                :key="app.name"
+            >
+                <span class="ft-mono">{{ app.name }}</span>
+                <span class="frosh-tab-apps__modal-version">{{ app.version }}</span>
+            </li>
+        </ul>
+        <label class="frosh-tab-apps__modal-keep">
+            <input
+                v-model="resetKeepUserData"
+                type="checkbox"
+            />
+            <span>
+                {{ $t('frosh-tools.tabs.apps.reset.modal.keepUserData') }}
+            </span>
+        </label>
+        <template #footer>
+            <ft-button @click="showResetModal = false">
+                {{ $t('frosh-tools.tabs.apps.reset.modal.cancel') }}
+            </ft-button>
+            <ft-button
+                variant="danger"
+                icon="trash"
+                :disabled="isResetting"
+                @click="resetShopId"
+            >
+                {{ isResetting ? $t('frosh-tools.tabs.apps.reset.modal.running') : $t('frosh-tools.tabs.apps.reset.modal.confirm') }}
+            </ft-button>
+        </template>
+    </ft-modal>
+</div>

@@ -1,0 +1,168 @@
+.frosh-tab-apps {
+    &__grid {
+        display: grid;
+        grid-template-columns: repeat(3, minmax(0, 1fr));
+        gap: 16px;
+        margin-bottom: 16px;
+
+        @media (max-width: 1100px) {
+            grid-template-columns: 1fr;
+        }
+    }
+
+    &__card {
+        .ft-panel__body {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+            height: 100%;
+        }
+    }
+
+    &__facts {
+        margin: 0;
+        display: flex;
+        flex-direction: column;
+        gap: 8px;
+    }
+
+    &__fact {
+        display: flex;
+        flex-direction: column;
+        gap: 2px;
+
+        dt {
+            font-size: 11.5px;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.04em;
+            color: var(--ft-text-muted);
+        }
+
+        dd {
+            margin: 0;
+            font-size: 13px;
+            color: var(--ft-text);
+            overflow-wrap: anywhere;
+        }
+    }
+
+    &__info {
+        margin: 0;
+        padding: 10px 12px;
+        border-radius: var(--ft-radius-sm);
+        background: var(--ft-danger-soft);
+        color: var(--ft-danger);
+        font-size: 12.5px;
+        line-height: 1.5;
+        overflow-wrap: anywhere;
+    }
+
+    &__hint {
+        margin: 0;
+        font-size: 13px;
+        line-height: 1.55;
+        color: var(--ft-text-soft);
+    }
+
+    &__card-actions {
+        display: flex;
+        gap: 8px;
+        flex-wrap: wrap;
+        margin-top: auto;
+    }
+
+    &__account {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+    }
+
+    &__avatar {
+        width: 40px;
+        height: 40px;
+        border-radius: 50%;
+        border: 1px solid var(--ft-border);
+        object-fit: cover;
+    }
+
+    &__account-name {
+        font-weight: 600;
+        font-size: 14px;
+    }
+
+    &__account-mail {
+        font-size: 12.5px;
+        color: var(--ft-text-muted);
+    }
+
+    &__shopid-value {
+        display: inline-block;
+        font-family: var(--ft-mono);
+        font-size: 13px;
+        background: var(--ft-surface-2);
+        border: 1px solid var(--ft-border);
+        border-radius: var(--ft-radius-sm);
+        padding: 8px 12px;
+        overflow-wrap: anywhere;
+    }
+
+    &__danger {
+        margin-top: 16px;
+        border-color: var(--ft-danger);
+    }
+
+    &__danger-row {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 16px;
+        flex-wrap: wrap;
+    }
+
+    &__danger-title {
+        font-weight: 600;
+        font-size: 14px;
+        margin-bottom: 4px;
+    }
+
+    &__modal-text {
+        margin: 0 0 12px;
+        font-size: 13.5px;
+        line-height: 1.55;
+        color: var(--ft-text-soft);
+    }
+
+    &__modal-apps {
+        margin: 0 0 12px;
+        padding: 10px 14px;
+        list-style: none;
+        background: var(--ft-surface-2);
+        border: 1px solid var(--ft-border);
+        border-radius: var(--ft-radius-sm);
+        max-height: 160px;
+        overflow-y: auto;
+        display: flex;
+        flex-direction: column;
+        gap: 6px;
+
+        li {
+            display: flex;
+            justify-content: space-between;
+            gap: 12px;
+            font-size: 13px;
+        }
+    }
+
+    &__modal-version {
+        color: var(--ft-text-muted);
+    }
+
+    &__modal-keep {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        font-size: 13px;
+        cursor: pointer;
+    }
+}

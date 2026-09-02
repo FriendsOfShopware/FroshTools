@@ -474,6 +474,58 @@ class FroshTools extends ApiService {
                 return ApiService.handleResponse(response);
             });
     }
+
+    getAppsStatus() {
+        const apiRoute = `${this.getApiBasePath()}/apps/status`;
+        return this.httpClient
+            .get(apiRoute, {
+                headers: this.getBasicHeaders(),
+            })
+            .then((response) => {
+                return ApiService.handleResponse(response);
+            });
+    }
+
+    getAppsStoreUserInfo() {
+        const apiRoute = `${this.getApiBasePath()}/apps/store-user-info`;
+        return this.httpClient
+            .get(apiRoute, {
+                headers: this.getBasicHeaders(),
+            })
+            .then((response) => {
+                return ApiService.handleResponse(response);
+            });
+    }
+
+    checkAppsReachability() {
+        const apiRoute = `${this.getApiBasePath()}/apps/reachability-check`;
+        return this.httpClient
+            .post(
+                apiRoute,
+                {},
+                {
+                    headers: this.getBasicHeaders(),
+                }
+            )
+            .then((response) => {
+                return ApiService.handleResponse(response);
+            });
+    }
+
+    resetAppsShopId(keepUserData = false) {
+        const apiRoute = `${this.getApiBasePath()}/apps/shop-id/reset`;
+        return this.httpClient
+            .post(
+                apiRoute,
+                { keepUserData },
+                {
+                    headers: this.getBasicHeaders(),
+                }
+            )
+            .then((response) => {
+                return ApiService.handleResponse(response);
+            });
+    }
 }
 
 export default FroshTools;
