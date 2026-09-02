@@ -34,15 +34,15 @@ class TableField extends Struct implements TableMemberInterface
         return \sprintf('%s.%s', $this->table, $this->field);
     }
 
-    public function label(): string
+    public function value(): string
     {
-        return \implode(' ', [
+        return \implode(' ', \array_filter([
             $this->type,
             $this->null ? 'null' : 'not null',
             'default ' . Json::encode($this->default),
             $this->extra,
             $this->key ? "/* key={$this->key} */" : '',
-        ]);
+        ]));
     }
 
     /**

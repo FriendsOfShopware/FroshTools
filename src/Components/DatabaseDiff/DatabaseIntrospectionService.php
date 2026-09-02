@@ -8,21 +8,16 @@ use Doctrine\DBAL\Connection;
 use Doctrine\DBAL\Exception as DbalException;
 use Doctrine\DBAL\Schema as Dbal;
 use Doctrine\DBAL\Types\DateTimeType;
-use Doctrine\DBAL\Types\Type;
-use Doctrine\DBAL\Types\TypeRegistry;
 use Frosh\Tools\Components\DatabaseDiff\Swdb\Schema;
 use Symfony\Component\DependencyInjection\Attribute\Autowire;
 
 class DatabaseIntrospectionService
 {
-    private readonly TypeRegistry $typeRegistry;
-
     public function __construct(
         #[Autowire(param: 'kernel.shopware_version')]
         private readonly string $shopwareVersion,
         private readonly Connection $connection,
     ) {
-        $this->typeRegistry = Type::getTypeRegistry();
     }
 
     public function getDatabaseSchema(): Schema
@@ -50,15 +45,23 @@ class DatabaseIntrospectionService
             $result[$table->getName()] = $this->introspectTable($table);
         }
 
-        return \array_values($result);
+        return $result;
     }
 
     private function introspectTable(Dbal\Table $table): Swdb\Table
     {
         [$relationsFromTable, $relationsToTable] = $this->introspectTableRelations($table);
 
-        $fields  = \array_filter(\array_map(fn ($column) => $this->introspectTableField($table, $column), $table->getColumns()));
-        $indexes = \array_filter(\array_map(fn ($index)  => $this->introspectIndex($table, $index),       $table->getIndexes()));
+        $fields  = \array_filter(
+            \array_map(fn ($column) => $this->introspectTableField($table, $column),
+                $table->getColumns()
+            )
+        );
+        $indexes = \array_filter(
+            \array_map(fn ($index)  => $this->introspectIndex($table, $index),
+                $table->getIndexes()
+            )
+        );
 
         return new Swdb\Table(
             $table->getName(),
@@ -72,6 +75,7 @@ class DatabaseIntrospectionService
     private function introspectTableField(Dbal\Table $table, Dbal\Column $column): ?Swdb\TableField
     {
         $type = $column->getType();
+
         $typeDeclaration = $type->getSQLDeclaration([
             'length'    => $column->getLength(),
             'fixed'     => $column->getFixed(),
@@ -79,6 +83,7 @@ class DatabaseIntrospectionService
             'precision' => $column->getPrecision(),
             'unsigned'  => $column->getUnsigned(),
         ], $this->connection->getDatabasePlatform());
+
         if ($type instanceof DateTimeType) {
             $typeDeclaration = \sprintf('%s(%d)', $typeDeclaration, $column->getLength());
         }
@@ -95,6 +100,7 @@ class DatabaseIntrospectionService
             ])),
         );
         $tableField->table = $table->getName();
+
         return $tableField;
     }
 
@@ -146,7 +152,7 @@ SQL,
                 'table' => $table->getName(),
             ],
         );
-        $resultTo = $this->connection->executeQuery(
+        $resultTo   = $this->connection->executeQuery(
             <<<'SQL'
 -- mysql-json-schema relations to table
 SELECT  TABLE_SCHEMA            as foreignSchema,
@@ -168,8 +174,12 @@ SQL,
         );
 
         return [
-            \array_map(fn ($data) => $this->introspectTableRelationFrom($table, $data), $resultFrom->fetchAllAssociative()),
-            \array_map(fn ($data) => $this->introspectTableRelationTo($table, $data), $resultTo->fetchAllAssociative()),
+            \array_map(fn ($data) => $this->introspectTableRelationFrom($table, $data),
+                $resultFrom->fetchAllAssociative()
+            ),
+            \array_map(fn ($data) => $this->introspectTableRelationTo($table, $data),
+                $resultTo->fetchAllAssociative()
+            ),
         ];
     }
 
@@ -186,6 +196,7 @@ SQL,
             $index->isUnique(),
         );
         $tableIndex->table = $table->getName();
+
         return $tableIndex;
     }
 
@@ -193,6 +204,7 @@ SQL,
     {
         $tableRelation = Swdb\TableRelation::createFromData($data);
         $tableRelation->table = $table->getName();
+
         return $tableRelation;
     }
 
@@ -200,6 +212,7 @@ SQL,
     {
         $tableRelation = Swdb\InverseTableRelation::createFromData($data);
         $tableRelation->table = $table->getName();
+
         return $tableRelation;
     }
 }

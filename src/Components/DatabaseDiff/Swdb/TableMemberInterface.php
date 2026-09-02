@@ -13,7 +13,7 @@ interface TableMemberInterface
 
     public function key(): string;
 
-    public function label(): string;
+    public function value(): string;
 
     /**
      * @param static $member

@@ -17,8 +17,6 @@ use Symfony\Contracts\HttpClient\HttpClientInterface;
 class DatabaseDiffService
 {
     public function __construct(
-        #[Autowire(param: 'kernel.shopware_version')]
-        private readonly string $shopwareVersion,
         private readonly HttpClientInterface $httpClient,
         private readonly DataValidator $validator,
     ) {
@@ -231,8 +229,8 @@ class DatabaseDiffService
                             'type'   => $memberA->type(),
                             'label'  => 'modified',
                             'name'   => $memberA->key(),
-                            'valueA' => $memberA->label(),
-                            'valueB' => $memberB->label(),
+                            'valueA' => $memberA->value(),
+                            'valueB' => $memberB->value(),
                         ];
                     }
 
@@ -246,7 +244,7 @@ class DatabaseDiffService
                     'type'   => $memberA->type(),
                     'label'  => 'removed',
                     'name'   => $memberA->key(),
-                    'valueA' => $memberA->label(),
+                    'valueA' => $memberA->value(),
                     'valueB' => null,
                 ];
             }
@@ -269,7 +267,7 @@ class DatabaseDiffService
                     'label'  => 'added',
                     'name'   => $memberB->key(),
                     'valueA' => null,
-                    'valueB' => $memberB->label(),
+                    'valueB' => $memberB->value(),
                 ];
             }
         }

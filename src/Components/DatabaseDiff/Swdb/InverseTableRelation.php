@@ -19,7 +19,7 @@ class InverseTableRelation extends TableRelation
         return \sprintf('%s.%s', $this->foreignTable, $this->foreignField);
     }
 
-    public function label(): string
+    public function value(): string
     {
         return "foreign key `{$this->foreignTable}.{$this->foreignField}` references `{$this->table}.{$this->localField}`";
     }

@@ -29,13 +29,13 @@ class TableIndex extends Struct implements tableMemberInterface
         return $this->index;
     }
 
-    public function label(): string
+    public function value(): string
     {
-        return \implode(' ', [
+        return \implode(' ', \array_filter([
             "/* index={$this->index} */",
             "{$this->table}($this->columns)",
             $this->unique ? 'unique' : '',
-        ]);
+        ]));
     }
 
     public function compare($member): bool

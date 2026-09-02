@@ -37,7 +37,11 @@ class ShopwareDatabaseController extends AbstractController
     #[Route(path: '/shopware-database-diff/available-versions', name: 'api.frosh.tools.shopware-database-diff.version', methods: ['GET'])]
     public function fetchAvailableVersions(Request $request): JsonResponse
     {
-        if ($request->query->getBoolean('forceRefresh')) {
+        if ($this->shopwareVersion === Kernel::SHOPWARE_FALLBACK_VERSION) {
+            return new JsonResponse(['error' => 'Git version is not supported']);
+        }
+
+        if ($request->query->getBoolean('refresh')) {
             $this->cacheObject->deleteItem(self::CACHE_KEY_AVAILABLE_VERSIONS);
         }
 
@@ -53,12 +57,16 @@ class ShopwareDatabaseController extends AbstractController
     #[Route(path: '/shopware-database-diff/{version}', name: 'api.frosh.tools.shopware-database-diff.show', methods: ['GET'])]
     public function showDatabaseDiff(Request $request, string $version): JsonResponse
     {
+        if ($this->shopwareVersion === Kernel::SHOPWARE_FALLBACK_VERSION) {
+            return new JsonResponse(['error' => 'Git version is not supported']);
+        }
+
         if ($introspection = $request->query->getBoolean('introspection')) {
             $shopwareVersion = null;
         } else {
-            $shopwareVersion = $this->getShopwareVersion();
+            $shopwareVersion = $this->shopwareVersion;
 
-            if (Kernel::SHOPWARE_FALLBACK_VERSION === $shopwareVersion) {
+            if (Kernel::SHOPWARE_FALLBACK_VERSION === \str_replace('.9999999.9999999-dev', '.9999999-dev', $shopwareVersion)) {
                 $shopwareVersion = \substr($shopwareVersion, 0,
                         // Only use "6.6", and append ".0.0".
                         \strpos($shopwareVersion, '.', 1 + \strpos($shopwareVersion, '.'))
@@ -71,8 +79,7 @@ class ShopwareDatabaseController extends AbstractController
             $shopwareVersion ?? 'introspection', $version, (int)$introspection,
         );
 
-
-        if ($request->query->getBoolean('forceRefresh')) {
+        if ($request->query->getBoolean('refresh')) {
             $this->cacheObject->deleteItem($cacheKey);
         }
 
@@ -88,16 +95,5 @@ class ShopwareDatabaseController extends AbstractController
         });
 
         return new JsonResponse($diff);
-    }
-
-    private function getShopwareVersion(): string
-    {
-        $shopwareVersion = \str_replace('.9999999.9999999-dev', '.9999999-dev', $this->shopwareVersion);
-
-        if (Kernel::SHOPWARE_FALLBACK_VERSION === $shopwareVersion) {
-            return $shopwareVersion;
-        }
-
-        return $this->shopwareVersion;
     }
 }

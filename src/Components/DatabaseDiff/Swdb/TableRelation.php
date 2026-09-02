@@ -30,7 +30,7 @@ class TableRelation extends Struct implements TableMemberInterface
         return \sprintf('%s.%s', $this->table, $this->localField);
     }
 
-    public function label(): string
+    public function value(): string
     {
         return "foreign key `{$this->table}.{$this->localField}` references `{$this->foreignTable}.{$this->foreignField}`";
     }
