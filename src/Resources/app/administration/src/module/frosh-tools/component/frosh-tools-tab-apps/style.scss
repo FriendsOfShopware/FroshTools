@@ -4,6 +4,13 @@
         grid-template-columns: repeat(3, minmax(0, 1fr));
         gap: 16px;
         margin-bottom: 16px;
+        align-items: stretch;
+
+        // Neutralize the stacked-panel spacing (.ft-panel + .ft-panel) inside the grid,
+        // otherwise the second and third card are pushed down within their grid area.
+        > .ft-panel {
+            margin-top: 0;
+        }
 
         @media (max-width: 1100px) {
             grid-template-columns: 1fr;
