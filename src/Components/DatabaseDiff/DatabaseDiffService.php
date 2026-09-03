@@ -146,10 +146,6 @@ class DatabaseDiffService
 
     public function createSchemaDiff(Schema $versionA, Schema $versionB): array
     {
-        if ($versionA->version === $versionB->version) {
-            return [];
-        }
-
         return \iterator_to_array($this->generateSchemaDiff($versionA, $versionB), false);
     }
 
@@ -194,8 +190,8 @@ class DatabaseDiffService
                 'type'   => 'tables',
                 'label'  => 'added',
                 'name'   => $tableB->table,
-                'valueA' => $tableB->table,
-                'valueB' => null,
+                'valueA' => null,
+                'valueB' => $tableB->table,
             ];
 
             yield from $this->generateTableDiff(null, $tableB);

@@ -6,18 +6,23 @@ namespace Frosh\Tools\Components\DatabaseDiff;
 
 use Doctrine\DBAL\Connection;
 use Doctrine\DBAL\Exception as DbalException;
+use Doctrine\DBAL\Platforms\AbstractPlatform;
 use Doctrine\DBAL\Schema as Dbal;
-use Doctrine\DBAL\Types\DateTimeType;
+use Doctrine\DBAL\Types\IntegerType;
+use Frosh\Tools\Components\DatabaseDiff\Dbal\CustomMySQLSchemaManager;
 use Frosh\Tools\Components\DatabaseDiff\Swdb\Schema;
 use Symfony\Component\DependencyInjection\Attribute\Autowire;
 
 class DatabaseIntrospectionService
 {
+    private readonly AbstractPlatform $platform;
+
     public function __construct(
         #[Autowire(param: 'kernel.shopware_version')]
         private readonly string $shopwareVersion,
         private readonly Connection $connection,
     ) {
+        $this->platform = $this->connection->getDatabasePlatform();
     }
 
     public function getDatabaseSchema(): Schema
@@ -30,7 +35,7 @@ class DatabaseIntrospectionService
      */
     private function introspectSchema(): array
     {
-        $schemaManager = $this->connection->createSchemaManager();
+        $schemaManager = new CustomMySQlSchemaManager($this->connection, $this->platform);
 
         try {
             $tables = \method_exists($schemaManager, 'introspectTables')
@@ -75,54 +80,32 @@ class DatabaseIntrospectionService
     private function introspectTableField(Dbal\Table $table, Dbal\Column $column): ?Swdb\TableField
     {
         $type = $column->getType();
+        $raw  = $column->getPlatformOption('raw');
+        $decl = \strtolower(
+            $type->getSQLDeclaration([
+                'unsigned'      => $column->getUnsigned(),
+                'autoincrement' => $column->getAutoincrement(),
+                ...$raw,
+            ], $this->platform)
+        );
 
-        $typeDeclaration = $type->getSQLDeclaration([
-            'length'    => $column->getLength(),
-            'fixed'     => $column->getFixed(),
-            'scale'     => $column->getScale(),
-            'precision' => $column->getPrecision(),
-            'unsigned'  => $column->getUnsigned(),
-        ], $this->connection->getDatabasePlatform());
-
-        if ($type instanceof DateTimeType) {
-            $typeDeclaration = \sprintf('%s(%d)', $typeDeclaration, $column->getLength());
+        // Integer types got removed at some point, so we resort to the DBAL declaration.
+        // Note: Depends on MySQL/MariaDB version.
+        if ($type instanceof IntegerType) {
+            $raw['type'] = $decl;
         }
 
         $tableField = new Swdb\TableField(
             $column->getName(),
-            \strtolower($typeDeclaration),
+            $raw['type'],
             !$column->getNotnull(),
-            $this->introspectTableFieldKey($table, $column),
+            $raw['key'],
             $column->getDefault(),
-            \implode(' ', \array_filter([
-                $column->getAutoincrement() ? 'auto_increment' : '',
-                $column->getColumnDefinition() ?? '',
-            ])),
+            $raw['extra'],
         );
         $tableField->table = $table->getName();
 
         return $tableField;
-    }
-
-    private function introspectTableFieldKey(Dbal\Table $table, Dbal\Column $column): string
-    {
-        foreach ($table->getIndexes() as $index) {
-            if (!\in_array($column->getName(), $index->getColumns(), true)) {
-                continue;
-            }
-
-            if ($index->isPrimary()) {
-                return 'PRI';
-            }
-
-            if ($index->isUnique()) {
-                return 'UNI';
-            }
-
-            return 'MUL';
-        }
-
-        return '';
     }
 
     /**

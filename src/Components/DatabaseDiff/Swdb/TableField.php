@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace Frosh\Tools\Components\DatabaseDiff\Swdb;
 
-use Shopware\Core\Framework\Struct\ArrayStruct;
 use Shopware\Core\Framework\Struct\Struct;
 use Shopware\Core\Framework\Util\Json;
 use Symfony\Component\DependencyInjection\Attribute\Exclude;
@@ -52,11 +51,11 @@ class TableField extends Struct implements TableMemberInterface
     {
         if (
             $this->field !== $member->field
-            && $this->type !== $member->type
-            && $this->null !== $member->null
-            //&& $this->key !== $member->key
-            && $this->default !== $member->default
-            && $this->extra !== $member->extra
+            || $this->type !== $member->type
+            || $this->null !== $member->null
+            || $this->key !== $member->key
+            || $this->default !== $member->default
+            || $this->extra !== $member->extra
         ) {
             return true;
         }
