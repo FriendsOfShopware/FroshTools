@@ -86,7 +86,7 @@ class ShopwareDatabaseController extends AbstractController
         $diff = $this->cacheObject->get($cacheKey, function (ItemInterface $cacheItem) use ($introspection, $shopwareVersion, $version) {
             $cacheItem->expiresAfter(self::CACHE_TTL_SECONDS);
 
-            $schemaA = $shopwareVersion
+            $schemaA = !$introspection
                 ? $this->databaseDiffService->getDatabaseSchema($shopwareVersion)
                 : $this->databaseIntrospectionService->getDatabaseSchema();
             $schemaB = $this->databaseDiffService->getDatabaseSchema($version);

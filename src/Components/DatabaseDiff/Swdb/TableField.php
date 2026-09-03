@@ -51,16 +51,45 @@ class TableField extends Struct implements TableMemberInterface
     {
         if (
             $this->field !== $member->field
-            || $this->type !== $member->type
+            || $this->compareType($this->type, $member->type)
             || $this->null !== $member->null
             || $this->key !== $member->key
-            || $this->default !== $member->default
+            || $this->compareDefault($this->default, $member->default)
             || $this->extra !== $member->extra
         ) {
             return true;
         }
 
         return false;
+    }
+
+    public static function compareType(string $typeA, string $typeB, bool $considerLength = false): bool
+    {
+        $typeA   = \strtok($typeA, '(), ');
+        $lengthA = \strtok('(), ');
+        $typeB   = \strtok($typeB, '(), ');
+        $lengthB = \strtok('(), ');
+
+        return ($typeA !== $typeB)
+            && (!$considerLength || $lengthA !== $lengthB);
+    }
+
+    public static function compareDefault(?string $defaultA, ?string $defaultB): bool
+    {
+        $formatBinary = static fn ($default) => match (\substr($default, 0, 2)) {
+            '0x'    => \strtolower(\substr($default, 2)),
+            "x'"    => \strtok($default, "x''"),
+            default => $default,
+        };
+
+        if (\is_string($defaultA)) {
+            $defaultA = $formatBinary($defaultA);
+        }
+        if (\is_string($defaultB)) {
+            $defaultB = $formatBinary($defaultB);
+        }
+
+        return $defaultA !== $defaultB;
     }
 
     public static function createFromData(array $data): static
