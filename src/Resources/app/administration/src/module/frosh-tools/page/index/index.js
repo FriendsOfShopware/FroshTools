@@ -44,6 +44,10 @@ const SEARCHABLE_TABS = {
         type: 'frosh_tools_feature_flags',
         placeholderKey: 'frosh-tools.search.placeholder.featureFlags',
     },
+    'frosh.tools.index.databasediff': {
+        type: 'frosh_tools_database_diff',
+        placeholderKey: 'frosh-tools.search.placeholder.databaseDiff',
+    },
 };
 
 Component.register('frosh-tools-index', {
@@ -170,6 +174,10 @@ Component.register('frosh-tools-index', {
                 route: 'frosh.tools.index.featureflags',
                 labelKey: 'frosh-tools.tabs.feature-flags.title',
                 privilege: PRIVILEGE.READ,
+            });
+            diagnostics.push({
+                route: 'frosh.tools.index.databasediff',
+                labelKey: 'frosh-tools.tabs.database-diff.title',
             });
 
             const cdn = [];

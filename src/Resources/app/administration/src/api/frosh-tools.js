@@ -352,6 +352,33 @@ class FroshTools extends ApiService {
             });
     }
 
+    getDatabaseVersions(forceRefresh = false) {
+        const apiRoute = `${this.getApiBasePath()}/shopware-database-diff/available-versions`;
+        return this.httpClient
+            .get(apiRoute, {
+                headers: this.getBasicHeaders(),
+                params: forceRefresh ? { refresh: 1 } : {},
+            })
+            .then((response) => {
+                return ApiService.handleResponse(response);
+            });
+    }
+
+    getDatabaseDiff(version, introspection = false, forceRefresh = false) {
+        const apiRoute = `${this.getApiBasePath()}/shopware-database-diff/${version}`;
+        return this.httpClient
+            .get(apiRoute, {
+                headers: this.getBasicHeaders(),
+                params: {
+                    introspection: Number(introspection),
+                    refresh: Number(forceRefresh),
+                },
+            })
+            .then((response) => {
+                return ApiService.handleResponse(response);
+            });
+    }
+
     getFastlyStatus() {
         const apiRoute = `${this.getApiBasePath()}/fastly/status`;
         return this.httpClient
