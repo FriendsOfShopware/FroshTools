@@ -458,7 +458,7 @@
                 "dangerZone": {
                     "title": "Gefahrenbereich",
                     "resetTitle": "Shop-App-ID zurücksetzen",
-                    "resetDescription": "Deinstalliert alle Apps und erzeugt eine neue Shop-App-ID. Nützlich, wenn der Shop kopiert wurde oder die App-Registrierung defekt ist.",
+                    "resetDescription": "Deinstalliert alle Apps und erzeugt eine neue Shop-App-ID. Nützlich, wenn der Shop kopiert wurde.",
                     "resetButton": "App-ID zurücksetzen"
                 },
                 "reset": {
