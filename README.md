@@ -109,6 +109,7 @@ Dedicated list/detail UI for Shopware webhooks (including inline search).
 | **Elasticsearch** | Status, indices, reindex, alias switch, unused/orphaned cleanup, console. Optional `show_all_indices`. |
 | **Fastly** | Purge all / by URL and basic stats when Fastly is configured. |
 | **Shopmon** | Optional integration setup for external Shopmon monitoring. |
+| **Apps** | External reachability of the shop (APP_URL verification), Shopware account login status, current Shop App ID with reveal/copy, installed app list, and reset of the Shop App ID with uninstall of all apps. |
 | **Webhooks** | Separate Admin module to create, search, and manage webhooks. |
 
 ### Status badge in the Admin header
@@ -139,7 +140,7 @@ The Shopware version indicator is extended with a compact **health status** (suc
 - PHP version required by your Shopware minor
 - Admin ACL privileges under **Settings → Users & permissions** (Viewer / Editor per area):
   - **Frosh Tools** — system status, statistics, feature flags, state machines. Editor grants every Tools write privilege (and pulls in the other viewers).
-  - **Cache / Queue / Scheduled tasks / Search indices / Security / Fastly / Shopmon** — Viewer to open the tab, Editor for mutations (clear cache, retry/purge, run tasks, reindex, restore files, purge CDN, setup integration).
+  - **Cache / Queue / Scheduled tasks / Search indices / Security / Fastly / Shopmon / Apps** — Viewer to open the tab, Editor for mutations (clear cache, retry/purge, run tasks, reindex, restore files, purge CDN, setup integration, reset Shop App ID).
   - **Logs** — Viewer only (production log contents).
   - Webhook privileges remain a separate CRUD row.
 
