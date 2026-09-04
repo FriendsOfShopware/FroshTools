@@ -458,7 +458,7 @@
                 "dangerZone": {
                     "title": "Danger zone",
                     "resetTitle": "Reset Shop App ID",
-                    "resetDescription": "Uninstalls all apps and regenerates the Shop App ID. Useful when the shop was copied or the app registration is broken.",
+                    "resetDescription": "Uninstalls all apps and regenerates the Shop App ID. Useful when the shop was copied.",
                     "resetButton": "Reset App ID"
                 },
                 "reset": {
