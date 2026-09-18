@@ -11,6 +11,8 @@ use Frosh\Tools\Components\Security\SecurityFinding;
 use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
+use Shopware\Core\Checkout\Customer\CleanupCustomerRecoveryTask;
+use Shopware\Core\Checkout\Payment\Cleanup\CleanupPaymentTokenTask;
 use Shopware\Core\Defaults;
 use Symfony\Component\Clock\MockClock;
 
@@ -24,7 +26,7 @@ class StaleTokenCleanupCheckerTest extends TestCase
     {
         $findings = $this->collectWith($this->createConnectionMock(static fn (string $sql): int => 0));
 
-        static::assertCount(3, $findings);
+        static::assertCount(self::availableCheckCount(), $findings);
         foreach ($findings as $finding) {
             static::assertSame(SecurityFinding::SEVERITY_OK, $finding->severity, $finding->id);
             static::assertSame(SecurityFinding::CATEGORY_RUNTIME, $finding->category, $finding->id);
@@ -34,6 +36,10 @@ class StaleTokenCleanupCheckerTest extends TestCase
 
     public function testReportsMediumForStaleRecoveryTokens(): void
     {
+        if (!class_exists(CleanupCustomerRecoveryTask::class)) {
+            static::markTestSkipped('customer.cleanup_customer_recovery exists only since Shopware 6.7.9');
+        }
+
         $connection = $this->createConnectionMock(static function (string $sql, array $params): int {
             if (str_contains($sql, 'customer_recovery')) {
                 static::assertSame(['threshold' => self::formatExpected('2023-01-08 12:00:00')], $params);
@@ -55,6 +61,10 @@ class StaleTokenCleanupCheckerTest extends TestCase
 
     public function testReportsMediumForExpiredPaymentTokens(): void
     {
+        if (!class_exists(CleanupPaymentTokenTask::class)) {
+            static::markTestSkipped('payment_token.cleanup exists only since Shopware 6.7.5');
+        }
+
         $connection = $this->createConnectionMock(static function (string $sql, array $params): int {
             if (str_contains($sql, 'payment_token')) {
                 static::assertSame(['now' => self::formatExpected('2023-01-10 12:00:00')], $params);
@@ -95,8 +105,10 @@ class StaleTokenCleanupCheckerTest extends TestCase
 
     public function testReportsUnknownWhenQueryFails(): void
     {
+        // sales_channel_api_context is checked on every supported Shopware version,
+        // so it is the one table that always runs through this path.
         $connection = $this->createConnectionMock(static function (string $sql): int {
-            if (str_contains($sql, 'payment_token')) {
+            if (str_contains($sql, 'sales_channel_api_context')) {
                 throw new \RuntimeException('connection lost');
             }
 
@@ -105,9 +117,13 @@ class StaleTokenCleanupCheckerTest extends TestCase
 
         $findings = $this->collectWith($connection);
 
-        static::assertSame(SecurityFinding::SEVERITY_UNKNOWN, $findings['stale-payment-tokens']->severity);
-        static::assertSame(SecurityFinding::SEVERITY_OK, $findings['stale-customer-recovery-tokens']->severity);
-        static::assertSame(SecurityFinding::SEVERITY_OK, $findings['stale-sales-channel-contexts']->severity);
+        static::assertSame(SecurityFinding::SEVERITY_UNKNOWN, $findings['stale-sales-channel-contexts']->severity);
+
+        foreach ($findings as $id => $finding) {
+            if ($id !== 'stale-sales-channel-contexts') {
+                static::assertSame(SecurityFinding::SEVERITY_OK, $finding->severity, $id);
+            }
+        }
     }
 
     /**
@@ -116,7 +132,7 @@ class StaleTokenCleanupCheckerTest extends TestCase
     private function createConnectionMock(callable $countCallback): Connection&MockObject
     {
         $connection = $this->createMock(Connection::class);
-        $connection->expects(static::exactly(3))
+        $connection->expects(static::exactly(self::availableCheckCount()))
             ->method('fetchOne')
             ->willReturnCallback($countCallback);
 
@@ -138,6 +154,17 @@ class StaleTokenCleanupCheckerTest extends TestCase
         }
 
         return $findings;
+    }
+
+    /**
+     * The version gates are exercised by the CI matrix: on Shopware 6.6.x the
+     * gated task classes do not exist, on current releases they do.
+     */
+    private static function availableCheckCount(): int
+    {
+        return 1
+            + (int) class_exists(CleanupCustomerRecoveryTask::class)
+            + (int) class_exists(CleanupPaymentTokenTask::class);
     }
 
     private static function formatExpected(string $date): string

@@ -8,6 +8,8 @@ use Doctrine\DBAL\Connection;
 use Frosh\Tools\Components\Security\SecurityCollection;
 use Frosh\Tools\Components\Security\SecurityFinding;
 use Psr\Clock\ClockInterface;
+use Shopware\Core\Checkout\Customer\CleanupCustomerRecoveryTask;
+use Shopware\Core\Checkout\Payment\Cleanup\CleanupPaymentTokenTask;
 use Shopware\Core\Defaults;
 use Symfony\Component\DependencyInjection\Attribute\Autowire;
 
@@ -31,8 +33,18 @@ class StaleTokenCleanupChecker implements SecurityCheckerInterface
 
     public function collect(SecurityCollection $collection): void
     {
-        $this->checkRecoveryTokens($collection);
-        $this->checkPaymentTokens($collection);
+        // customer.cleanup_customer_recovery exists since 6.7.9 and
+        // payment_token.cleanup since 6.7.5. On older releases there is no
+        // scheduled task to point operators to, so a finding would report
+        // leftovers without any usable remediation.
+        if (class_exists(CleanupCustomerRecoveryTask::class)) {
+            $this->checkRecoveryTokens($collection);
+        }
+
+        if (class_exists(CleanupPaymentTokenTask::class)) {
+            $this->checkPaymentTokens($collection);
+        }
+
         $this->checkSalesChannelContexts($collection);
     }
 
