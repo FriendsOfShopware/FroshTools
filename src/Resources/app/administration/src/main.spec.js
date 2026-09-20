@@ -13,6 +13,7 @@ const REGISTERED_COMPONENTS = [
     'ft-refresh-button',
     'ft-th-sort',
     'ft-severity-bar',
+    'frosh-tools-health-status',
     'frosh-tools-tab-index',
     'frosh-tools-tab-cache',
     'frosh-tools-tab-queue',
