@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Frosh\Tools\Tests\Controller;
 
 use Frosh\Tools\Acl\FroshToolsPrivileges;
+use Frosh\Tools\Controller\AppController;
 use Frosh\Tools\Controller\CacheController;
 use Frosh\Tools\Controller\ComposerAuditController;
 use Frosh\Tools\Controller\ElasticsearchController;
@@ -125,6 +126,11 @@ class AclRouteTest extends TestCase
         yield 'shopmon.status' => [ShopmonController::class, 'status', FroshToolsPrivileges::SHOPMON_READ];
         yield 'shopmon.setup' => [ShopmonController::class, 'setup', FroshToolsPrivileges::SHOPMON_UPDATE];
         yield 'shopmon.remove' => [ShopmonController::class, 'remove', FroshToolsPrivileges::SHOPMON_UPDATE];
+
+        yield 'apps.status' => [AppController::class, 'status', FroshToolsPrivileges::APPS_READ];
+        yield 'apps.store-user-info' => [AppController::class, 'storeUserInfo', FroshToolsPrivileges::APPS_READ];
+        yield 'apps.reachability-check' => [AppController::class, 'checkReachability', FroshToolsPrivileges::APPS_READ];
+        yield 'apps.shop-id-reset' => [AppController::class, 'resetShopId', FroshToolsPrivileges::APPS_UPDATE];
     }
 
     /**

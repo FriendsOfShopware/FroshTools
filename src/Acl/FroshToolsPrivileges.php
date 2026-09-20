@@ -37,6 +37,9 @@ final class FroshToolsPrivileges
     public const SHOPMON_READ = 'frosh_tools_shopmon:read';
     public const SHOPMON_UPDATE = 'frosh_tools_shopmon:update';
 
+    public const APPS_READ = 'frosh_tools_apps:read';
+    public const APPS_UPDATE = 'frosh_tools_apps:update';
+
     /**
      * @return list<string>
      */
@@ -52,6 +55,7 @@ final class FroshToolsPrivileges
             self::SECURITY_READ,
             self::FASTLY_READ,
             self::SHOPMON_READ,
+            self::APPS_READ,
         ];
     }
 
@@ -68,6 +72,7 @@ final class FroshToolsPrivileges
             self::SECURITY_UPDATE,
             self::FASTLY_UPDATE,
             self::SHOPMON_UPDATE,
+            self::APPS_UPDATE,
         ];
     }
 }
