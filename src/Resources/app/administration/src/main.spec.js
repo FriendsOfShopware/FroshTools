@@ -42,7 +42,7 @@ describe('Administration entry point', () => {
             upsertType: vi.fn(),
         });
 
-        await import('./main');
+        await import('./main.js');
 
         const registry = Shopware.Component.getComponentRegistry();
 

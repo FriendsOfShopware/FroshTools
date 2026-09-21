@@ -26,7 +26,7 @@ async function createWrapper({
     Shopware.Context.app.config.version = version;
 
     await loadShopwareComponent('sw-version');
-    await import('./index');
+    await import('./index.js');
 
     return mountShopwareComponent('sw-version', {
         global: {

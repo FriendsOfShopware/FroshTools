@@ -1,1 +1,1 @@
-import './sortable-table';
+import './sortable-table.js';

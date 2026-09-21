@@ -3,10 +3,10 @@ import {
     flushPromises,
     mountShopwareComponent,
 } from '@friendsofshopware/vitest-shopware-admin-bridge/test-utils';
-import { createAcl, FT_STUBS } from '../../../../../test/helpers';
-import '../../../../mixin/sortable-table';
-import '../ft-modal';
-import './index';
+import { createAcl, FT_STUBS } from '../../../../../test/helpers.js';
+import '../../../../mixin/sortable-table.js';
+import '../ft-modal/index.js';
+import './index.js';
 
 function createService() {
     return {

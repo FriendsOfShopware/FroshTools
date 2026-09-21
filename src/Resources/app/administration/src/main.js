@@ -1,6 +1,6 @@
-import './api';
-import './mixin';
-import './overrides/sw-data-grid-inline-edit';
-import './overrides/sw-version';
-import './module/frosh-tools';
-import './module/frosh-tools-webhook';
+import './api/index.js';
+import './mixin/index.js';
+import './overrides/sw-data-grid-inline-edit/index.js';
+import './overrides/sw-version/index.js';
+import './module/frosh-tools/index.js';
+import './module/frosh-tools-webhook/index.js';

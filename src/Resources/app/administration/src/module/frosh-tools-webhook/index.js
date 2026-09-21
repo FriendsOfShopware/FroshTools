@@ -1,7 +1,7 @@
-import './acl';
-import './page/frosh-tools-webhook-list';
-import './page/frosh-tools-webhook-detail';
-import defaultSearchConfiguration from './default-search-configuration';
+import './acl/index.js';
+import './page/frosh-tools-webhook-list/index.js';
+import './page/frosh-tools-webhook-detail/index.js';
+import defaultSearchConfiguration from './default-search-configuration.js';
 
 const { Module } = Shopware;
 

@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'vitest';
 import { mountShopwareComponent } from '@friendsofshopware/vitest-shopware-admin-bridge/test-utils';
-import './index';
+import './index.js';
 
 describe('ft-panel', () => {
     it('renders title, count and body', async () => {

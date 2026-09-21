@@ -1,7 +1,7 @@
 import '../../styles/design-system.scss';
 import './frosh-tools.scss';
 import template from './template.twig';
-import { PRIVILEGE } from '../../acl/privileges';
+import { PRIVILEGE } from '../../acl/privileges.js';
 
 const { Component } = Shopware;
 

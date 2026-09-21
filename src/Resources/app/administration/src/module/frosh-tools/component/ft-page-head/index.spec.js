@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'vitest';
 import { mountShopwareComponent } from '@friendsofshopware/vitest-shopware-admin-bridge/test-utils';
-import './index';
+import './index.js';
 
 describe('ft-page-head', () => {
     it('renders title and optional subtitle', async () => {
