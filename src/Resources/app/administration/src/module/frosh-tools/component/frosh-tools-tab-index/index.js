@@ -1,5 +1,5 @@
 import template from './template.twig';
-import recommendations from './recommendations';
+import recommendations from './recommendations.js';
 import './style.scss';
 
 const { Component, Mixin } = Shopware;

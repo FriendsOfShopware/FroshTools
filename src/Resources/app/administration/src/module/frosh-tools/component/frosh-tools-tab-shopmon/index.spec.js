@@ -1,7 +1,7 @@
 import { afterEach, describe, expect, it, vi } from 'vitest';
 import { flushPromises } from '@friendsofshopware/vitest-shopware-admin-bridge/test-utils';
-import { createAcl, mountRegistered } from '../../../../../test/helpers';
-import './index';
+import { createAcl, mountRegistered } from '../../../../../test/helpers.js';
+import './index.js';
 
 function createService(overrides = {}) {
     return {

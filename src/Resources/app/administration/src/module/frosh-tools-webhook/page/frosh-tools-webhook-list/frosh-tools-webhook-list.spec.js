@@ -3,7 +3,7 @@ import {
     flushPromises,
     mountShopwareComponent,
 } from '@friendsofshopware/vitest-shopware-admin-bridge/test-utils';
-import './index';
+import './index.js';
 
 async function createWrapper() {
     const webhooks = [{ id: 'webhook-id' }];

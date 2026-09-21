@@ -1,5 +1,5 @@
 import { beforeEach, describe, expect, it, vi } from 'vitest';
-import Elasticsearch from './elasticsearch';
+import Elasticsearch from './elasticsearch.js';
 
 describe('Elasticsearch API', () => {
     let service;

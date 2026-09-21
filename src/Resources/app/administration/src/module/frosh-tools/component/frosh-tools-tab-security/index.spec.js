@@ -1,7 +1,7 @@
 import { afterEach, describe, expect, it, vi } from 'vitest';
 import { flushPromises } from '@friendsofshopware/vitest-shopware-admin-bridge/test-utils';
-import { mountRegistered } from '../../../../../test/helpers';
-import './index';
+import { mountRegistered } from '../../../../../test/helpers.js';
+import './index.js';
 
 const STATUS = {
     summary: { critical: 1, high: 2, medium: 0, low: 0, unknown: 0, ok: 4 },

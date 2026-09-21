@@ -1,6 +1,6 @@
 import template from './template.twig';
 import './style.scss';
-import { PRIVILEGE } from '../../acl/privileges';
+import { PRIVILEGE } from '../../acl/privileges.js';
 
 const { Component, Mixin } = Shopware;
 const { Criteria } = Shopware.Data;

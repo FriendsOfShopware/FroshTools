@@ -1,8 +1,8 @@
 import { describe, expect, it, vi } from 'vitest';
 import { flushPromises } from '@friendsofshopware/vitest-shopware-admin-bridge/test-utils';
-import { mountRegistered } from '../../../../../test/helpers';
-import '../../../../mixin/sortable-table';
-import './index';
+import { mountRegistered } from '../../../../../test/helpers.js';
+import '../../../../mixin/sortable-table.js';
+import './index.js';
 
 function createService(overrides = {}) {
     return {

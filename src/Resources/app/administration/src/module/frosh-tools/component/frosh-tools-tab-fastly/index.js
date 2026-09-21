@@ -1,6 +1,6 @@
 import template from './template.twig';
 import './frosh-tools-tab-fastly.scss';
-import { PRIVILEGE } from '../../acl/privileges';
+import { PRIVILEGE } from '../../acl/privileges.js';
 
 const { Component, Mixin } = Shopware;
 

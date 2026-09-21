@@ -1,5 +1,5 @@
 import { beforeEach, describe, expect, it, vi } from 'vitest';
-import FroshTools from './frosh-tools';
+import FroshTools from './frosh-tools.js';
 
 describe('FroshTools queue API', () => {
     let service;

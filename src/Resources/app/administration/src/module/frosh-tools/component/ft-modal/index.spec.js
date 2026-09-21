@@ -3,8 +3,8 @@ import {
     flushPromises,
     mountShopwareComponent,
 } from '@friendsofshopware/vitest-shopware-admin-bridge/test-utils';
-import '../ft-icon';
-import './index';
+import '../ft-icon/index.js';
+import './index.js';
 
 async function createWrapper({ props = {}, slots = {} } = {}) {
     return mountShopwareComponent('ft-modal', {
