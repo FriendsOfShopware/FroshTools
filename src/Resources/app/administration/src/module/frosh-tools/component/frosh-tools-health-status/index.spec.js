@@ -9,10 +9,8 @@ async function createWrapper({
     canRead = true,
     health = [{ state: 'STATE_OK' }],
     slot = '',
-    presentation,
 } = {}) {
     return mountShopwareComponent('frosh-tools-health-status', {
-        props: presentation ? { presentation } : {},
         slots: slot ? { default: slot } : {},
         global: {
             provide: {
@@ -32,11 +30,6 @@ async function createWrapper({
                     props: ['variant', 'size', 'statusIndicator'],
                     template:
                         '<span class="mt-badge" :class="`mt-badge--${variant}`"><slot /></span>',
-                },
-                'mt-status-dot': {
-                    props: ['variant', 'size', 'label'],
-                    template:
-                        '<span class="mt-status-dot" :class="`mt-status-dot--${variant}`" :aria-label="label"></span>',
                 },
                 'router-link': {
                     template:
@@ -109,27 +102,6 @@ describe('frosh-tools-health-status', () => {
         expect(wrapper.vm.meteorVariant).toBe('attention');
         expect(wrapper.vm.badgeLabel).toContain('Issues');
         expect(wrapper.find('.mt-badge').exists()).toBe(true);
-        expect(wrapper.find('.mt-status-dot').exists()).toBe(false);
-    });
-
-    it('renders an inline status dot for the 6.7.15 sidebar title slot', async () => {
-        const wrapper = await createWrapper({
-            health: [{ state: 'STATE_WARNING' }],
-            presentation: 'dot',
-            slot: '<span class="fallback-title">Administration</span>',
-        });
-        await flushPromises();
-
-        expect(wrapper.vm.isDot).toBe(true);
-        expect(wrapper.find('.mt-status-dot').exists()).toBe(true);
-        expect(wrapper.find('.mt-status-dot').classes()).toContain(
-            'mt-status-dot--attention'
-        );
-        expect(wrapper.find('.mt-badge').exists()).toBe(false);
-        expect(wrapper.find('.fallback-title').exists()).toBe(false);
-        expect(wrapper.find('.frosh-tools-health-status').classes()).toContain(
-            'is--dot'
-        );
     });
 
     it('clears the poll interval on unmount', async () => {

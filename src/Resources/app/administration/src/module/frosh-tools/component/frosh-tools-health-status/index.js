@@ -14,18 +14,6 @@ Component.register('frosh-tools-health-status', {
             required: false,
             default: false,
         },
-        /**
-         * `dot` fits the 6.7.15 / trunk sidebar title row.
-         * `badge` keeps a labelled indicator in the 6.6 / 6.7.13 sw-version slot.
-         */
-        presentation: {
-            type: String,
-            required: false,
-            default: 'badge',
-            validator(value) {
-                return value === 'badge' || value === 'dot';
-            },
-        },
     },
 
     data() {
@@ -64,10 +52,6 @@ Component.register('frosh-tools-health-status', {
 
         meteorVariant() {
             return this.healthKey === 'error' ? 'critical' : 'attention';
-        },
-
-        isDot() {
-            return this.presentation === 'dot';
         },
 
         badgeLabel() {

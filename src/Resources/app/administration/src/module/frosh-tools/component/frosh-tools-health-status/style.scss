@@ -7,11 +7,13 @@
     text-decoration: none;
     line-height: 1;
 
-    &.is--dot {
-        margin-inline-start: var(--scale-size-4, 4px);
-    }
-
     .mt-badge {
         max-width: 100%;
     }
+}
+
+// Keep the 20px badge from being clipped by the 2xs title row.
+.sw-admin-menu__title:has(.frosh-tools-health-status) {
+    overflow: visible;
+    line-height: var(--scale-size-20, 20px);
 }
