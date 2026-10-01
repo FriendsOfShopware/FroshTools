@@ -1,7 +1,7 @@
 import { describe, expect, it, vi } from 'vitest';
 import { mountShopwareComponent } from '@friendsofshopware/vitest-shopware-admin-bridge/test-utils';
-import { FT_STUBS } from '../../../../../test/helpers';
-import './index';
+import { FT_STUBS } from '../../../../../test/helpers.js';
+import './index.js';
 
 const FINDINGS = [
     { category: 'dependencies', severity: 'high', title: 'CVE-1' },

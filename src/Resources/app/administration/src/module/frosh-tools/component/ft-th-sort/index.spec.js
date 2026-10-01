@@ -3,9 +3,9 @@ import {
     mount,
     mountShopwareComponent,
 } from '@friendsofshopware/vitest-shopware-admin-bridge/test-utils';
-import '../../../../mixin/sortable-table';
-import '../ft-icon';
-import './index';
+import '../../../../mixin/sortable-table.js';
+import '../ft-icon/index.js';
+import './index.js';
 
 /**
  * ft-th-sort is always used inside a component using the frosh-sortable-table

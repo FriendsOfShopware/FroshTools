@@ -1,6 +1,6 @@
 import { beforeEach, describe, expect, it, vi } from 'vitest';
 import { flushPromises } from '@friendsofshopware/vitest-shopware-admin-bridge/test-utils';
-import { mountRegistered } from '../../../../../test/helpers';
+import { mountRegistered } from '../../../../../test/helpers.js';
 
 vi.mock('mermaid', () => ({
     default: {
@@ -11,7 +11,7 @@ vi.mock('mermaid', () => ({
     },
 }));
 
-import './index';
+import './index.js';
 
 const MACHINES = [
     { id: 'order', name: 'Order state' },

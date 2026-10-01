@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import { PRIVILEGE } from './privileges';
+import { PRIVILEGE } from './privileges.js';
 
 describe('frosh-tools privileges', () => {
     it('keeps read and update privileges on separate keys', () => {

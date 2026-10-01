@@ -1,7 +1,7 @@
 import { describe, expect, it } from 'vitest';
 import { mountShopwareComponent } from '@friendsofshopware/vitest-shopware-admin-bridge/test-utils';
-import '../ft-icon';
-import './index';
+import '../ft-icon/index.js';
+import './index.js';
 
 describe('ft-button', () => {
     it('applies variant and icon-only classes', async () => {

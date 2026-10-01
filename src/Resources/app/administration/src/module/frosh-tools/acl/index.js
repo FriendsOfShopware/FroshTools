@@ -1,4 +1,4 @@
-import { PRIVILEGE } from './privileges';
+import { PRIVILEGE } from './privileges.js';
 
 const privileges = Shopware.Service('privileges');
 

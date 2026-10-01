@@ -19,7 +19,7 @@ describe('sw-version override', () => {
             return;
         }
 
-        await import('./index');
+        await import('./index.js');
 
         const component = await buildShopwareComponent('sw-version');
 

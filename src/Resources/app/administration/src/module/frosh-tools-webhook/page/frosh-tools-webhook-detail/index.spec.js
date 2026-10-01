@@ -5,7 +5,7 @@ import {
     mountShopwareComponent,
     setRepositoryMocks,
 } from '@friendsofshopware/vitest-shopware-admin-bridge/test-utils';
-import './index';
+import './index.js';
 
 function createWebhook(overrides = {}) {
     return {

@@ -1,5 +1,5 @@
-import FroshToolsService from './frosh-tools';
-import Elasticsearch from './elasticsearch';
+import FroshToolsService from './frosh-tools.js';
+import Elasticsearch from './elasticsearch.js';
 
 const { Application } = Shopware;
 

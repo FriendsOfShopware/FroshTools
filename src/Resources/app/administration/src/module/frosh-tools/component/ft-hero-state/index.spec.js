@@ -1,7 +1,7 @@
 import { describe, expect, it } from 'vitest';
 import { mountShopwareComponent } from '@friendsofshopware/vitest-shopware-admin-bridge/test-utils';
-import '../ft-icon';
-import './index';
+import '../ft-icon/index.js';
+import './index.js';
 
 describe('ft-hero-state', () => {
     it('renders a danger callout with title, body and actions', async () => {

@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'vitest';
 import { mount } from '@friendsofshopware/vitest-shopware-admin-bridge/test-utils';
-import './sortable-table';
+import './sortable-table.js';
 
 function createWrapper() {
     return mount(

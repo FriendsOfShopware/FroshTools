@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'vitest';
 import { mountShopwareComponent } from '@friendsofshopware/vitest-shopware-admin-bridge/test-utils';
-import './index';
+import './index.js';
 
 describe('ft-severity-bar', () => {
     it('uses a critical verdict and lists every non-zero count', async () => {
