@@ -2,14 +2,25 @@
     <router-link
         :to="{ name: 'frosh.tools.index.index' }"
         class="frosh-tools-health-status"
-        :class="{ 'is--collapsed': collapsed }"
+        :class="{
+            'is--collapsed': collapsed,
+            'is--dot': isDot,
+            'is--badge': !isDot,
+        }"
         :aria-label="healthPlaceholder"
         v-tooltip="{
             showDelay: 300,
             message: healthPlaceholder
         }"
     >
+        <mt-status-dot
+            v-if="isDot"
+            :variant="meteorVariant"
+            size="s"
+            :label="healthPlaceholder"
+        />
         <mt-badge
+            v-else
             :variant="meteorVariant"
             size="s"
             :status-indicator="true"

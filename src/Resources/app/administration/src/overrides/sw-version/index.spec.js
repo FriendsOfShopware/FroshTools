@@ -32,7 +32,7 @@ describe('sw-version override', () => {
             template.includes('sw_version_status');
 
         if (!hasLegacyStatusSlot) {
-            // Trunk removed the status slot; the badge is on sw-admin-menu.
+            // 6.7.15 / trunk removed the status slot; the indicator is on sw-admin-menu.
             expect(template).toContain('sw-version');
             return;
         }

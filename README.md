@@ -113,7 +113,7 @@ Dedicated list/detail UI for Shopware webhooks (including inline search).
 
 ### Status badge in the Admin sidebar
 
-When health is warning or error, the sidebar **Administration** title is replaced with an `mt-badge` (status indicator + short label) that links to Tools. The healthy default stays hidden so a green “OK” is not shown all the time. On Shopware 6.6 / 6.7 the same component fills the `sw-version` status slot; on trunk it wraps the `sw-admin-menu` header title.
+When health is warning or error, the sidebar shows a glanceable status that links to Tools. The healthy default stays hidden so a green “OK” is not shown all the time. On Shopware 6.6 / 6.7.13 the indicator fills the `sw-version` status slot as an `mt-badge`. On Shopware 6.7.15 / trunk it uses the `sw_admin_menu_header_title_status` slot next to **Administration** as an `mt-status-dot`, so the new header row is not stretched.
 
 ### Console commands
 

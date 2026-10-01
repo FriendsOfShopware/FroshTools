@@ -23,7 +23,7 @@ jobs:
             administration_subdir: Resources/app/administration
           - shopware: '6.7'
             administration_repository: shopware/administration
-            administration_ref: v6.7.13.1
+            administration_ref: v6.7.15.0
             administration_subdir: Resources/app/administration
           - shopware: 'trunk'
             administration_repository: shopware/shopware

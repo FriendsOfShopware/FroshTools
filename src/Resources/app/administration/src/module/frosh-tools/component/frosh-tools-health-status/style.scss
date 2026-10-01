@@ -1,10 +1,15 @@
 .frosh-tools-health-status {
     display: inline-flex;
     align-items: center;
+    vertical-align: middle;
     max-width: 100%;
-    margin-top: 3px;
+    pointer-events: auto;
     text-decoration: none;
     line-height: 1;
+
+    &.is--dot {
+        margin-inline-start: var(--scale-size-4, 4px);
+    }
 
     .mt-badge {
         max-width: 100%;
