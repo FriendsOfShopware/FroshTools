@@ -27,6 +27,12 @@ describe('sw-admin-menu override', () => {
             expect.stringMatching(/frosh-tools-health-status/)
         );
         expect(template).toEqual(expect.stringMatching(/presentation="dot"/));
+        expect(template).toEqual(
+            expect.stringMatching(/sw-admin-menu__title/)
+        );
+        expect(template).toEqual(
+            expect.stringMatching(/textProjectName/)
+        );
         expect(template).not.toEqual(
             expect.stringMatching(
                 /<frosh-tools-health-status>\s*<mt-text[\s\S]*sw-admin-menu__title/
