@@ -109,7 +109,7 @@ Dedicated list/detail UI for Shopware webhooks (including inline search).
 | **Elasticsearch** | Status, indices, reindex, alias switch, unused/orphaned cleanup, console. Optional `show_all_indices`. |
 | **Fastly** | Purge all / by URL and basic stats when Fastly is configured. |
 | **Shopmon** | Optional integration setup for external Shopmon monitoring. |
-| **Apps** | External reachability of the shop (APP_URL verification), Shopware account login status, current Shop App ID with reveal/copy, installed app list, and reset of the Shop App ID with uninstall of all apps. |
+| **Apps** | External reachability of the shop (APP_URL verification), Shopware account login status, current Shop App ID with password-confirmed reveal/copy, installed app list, and password-confirmed reset of the Shop App ID with uninstall of all apps. |
 | **Webhooks** | Separate Admin module to create, search, and manage webhooks. |
 
 ### Status badge in the Admin sidebar

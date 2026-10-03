@@ -135,9 +135,10 @@
                 </div>
                 <div class="frosh-tab-apps__card-actions">
                     <ft-button
-                        v-if="shopId"
+                        v-if="status.hasShopId"
                         :icon="shopIdVisible ? 'eye-off' : 'eye'"
-                        @click="shopIdVisible = !shopIdVisible"
+                        :disabled="isRevealingShopId"
+                        @click="onShowShopId"
                     >
                         {{ shopIdVisible ? $t('frosh-tools.tabs.apps.shopId.hide') : $t('frosh-tools.tabs.apps.shopId.show') }}
                     </ft-button>
@@ -220,6 +221,16 @@
             </div>
         </ft-panel>
     </template>
+    <sw-verify-user-modal
+        v-if="showVerifyShopIdModal"
+        @verified="onShopIdVerified"
+        @close="showVerifyShopIdModal = false"
+    />
+    <sw-verify-user-modal
+        v-if="showVerifyResetModal"
+        @verified="onResetShopIdVerified"
+        @close="showVerifyResetModal = false"
+    />
     <ft-modal
         v-if="showResetModal"
         variant="small"
@@ -241,15 +252,11 @@
                 <span class="frosh-tab-apps__modal-version">{{ app.version }}</span>
             </li>
         </ul>
-        <label class="frosh-tab-apps__modal-keep">
-            <input
-                v-model="resetKeepUserData"
-                type="checkbox"
-            />
-            <span>
-                {{ $t('frosh-tools.tabs.apps.reset.modal.keepUserData') }}
-            </span>
-        </label>
+        <sw-switch-field
+            :value="resetKeepUserData"
+            :label="$t('frosh-tools.tabs.apps.reset.modal.keepUserData')"
+            @update:value="resetKeepUserData = $event"
+        />
         <template #footer>
             <ft-button @click="showResetModal = false">
                 {{ $t('frosh-tools.tabs.apps.reset.modal.cancel') }}
@@ -258,7 +265,7 @@
                 variant="danger"
                 icon="trash"
                 :disabled="isResetting"
-                @click="resetShopId"
+                @click="requestShopIdReset"
             >
                 {{ isResetting ? $t('frosh-tools.tabs.apps.reset.modal.running') : $t('frosh-tools.tabs.apps.reset.modal.confirm') }}
             </ft-button>

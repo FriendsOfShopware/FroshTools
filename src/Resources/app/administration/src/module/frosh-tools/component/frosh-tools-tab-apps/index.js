@@ -18,8 +18,13 @@ Component.register('frosh-tools-tab-apps', {
             status: null,
             storeUser: undefined,
             shopIdVisible: false,
+            revealedShopId: null,
+            showVerifyShopIdModal: false,
+            isRevealingShopId: false,
+            shopIdRevealRequestId: 0,
             copiedField: null,
             showResetModal: false,
+            showVerifyResetModal: false,
             resetKeepUserData: false,
         };
     },
@@ -69,17 +74,15 @@ Component.register('frosh-tools-tab-apps', {
         },
 
         shopId() {
-            return this.status?.shopId ?? null;
+            return this.revealedShopId;
         },
 
         shopIdDisplay() {
-            if (!this.shopId) {
+            if (!this.status?.hasShopId) {
                 return this.$t('frosh-tools.tabs.apps.shopId.none');
             }
 
-            return this.shopIdVisible
-                ? this.shopId
-                : this.shopId.replace(/./g, '•');
+            return this.shopIdVisible ? this.shopId : '••••••••••••••••';
         },
     },
 
@@ -88,7 +91,54 @@ Component.register('frosh-tools-tab-apps', {
     },
 
     methods: {
+        hideShopId() {
+            this.shopIdRevealRequestId += 1;
+            this.isRevealingShopId = false;
+            this.shopIdVisible = false;
+            this.revealedShopId = null;
+            this.copiedField = null;
+            this.showVerifyShopIdModal = false;
+        },
+
+        onShowShopId() {
+            if (this.shopIdVisible) {
+                this.hideShopId();
+                return;
+            }
+
+            this.showVerifyShopIdModal = true;
+        },
+
+        async onShopIdVerified() {
+            this.showVerifyShopIdModal = false;
+            this.isRevealingShopId = true;
+            const requestId = ++this.shopIdRevealRequestId;
+            try {
+                const result = await this.froshToolsService.getAppsShopId();
+                if (requestId !== this.shopIdRevealRequestId) {
+                    return;
+                }
+                this.revealedShopId = result.shopId;
+                this.shopIdVisible = !!result.shopId;
+            } catch {
+                if (requestId !== this.shopIdRevealRequestId) {
+                    return;
+                }
+                this.hideShopId();
+                this.createNotificationError({
+                    message: this.$t(
+                        'frosh-tools.tabs.apps.shopId.revealError'
+                    ),
+                });
+            } finally {
+                if (requestId === this.shopIdRevealRequestId) {
+                    this.isRevealingShopId = false;
+                }
+            }
+        },
+
         async loadStatus() {
+            this.hideShopId();
             this.isLoading = true;
             this.loadError = null;
             try {
@@ -138,6 +188,28 @@ Component.register('frosh-tools-tab-apps', {
             }
         },
 
+        requestShopIdReset() {
+            if (!this.canUpdate || this.isResetting) {
+                return;
+            }
+
+            this.showResetModal = false;
+            this.showVerifyResetModal = true;
+        },
+
+        async onResetShopIdVerified() {
+            if (
+                !this.showVerifyResetModal ||
+                !this.canUpdate ||
+                this.isResetting
+            ) {
+                return;
+            }
+
+            this.showVerifyResetModal = false;
+            await this.resetShopId();
+        },
+
         async resetShopId() {
             this.isResetting = true;
             try {
@@ -145,7 +217,7 @@ Component.register('frosh-tools-tab-apps', {
                     this.resetKeepUserData
                 );
                 this.showResetModal = false;
-                this.shopIdVisible = true;
+                this.hideShopId();
                 this.createNotificationSuccess({
                     message: this.$t('frosh-tools.tabs.apps.reset.success', {
                         count: result.uninstalledApps?.length ?? 0,

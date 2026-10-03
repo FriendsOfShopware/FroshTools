@@ -6,7 +6,9 @@ namespace Frosh\Tools\Controller;
 
 use Frosh\Tools\Acl\FroshToolsPrivileges;
 use Shopware\Core\DevOps\Environment\EnvironmentHelper;
+use Shopware\Core\Framework\Api\ApiException;
 use Shopware\Core\Framework\Api\Context\AdminApiSource;
+use Shopware\Core\Framework\Api\OAuth\Scope\UserVerifiedScope;
 use Shopware\Core\Framework\App\AppCollection;
 use Shopware\Core\Framework\App\AppEntity;
 use Shopware\Core\Framework\App\Lifecycle\AbstractAppLifecycle;
@@ -14,8 +16,10 @@ use Shopware\Core\Framework\App\ShopId\ShopIdProvider;
 use Shopware\Core\Framework\Context;
 use Shopware\Core\Framework\DataAbstractionLayer\EntityRepository;
 use Shopware\Core\Framework\DataAbstractionLayer\Search\Criteria;
-use Shopware\Core\Framework\DataAbstractionLayer\Search\Filter\NotEqualsFilter;
+use Shopware\Core\Framework\DataAbstractionLayer\Search\Filter\EqualsFilter;
+use Shopware\Core\Framework\DataAbstractionLayer\Search\Filter\NotFilter;
 use Shopware\Core\Framework\Store\Services\StoreClient;
+use Shopware\Core\PlatformRequest;
 use Shopware\Core\System\User\UserCollection;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
@@ -50,9 +54,17 @@ class AppController extends AbstractController
             'appUrl' => $this->getAppUrl(),
             'reachability' => $this->getCachedReachability(),
             'store' => ['loggedIn' => $this->hasStoreToken($context)],
-            'shopId' => $this->getShopId(),
+            'hasShopId' => $this->getShopId() !== null,
             'apps' => $this->getInstalledApps($context),
         ]);
+    }
+
+    #[Route(path: '/shop-id', name: 'api.frosh.tools.apps.shop_id', methods: ['GET'])]
+    public function shopId(Request $request): JsonResponse
+    {
+        $this->assertUserVerified($request);
+
+        return new JsonResponse(['shopId' => $this->getShopId()], headers: ['Cache-Control' => 'no-store']);
     }
 
     /**
@@ -90,6 +102,8 @@ class AppController extends AbstractController
     #[Route(path: '/shop-id/reset', name: 'api.frosh.tools.apps.shop_id_reset', defaults: ['_acl' => [FroshToolsPrivileges::APPS_UPDATE]], methods: ['POST'])]
     public function resetShopId(Request $request, Context $context): JsonResponse
     {
+        $this->assertUserVerified($request);
+
         $keepUserData = $request->request->getBoolean('keepUserData', false);
 
         $uninstalled = [];
@@ -108,13 +122,21 @@ class AppController extends AbstractController
         }
 
         $this->shopIdProvider->deleteShopId();
-        $shopId = (string) $this->shopIdProvider->getShopId();
+        $this->shopIdProvider->getShopId();
 
         return new JsonResponse([
-            'shopId' => $shopId,
+            'hasShopId' => true,
             'uninstalledApps' => $uninstalled,
             'failedApps' => $failed,
         ]);
+    }
+
+    private function assertUserVerified(Request $request): void
+    {
+        $scopes = $request->attributes->get(PlatformRequest::ATTRIBUTE_OAUTH_SCOPES, []);
+        if (!\is_array($scopes) || !\in_array(UserVerifiedScope::IDENTIFIER, $scopes, true)) {
+            throw ApiException::invalidScopeAccessToken(UserVerifiedScope::IDENTIFIER);
+        }
     }
 
     private function getAppUrl(): string
@@ -232,7 +254,7 @@ class AppController extends AbstractController
         }
 
         $criteria = (new Criteria([$source->getUserId()]))
-            ->addFilter(new NotEqualsFilter('storeToken', null));
+            ->addFilter(new NotFilter(NotFilter::CONNECTION_AND, [new EqualsFilter('storeToken', null)]));
 
         return $this->userRepository->searchIds($criteria, $context)->getTotal() > 0;
     }

@@ -2,9 +2,9 @@
 
 declare(strict_types=1);
 
+use Frosh\Tools\Controller\AppController;
 use Shopware\Core\Framework\Log\Monolog\DoctrineSQLHandler;
 use Shopware\Core\Framework\Log\SystemActivitySubscriber as CoreSystemActivitySubscriber;
-use Frosh\Tools\Controller\AppController;
 use Symfony\Component\DependencyInjection\Loader\Configurator\ContainerConfigurator;
 
 use function Symfony\Component\DependencyInjection\Loader\Configurator\service;
@@ -43,5 +43,4 @@ return static function (ContainerConfigurator $container): void {
             ],
         ],
     ]);
-
 };

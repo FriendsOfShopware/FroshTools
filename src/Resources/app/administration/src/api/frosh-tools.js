@@ -486,6 +486,17 @@ class FroshTools extends ApiService {
             });
     }
 
+    getAppsShopId() {
+        const apiRoute = `${this.getApiBasePath()}/apps/shop-id`;
+        return this.httpClient
+            .get(apiRoute, {
+                headers: this.getBasicHeaders(),
+            })
+            .then((response) => {
+                return ApiService.handleResponse(response);
+            });
+    }
+
     getAppsStoreUserInfo() {
         const apiRoute = `${this.getApiBasePath()}/apps/store-user-info`;
         return this.httpClient

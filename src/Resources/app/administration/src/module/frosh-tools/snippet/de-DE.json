@@ -449,6 +449,7 @@
                     "noDetails": "Angemeldet, aber die Account-Daten konnten nicht geladen werden."
                 },
                 "shopId": {
+                    "revealError": "Die Shop App ID konnte nicht angezeigt werden. Bitte bestätige Dein Passwort erneut.",
                     "title": "Shop-App-ID",
                     "hint": "Apps nutzen diese ID, um diesen Shop bei ihren App-Servern zu identifizieren.",
                     "show": "Anzeigen",

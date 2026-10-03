@@ -7,10 +7,14 @@ namespace Frosh\Tools\Tests\Controller;
 use Frosh\Tools\Controller\AppController;
 use Frosh\Tools\Tests\IntegrationTestCase;
 use PHPUnit\Framework\Attributes\CoversClass;
+use Shopware\Core\Framework\Api\ApiException;
+use Shopware\Core\Framework\Api\OAuth\Scope\UserVerifiedScope;
 use Shopware\Core\Framework\Api\Util\AccessKeyHelper;
+use Shopware\Core\Framework\App\ShopId\ShopIdProvider;
 use Shopware\Core\Framework\Context;
 use Shopware\Core\Framework\DataAbstractionLayer\Search\Criteria;
 use Shopware\Core\Framework\Uuid\Uuid;
+use Shopware\Core\PlatformRequest;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 
@@ -34,8 +38,38 @@ class AppControllerTest extends IntegrationTestCase
 
         static::assertSame(['loggedIn' => false], $status['store']);
 
-        static::assertNotEmpty($status['shopId']);
+        static::assertTrue($status['hasShopId']);
+        static::assertArrayNotHasKey('shopId', $status);
         static::assertIsArray($status['apps']);
+    }
+
+    public function testShopIdRequiresPasswordVerification(): void
+    {
+        $request = new Request();
+        $request->attributes->set(PlatformRequest::ATTRIBUTE_OAUTH_SCOPES, ['write']);
+        $this->expectExceptionObject(ApiException::invalidScopeAccessToken(UserVerifiedScope::IDENTIFIER));
+
+        $this->controller->shopId($request);
+    }
+
+    public function testShopIdRejectsRequestsWithoutScopes(): void
+    {
+        $this->expectExceptionObject(ApiException::invalidScopeAccessToken(UserVerifiedScope::IDENTIFIER));
+
+        $this->controller->shopId(new Request());
+    }
+
+    public function testShopIdReturnsIdForVerifiedUserWithoutCaching(): void
+    {
+        $request = new Request();
+        $request->attributes->set(PlatformRequest::ATTRIBUTE_OAUTH_SCOPES, [UserVerifiedScope::IDENTIFIER]);
+        $response = $this->controller->shopId($request);
+
+        static::assertSame(
+            (string) static::getContainer()->get(ShopIdProvider::class)->getShopId(),
+            $this->decodeResponse($response)['shopId'],
+        );
+        static::assertTrue($response->headers->hasCacheControlDirective('no-store'));
     }
 
     public function testStoreUserInfoReturnsNullWithoutStoreToken(): void
@@ -69,19 +103,54 @@ class AppControllerTest extends IntegrationTestCase
         static::assertArrayHasKey('detailed', $result);
     }
 
+    public function testResetShopIdRejectsUnverifiedUserWithoutChangingIdOrUninstallingApps(): void
+    {
+        $this->createApp('FroshUnverifiedResetTestApp');
+        $context = Context::createDefaultContext();
+        $oldShopId = (string) static::getContainer()->get(ShopIdProvider::class)->getShopId();
+        $request = new Request();
+        $request->attributes->set(PlatformRequest::ATTRIBUTE_OAUTH_SCOPES, ['write']);
+
+        try {
+            $this->controller->resetShopId($request, $context);
+            static::fail('Reset must require password verification');
+        } catch (ApiException $exception) {
+            static::assertSame(
+                ApiException::invalidScopeAccessToken(UserVerifiedScope::IDENTIFIER)->getErrorCode(),
+                $exception->getErrorCode(),
+            );
+        }
+
+        static::assertSame($oldShopId, (string) static::getContainer()->get(ShopIdProvider::class)->getShopId());
+        $status = $this->decodeResponse($this->controller->status($context));
+        static::assertContains('FroshUnverifiedResetTestApp', array_column($status['apps'], 'name'));
+    }
+
+    public function testResetShopIdRejectsRequestsWithoutScopes(): void
+    {
+        $this->expectExceptionObject(ApiException::invalidScopeAccessToken(UserVerifiedScope::IDENTIFIER));
+
+        $this->controller->resetShopId(new Request(), Context::createDefaultContext());
+    }
+
     public function testResetShopIdRegeneratesShopId(): void
     {
         $context = Context::createDefaultContext();
-        $oldShopId = $this->decodeResponse($this->controller->status($context))['shopId'];
+        $oldShopId = (string) static::getContainer()->get(ShopIdProvider::class)->getShopId();
 
-        $result = $this->decodeResponse($this->controller->resetShopId(new Request(), $context));
+        $request = new Request();
+        $request->attributes->set(PlatformRequest::ATTRIBUTE_OAUTH_SCOPES, [UserVerifiedScope::IDENTIFIER]);
+        $result = $this->decodeResponse($this->controller->resetShopId($request, $context));
 
-        static::assertNotEmpty($result['shopId']);
-        static::assertNotSame($oldShopId, $result['shopId']);
+        $newShopId = (string) static::getContainer()->get(ShopIdProvider::class)->getShopId();
+        static::assertNotSame($oldShopId, $newShopId);
+        static::assertTrue($result['hasShopId']);
+        static::assertArrayNotHasKey('shopId', $result);
         static::assertSame([], $result['failedApps']);
 
         $status = $this->decodeResponse($this->controller->status($context));
-        static::assertSame($result['shopId'], $status['shopId']);
+        static::assertTrue($status['hasShopId']);
+        static::assertArrayNotHasKey('shopId', $status);
     }
 
     public function testResetShopIdUninstallsAllApps(): void
@@ -91,7 +160,9 @@ class AppControllerTest extends IntegrationTestCase
 
         $context = Context::createDefaultContext();
 
-        $result = $this->decodeResponse($this->controller->resetShopId(new Request(), $context));
+        $request = new Request();
+        $request->attributes->set(PlatformRequest::ATTRIBUTE_OAUTH_SCOPES, [UserVerifiedScope::IDENTIFIER]);
+        $result = $this->decodeResponse($this->controller->resetShopId($request, $context));
 
         sort($result['uninstalledApps']);
         static::assertSame(['FroshResetTestAppOne', 'FroshResetTestAppTwo'], $result['uninstalledApps']);

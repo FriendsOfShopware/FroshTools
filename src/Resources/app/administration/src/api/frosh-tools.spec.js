@@ -45,6 +45,25 @@ describe('FroshTools queue API', () => {
         );
     });
 
+    it('fetches the shop id with the current verified authentication headers', async () => {
+        service.getBasicHeaders = () => ({
+            Authorization: 'Bearer verified-token',
+        });
+        service.httpClient.get.mockResolvedValue({
+            data: { shopId: 'verified-shop-id' },
+        });
+
+        expect(await service.getAppsShopId()).toEqual({
+            shopId: 'verified-shop-id',
+        });
+        expect(service.httpClient.get).toHaveBeenCalledWith(
+            '/_action/frosh-tools/apps/shop-id',
+            {
+                headers: { Authorization: 'Bearer verified-token' },
+            }
+        );
+    });
+
     it('requests the security SBOM as a blob attachment', async () => {
         await service.getSecuritySbom();
         await service.getSecuritySbom(true);
