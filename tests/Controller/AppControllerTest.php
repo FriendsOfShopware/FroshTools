@@ -115,7 +115,8 @@ class AppControllerTest extends IntegrationTestCase
         try {
             $this->controller->resetShopId($request, $context);
             static::fail('Reset must require password verification');
-        } catch (AccessDeniedHttpException $exception) {
+        } catch (ApiException|AccessDeniedHttpException $exception) {
+            static::assertSame(ApiException::invalidScopeAccessToken(UserVerifiedScope::IDENTIFIER)::class, $exception::class);
             static::assertSame(
                 ApiException::invalidScopeAccessToken(UserVerifiedScope::IDENTIFIER)->getMessage(),
                 $exception->getMessage(),
