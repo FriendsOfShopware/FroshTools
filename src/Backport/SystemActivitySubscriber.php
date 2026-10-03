@@ -8,6 +8,11 @@ use Doctrine\DBAL\Connection;
 use Psr\Log\LoggerInterface;
 use Shopware\Core\Framework\Api\Context\AdminApiSource;
 use Shopware\Core\Framework\Api\Context\SystemSource;
+use Shopware\Core\Framework\App\Event\AppActivatedEvent;
+use Shopware\Core\Framework\App\Event\AppDeactivatedEvent;
+use Shopware\Core\Framework\App\Event\AppDeletedEvent;
+use Shopware\Core\Framework\App\Event\AppInstalledEvent;
+use Shopware\Core\Framework\App\Event\AppUpdatedEvent;
 use Shopware\Core\Framework\Context;
 use Shopware\Core\Framework\DataAbstractionLayer\EntityWriteResult;
 use Shopware\Core\Framework\DataAbstractionLayer\Event\EntityWrittenEvent;
@@ -42,6 +47,11 @@ final class SystemActivitySubscriber implements EventSubscriberInterface
             PluginPostInstallEvent::class => 'onPluginLifecycle',
             PluginPostUninstallEvent::class => 'onPluginLifecycle',
             PluginPostUpdateEvent::class => 'onPluginLifecycle',
+            AppActivatedEvent::class => 'onAppLifecycle',
+            AppDeactivatedEvent::class => 'onAppLifecycle',
+            AppInstalledEvent::class => 'onAppLifecycle',
+            AppUpdatedEvent::class => 'onAppLifecycle',
+            AppDeletedEvent::class => 'onAppDeleted',
         ];
     }
 
@@ -74,6 +84,41 @@ final class SystemActivitySubscriber implements EventSubscriberInterface
             'pluginVersion' => $event instanceof PluginPostUpdateEvent ? $event->getContext()->getUpdatePluginVersion() : $event->getContext()->getCurrentPluginVersion(),
             ...($event instanceof PluginPostUpdateEvent ? ['previousPluginVersion' => $event->getContext()->getCurrentPluginVersion()] : []),
             ...$this->actor($event->getContext()->getContext()),
+        ]));
+    }
+
+    public function onAppLifecycle(AppActivatedEvent|AppDeactivatedEvent|AppInstalledEvent|AppUpdatedEvent $event): void
+    {
+        $action = match (true) {
+            $event instanceof AppActivatedEvent => 'enable',
+            $event instanceof AppDeactivatedEvent => 'disable',
+            $event instanceof AppInstalledEvent => 'install',
+            $event instanceof AppUpdatedEvent => 'update',
+        };
+
+        $app = $event->getApp();
+        $this->logger->info('app:' . $action, $this->withoutNullValues([
+            'appName' => $app->getName(),
+            'appVersion' => $app->getVersion(),
+            ...$this->actor($event->getContext()),
+        ]));
+    }
+
+    public function onAppDeleted(AppDeletedEvent $event): void
+    {
+        // Dispatched before the app row is removed, so the name is still readable.
+        $app = $this->connection->fetchAssociative(
+            'SELECT name, version FROM app WHERE id = :id',
+            ['id' => Uuid::fromHexToBytes($event->getAppId())],
+        );
+        $name = \is_array($app) && \is_string($app['name'] ?? null) ? $app['name'] : null;
+        $version = \is_array($app) && \is_string($app['version'] ?? null) ? $app['version'] : null;
+
+        $this->logger->info('app:delete', $this->withoutNullValues([
+            'appName' => $name,
+            'appVersion' => $version,
+            ...($name === null ? ['appId' => $event->getAppId()] : []),
+            ...$this->actor($event->getContext()),
         ]));
     }
 
