@@ -127,6 +127,7 @@ class AclRouteTest extends TestCase
         yield 'shopmon.setup' => [ShopmonController::class, 'setup', FroshToolsPrivileges::SHOPMON_UPDATE];
         yield 'shopmon.remove' => [ShopmonController::class, 'remove', FroshToolsPrivileges::SHOPMON_UPDATE];
 
+        yield 'apps.shop-id' => [AppController::class, 'shopId', FroshToolsPrivileges::APPS_READ];
         yield 'apps.status' => [AppController::class, 'status', FroshToolsPrivileges::APPS_READ];
         yield 'apps.store-user-info' => [AppController::class, 'storeUserInfo', FroshToolsPrivileges::APPS_READ];
         yield 'apps.reachability-check' => [AppController::class, 'checkReachability', FroshToolsPrivileges::APPS_READ];

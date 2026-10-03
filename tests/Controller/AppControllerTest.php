@@ -17,6 +17,7 @@ use Shopware\Core\Framework\Uuid\Uuid;
 use Shopware\Core\PlatformRequest;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\HttpKernel\Exception\AccessDeniedHttpException;
 
 #[CoversClass(AppController::class)]
 class AppControllerTest extends IntegrationTestCase
@@ -114,10 +115,10 @@ class AppControllerTest extends IntegrationTestCase
         try {
             $this->controller->resetShopId($request, $context);
             static::fail('Reset must require password verification');
-        } catch (ApiException $exception) {
+        } catch (AccessDeniedHttpException $exception) {
             static::assertSame(
-                ApiException::invalidScopeAccessToken(UserVerifiedScope::IDENTIFIER)->getErrorCode(),
-                $exception->getErrorCode(),
+                ApiException::invalidScopeAccessToken(UserVerifiedScope::IDENTIFIER)->getMessage(),
+                $exception->getMessage(),
             );
         }
 
