@@ -5,36 +5,46 @@ declare(strict_types=1);
 namespace Frosh\Tools\DependencyInjection;
 
 use Frosh\Tools\DependencyInjection\Attribute\WhenClassMissing;
+use Symfony\Component\DependencyInjection\ChildDefinition;
 use Symfony\Component\DependencyInjection\Compiler\CompilerPassInterface;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
 
 class WhenClassMissingCompilerPass implements CompilerPassInterface
 {
+    public const TAG = 'frosh_tools.when_class_missing';
+
+    public static function configure(ContainerBuilder $container): void
+    {
+        $container->registerAttributeForAutoconfiguration(WhenClassMissing::class, static function (ChildDefinition $definition, WhenClassMissing $attribute): void {
+            $definition->addTag(self::TAG, ['class' => $attribute->class]);
+        });
+    }
+
     public function process(ContainerBuilder $container): void
     {
-        foreach ($container->getDefinitions() as $id => $definition) {
-            // Skip autoconfigure parents. Removing only those leaves their instanceof children unresolved.
+        foreach ($container->findTaggedServiceIds(self::TAG) as $id => $tags) {
             if (str_starts_with($id, '.')) {
                 continue;
             }
 
-            $class = $this->existingClass($definition->getClass());
-            if ($class === null) {
-                continue;
-            }
+            foreach ($tags as $tag) {
+                $class = $tag['class'] ?? null;
+                if (!\is_string($class) || !class_exists($class)) {
+                    continue;
+                }
 
-            $attribute = $this->whenClassMissing($class);
-            if ($attribute === null || !class_exists($attribute->class)) {
-                continue;
-            }
+                $this->removeService($container, $id);
 
-            $this->removeService($container, $id);
+                break;
+            }
         }
     }
 
     private function removeService(ContainerBuilder $container, string $id): void
     {
-        $container->removeDefinition($id);
+        if ($container->hasDefinition($id)) {
+            $container->removeDefinition($id);
+        }
 
         $abstractId = '.abstract.instanceof.' . $id;
         if ($container->hasDefinition($abstractId)) {
@@ -46,30 +56,5 @@ class WhenClassMissingCompilerPass implements CompilerPassInterface
                 $container->removeDefinition($definitionId);
             }
         }
-    }
-
-    /**
-     * @return class-string|null
-     */
-    private function existingClass(?string $class): ?string
-    {
-        if ($class === null || !class_exists($class)) {
-            return null;
-        }
-
-        return $class;
-    }
-
-    /**
-     * @param class-string $class
-     */
-    private function whenClassMissing(string $class): ?WhenClassMissing
-    {
-        $attributes = (new \ReflectionClass($class))->getAttributes(WhenClassMissing::class);
-        if ($attributes === []) {
-            return null;
-        }
-
-        return $attributes[0]->newInstance();
     }
 }

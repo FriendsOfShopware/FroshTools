@@ -10,7 +10,6 @@ use Frosh\Tools\DependencyInjection\FroshToolsExtension;
 use Frosh\Tools\DependencyInjection\SymfonyConfigCompilerPass;
 use Frosh\Tools\DependencyInjection\WhenClassMissingCompilerPass;
 use Shopware\Core\Framework\Plugin;
-use Symfony\Component\DependencyInjection\Compiler\PassConfig;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
 
 class FroshTools extends Plugin
@@ -21,8 +20,8 @@ class FroshTools extends Plugin
         $container->addCompilerPass(new CacheCompilerPass());
         $container->addCompilerPass(new SymfonyConfigCompilerPass());
         $container->addCompilerPass(new DisableElasticsearchCompilerPass());
-        // Before ResolveInstanceofConditionalsPass, which builds the autoconfigure parents this pass removes.
-        $container->addCompilerPass(new WhenClassMissingCompilerPass(), PassConfig::TYPE_BEFORE_OPTIMIZATION, 110);
+        WhenClassMissingCompilerPass::configure($container);
+        $container->addCompilerPass(new WhenClassMissingCompilerPass());
     }
 
     public static function formatSize(float $size): string

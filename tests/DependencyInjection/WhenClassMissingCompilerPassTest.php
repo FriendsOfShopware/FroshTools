@@ -9,7 +9,9 @@ use Frosh\Tools\DependencyInjection\WhenClassMissingCompilerPass;
 use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\TestCase;
 use Symfony\Component\DependencyInjection\ChildDefinition;
+use Symfony\Component\DependencyInjection\Compiler\AttributeAutoconfigurationPass;
 use Symfony\Component\DependencyInjection\Compiler\ResolveChildDefinitionsPass;
+use Symfony\Component\DependencyInjection\Compiler\ResolveInstanceofConditionalsPass;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
 
 /**
@@ -18,10 +20,10 @@ use Symfony\Component\DependencyInjection\ContainerBuilder;
 #[CoversClass(WhenClassMissingCompilerPass::class)]
 final class WhenClassMissingCompilerPassTest extends TestCase
 {
-    public function testRemovesServiceWhenClassExists(): void
+    public function testRemovesTaggedServiceWhenClassExists(): void
     {
-        $container = new ContainerBuilder();
-        $container->register(RemoveWhenPresentSubscriber::class, RemoveWhenPresentSubscriber::class);
+        $container = $this->container();
+        $this->register($container, RemoveWhenPresentSubscriber::class);
 
         (new WhenClassMissingCompilerPass())->process($container);
 
@@ -30,9 +32,9 @@ final class WhenClassMissingCompilerPassTest extends TestCase
 
     public function testRemovesAutoconfigureParentsWithTheService(): void
     {
-        $container = new ContainerBuilder();
+        $container = $this->container();
         $id = RemoveWhenPresentSubscriber::class;
-        $container->register($id, $id);
+        $this->register($container, $id);
         $container->register('.abstract.instanceof.' . $id, $id)->setAbstract(true);
         $instanceofId = '.instanceof.Symfony\Component\EventDispatcher\EventSubscriberInterface.0.' . $id;
         $instanceof = new ChildDefinition('.abstract.instanceof.' . $id);
@@ -47,14 +49,29 @@ final class WhenClassMissingCompilerPassTest extends TestCase
         (new ResolveChildDefinitionsPass())->process($container);
     }
 
-    public function testKeepsServiceWhenClassIsMissing(): void
+    public function testKeepsTaggedServiceWhenClassIsMissing(): void
     {
-        $container = new ContainerBuilder();
-        $container->register(KeepWhenMissingSubscriber::class, KeepWhenMissingSubscriber::class);
+        $container = $this->container();
+        $this->register($container, KeepWhenMissingSubscriber::class);
 
         (new WhenClassMissingCompilerPass())->process($container);
 
         static::assertTrue($container->hasDefinition(KeepWhenMissingSubscriber::class));
+    }
+
+    private function container(): ContainerBuilder
+    {
+        $container = new ContainerBuilder();
+        WhenClassMissingCompilerPass::configure($container);
+
+        return $container;
+    }
+
+    private function register(ContainerBuilder $container, string $class): void
+    {
+        $container->register($class, $class)->setAutoconfigured(true);
+        (new AttributeAutoconfigurationPass())->process($container);
+        (new ResolveInstanceofConditionalsPass())->process($container);
     }
 }
 
