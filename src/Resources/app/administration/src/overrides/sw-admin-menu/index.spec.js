@@ -13,6 +13,10 @@ describe('sw-admin-menu override', () => {
 
         expect(component).toBeTruthy();
 
+        expect(component.computed.shopwareVersion.call({})).toBe(
+            Shopware.Context.app.config.version
+        );
+
         const template = String(component.template ?? component);
         const hasTrunkTitle =
             template.includes('sw_admin_menu_header_title') ||
@@ -29,6 +33,11 @@ describe('sw-admin-menu override', () => {
         );
         expect(template).toEqual(expect.stringMatching(/sw-admin-menu__title/));
         expect(template).toEqual(expect.stringMatching(/textProjectName/));
+        expect(template).toEqual(
+            expect.stringMatching(
+                /<\/frosh-tools-health-status>\s*<span v-if="shopwareVersion"> · {{ shopwareVersion }}<\/span>/
+            )
+        );
         expect(template).not.toEqual(
             expect.stringMatching(
                 /<frosh-tools-health-status>\s*<mt-text[\s\S]*sw-admin-menu__title/

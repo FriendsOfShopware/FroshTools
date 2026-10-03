@@ -86,7 +86,7 @@ describe('frosh-tools-health-status', () => {
         expect(wrapper.vm.hasPermission).toBe(true);
         expect(wrapper.vm.isException).toBe(true);
         expect(wrapper.vm.meteorVariant).toBe('critical');
-        expect(wrapper.vm.badgeLabel).toContain('Outage');
+        expect(wrapper.find('.mt-badge').text()).toBe('Critical');
         expect(wrapper.find('.mt-badge').exists()).toBe(true);
         expect(wrapper.find('.fallback-title').exists()).toBe(false);
 
@@ -100,7 +100,7 @@ describe('frosh-tools-health-status', () => {
         await flushPromises();
 
         expect(wrapper.vm.meteorVariant).toBe('attention');
-        expect(wrapper.vm.badgeLabel).toContain('Issues');
+        expect(wrapper.find('.mt-badge').text()).toBe('Warning');
         expect(wrapper.find('.mt-badge').exists()).toBe(true);
     });
 

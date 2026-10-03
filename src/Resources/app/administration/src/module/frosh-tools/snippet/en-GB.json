@@ -481,11 +481,11 @@
         "refresh": "Refresh",
         "healthStatus": {
             "ok": "Shop Status: Ok",
-            "warning": "Shop Status: Issues, Check System Status",
-            "error": "Shop Status: May outage, Check System Status",
+            "warning": "Shop Status: Warning, Check System Status",
+            "error": "Shop Status: Critical, Check System Status",
             "badge": {
-                "warning": "Issues",
-                "error": "Outage"
+                "warning": "Warning",
+                "error": "Critical"
             }
         },
         "on": "on",

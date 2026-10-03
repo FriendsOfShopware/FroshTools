@@ -481,11 +481,11 @@
         "refresh": "Aktualisieren",
         "healthStatus": {
             "ok": "Shop-Status: OK",
-            "warning": "Shop-Status: Probleme, Systemstatus prüfen",
-            "error": "Shop-Status: Möglicher Ausfall, Systemstatus prüfen",
+            "warning": "Shop-Status: Warnung, Systemstatus prüfen",
+            "error": "Shop-Status: Kritisch, Systemstatus prüfen",
             "badge": {
-                "warning": "Probleme",
-                "error": "Ausfall"
+                "warning": "Warnung",
+                "error": "Kritisch"
             }
         },
         "on": "an",
