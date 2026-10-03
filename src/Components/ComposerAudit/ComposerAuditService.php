@@ -8,6 +8,7 @@ use Composer\InstalledVersions;
 use Composer\Semver\Semver;
 use Doctrine\DBAL\Connection;
 use Symfony\Component\DependencyInjection\Attribute\Autowire;
+use Symfony\Component\Filesystem\Path;
 use Symfony\Contracts\Cache\CacheInterface;
 use Symfony\Contracts\Cache\ItemInterface;
 use Symfony\Contracts\HttpClient\Exception\ExceptionInterface;
@@ -33,6 +34,8 @@ class ComposerAuditService
         private readonly Connection $connection,
         #[Autowire(param: 'kernel.shopware_version')]
         private readonly string $shopwareVersion,
+        #[Autowire(param: 'kernel.project_dir')]
+        private readonly string $projectDir,
     ) {
     }
 
@@ -177,13 +180,20 @@ class ComposerAuditService
     private function collectInstalledPackages(): array
     {
         $packages = [];
+        $resolvedProjectPath = realpath($this->projectDir);
+        $projectPath = Path::canonicalize($resolvedProjectPath !== false ? $resolvedProjectPath : $this->projectDir);
 
-        foreach (InstalledVersions::getAllRawData() as $index => $dataset) {
+        foreach (InstalledVersions::getAllRawData() as $dataset) {
             $rootPackageName = $dataset['root']['name'];
+            $rootPath = $dataset['root']['install_path'];
+            $resolvedRootPath = realpath($rootPath);
+            $rootPath = Path::canonicalize($resolvedRootPath !== false ? $resolvedRootPath : $rootPath);
 
-            // The first dataset is the project itself; every other dataset is registered by a
-            // plugin shipping its own vendor dir. Label the project explicitly, plugins by name.
-            $source = $index === 0 ? 'project' : $rootPackageName;
+            // Dataset order depends on autoloader registration, so identify the project by path.
+            $source = $rootPath === $projectPath ? 'project' : $rootPackageName;
+            if ($source === '' || $source === '__root__') {
+                $source = $rootPath;
+            }
 
             foreach ($dataset['versions'] as $package => $info) {
                 if ($package === '' || $package === 'shopware/production') {

@@ -144,7 +144,9 @@ Component.register('frosh-tools-security-dependencies', {
             if (source === 'project') {
                 return this.$t('frosh-tools.tabs.composerAudit.sourceProject');
             }
-            return source;
+            return this.$t('frosh-tools.tabs.composerAudit.sourceBundled', {
+                source,
+            });
         },
 
         openUrl(url) {

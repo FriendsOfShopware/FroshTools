@@ -65,6 +65,14 @@ class DependencyAuditChecker implements SecurityCheckerInterface
                 ? \sprintf('%s %s', $packageName, $installedVersion)
                 : $packageName;
 
+            $sources = [];
+            foreach ($advisory['installedSources'] ?? [] as $source) {
+                $sources[] = $source === 'project' ? 'project root' : 'bundled from ' . $source;
+            }
+            if ($sources !== []) {
+                $current .= ' — ' . implode(', ', $sources);
+            }
+
             $title = (string) ($advisory['title'] ?? '');
             if ($reference !== null && $reference !== '') {
                 $title = \sprintf('%s (%s)', $title, $reference);
