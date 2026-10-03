@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Frosh\Tools\Tests\Controller;
 
+use Frosh\Tools\Components\Apps\AppUrlReachability;
 use Frosh\Tools\Controller\AppController;
 use Frosh\Tools\Tests\IntegrationTestCase;
 use PHPUnit\Framework\Attributes\CoversClass;
@@ -15,6 +16,7 @@ use Shopware\Core\Framework\Context;
 use Shopware\Core\Framework\DataAbstractionLayer\Search\Criteria;
 use Shopware\Core\Framework\Uuid\Uuid;
 use Shopware\Core\PlatformRequest;
+use Symfony\Bundle\FrameworkBundle\KernelBrowser;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpKernel\Exception\AccessDeniedHttpException;
@@ -92,6 +94,30 @@ class AppControllerTest extends IntegrationTestCase
         $app = $status['apps'][array_search('FroshStatusTestApp', $names, true)];
         static::assertSame('1.0.0', $app['version']);
         static::assertTrue($app['active']);
+    }
+
+    public function testReachabilityProbeIsPublicAndReturnsSignedProof(): void
+    {
+        $challenge = str_repeat('a', 64);
+        $browser = new KernelBrowser(static::getKernel());
+        $browser->request('GET', '/api/_action/frosh-tools/apps/reachability-probe?challenge=' . $challenge);
+        $response = $browser->getResponse();
+
+        static::assertSame(200, $response->getStatusCode());
+        static::assertSame(
+            ['proof' => static::getContainer()->get(AppUrlReachability::class)->createProof($challenge)],
+            json_decode((string) $response->getContent(), true, 512, \JSON_THROW_ON_ERROR),
+        );
+        static::assertTrue($response->headers->hasCacheControlDirective('no-store'));
+    }
+
+    public function testReachabilityProbeRejectsInvalidChallenge(): void
+    {
+        foreach ([[], ['challenge' => 'bad'], ['challenge' => ['invalid']]] as $query) {
+            $response = $this->controller->reachabilityProbe(new Request($query));
+            static::assertSame(400, $response->getStatusCode());
+            static::assertSame([], $this->decodeResponse($response));
+        }
     }
 
     public function testCheckReachabilityReturnsResult(): void

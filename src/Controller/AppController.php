@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Frosh\Tools\Controller;
 
 use Frosh\Tools\Acl\FroshToolsPrivileges;
+use Frosh\Tools\Components\Apps\AppUrlReachability;
 use Shopware\Core\DevOps\Environment\EnvironmentHelper;
 use Shopware\Core\Framework\Api\ApiException;
 use Shopware\Core\Framework\Api\Context\AdminApiSource;
@@ -25,7 +26,6 @@ use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Routing\Attribute\Route;
-use Symfony\Contracts\HttpClient\HttpClientInterface;
 
 #[Route(path: '/api/_action/frosh-tools/apps', defaults: ['_routeScope' => ['api'], '_acl' => [FroshToolsPrivileges::APPS_READ]])]
 class AppController extends AbstractController
@@ -33,8 +33,6 @@ class AppController extends AbstractController
     /**
      * @param EntityRepository<UserCollection> $userRepository
      * @param EntityRepository<AppCollection> $appRepository
-     * @param object|null $appUrlVerifier Shopware\Core\Framework\App\Url\AppUrlVerifier — only exists on Shopware >= 6.7,
-     *                                    so it is injected as a plain object and probed with method_exists()
      */
     public function __construct(
         private readonly ShopIdProvider $shopIdProvider,
@@ -42,8 +40,7 @@ class AppController extends AbstractController
         private readonly EntityRepository $userRepository,
         private readonly EntityRepository $appRepository,
         private readonly AbstractAppLifecycle $appLifecycle,
-        private readonly HttpClientInterface $httpClient,
-        private readonly ?object $appUrlVerifier = null,
+        private readonly AppUrlReachability $appUrlReachability,
     ) {
     }
 
@@ -52,7 +49,7 @@ class AppController extends AbstractController
     {
         return new JsonResponse([
             'appUrl' => $this->getAppUrl(),
-            'reachability' => $this->getCachedReachability(),
+            'reachability' => $this->appUrlReachability->getCurrentState($this->getAppUrl()),
             'store' => ['loggedIn' => $this->hasStoreToken($context)],
             'hasShopId' => $this->getShopId() !== null,
             'apps' => $this->getInstalledApps($context),
@@ -96,7 +93,20 @@ class AppController extends AbstractController
     #[Route(path: '/reachability-check', name: 'api.frosh.tools.apps.reachability_check', methods: ['POST'])]
     public function checkReachability(): JsonResponse
     {
-        return new JsonResponse($this->verifyAppUrl($this->getAppUrl()));
+        return new JsonResponse($this->appUrlReachability->check($this->getAppUrl()));
+    }
+
+    #[Route(path: '/reachability-probe', name: 'api.frosh.tools.apps.reachability_probe', defaults: ['auth_required' => false, '_acl' => []], methods: ['GET'])]
+    public function reachabilityProbe(Request $request): JsonResponse
+    {
+        $challenge = $request->query->all()['challenge'] ?? null;
+        $proof = \is_string($challenge) ? $this->appUrlReachability->createProof($challenge) : null;
+
+        return new JsonResponse(
+            $proof === null ? [] : ['proof' => $proof],
+            $proof === null ? 400 : 200,
+            ['Cache-Control' => 'no-store'],
+        );
     }
 
     #[Route(path: '/shop-id/reset', name: 'api.frosh.tools.apps.shop_id_reset', defaults: ['_acl' => [FroshToolsPrivileges::APPS_UPDATE]], methods: ['POST'])]
@@ -144,101 +154,6 @@ class AppController extends AbstractController
         $appUrl = EnvironmentHelper::getVariable('APP_URL', '');
 
         return \is_string($appUrl) ? rtrim($appUrl, '/') : '';
-    }
-
-    /**
-     * @return array{status: string, checkedAt: string|null, info: string|null, detailed: bool}
-     */
-    private function getCachedReachability(): array
-    {
-        if ($this->appUrlVerifier === null || !method_exists($this->appUrlVerifier, 'getCurrentState')) {
-            return $this->reachabilityResult('unknown', null, null, false);
-        }
-
-        $state = $this->appUrlVerifier->getCurrentState();
-
-        if (!\is_object($state)) {
-            return $this->reachabilityResult('unknown', null, null, true);
-        }
-
-        // VerificationState exposes only public properties, so the cast keeps this readable
-        // without referencing the class (it does not exist on Shopware 6.6).
-        $data = (array) $state;
-
-        $statusEnum = $data['status'] ?? null;
-        $status = $statusEnum instanceof \UnitEnum ? strtolower($statusEnum->name) : 'unknown';
-
-        $at = $data['at'] ?? null;
-        $checkedAt = $at instanceof \DateTimeInterface ? $at->format(\DateTimeInterface::ATOM) : null;
-
-        $info = \is_string($data['info'] ?? null) ? $data['info'] : null;
-
-        return $this->reachabilityResult($status, $checkedAt, $info, true);
-    }
-
-    /**
-     * @return array{status: string, checkedAt: string|null, info: string|null, detailed: bool}
-     */
-    private function verifyAppUrl(string $appUrl): array
-    {
-        if ($this->appUrlVerifier !== null && method_exists($this->appUrlVerifier, 'forceVerify')) {
-            try {
-                $shopId = $this->shopIdProvider->getShopId();
-            } catch (\Throwable $e) {
-                return $this->reachabilityResult('unknown', null, $e->getMessage(), true);
-            }
-
-            // getShopId() returns the ShopId object on Shopware >= 6.7 (a plain string on 6.6,
-            // where the verifier service does not exist and this path is never reached).
-            $this->appUrlVerifier->forceVerify($shopId, true);
-
-            return $this->getCachedReachability();
-        }
-
-        // Shopware 6.6 has no token-based verifier, so fall back to a plain self-request over the public URL.
-        return $this->basicReachabilityCheck($appUrl);
-    }
-
-    /**
-     * @return array{status: string, checkedAt: string|null, info: string|null, detailed: bool}
-     */
-    private function basicReachabilityCheck(string $appUrl): array
-    {
-        $checkedAt = (new \DateTimeImmutable())->format(\DateTimeInterface::ATOM);
-
-        if ($appUrl === '') {
-            return $this->reachabilityResult('hard_fail', $checkedAt, 'APP_URL is not configured', false);
-        }
-
-        try {
-            $response = $this->httpClient->request('GET', $appUrl . '/api/_info/version', [
-                'timeout' => 3,
-                'max_redirects' => 1,
-                'headers' => ['Accept' => 'application/json'],
-            ]);
-
-            $statusCode = $response->getStatusCode();
-            if ($statusCode === 200) {
-                return $this->reachabilityResult('pass', $checkedAt, null, false);
-            }
-
-            return $this->reachabilityResult('hard_fail', $checkedAt, \sprintf('Unexpected HTTP status code "%d" from APP_URL', $statusCode), false);
-        } catch (\Throwable $e) {
-            return $this->reachabilityResult('hard_fail', $checkedAt, $e->getMessage(), false);
-        }
-    }
-
-    /**
-     * @return array{status: string, checkedAt: string|null, info: string|null, detailed: bool}
-     */
-    private function reachabilityResult(string $status, ?string $checkedAt, ?string $info, bool $detailed): array
-    {
-        return [
-            'status' => $status,
-            'checkedAt' => $checkedAt,
-            'info' => $info,
-            'detailed' => $detailed,
-        ];
     }
 
     /**

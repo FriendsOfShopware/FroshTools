@@ -33,9 +33,9 @@ class AclRouteTest extends TestCase
      * @param class-string $class
      */
     #[DataProvider('routes')]
-    public function testRouteRequiresExpectedPrivilege(string $class, string $method, string $privilege): void
+    public function testRouteRequiresExpectedPrivilege(string $class, string $method, ?string $privilege): void
     {
-        static::assertSame([$privilege], $this->resolveAcl($class, $method));
+        static::assertSame($privilege === null ? [] : [$privilege], $this->resolveAcl($class, $method));
     }
 
     public function testEveryControllerActionIsCovered(): void
@@ -63,7 +63,7 @@ class AclRouteTest extends TestCase
     }
 
     /**
-     * @return iterable<string, array{class-string, string, string}>
+     * @return iterable<string, array{class-string, string, string|null}>
      */
     public static function routes(): iterable
     {
@@ -127,6 +127,7 @@ class AclRouteTest extends TestCase
         yield 'shopmon.setup' => [ShopmonController::class, 'setup', FroshToolsPrivileges::SHOPMON_UPDATE];
         yield 'shopmon.remove' => [ShopmonController::class, 'remove', FroshToolsPrivileges::SHOPMON_UPDATE];
 
+        yield 'apps.reachability-probe' => [AppController::class, 'reachabilityProbe', null];
         yield 'apps.shop-id' => [AppController::class, 'shopId', FroshToolsPrivileges::APPS_READ];
         yield 'apps.status' => [AppController::class, 'status', FroshToolsPrivileges::APPS_READ];
         yield 'apps.store-user-info' => [AppController::class, 'storeUserInfo', FroshToolsPrivileges::APPS_READ];

@@ -109,8 +109,10 @@ Dedicated list/detail UI for Shopware webhooks (including inline search).
 | **Elasticsearch** | Status, indices, reindex, alias switch, unused/orphaned cleanup, console. Optional `show_all_indices`. |
 | **Fastly** | Purge all / by URL and basic stats when Fastly is configured. |
 | **Shopmon** | Optional integration setup for external Shopmon monitoring. |
-| **Apps** | External reachability of the shop (APP_URL verification), Shopware account login status, current Shop App ID with password-confirmed reveal/copy, installed app list, and password-confirmed reset of the Shop App ID with uninstall of all apps. |
+| **Apps** | External reachability of APP_URL checked by the Cloudflare Worker, Shopware account login status, current Shop App ID with password-confirmed reveal/copy, installed app list, and password-confirmed reset of the Shop App ID with uninstall of all apps. |
 | **Webhooks** | Separate Admin module to create, search, and manage webhooks. |
+
+The Apps reachability check uses the public [Cloudflare Worker](workers/app-url-reachability/README.md) at `https://app-url-check.fos.gg`. The Worker calls the FroshTools probe on APP_URL and verifies a fresh challenge response.
 
 ### Status badge in the Admin sidebar
 
