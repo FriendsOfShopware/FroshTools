@@ -13,6 +13,7 @@ use Shopware\Core\Framework\Api\OAuth\Scope\UserVerifiedScope;
 use Shopware\Core\Framework\App\AppCollection;
 use Shopware\Core\Framework\App\AppEntity;
 use Shopware\Core\Framework\App\Lifecycle\AbstractAppLifecycle;
+use Shopware\Core\Framework\App\Lifecycle\AppLifecycle;
 use Shopware\Core\Framework\App\ShopId\ShopIdProvider;
 use Shopware\Core\Framework\Context;
 use Shopware\Core\Framework\DataAbstractionLayer\EntityRepository;
@@ -23,6 +24,7 @@ use Shopware\Core\Framework\Store\Services\StoreClient;
 use Shopware\Core\PlatformRequest;
 use Shopware\Core\System\User\UserCollection;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Component\DependencyInjection\Attribute\Autowire;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Routing\Attribute\Route;
@@ -39,6 +41,7 @@ class AppController extends AbstractController
         private readonly StoreClient $storeClient,
         private readonly EntityRepository $userRepository,
         private readonly EntityRepository $appRepository,
+        #[Autowire(service: AppLifecycle::class)]
         private readonly AbstractAppLifecycle $appLifecycle,
         private readonly AppUrlReachability $appUrlReachability,
     ) {

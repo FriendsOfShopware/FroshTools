@@ -6,6 +6,7 @@ namespace Frosh\Tools\Components\Apps;
 
 use Psr\Cache\CacheItemPoolInterface;
 use Shopware\Core\Framework\Log\Package;
+use Symfony\Component\DependencyInjection\Attribute\Autowire;
 use Symfony\Contracts\HttpClient\Exception\TransportExceptionInterface;
 use Symfony\Contracts\HttpClient\HttpClientInterface;
 
@@ -20,7 +21,9 @@ final class AppUrlReachability
 
     public function __construct(
         private readonly HttpClientInterface $httpClient,
+        #[Autowire(service: 'cache.app')]
         private readonly CacheItemPoolInterface $cache,
+        #[Autowire(param: 'kernel.secret')]
         private readonly string $secret,
     ) {
     }
