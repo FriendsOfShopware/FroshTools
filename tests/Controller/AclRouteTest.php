@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Frosh\Tools\Tests\Controller;
 
 use Frosh\Tools\Acl\FroshToolsPrivileges;
+use Frosh\Tools\Controller\AppController;
 use Frosh\Tools\Controller\CacheController;
 use Frosh\Tools\Controller\ComposerAuditController;
 use Frosh\Tools\Controller\ElasticsearchController;
@@ -32,9 +33,9 @@ class AclRouteTest extends TestCase
      * @param class-string $class
      */
     #[DataProvider('routes')]
-    public function testRouteRequiresExpectedPrivilege(string $class, string $method, string $privilege): void
+    public function testRouteRequiresExpectedPrivilege(string $class, string $method, ?string $privilege): void
     {
-        static::assertSame([$privilege], $this->resolveAcl($class, $method));
+        static::assertSame($privilege === null ? [] : [$privilege], $this->resolveAcl($class, $method));
     }
 
     public function testEveryControllerActionIsCovered(): void
@@ -62,7 +63,7 @@ class AclRouteTest extends TestCase
     }
 
     /**
-     * @return iterable<string, array{class-string, string, string}>
+     * @return iterable<string, array{class-string, string, string|null}>
      */
     public static function routes(): iterable
     {
@@ -125,6 +126,13 @@ class AclRouteTest extends TestCase
         yield 'shopmon.status' => [ShopmonController::class, 'status', FroshToolsPrivileges::SHOPMON_READ];
         yield 'shopmon.setup' => [ShopmonController::class, 'setup', FroshToolsPrivileges::SHOPMON_UPDATE];
         yield 'shopmon.remove' => [ShopmonController::class, 'remove', FroshToolsPrivileges::SHOPMON_UPDATE];
+
+        yield 'apps.reachability-probe' => [AppController::class, 'reachabilityProbe', null];
+        yield 'apps.shop-id' => [AppController::class, 'shopId', FroshToolsPrivileges::APPS_READ];
+        yield 'apps.status' => [AppController::class, 'status', FroshToolsPrivileges::APPS_READ];
+        yield 'apps.store-user-info' => [AppController::class, 'storeUserInfo', FroshToolsPrivileges::APPS_READ];
+        yield 'apps.reachability-check' => [AppController::class, 'checkReachability', FroshToolsPrivileges::APPS_READ];
+        yield 'apps.shop-id-reset' => [AppController::class, 'resetShopId', FroshToolsPrivileges::APPS_UPDATE];
     }
 
     /**

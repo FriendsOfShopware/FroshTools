@@ -416,6 +416,87 @@
                     }
                 },
                 "copyError": "Konnte nicht in die Zwischenablage kopieren"
+            },
+            "apps": {
+                "title": "Apps",
+                "subtitle": "Status des App-Systems: Erreichbarkeit des Shops, Shopware-Account und Shop-Identität.",
+                "installedApps": "Installierte Apps",
+                "noApps": "Keine Apps installiert",
+                "label": "Bezeichnung",
+                "version": "Version",
+                "copy": "Kopieren",
+                "copied": "Kopiert",
+                "copyError": "Konnte nicht in die Zwischenablage kopieren",
+                "communication": {
+                    "title": "So kommunizieren Apps mit Deinem Shop",
+                    "intro": "Apps mit einem externen Backend führen ihre Logik auf den Servern des App-Anbieters aus. Dein Shop und der App-Server müssen in beide Richtungen kommunizieren können.",
+                    "shop": "Dein Shopware-Shop",
+                    "shopDescription": "Stellt Shop-Daten über die Admin-API bereit.",
+                    "internet": "Kommunikation über das Internet",
+                    "outbound": "Shop → App: Registrierung & Webhooks",
+                    "inbound": "App → Shop: API-Anfragen über APP_URL",
+                    "server": "Externer App-Server",
+                    "serverDescription": "Verarbeitet Ereignisse und liest oder aktualisiert Shop-Daten im Rahmen der erteilten App-Berechtigungen.",
+                    "identity": "Erkennt Deine Installation anhand ihrer Shop-App-ID.",
+                    "caption": "Zum Beispiel: Ein Bestellereignis löst einen Webhook an die App aus. Die App ruft anschließend die API Deines Shops auf, um Bestelldetails abzurufen.",
+                    "reachabilityTitle": "Warum der Shop erreichbar sein muss",
+                    "reachabilityDescription": "Der App-Server muss Deine APP_URL über das Internet per HTTPS erreichen können. Localhost, ein privates Netzwerk oder eine Firewall bzw. ein HTTP-Passwortschutz, der App-Anfragen blockiert, verhindert den Rückruf. Dass Du den Shop im eigenen Browser öffnen kannst, reicht nicht aus. Der API-Zugriff erfordert weiterhin Authentifizierung und die Berechtigungen der App.",
+                    "uniqueIdTitle": "Eine Installation, eine Shop-App-ID",
+                    "uniqueIdDescription": "Die Shop-App-ID identifiziert die Installation bei App-Servern. Produktiv-, Staging- und Entwicklungsinstallationen müssen jeweils eine andere ID haben. Bei gleicher ID können App-Server die Shops und ihre Daten verwechseln.",
+                    "production": "Produktivshop",
+                    "productionId": "App-ID: A (Beispiel)",
+                    "staging": "Staging / Entwicklung",
+                    "stagingId": "App-ID: B (Beispiel)",
+                    "copyHint": "Gib einer Shop-Kopie eine eigene APP_URL und Shop-App-ID, bevor Du Apps nutzt. Zieht derselbe Shop auf eine neue Domain um, behält er seine Identität."
+                },
+                "reachability": {
+                    "title": "Externe Erreichbarkeit",
+                    "appUrl": "Shop-URL (APP_URL)",
+                    "lastCheck": "Zuletzt geprüft",
+                    "checkNow": "Jetzt prüfen",
+                    "checking": "Prüfe…",
+                    "checkError": "Die Erreichbarkeitsprüfung konnte nicht gestartet werden",
+                    "status": {
+                        "pass": "Erreichbar",
+                        "soft_fail": "Vorübergehend nicht erreichbar",
+                        "hard_fail": "Nicht erreichbar",
+                        "unknown": "Unbekannt"
+                    }
+                },
+                "store": {
+                    "title": "Shopware-Account",
+                    "loggedIn": "Angemeldet",
+                    "loggedOut": "Nicht angemeldet",
+                    "loggedOutHint": "Dieser Shop ist nicht mit einem Shopware-Account verbunden. Melde dich unter Erweiterungen → Store an, um Apps zu installieren und zu lizenzieren.",
+                    "noDetails": "Angemeldet, aber die Account-Daten konnten nicht geladen werden."
+                },
+                "shopId": {
+                    "revealError": "Die Shop App ID konnte nicht angezeigt werden. Bitte bestätige Dein Passwort erneut.",
+                    "title": "Shop-App-ID",
+                    "hint": "Apps nutzen diese ID, um diesen Shop bei ihren App-Servern zu identifizieren.",
+                    "show": "Anzeigen",
+                    "hide": "Verbergen",
+                    "none": "Nicht verfügbar"
+                },
+                "dangerZone": {
+                    "title": "Gefahrenbereich",
+                    "resetTitle": "Shop-App-ID zurücksetzen",
+                    "resetDescription": "Deinstalliert alle Apps und erzeugt eine neue Shop-App-ID. Nützlich, wenn der Shop kopiert wurde.",
+                    "resetButton": "App-ID zurücksetzen"
+                },
+                "reset": {
+                    "success": "Die Shop-App-ID wurde zurückgesetzt und {count} App(s) wurden deinstalliert",
+                    "failed": "Diese Apps konnten nicht deinstalliert werden: {apps}",
+                    "error": "Die Shop-App-ID konnte nicht zurückgesetzt werden",
+                    "modal": {
+                        "title": "Shop-App-ID zurücksetzen",
+                        "description": "Dies deinstalliert {count} App(s) und erzeugt eine neue Shop-App-ID. App-Server erkennen diesen Shop unter der alten ID nicht mehr. Dies kann nicht rückgängig gemacht werden.",
+                        "keepUserData": "Benutzerdaten der Apps behalten",
+                        "cancel": "Abbrechen",
+                        "confirm": "Alle deinstallieren & zurücksetzen",
+                        "running": "Setze zurück…"
+                    }
+                }
             }
         },
         "clear": "Leeren",

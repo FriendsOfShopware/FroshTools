@@ -142,6 +142,11 @@ Component.register('frosh-tools-index', {
 
             const operations = [
                 {
+                    route: 'frosh.tools.index.apps',
+                    labelKey: 'frosh-tools.tabs.apps.title',
+                    privilege: PRIVILEGE.APPS_READ,
+                },
+                {
                     route: 'frosh.tools.index.queue',
                     labelKey: 'frosh-tools.tabs.queue.title',
                     privilege: PRIVILEGE.QUEUE_READ,
