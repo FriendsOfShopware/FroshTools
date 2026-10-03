@@ -1,8 +1,8 @@
 import template from './template.twig';
 
-const { Component } = Shopware;
+import { overrideIfExists } from '../override-if-exists';
 
-Component.override('sw-version', {
+overrideIfExists('sw-version', {
     template,
     inject: ['froshToolsService', 'acl', 'loginService'],
 

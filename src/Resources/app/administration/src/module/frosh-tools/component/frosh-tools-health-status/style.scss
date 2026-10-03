@@ -1,0 +1,19 @@
+.frosh-tools-health-status {
+    display: inline-flex;
+    align-items: center;
+    vertical-align: middle;
+    max-width: 100%;
+    pointer-events: auto;
+    text-decoration: none;
+    line-height: 1;
+
+    .mt-badge {
+        max-width: 100%;
+    }
+}
+
+// Keep the 20px badge from being clipped by the 2xs title row.
+.sw-admin-menu__title:has(.frosh-tools-health-status) {
+    overflow: visible;
+    line-height: var(--scale-size-20, 20px);
+}

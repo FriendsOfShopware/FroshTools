@@ -1,0 +1,13 @@
+{% block sw_admin_menu_header_title %}
+<mt-text
+    as="div"
+    class="sw-admin-menu__title"
+    size="2xs"
+    color="color-text-secondary-default"
+>
+    <frosh-tools-health-status>
+        {{ $t('global.sw-admin-menu.textProjectName') }}
+    </frosh-tools-health-status>
+    <span v-if="shopwareVersion"> · {{ shopwareVersion }}</span>
+</mt-text>
+{% endblock %}
