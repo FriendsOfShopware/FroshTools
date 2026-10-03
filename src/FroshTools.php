@@ -8,7 +8,9 @@ use Frosh\Tools\DependencyInjection\CacheCompilerPass;
 use Frosh\Tools\DependencyInjection\DisableElasticsearchCompilerPass;
 use Frosh\Tools\DependencyInjection\FroshToolsExtension;
 use Frosh\Tools\DependencyInjection\SymfonyConfigCompilerPass;
+use Frosh\Tools\DependencyInjection\WhenClassMissingCompilerPass;
 use Shopware\Core\Framework\Plugin;
+use Symfony\Component\DependencyInjection\Compiler\PassConfig;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
 
 class FroshTools extends Plugin
@@ -19,6 +21,8 @@ class FroshTools extends Plugin
         $container->addCompilerPass(new CacheCompilerPass());
         $container->addCompilerPass(new SymfonyConfigCompilerPass());
         $container->addCompilerPass(new DisableElasticsearchCompilerPass());
+        // Before Monolog's LoggerChannelPass so a missing activity channel can still be created.
+        $container->addCompilerPass(new WhenClassMissingCompilerPass(), PassConfig::TYPE_BEFORE_OPTIMIZATION, 30);
     }
 
     public static function formatSize(float $size): string

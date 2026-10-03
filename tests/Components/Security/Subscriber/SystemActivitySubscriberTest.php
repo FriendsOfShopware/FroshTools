@@ -2,10 +2,10 @@
 
 declare(strict_types=1);
 
-namespace Frosh\Tools\Tests\Backport;
+namespace Frosh\Tools\Tests\Components\Security\Subscriber;
 
 use Doctrine\DBAL\Connection;
-use Frosh\Tools\Backport\SystemActivitySubscriber;
+use Frosh\Tools\Components\Security\Subscriber\SystemActivitySubscriber;
 use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\TestCase;
 use Psr\Log\LoggerInterface;

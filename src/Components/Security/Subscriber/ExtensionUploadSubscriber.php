@@ -2,8 +2,9 @@
 
 declare(strict_types=1);
 
-namespace Frosh\Tools\Backport;
+namespace Frosh\Tools\Components\Security\Subscriber;
 
+use Frosh\Tools\DependencyInjection\Attribute\WhenClassMissing;
 use Psr\Log\LoggerInterface;
 use Shopware\Core\Framework\App\Manifest\Manifest;
 use Shopware\Core\Framework\Context;
@@ -20,6 +21,7 @@ use Symfony\Component\HttpKernel\Event\ResponseEvent;
 /**
  * @internal
  */
+#[WhenClassMissing('Shopware\Core\Framework\Log\SystemActivitySubscriber')]
 final class ExtensionUploadSubscriber implements EventSubscriberInterface
 {
     private const UPLOAD_CONTEXT_ATTRIBUTE = '_frosh_tools_system_activity_upload';

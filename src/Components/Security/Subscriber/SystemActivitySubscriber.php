@@ -2,9 +2,10 @@
 
 declare(strict_types=1);
 
-namespace Frosh\Tools\Backport;
+namespace Frosh\Tools\Components\Security\Subscriber;
 
 use Doctrine\DBAL\Connection;
+use Frosh\Tools\DependencyInjection\Attribute\WhenClassMissing;
 use Psr\Log\LoggerInterface;
 use Shopware\Core\Framework\Api\Context\AdminApiSource;
 use Shopware\Core\Framework\Api\Context\SystemSource;
@@ -26,10 +27,11 @@ use Symfony\Component\DependencyInjection\Attribute\Autowire;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 
 /**
- * Backport of Shopware's system activity logging for versions without the core subscriber.
+ * Logs system activity on Shopware versions that do not ship the core subscriber.
  *
  * @internal
  */
+#[WhenClassMissing('Shopware\Core\Framework\Log\SystemActivitySubscriber')]
 final class SystemActivitySubscriber implements EventSubscriberInterface
 {
     public function __construct(
