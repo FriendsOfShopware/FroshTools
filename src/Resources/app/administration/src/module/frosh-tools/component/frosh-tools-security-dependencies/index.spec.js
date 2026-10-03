@@ -22,7 +22,7 @@ const AUDIT = {
         {
             packageName: 'guzzlehttp/guzzle',
             installedVersion: '7.0.0',
-            installedSources: ['plugin'],
+            installedSources: ['shopsy/shopsyklaviyo6'],
             severity: 'low',
         },
     ],
@@ -68,5 +68,63 @@ describe('frosh-tools-security-dependencies', () => {
         await wrapper.vm.copyCommand(wrapper.vm.updateCommand);
         expect(writeText).toHaveBeenCalledWith(wrapper.vm.updateCommand);
         expect(wrapper.vm.copiedCommand).toBe(wrapper.vm.updateCommand);
+    });
+
+    it('shows project and bundled origins for each affected version', async () => {
+        const wrapper = await createWrapper({
+            packages: 1,
+            vulnerable: 1,
+            advisories: [
+                {
+                    packageName: 'guzzlehttp/guzzle',
+                    installedVersion: '7.9.0',
+                    installedSources: ['project'],
+                },
+                {
+                    packageName: 'guzzlehttp/guzzle',
+                    installedVersion: '7.10.0',
+                    installedSources: [
+                        'shopsy/shopsyklaviyo6',
+                        'vendor/other-plugin',
+                    ],
+                },
+            ],
+        });
+        await flushPromises();
+
+        const groups = wrapper.findAll('.frosh-security-dependencies__group');
+        expect(groups).toHaveLength(2);
+        expect(groups[0].text()).toContain('7.9.0');
+        expect(groups[0].text()).toContain('Project root');
+        expect(groups[1].text()).toContain('7.10.0');
+        expect(groups[1].text()).toContain(
+            'Bundled from shopsy/shopsyklaviyo6'
+        );
+        expect(groups[1].text()).toContain('Bundled from vendor/other-plugin');
+
+        wrapper.unmount();
+    });
+
+    it('renders cached advisories without source metadata', async () => {
+        const wrapper = await createWrapper({
+            packages: 1,
+            vulnerable: 1,
+            advisories: [
+                {
+                    packageName: 'guzzlehttp/guzzle',
+                    installedVersion: '7.10.0',
+                },
+            ],
+        });
+        await flushPromises();
+
+        expect(
+            wrapper.find('.frosh-security-dependencies__group').text()
+        ).toContain('7.10.0');
+        expect(
+            wrapper.find('.frosh-security-dependencies__group-sources').exists()
+        ).toBe(false);
+
+        wrapper.unmount();
     });
 });

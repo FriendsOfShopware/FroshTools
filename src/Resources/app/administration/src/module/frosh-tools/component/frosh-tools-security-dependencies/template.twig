@@ -165,7 +165,7 @@
         >
             <div
                 v-for="group in groupedAdvisories"
-                :key="group.packageName"
+                :key="`${group.packageName}@${group.installedVersion || ''}`"
                 class="frosh-security-dependencies__group"
             >
                 <div class="frosh-security-dependencies__group-head">
