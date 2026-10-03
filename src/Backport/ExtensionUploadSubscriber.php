@@ -132,8 +132,8 @@ final class ExtensionUploadSubscriber implements EventSubscriberInterface
             return null;
         }
 
-        $size = $stat['size'] ?? null;
-        if (!\is_int($size) || $size < 0 || $size > self::MAX_METADATA_BYTES) {
+        $size = $stat['size'];
+        if ($size < 0 || $size > self::MAX_METADATA_BYTES) {
             throw new \RuntimeException(\sprintf('Extension metadata "%s" exceeds the allowed size.', $name));
         }
 
