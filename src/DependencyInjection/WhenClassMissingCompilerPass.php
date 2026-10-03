@@ -26,6 +26,11 @@ class WhenClassMissingCompilerPass implements CompilerPassInterface
         $needsActivityLogger = false;
 
         foreach ($container->getDefinitions() as $id => $definition) {
+            // Skip autoconfigure parents. Removing only those leaves their instanceof children unresolved.
+            if (str_starts_with($id, '.')) {
+                continue;
+            }
+
             $class = $this->existingClass($definition->getClass());
             if ($class === null) {
                 continue;
@@ -37,7 +42,7 @@ class WhenClassMissingCompilerPass implements CompilerPassInterface
             }
 
             if (class_exists($attribute->class)) {
-                $container->removeDefinition($id);
+                $this->removeService($container, $id);
 
                 continue;
             }
@@ -49,6 +54,22 @@ class WhenClassMissingCompilerPass implements CompilerPassInterface
 
         if ($needsActivityLogger) {
             $this->registerActivityLogger($container);
+        }
+    }
+
+    private function removeService(ContainerBuilder $container, string $id): void
+    {
+        $container->removeDefinition($id);
+
+        $abstractId = '.abstract.instanceof.' . $id;
+        if ($container->hasDefinition($abstractId)) {
+            $container->removeDefinition($abstractId);
+        }
+
+        foreach (array_keys($container->getDefinitions()) as $definitionId) {
+            if (str_starts_with($definitionId, '.instanceof.') && str_ends_with($definitionId, '.' . $id)) {
+                $container->removeDefinition($definitionId);
+            }
         }
     }
 

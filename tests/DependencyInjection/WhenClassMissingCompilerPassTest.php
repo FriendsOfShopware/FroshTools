@@ -10,6 +10,8 @@ use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\TestCase;
 use Psr\Log\LoggerInterface;
 use Symfony\Component\DependencyInjection\Attribute\Autowire;
+use Symfony\Component\DependencyInjection\ChildDefinition;
+use Symfony\Component\DependencyInjection\Compiler\ResolveChildDefinitionsPass;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
 
 /**
@@ -27,6 +29,25 @@ final class WhenClassMissingCompilerPassTest extends TestCase
 
         static::assertFalse($container->hasDefinition(RemoveWhenPresentSubscriber::class));
         static::assertFalse($container->hasDefinition('monolog.handler.frosh_tools_system_activity_buffer'));
+    }
+
+    public function testRemovesAutoconfigureParentsWithTheService(): void
+    {
+        $container = $this->container();
+        $id = RemoveWhenPresentSubscriber::class;
+        $container->register($id, $id);
+        $container->register('.abstract.instanceof.'.$id, $id)->setAbstract(true);
+        $instanceofId = '.instanceof.Symfony\Component\EventDispatcher\EventSubscriberInterface.0.'.$id;
+        $instanceof = new ChildDefinition('.abstract.instanceof.'.$id);
+        $instanceof->setClass($id);
+        $container->setDefinition($instanceofId, $instanceof);
+
+        (new WhenClassMissingCompilerPass())->process($container);
+
+        static::assertFalse($container->hasDefinition($id));
+        static::assertFalse($container->hasDefinition('.abstract.instanceof.'.$id));
+        static::assertFalse($container->hasDefinition($instanceofId));
+        (new ResolveChildDefinitionsPass())->process($container);
     }
 
     public function testKeepsServiceAndRegistersActivityLoggerWhenClassIsMissing(): void

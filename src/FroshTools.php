@@ -21,8 +21,8 @@ class FroshTools extends Plugin
         $container->addCompilerPass(new CacheCompilerPass());
         $container->addCompilerPass(new SymfonyConfigCompilerPass());
         $container->addCompilerPass(new DisableElasticsearchCompilerPass());
-        // Before Monolog's LoggerChannelPass so a missing activity channel can still be created.
-        $container->addCompilerPass(new WhenClassMissingCompilerPass(), PassConfig::TYPE_BEFORE_OPTIMIZATION, 30);
+        // Before ResolveInstanceofConditionalsPass and Monolog's LoggerChannelPass.
+        $container->addCompilerPass(new WhenClassMissingCompilerPass(), PassConfig::TYPE_BEFORE_OPTIMIZATION, 110);
     }
 
     public static function formatSize(float $size): string
