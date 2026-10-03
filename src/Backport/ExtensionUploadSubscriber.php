@@ -23,6 +23,12 @@ final class ExtensionUploadSubscriber implements EventSubscriberInterface
 {
     private const UPLOAD_CONTEXT_ATTRIBUTE = '_frosh_tools_system_activity_upload';
 
+    /**
+     * composer.json and manifest.xml are metadata, not archives. Reject anything larger
+     * before ZipArchive materializes the decompressed entry.
+     */
+    private const MAX_METADATA_BYTES = 1024 * 1024;
+
     public function __construct(
         private readonly PluginZipDetector $pluginZipDetector,
         private readonly SystemActivitySubscriber $activitySubscriber,
@@ -97,14 +103,14 @@ final class ExtensionUploadSubscriber implements EventSubscriberInterface
             \assert($entry !== false);
             $directory = explode('/', $entry['name'])[0];
             if ($type === PluginManagementService::APP) {
-                $manifestXml = $archive->getFromName($directory . '/manifest.xml');
+                $manifestXml = $this->readBoundedZipEntry($archive, $directory . '/manifest.xml');
                 \assert(\is_string($manifestXml));
                 $metadata = Manifest::createFromXml($manifestXml)->getMetadata();
 
                 return ['name' => $metadata->getName(), 'version' => $metadata->getVersion()];
             }
 
-            $composerJson = $archive->getFromName($directory . '/composer.json');
+            $composerJson = $this->readBoundedZipEntry($archive, $directory . '/composer.json');
             $composer = \is_string($composerJson) ? json_decode($composerJson, true, flags: \JSON_THROW_ON_ERROR) : null;
             $extra = \is_array($composer) ? ($composer['extra'] ?? null) : null;
             $class = \is_array($extra) ? ($extra['shopware-plugin-class'] ?? null) : null;
@@ -117,5 +123,27 @@ final class ExtensionUploadSubscriber implements EventSubscriberInterface
         } finally {
             $archive->close();
         }
+    }
+
+    private function readBoundedZipEntry(\ZipArchive $archive, string $name): ?string
+    {
+        $stat = $archive->statName($name);
+        if ($stat === false) {
+            return null;
+        }
+
+        $size = $stat['size'] ?? null;
+        if (!\is_int($size) || $size < 0 || $size > self::MAX_METADATA_BYTES) {
+            throw new \RuntimeException(\sprintf('Extension metadata "%s" exceeds the allowed size.', $name));
+        }
+
+        if ($size === 0) {
+            return '';
+        }
+
+        // Length 0 means "read the whole entry", so only pass a positive checked size.
+        $contents = $archive->getFromName($name, $size);
+
+        return \is_string($contents) ? $contents : null;
     }
 }

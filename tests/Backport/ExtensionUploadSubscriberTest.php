@@ -96,4 +96,29 @@ final class ExtensionUploadSubscriberTest extends TestCase
         $subscriber->onUploadRequest(new RequestEvent($kernel, $request, HttpKernelInterface::MAIN_REQUEST));
         $subscriber->onUploadResponse(new ResponseEvent($kernel, $request, HttpKernelInterface::MAIN_REQUEST, new Response(status: Response::HTTP_BAD_REQUEST)));
     }
+
+    public function testDoesNotReadOversizedPluginMetadata(): void
+    {
+        $archive = new \ZipArchive();
+        static::assertTrue($archive->open($this->zipPath, \ZipArchive::OVERWRITE));
+        $archive->addFromString('ExamplePlugin/composer.json', str_repeat('a', (1024 * 1024) + 1));
+        $archive->close();
+
+        $logger = $this->createMock(LoggerInterface::class);
+        $logger->expects($this->never())->method('info');
+        $subscriber = new ExtensionUploadSubscriber(
+            new PluginZipDetector(),
+            new SystemActivitySubscriber($logger, static::createStub(Connection::class)),
+            $logger,
+        );
+        $request = new Request([], [], [
+            PlatformRequest::ATTRIBUTE_CONTEXT_OBJECT => Context::createDefaultContext(),
+        ], [], [
+            'file' => new UploadedFile($this->zipPath, 'plugin.zip', 'application/zip', null, true),
+        ]);
+        $kernel = static::createStub(HttpKernelInterface::class);
+
+        $subscriber->onUploadRequest(new RequestEvent($kernel, $request, HttpKernelInterface::MAIN_REQUEST));
+        $subscriber->onUploadResponse(new ResponseEvent($kernel, $request, HttpKernelInterface::MAIN_REQUEST, new Response(status: Response::HTTP_NO_CONTENT)));
+    }
 }
