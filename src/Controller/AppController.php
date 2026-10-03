@@ -159,10 +159,6 @@ class AppController extends AbstractController
         return \is_string($appUrl) ? rtrim($appUrl, '/') : '';
     }
 
-    /**
-     * Checks via a DAL filter whether the current admin user has a store token,
-     * without calling the internal UserEntity::getStoreToken().
-     */
     private function hasStoreToken(Context $context): bool
     {
         $source = $context->getSource();
