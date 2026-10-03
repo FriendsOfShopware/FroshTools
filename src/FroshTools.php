@@ -21,7 +21,7 @@ class FroshTools extends Plugin
         $container->addCompilerPass(new CacheCompilerPass());
         $container->addCompilerPass(new SymfonyConfigCompilerPass());
         $container->addCompilerPass(new DisableElasticsearchCompilerPass());
-        // Before ResolveInstanceofConditionalsPass and Monolog's LoggerChannelPass.
+        // Before ResolveInstanceofConditionalsPass, which builds the autoconfigure parents this pass removes.
         $container->addCompilerPass(new WhenClassMissingCompilerPass(), PassConfig::TYPE_BEFORE_OPTIMIZATION, 110);
     }
 
