@@ -22,6 +22,7 @@ use Shopware\Core\Framework\Plugin\Event\PluginPostInstallEvent;
 use Shopware\Core\Framework\Plugin\Event\PluginPostUninstallEvent;
 use Shopware\Core\Framework\Plugin\Event\PluginPostUpdateEvent;
 use Shopware\Core\Framework\Uuid\Uuid;
+use Symfony\Component\DependencyInjection\Attribute\Autowire;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 
 /**
@@ -32,6 +33,7 @@ use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 final class SystemActivitySubscriber implements EventSubscriberInterface
 {
     public function __construct(
+        #[Autowire(service: 'monolog.logger.system_activity')]
         private readonly LoggerInterface $logger,
         private readonly Connection $connection,
     ) {

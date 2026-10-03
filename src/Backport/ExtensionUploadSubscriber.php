@@ -11,6 +11,7 @@ use Shopware\Core\Framework\Plugin\PluginManagementService;
 use Shopware\Core\Framework\Plugin\PluginZipDetector;
 use Shopware\Core\Framework\Plugin\Util\ZipUtils;
 use Shopware\Core\PlatformRequest;
+use Symfony\Component\DependencyInjection\Attribute\Autowire;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 use Symfony\Component\HttpFoundation\File\UploadedFile;
 use Symfony\Component\HttpKernel\Event\RequestEvent;
@@ -32,6 +33,7 @@ final class ExtensionUploadSubscriber implements EventSubscriberInterface
     public function __construct(
         private readonly PluginZipDetector $pluginZipDetector,
         private readonly SystemActivitySubscriber $activitySubscriber,
+        #[Autowire(service: 'monolog.logger.system_activity')]
         private readonly LoggerInterface $logger,
     ) {
     }
