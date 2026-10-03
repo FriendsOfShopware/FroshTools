@@ -87,6 +87,17 @@ describe('frosh-tools-index', () => {
         expect(routes).toContain('frosh.tools.index.elasticsearch');
     });
 
+    it('places Apps in Operations', async () => {
+        const wrapper = await createWrapper();
+        const appGroups = wrapper.vm.navGroups.filter((group) =>
+            group.items.some((item) => item.route === 'frosh.tools.index.apps')
+        );
+
+        expect(appGroups.map((group) => group.labelKey)).toEqual([
+            'frosh-tools.nav.operations',
+        ]);
+    });
+
     it('filters navigation by ACL privileges', async () => {
         const wrapper = await createWrapper({
             privileges: ['frosh_tools:read'],
@@ -99,5 +110,6 @@ describe('frosh-tools-index', () => {
         expect(routes).toContain('frosh.tools.index.index');
         expect(routes).not.toContain('frosh.tools.index.cache');
         expect(routes).not.toContain('frosh.tools.index.security');
+        expect(routes).not.toContain('frosh.tools.index.apps');
     });
 });

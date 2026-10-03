@@ -118,11 +118,6 @@ Component.register('frosh-tools-index', {
                     labelKey: 'frosh-tools.tabs.shopmon.title',
                     privilege: PRIVILEGE.SHOPMON_READ,
                 },
-                {
-                    route: 'frosh.tools.index.apps',
-                    labelKey: 'frosh-tools.tabs.apps.title',
-                    privilege: PRIVILEGE.APPS_READ,
-                },
             ];
 
             const performance = [
@@ -146,6 +141,11 @@ Component.register('frosh-tools-index', {
             }
 
             const operations = [
+                {
+                    route: 'frosh.tools.index.apps',
+                    labelKey: 'frosh-tools.tabs.apps.title',
+                    privilege: PRIVILEGE.APPS_READ,
+                },
                 {
                     route: 'frosh.tools.index.queue',
                     labelKey: 'frosh-tools.tabs.queue.title',
