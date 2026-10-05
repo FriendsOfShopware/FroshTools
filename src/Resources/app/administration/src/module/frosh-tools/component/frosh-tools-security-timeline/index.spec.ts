@@ -9,7 +9,11 @@ const entry = {
     action: 'user:login',
     createdAt: '2026-10-04T10:00:00+00:00',
     level: 200,
-    context: { loginUsername: 'admin', clientIp: '192.0.2.10' },
+    context: {
+        userId: 'a'.repeat(32),
+        loginUsername: 'admin',
+        clientIp: '192.0.2.10',
+    },
 };
 
 let wrapper: Awaited<ReturnType<typeof mountRegistered>>;
@@ -167,7 +171,10 @@ describe('security timeline', () => {
             page: 1,
             limit: 25,
         });
-        expect(wrapper.text()).toContain('admin');
+        expect(wrapper.get('tbody tr').text()).toContain('admin');
+        expect(wrapper.get('tbody tr').text()).not.toContain(
+            entry.context.userId
+        );
         expect(wrapper.text()).toContain('192.0.2.10');
         expect(wrapper.text()).toContain('Signed in');
         expect(

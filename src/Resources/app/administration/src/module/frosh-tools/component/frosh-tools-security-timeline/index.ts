@@ -308,10 +308,10 @@ Shopware.Component.register('frosh-tools-security-timeline', {
             const context = entry.context;
             return (
                 context.username ||
+                context.loginUsername ||
                 context.userId ||
                 context.integrationId ||
                 context.integrationAccessKey ||
-                context.loginUsername ||
                 context.actorType ||
                 '—'
             );
