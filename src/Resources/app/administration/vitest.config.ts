@@ -13,8 +13,7 @@ const config = defineShopwareConfig({
 });
 
 // Keep the test renderer on the same Vue runtime as the components on 6.6.
-config.resolve.alias['@vue/test-utils'] = config.resolve.alias['@vue/test-utils'].replace(
-    'vue-test-utils.cjs.js',
-    'vue-test-utils.esm-bundler.mjs',
-);
+config.resolve.alias['@vue/test-utils'] = config.resolve.alias[
+    '@vue/test-utils'
+].replace('vue-test-utils.cjs.js', 'vue-test-utils.esm-bundler.mjs');
 export default config;

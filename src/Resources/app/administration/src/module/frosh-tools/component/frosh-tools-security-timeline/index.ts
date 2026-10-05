@@ -75,16 +75,14 @@ Shopware.Component.register('frosh-tools-security-timeline', {
 
     computed: {
         periodOptions() {
-            return [
-                'all',
-                'today',
-                '7days',
-                '30days',
-                'custom',
-            ].map((value) => ({
-                value,
-                label: this.$t(`frosh-tools.tabs.security.timeline.periods.${value}`),
-            }));
+            return ['all', 'today', '7days', '30days', 'custom'].map(
+                (value) => ({
+                    value,
+                    label: this.$t(
+                        `frosh-tools.tabs.security.timeline.periods.${value}`
+                    ),
+                })
+            );
         },
         actorOptions() {
             const values = [
@@ -112,13 +110,19 @@ Shopware.Component.register('frosh-tools-security-timeline', {
     methods: {
         readRouteSubject() {
             const query = this.$route?.query || {};
-            const validId = (value: unknown): value is string => typeof value === 'string' && /^[0-9a-f]{32}$/i.test(value);
-            this.userId = validId(query.userId) ? query.userId.toLowerCase() : '';
+            const validId = (value: unknown): value is string =>
+                typeof value === 'string' && /^[0-9a-f]{32}$/i.test(value);
+            this.userId = validId(query.userId)
+                ? query.userId.toLowerCase()
+                : '';
             this.subjectType =
-                ['users', 'integrations', 'keys'].includes(query.subjectType) && validId(query.subjectId)
+                ['users', 'integrations', 'keys'].includes(query.subjectType) &&
+                validId(query.subjectId)
                     ? query.subjectType
                     : '';
-            this.subjectId = this.subjectType ? query.subjectId.toLowerCase() : '';
+            this.subjectId = this.subjectType
+                ? query.subjectId.toLowerCase()
+                : '';
             this.filters.userId = this.userId;
             this.filters.subjectType = this.subjectType;
             this.filters.subjectId = this.subjectId;
@@ -138,10 +142,11 @@ Shopware.Component.register('frosh-tools-security-timeline', {
             this.isExporting = true;
             this.exportError = false;
             try {
-                const response = await this.froshToolsService.exportSecurityActivity({
-                    ...this.filters,
-                    exact: true,
-                });
+                const response =
+                    await this.froshToolsService.exportSecurityActivity({
+                        ...this.filters,
+                        exact: true,
+                    });
                 const blob =
                     response.data instanceof Blob
                         ? response.data
@@ -171,12 +176,14 @@ Shopware.Component.register('frosh-tools-security-timeline', {
             this.isLoading = true;
             this.error = false;
             try {
-                const result = await this.froshToolsService.getSecurityActivity({
-                    ...this.filters,
-                    exact: true,
-                    page: this.page,
-                    limit: this.limit,
-                });
+                const result = await this.froshToolsService.getSecurityActivity(
+                    {
+                        ...this.filters,
+                        exact: true,
+                        page: this.page,
+                        limit: this.limit,
+                    }
+                );
                 if (requestId !== this.requestId) return;
                 this.entries = result.entries;
                 this.total = result.total;
@@ -199,7 +206,8 @@ Shopware.Component.register('frosh-tools-security-timeline', {
             if (value !== 'all') {
                 const now = new Date();
                 this.to = now.toISOString().slice(0, 10);
-                const days = value === '7days' ? 6 : value === '30days' ? 29 : 0;
+                const days =
+                    value === '7days' ? 6 : value === '30days' ? 29 : 0;
                 now.setUTCDate(now.getUTCDate() - days);
                 this.from = now.toISOString().slice(0, 10);
             }
@@ -234,20 +242,30 @@ Shopware.Component.register('frosh-tools-security-timeline', {
             this.optionsLoading[field] = true;
             this.optionsError[field] = false;
             try {
-                const result = await this.froshToolsService.getSecurityActivityOptions(field, term.slice(0, 100), page);
+                const result =
+                    await this.froshToolsService.getSecurityActivityOptions(
+                        field,
+                        term.slice(0, 100),
+                        page
+                    );
                 if (requestId !== this.optionsRequestId[field]) return;
                 if (field === 'actor') {
                     this.actorValues = result.values;
                     this.moreActors = result.hasMore;
                 } else {
-                    this.actionValues = page === 1 ? result.values : [...this.actionValues, ...result.values];
+                    this.actionValues =
+                        page === 1
+                            ? result.values
+                            : [...this.actionValues, ...result.values];
                     this.actionPage = page;
                     this.moreActions = result.hasMore;
                 }
             } catch {
-                if (requestId === this.optionsRequestId[field]) this.optionsError[field] = true;
+                if (requestId === this.optionsRequestId[field])
+                    this.optionsError[field] = true;
             } finally {
-                if (requestId === this.optionsRequestId[field]) this.optionsLoading[field] = false;
+                if (requestId === this.optionsRequestId[field])
+                    this.optionsLoading[field] = false;
             }
         },
 

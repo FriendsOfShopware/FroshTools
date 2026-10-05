@@ -15,7 +15,10 @@ function extendLocale(name, messages) {
 beforeEach(() => {
     if ('configureCompat' in Vue) {
         // Match Vue 3 rendering while retaining legacy cleanup hooks on 6.6.
-        Vue.configureCompat({ MODE: 3, OPTIONS_BEFORE_DESTROY: 'suppress-warning' });
+        Vue.configureCompat({
+            MODE: 3,
+            OPTIONS_BEFORE_DESTROY: 'suppress-warning',
+        });
     }
 
     const english = { ...enTools, ...enWebhook };

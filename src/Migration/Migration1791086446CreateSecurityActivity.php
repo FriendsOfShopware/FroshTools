@@ -26,6 +26,7 @@ class Migration1791086446CreateSecurityActivity extends MigrationStep
                 `actor_type` VARCHAR(32) NOT NULL,
                 `actor_id` VARCHAR(255) DEFAULT NULL,
                 `actor_name` VARCHAR(255) DEFAULT NULL,
+                `client_ip` VARBINARY(16) DEFAULT NULL,
                 `level` SMALLINT UNSIGNED NOT NULL,
                 `context` JSON NOT NULL,
                 `created_at` DATETIME(3) NOT NULL,
@@ -34,7 +35,8 @@ class Migration1791086446CreateSecurityActivity extends MigrationStep
                 KEY `idx.ft_activity.action` (`action`, `created_at`, `id`),
                 KEY `idx.ft_activity.actor_id` (`actor_id`, `created_at`),
                 KEY `idx.ft_activity.actor_name` (`actor_name`, `created_at`),
-                KEY `idx.ft_activity.actor_type` (`actor_type`, `created_at`)
+                KEY `idx.ft_activity.actor_type` (`actor_type`, `created_at`),
+                KEY `idx.ft_activity.client_ip` (`client_ip`, `created_at`, `id`)
             ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci
             SQL);
     }
