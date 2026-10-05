@@ -1,6 +1,6 @@
 import './style.scss';
 import template from './template.html.twig';
-import { PRIVILEGE } from '../../acl/privileges';
+import { PRIVILEGE } from '../../acl/privileges.js';
 
 const { Component } = Shopware;
 

@@ -1,6 +1,6 @@
 import template from './template.twig';
 
-import { overrideIfExists } from '../override-if-exists';
+import { overrideIfExists } from '../override-if-exists.js';
 
 overrideIfExists('sw-version', {
     template,
