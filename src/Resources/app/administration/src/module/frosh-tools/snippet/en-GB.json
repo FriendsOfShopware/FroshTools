@@ -430,7 +430,7 @@
                 "copyError": "Could not copy to clipboard",
                 "communication": {
                     "title": "How apps communicate with your shop",
-                    "intro": "Apps with an external backend run their logic on the app provider’s servers. Your shop and the app server need to communicate in both directions.",
+                    "intro": "Apps with an external backend run their logic on the app provider’s servers. Your shop and the app server need to communicate in both directions. This also applies to Shopware Services, which are based on the app system and rely on the same shop reachability and Shop App ID.",
                     "shop": "Your Shopware shop",
                     "shopDescription": "Provides shop data through the Admin API.",
                     "internet": "Communication over the internet",
