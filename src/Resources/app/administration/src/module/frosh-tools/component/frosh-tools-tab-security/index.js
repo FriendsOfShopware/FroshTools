@@ -68,7 +68,9 @@ Component.register('frosh-tools-tab-security', {
                 },
                 {
                     key: 'timeline',
-                    label: this.$t('frosh-tools.tabs.security.sections.timeline'),
+                    label: this.$t(
+                        'frosh-tools.tabs.security.sections.timeline'
+                    ),
                     badge: null,
                     badgeVariant: 'muted',
                 },

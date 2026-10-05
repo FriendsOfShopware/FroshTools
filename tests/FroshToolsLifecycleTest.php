@@ -8,7 +8,6 @@ use Doctrine\DBAL\Connection;
 use Frosh\Tools\Components\Security\Activity\ActivityStore;
 use Frosh\Tools\FroshTools;
 use Frosh\Tools\Migration\Migration1791086446CreateSecurityActivity;
-use Frosh\Tools\Migration\Migration1791089555AddActivityClientIp;
 use PHPUnit\Framework\TestCase;
 use Shopware\Core\Framework\Context;
 use Shopware\Core\Framework\Log\Package;
@@ -28,9 +27,7 @@ class FroshToolsLifecycleTest extends TestCase
     {
         $connection = KernelLifecycleManager::getConnection();
         $migration = new Migration1791086446CreateSecurityActivity();
-        $ipMigration = new Migration1791089555AddActivityClientIp();
         $migration->update($connection);
-        $ipMigration->update($connection);
         $container = new ContainerBuilder();
         $container->set(Connection::class, $connection);
         $plugin = new FroshTools(true, \dirname(__DIR__));
@@ -51,7 +48,6 @@ class FroshToolsLifecycleTest extends TestCase
             static::assertFalse($connection->createSchemaManager()->tablesExist(['frosh_tools_security_activity']));
         } finally {
             $migration->update($connection);
-            $ipMigration->update($connection);
         }
     }
 }

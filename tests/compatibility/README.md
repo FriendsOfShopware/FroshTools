@@ -36,6 +36,6 @@ cleans activity for that matching user. It verifies that sensitive test values n
 reach the timeline. Do not run this fixture against a production shop.
 
 Verified on Shopware 6.6.10.28 (native Webpack) and 6.7.15.0 (native Vite), with PHP 8.3:
-300 PHP tests per version, 156 Administration tests per version, and both browser flows.
-The PHP runs report APCu CLI warnings, skip the absent log-file fixture, and on 6.6 skip
-two pre-existing checks for scheduled tasks introduced in 6.7.
+299 PHP tests per version, 156 Administration tests per version, and both browser flows.
+The PHP runs report APCu CLI warnings and on 6.6 skip two pre-existing checks for
+scheduled tasks introduced in 6.7.
