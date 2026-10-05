@@ -41,6 +41,33 @@ Dependency advisories, runtime end-of-life checks, configuration risks, file int
 
 ![Security Center](docs/images/security-center.webp)
 
+### Security timeline
+
+Open **Security → Timeline** to review administrator sign-ins, user and role changes,
+integration and API-key changes, extension lifecycle events, and password recovery activity.
+Events are stored in `frosh_tools_security_activity`. Existing log entries are not imported.
+
+Filter by actor, action, client IP, or UTC date range. JSON export includes every matching
+event, across pages. Access requires the existing `frosh_tools_security:read` privilege.
+
+Client IPs come from Symfony's main request and respect the shop's trusted-proxy configuration.
+The timeline records allowed identifiers and changed field names, never passwords, recovery
+tokens, or secret values. IP addresses and account identifiers are personal data; restrict
+access and choose a retention period appropriate for your shop.
+
+The daily `frosh_tools.security_activity.cleanup` scheduled task retains 90 days by default.
+Keep scheduled-task and message-queue workers running. Override retention (1–3650 days) in
+`config/packages/frosh_tools.yaml`:
+
+```yaml
+frosh_tools:
+    security_activity:
+        retention_days: 90
+```
+
+Uninstalling with **keep user data** preserves the timeline; removing user data drops its table.
+Shopware's own logging remains available independently.
+
 ### Cache Manager
 
 List cache pools, clear individual pools, compile the theme, and clear PHP OPcache.
