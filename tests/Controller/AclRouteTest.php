@@ -16,6 +16,7 @@ use Frosh\Tools\Controller\HealthController;
 use Frosh\Tools\Controller\LogController;
 use Frosh\Tools\Controller\QueueController;
 use Frosh\Tools\Controller\ScheduledTaskController;
+use Frosh\Tools\Controller\SecurityActivityController;
 use Frosh\Tools\Controller\SecurityController;
 use Frosh\Tools\Controller\ShopmonController;
 use Frosh\Tools\Controller\ShopwareFilesController;
@@ -109,6 +110,9 @@ class AclRouteTest extends TestCase
         yield 'logs.files' => [LogController::class, 'getLogFiles', FroshToolsPrivileges::LOGS_READ];
         yield 'logs.file' => [LogController::class, 'getLog', FroshToolsPrivileges::LOGS_READ];
 
+        yield 'security.activity.options' => [SecurityActivityController::class, 'options', FroshToolsPrivileges::SECURITY_READ];
+        yield 'security.activity.export' => [SecurityActivityController::class, 'export', FroshToolsPrivileges::SECURITY_READ];
+        yield 'security.activity' => [SecurityActivityController::class, 'activity', FroshToolsPrivileges::SECURITY_READ];
         yield 'security.status' => [SecurityController::class, 'status', FroshToolsPrivileges::SECURITY_READ];
         yield 'security.sbom' => [SecurityController::class, 'sbom', FroshToolsPrivileges::SECURITY_READ];
         yield 'security.audit' => [ComposerAuditController::class, 'audit', FroshToolsPrivileges::SECURITY_READ];
