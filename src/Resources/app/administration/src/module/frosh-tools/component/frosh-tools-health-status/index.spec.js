@@ -56,10 +56,13 @@ describe('frosh-tools-health-status', () => {
         expect(wrapper.vm.hasPermission).toBe(false);
         expect(wrapper.vm.health).toBeNull();
         expect(wrapper.find('.frosh-tools-health-status').exists()).toBe(false);
+        expect(wrapper.find('.frosh-tools-health-status__dot').exists()).toBe(
+            false
+        );
         expect(wrapper.find('.fallback-title').exists()).toBe(true);
     });
 
-    it('hides the healthy default state and keeps the fallback title', async () => {
+    it('shows a green dot next to the fallback title when healthy', async () => {
         const wrapper = await createWrapper({
             health: [{ state: 'STATE_OK' }],
             slot: '<span class="fallback-title">Administration</span>',
@@ -69,6 +72,22 @@ describe('frosh-tools-health-status', () => {
         expect(wrapper.vm.isException).toBe(false);
         expect(wrapper.find('.mt-badge').exists()).toBe(false);
         expect(wrapper.find('.fallback-title').text()).toBe('Administration');
+        expect(wrapper.find('.frosh-tools-health-status__dot').exists()).toBe(
+            true
+        );
+    });
+
+    it('shows no dot before the first health result arrived', async () => {
+        const wrapper = await createWrapper({
+            health: null,
+            slot: '<span class="fallback-title">Administration</span>',
+        });
+        await flushPromises();
+
+        expect(wrapper.find('.fallback-title').exists()).toBe(true);
+        expect(wrapper.find('.frosh-tools-health-status__dot').exists()).toBe(
+            false
+        );
     });
 
     it('maps mixed health results to a critical badge', async () => {
@@ -89,6 +108,9 @@ describe('frosh-tools-health-status', () => {
         expect(wrapper.find('.mt-badge').text()).toBe('Critical');
         expect(wrapper.find('.mt-badge').exists()).toBe(true);
         expect(wrapper.find('.fallback-title').exists()).toBe(false);
+        expect(wrapper.find('.frosh-tools-health-status__dot').exists()).toBe(
+            false
+        );
 
         wrapper.unmount();
     });

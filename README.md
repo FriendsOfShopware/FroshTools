@@ -116,7 +116,7 @@ The Apps reachability check uses the public [Cloudflare Worker](workers/app-url-
 
 ### Status badge in the Admin sidebar
 
-On Shopware 6.6 / 6.7.13 the existing `sw-version` layout and health status dot are preserved. On Shopware 6.7.15 / trunk, warning or critical health replaces the sidebar **Administration** title with a badge that links to Tools, with the Shopware version beside it. The badge stays inside the header `mt-text` so the 40px row is not stretched. When healthy, the Administration title remains visible.
+On Shopware 6.6 / 6.7.13 the existing `sw-version` layout and health status dot are preserved. On Shopware 6.7.15 / trunk, warning or critical health replaces the sidebar **Administration** title with a badge that links to Tools, with the Shopware version beside it. The badge stays inside the header `mt-text` so the 40px row is not stretched. When healthy, the Administration title remains visible with a green status dot that links to Tools.
 
 ### Console commands
 
