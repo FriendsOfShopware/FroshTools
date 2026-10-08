@@ -5,7 +5,6 @@ declare(strict_types=1);
 namespace Frosh\Tools\Tests\Components\Health\Checker\DataIntegrityChecker;
 
 use Frosh\Tools\Components\Health\Checker\DataIntegrityChecker\CustomerDefaultAddressInvalidChecker;
-use Shopware\Core\Defaults;
 use Shopware\Core\Framework\Uuid\Uuid;
 use PHPUnit\Framework\Attributes\CoversClass;
 
@@ -52,27 +51,6 @@ class CustomerDefaultAddressInvalidCheckerTest extends DataIntegrityCheckerTestC
         $this->setDefaultAddresses($otherCustomerId, $addressId, $this->createAddress($otherCustomerId));
 
         static::assertAffectedCount($this->collectResult($this->checker, self::ID), 2);
-    }
-
-    private function createCustomer(): string
-    {
-        $id = Uuid::randomBytes();
-
-        $this->connection->insert('customer', [
-            'id' => $id,
-            'customer_group_id' => $this->connection->fetchOne('SELECT id FROM customer_group LIMIT 1'),
-            'sales_channel_id' => $this->connection->fetchOne('SELECT id FROM sales_channel LIMIT 1'),
-            'language_id' => Uuid::fromHexToBytes(Defaults::LANGUAGE_SYSTEM),
-            'default_billing_address_id' => Uuid::randomBytes(),
-            'default_shipping_address_id' => Uuid::randomBytes(),
-            'customer_number' => Uuid::randomHex(),
-            'first_name' => 'Frosh',
-            'last_name' => 'Tools',
-            'email' => Uuid::randomHex() . '@example.com',
-            'created_at' => self::now(),
-        ]);
-
-        return $id;
     }
 
     private function createAddress(string $customerId): string

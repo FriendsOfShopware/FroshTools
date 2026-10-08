@@ -6,8 +6,6 @@ namespace Frosh\Tools\Tests\Components\Health\Checker\DataIntegrityChecker;
 
 use Frosh\Tools\Components\Health\Checker\DataIntegrityChecker\DuplicateCustomerEmailsChecker;
 use PHPUnit\Framework\Attributes\CoversClass;
-use Shopware\Core\Defaults;
-use Shopware\Core\Framework\Uuid\Uuid;
 use Shopware\Core\System\SystemConfig\SystemConfigService;
 
 #[CoversClass(DuplicateCustomerEmailsChecker::class)]
@@ -47,10 +45,10 @@ class DuplicateCustomerEmailsCheckerTest extends DataIntegrityCheckerTestCase
     {
         $this->systemConfigService->set(self::CONFIG_KEY, false);
 
-        $this->createCustomer('unique@example.com');
-        $this->createCustomer('guest@example.com');
-        $this->createCustomer('guest@example.com', guest: true);
-        $this->createCustomer('guest@example.com', guest: true);
+        $this->createCustomerWithEmail('unique@example.com');
+        $this->createCustomerWithEmail('guest@example.com');
+        $this->createCustomerWithEmail('guest@example.com', guest: true);
+        $this->createCustomerWithEmail('guest@example.com', guest: true);
 
         static::assertAffectedCount($this->collectResult($this->checker, self::ID), 0);
     }
@@ -59,10 +57,10 @@ class DuplicateCustomerEmailsCheckerTest extends DataIntegrityCheckerTestCase
     {
         $this->systemConfigService->set(self::CONFIG_KEY, false);
 
-        $this->createCustomer('Duplicate@example.com');
-        $this->createCustomer('duplicate@EXAMPLE.com');
-        $this->createCustomer('josé@example.com');
-        $this->createCustomer('jose@example.com');
+        $this->createCustomerWithEmail('Duplicate@example.com');
+        $this->createCustomerWithEmail('duplicate@EXAMPLE.com');
+        $this->createCustomerWithEmail('josé@example.com');
+        $this->createCustomerWithEmail('jose@example.com');
 
         static::assertAffectedCount($this->collectResult($this->checker, self::ID), 2);
     }
@@ -71,8 +69,8 @@ class DuplicateCustomerEmailsCheckerTest extends DataIntegrityCheckerTestCase
     {
         $this->systemConfigService->set(self::CONFIG_KEY, false);
 
-        $this->createCustomer('duplicate@example.com', $this->salesChannelId);
-        $this->createCustomer('duplicate@example.com', $this->otherSalesChannelId);
+        $this->createCustomerWithEmail('duplicate@example.com', $this->salesChannelId);
+        $this->createCustomerWithEmail('duplicate@example.com', $this->otherSalesChannelId);
 
         static::assertAffectedCount($this->collectResult($this->checker, self::ID), 2);
     }
@@ -81,34 +79,25 @@ class DuplicateCustomerEmailsCheckerTest extends DataIntegrityCheckerTestCase
     {
         $this->systemConfigService->set(self::CONFIG_KEY, true);
 
-        $this->createCustomer('bound@example.com', $this->salesChannelId);
-        $this->createCustomer('bound@example.com', $this->otherSalesChannelId);
+        $this->createCustomerWithEmail('bound@example.com', $this->salesChannelId);
+        $this->createCustomerWithEmail('bound@example.com', $this->otherSalesChannelId);
 
-        $this->createCustomer('same@example.com', $this->salesChannelId);
-        $this->createCustomer('same@example.com', $this->salesChannelId);
+        $this->createCustomerWithEmail('same@example.com', $this->salesChannelId);
+        $this->createCustomerWithEmail('same@example.com', $this->salesChannelId);
 
-        $this->createCustomer('unbound@example.com', $this->salesChannelId);
-        $this->createCustomer('unbound@example.com');
+        $this->createCustomerWithEmail('unbound@example.com', $this->salesChannelId);
+        $this->createCustomerWithEmail('unbound@example.com');
 
         static::assertAffectedCount($this->collectResult($this->checker, self::ID), 4);
     }
 
-    private function createCustomer(string $email, ?string $boundSalesChannelId = null, bool $guest = false): void
+    private function createCustomerWithEmail(string $email, ?string $boundSalesChannelId = null, bool $guest = false): void
     {
-        $this->connection->insert('customer', [
-            'id' => Uuid::randomBytes(),
-            'customer_group_id' => $this->connection->fetchOne('SELECT id FROM customer_group LIMIT 1'),
+        $this->createCustomer([
             'sales_channel_id' => $boundSalesChannelId ?? $this->salesChannelId,
             'bound_sales_channel_id' => $boundSalesChannelId,
-            'language_id' => Uuid::fromHexToBytes(Defaults::LANGUAGE_SYSTEM),
-            'default_billing_address_id' => Uuid::randomBytes(),
-            'default_shipping_address_id' => Uuid::randomBytes(),
-            'customer_number' => Uuid::randomHex(),
-            'first_name' => 'Frosh',
-            'last_name' => 'Tools',
             'email' => $email,
             'guest' => (int) $guest,
-            'created_at' => (new \DateTimeImmutable())->format('Y-m-d H:i:s.v'),
         ]);
     }
 }

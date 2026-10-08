@@ -22,11 +22,14 @@ class CanonicalOnProductWithoutVariantsChecker implements DataIntegrityCheckerIn
         $count = (int) $this->connection->fetchOne(
             <<<'SQL'
                 SELECT COUNT(*)
-                FROM product
-                WHERE version_id = :liveVersionId
-                  AND parent_id IS NULL
-                  AND IFNULL(child_count, 0) = 0
-                  AND canonical_product_id IS NOT NULL
+                FROM product p
+                WHERE p.version_id = :liveVersionId
+                  AND p.parent_id IS NULL
+                  AND p.canonical_product_id IS NOT NULL
+                  AND NOT EXISTS (SELECT 1
+                                  FROM product variant
+                                  WHERE variant.parent_id = p.id
+                                    AND variant.version_id = p.version_id)
                 SQL,
             ['liveVersionId' => Uuid::fromHexToBytes(Defaults::LIVE_VERSION)],
         );

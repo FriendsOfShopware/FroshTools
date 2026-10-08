@@ -106,6 +106,42 @@ abstract class DataIntegrityCheckerTestCase extends IntegrationTestCase
         return $id;
     }
 
+    /**
+     * @param array<string, mixed> $data
+     */
+    protected function createCustomer(array $data = []): string
+    {
+        $row = array_replace([
+            'id' => Uuid::randomBytes(),
+            'customer_group_id' => $this->connection->fetchOne('SELECT id FROM customer_group LIMIT 1'),
+            'sales_channel_id' => $this->connection->fetchOne('SELECT id FROM sales_channel LIMIT 1'),
+            'language_id' => Uuid::fromHexToBytes(Defaults::LANGUAGE_SYSTEM),
+            'default_billing_address_id' => Uuid::randomBytes(),
+            'default_shipping_address_id' => Uuid::randomBytes(),
+            'customer_number' => Uuid::randomHex(),
+            'first_name' => 'Frosh',
+            'last_name' => 'Tools',
+            'email' => Uuid::randomHex() . '@example.com',
+            'created_at' => self::now(),
+        ], $data);
+
+        if ($this->columnExists('customer', 'default_payment_method_id')) {
+            $row += ['default_payment_method_id' => $this->connection->fetchOne('SELECT id FROM payment_method LIMIT 1')];
+        }
+
+        $this->connection->insert('customer', $row);
+
+        return $row['id'];
+    }
+
+    protected function columnExists(string $table, string $column): bool
+    {
+        return (bool) $this->connection->fetchOne(
+            'SELECT 1 FROM information_schema.COLUMNS WHERE TABLE_SCHEMA = DATABASE() AND TABLE_NAME = :table AND COLUMN_NAME = :column',
+            ['table' => $table, 'column' => $column],
+        );
+    }
+
     protected static function now(): string
     {
         return (new \DateTimeImmutable())->format(Defaults::STORAGE_DATE_TIME_FORMAT);

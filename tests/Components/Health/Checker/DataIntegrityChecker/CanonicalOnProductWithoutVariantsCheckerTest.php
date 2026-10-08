@@ -40,6 +40,7 @@ class CanonicalOnProductWithoutVariantsCheckerTest extends DataIntegrityCheckerT
         $mainProductId = $this->createProduct();
         $variantId = $this->createProduct(['parentId' => $mainProductId]);
         $this->updateProduct($mainProductId, 'canonical_product_id', Uuid::fromHexToBytes($variantId));
+        $this->updateProduct($mainProductId, 'child_count', '0');
 
         $this->updateProduct($variantId, 'canonical_product_id', Uuid::fromHexToBytes($variantId));
 
