@@ -98,6 +98,7 @@ Dedicated list/detail UI for Shopware webhooks (including inline search).
 | Area | Capabilities |
 | --- | --- |
 | **System Status** | Health checkers (PHP/FPM, MySQL, queue lag, scheduled tasks, composer audit summary, debug/prod mode, …) and a large set of **performance recommendations** (admin worker, mail-over-queue, increment storage, OPcache flags, ES, product-stream indexing, …). |
+| **Data integrity** | Data that Shopware accepts but that breaks the storefront or checkout. **Products:** canonical products of other products or on products without variants, missing or foreign main variants and covers, variants without options or with duplicate options, deleted delivery times, layouts of the wrong type, descriptions too long for Elasticsearch on Shopware < 6.6.6.0. **Configuration:** invalid rules, flows and dynamic product groups, unassigned default payment/shipping methods and domain languages/currencies, active shipping methods without prices, duplicate delivery times, categories sorted after a non-sibling. **Customers:** shared email addresses (core uniqueness rules), missing or foreign default addresses. |
 | **Security Center** | Severity overview; Packagist dependency advisories; PHP / MySQL / Symfony / Shopware EOL; environment risks; **core & extension file integrity**; **CycloneDX 1.7 SBOM export**. |
 | **Cache** | Pool listing with clear actions, theme compile, OPcache clear. |
 | **Statistics** | OPcache, cache-adapter, and database metrics for capacity troubleshooting. |
@@ -133,6 +134,7 @@ On Shopware 6.6 / 6.7.13 the existing `sw-version` layout and health status dot 
 | `frosh:redis-tag:cleanup` | Clean Redis tags |
 | `frosh:twig:warmup` | Warm Twig template cache |
 | `frosh-tools:health-check-json` | Print merged health-check results as JSON (CI / monitoring) |
+| `frosh-tools:data-integrity-check-json` | Print data integrity check results as JSON |
 
 ---
 
@@ -229,6 +231,9 @@ bin/console frosh:monitor <sales-channel-id>
 
 # Machine-readable health snapshot
 bin/console frosh-tools:health-check-json
+
+# Machine-readable data integrity snapshot
+bin/console frosh-tools:data-integrity-check-json
 ```
 
 Wire the JSON command into uptime checks, deploy gates, or external monitors. The Security Center **Export SBOM** action produces a CycloneDX 1.7 document suitable for dependency scanners.

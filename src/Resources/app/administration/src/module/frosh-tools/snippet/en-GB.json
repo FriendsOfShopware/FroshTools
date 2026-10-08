@@ -15,6 +15,17 @@
                     "how": "How to fix it"
                 }
             },
+            "data-integrity": {
+                "title": "Data integrity",
+                "subtitle": "Inconsistent shop data that Shopware accepts but that causes problems in the storefront.",
+                "checks": "Data integrity checks",
+                "noChecks": "No data integrity checks reported",
+                "info": "Info",
+                "recommendation": {
+                    "what": "What this means",
+                    "how": "How to fix it"
+                }
+            },
             "cache": {
                 "title": "Cache",
                 "subtitle": "Manage cache pools, theme compilation and PHP opcache.",

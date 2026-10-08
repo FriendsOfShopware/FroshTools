@@ -52,6 +52,21 @@ class HealthControllerTest extends IntegrationTestCase
         $this->decodeAndAssertResultList($response);
     }
 
+    public function testDataIntegrityStatusReturnsDataIntegrityChecks(): void
+    {
+        $response = $this->controller->dataIntegrityStatus();
+
+        static::assertSame(200, $response->getStatusCode());
+
+        $entries = $this->decodeAndAssertResultList($response);
+
+        $ids = array_column($entries, 'id');
+        static::assertContains('product-canonical-other-family', $ids);
+        static::assertContains('duplicate-delivery-times', $ids);
+        static::assertContains('duplicate-customer-emails', $ids);
+        static::assertNotContains('queue', $ids);
+    }
+
     public function testPingStatusReturnsCachedResponse(): void
     {
         $cachePool = static::getContainer()->get('cache.object');

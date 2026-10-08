@@ -5,6 +5,8 @@ The current feature set consists of:
 *   System Status
     *   Checks PHP Version, MySQL, Queue is working etc.
     *   Shows Performance Recommendations
+*   Data integrity
+    *   Finds inconsistent shop data like canonical products of other products, invalid main variants, variants with duplicate options, invalid rules and flows, unassigned default payment methods and customers sharing an email address
 *   Cache manager
     *   Lists App and Http Cache and all folders in var/cache
 *   Scheduled Task Manager

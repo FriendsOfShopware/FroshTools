@@ -6,6 +6,7 @@ namespace Frosh\Tools\Controller;
 
 use Frosh\Tools\Acl\FroshToolsPrivileges;
 use Frosh\Tools\Components\Health\Checker\CheckerInterface;
+use Frosh\Tools\Components\Health\DataIntegrityCollection;
 use Frosh\Tools\Components\Health\HealthCollection;
 use Frosh\Tools\Components\Health\PerformanceCollection;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -22,12 +23,15 @@ class HealthController extends AbstractController
     /**
      * @param CheckerInterface[] $healthCheckers
      * @param CheckerInterface[] $performanceCheckers
+     * @param CheckerInterface[] $dataIntegrityCheckers
      */
     public function __construct(
         #[AutowireIterator('frosh_tools.health_checker')]
         private readonly iterable $healthCheckers,
         #[AutowireIterator('frosh_tools.performance_checker')]
         private readonly iterable $performanceCheckers,
+        #[AutowireIterator('frosh_tools.data_integrity_checker')]
+        private readonly iterable $dataIntegrityCheckers,
         private readonly CacheInterface $cacheObject,
         #[Autowire(param: 'frosh_tools.checker.disabled_checks')]
         private readonly array $ignoredChecks,
@@ -53,6 +57,20 @@ class HealthController extends AbstractController
     {
         $collection = new PerformanceCollection();
         foreach ($this->performanceCheckers as $checker) {
+            $checker->collect($collection);
+        }
+
+        $collection->sortByState();
+        $collection->removeByIds($this->ignoredChecks);
+
+        return new JsonResponse($collection);
+    }
+
+    #[Route(path: '/data-integrity/status', name: 'api.frosh.tools.data-integrity.status', methods: ['GET'])]
+    public function dataIntegrityStatus(): JsonResponse
+    {
+        $collection = new DataIntegrityCollection();
+        foreach ($this->dataIntegrityCheckers as $checker) {
             $checker->collect($collection);
         }
 
