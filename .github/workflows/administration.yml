@@ -79,3 +79,15 @@ jobs:
       - name: Run Administration tests
         working-directory: src/Resources/app/administration
         run: npm run test:unit
+
+      - name: Build Administration with webpack (development resolve conditions)
+        if: matrix.shopware == '6.6'
+        working-directory: .shopware/administration/${{ matrix.administration_subdir }}
+        env:
+          PROJECT_ROOT: ${{ runner.temp }}/shopware-project
+          SHOPWARE_ADMIN_BUILD_ONLY_EXTENSIONS: '1'
+          mode: production
+        run: |
+          mkdir -p "$PROJECT_ROOT/var"
+          jq -n --arg basePath "$GITHUB_WORKSPACE/src/" '{FroshTools: {basePath: $basePath, technicalName: "frosh-tools", administration: {path: "Resources/app/administration/src", entryFilePath: "Resources/app/administration/src/main.js", webpack: "Resources/app/administration/build/webpack.config.cjs"}}}' > "$PROJECT_ROOT/var/plugins.json"
+          node --no-deprecation ./node_modules/webpack/bin/webpack.js --config webpack.config.js --mode development
