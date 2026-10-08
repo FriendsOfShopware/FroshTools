@@ -77,9 +77,14 @@ describe('frosh-tools-health-status', () => {
         );
     });
 
-    it('shows no dot before the first health result arrived', async () => {
+    it('shows the dot only once the first health result arrived', async () => {
+        let resolveHealth;
+        const pendingHealth = new Promise((resolve) => {
+            resolveHealth = resolve;
+        });
+
         const wrapper = await createWrapper({
-            health: null,
+            health: pendingHealth,
             slot: '<span class="fallback-title">Administration</span>',
         });
         await flushPromises();
@@ -88,6 +93,16 @@ describe('frosh-tools-health-status', () => {
         expect(wrapper.find('.frosh-tools-health-status__dot').exists()).toBe(
             false
         );
+
+        resolveHealth([{ state: 'STATE_OK' }]);
+        await flushPromises();
+
+        expect(wrapper.find('.fallback-title').exists()).toBe(true);
+        expect(wrapper.find('.frosh-tools-health-status__dot').exists()).toBe(
+            true
+        );
+
+        wrapper.unmount();
     });
 
     it('maps mixed health results to a critical badge', async () => {
