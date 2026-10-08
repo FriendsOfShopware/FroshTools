@@ -20,6 +20,7 @@ class MysqlSettingsChecker implements PerformanceCheckerInterface, CheckerInterf
     public const MYSQL_TIME_ZONES = [
         '+00:00',
         'UTC',
+        'Etc/UTC',
     ];
 
     public function __construct(
@@ -70,13 +71,29 @@ class MysqlSettingsChecker implements PerformanceCheckerInterface, CheckerInterf
 
     private function checkTimeZone(HealthCollection $collection): void
     {
-        $timeZone = $this->connection->fetchOne('SELECT @@time_zone');
-        if (\is_string($timeZone) && !\in_array($timeZone, self::MYSQL_TIME_ZONES, true)) {
+        if (\version_compare($this->shopwareVersion, '6.7.0', '>=')) {
+            return;
+        }
+
+        $timeZones = $this->connection->fetchAssociative('SELECT @@time_zone AS time_zone, @@system_time_zone AS system_time_zone');
+        if ($timeZones === false || !\is_string($timeZones['time_zone'] ?? null)) {
+            return;
+        }
+
+        $timeZone = $timeZones['time_zone'];
+        $current = $timeZone;
+
+        if ($timeZone === 'SYSTEM' && \is_string($timeZones['system_time_zone'] ?? null)) {
+            $timeZone = $timeZones['system_time_zone'];
+            $current = \sprintf('SYSTEM (%s)', $timeZone);
+        }
+
+        if (!\in_array($timeZone, self::MYSQL_TIME_ZONES, true)) {
             $collection->add(
                 SettingsResult::warning(
                     'sql_time_zone',
                     'MySQL value time_zone',
-                    $timeZone,
+                    $current,
                     implode(', ', self::MYSQL_TIME_ZONES),
                 ),
             );
