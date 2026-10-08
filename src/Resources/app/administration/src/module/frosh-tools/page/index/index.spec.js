@@ -108,6 +108,7 @@ describe('frosh-tools-index', () => {
         );
 
         expect(routes).toContain('frosh.tools.index.index');
+        expect(routes).toContain('frosh.tools.index.dataintegrity');
         expect(routes).not.toContain('frosh.tools.index.cache');
         expect(routes).not.toContain('frosh.tools.index.security');
         expect(routes).not.toContain('frosh.tools.index.apps');
