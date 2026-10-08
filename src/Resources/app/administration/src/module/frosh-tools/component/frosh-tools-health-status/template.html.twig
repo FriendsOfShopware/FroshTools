@@ -21,4 +21,17 @@
 
 <template v-else>
     <slot></slot>
+
+    <router-link
+        v-if="hasPermission && health"
+        :to="{ name: 'frosh.tools.index.index' }"
+        class="frosh-tools-health-status frosh-tools-health-status--ok"
+        :aria-label="healthPlaceholder"
+        v-tooltip="{
+            showDelay: 300,
+            message: healthPlaceholder
+        }"
+    >
+        <span class="frosh-tools-health-status__dot"></span>
+    </router-link>
 </template>
