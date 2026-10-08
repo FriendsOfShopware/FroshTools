@@ -4,7 +4,9 @@
 module.exports = () => ({
     resolve: {
         alias: {
-            'process/browser$': require.resolve('process/browser.js', { paths: [process.cwd()] }),
+            'process/browser$': require.resolve('process/browser.js', {
+                paths: [process.cwd()],
+            }),
         },
     },
 });
