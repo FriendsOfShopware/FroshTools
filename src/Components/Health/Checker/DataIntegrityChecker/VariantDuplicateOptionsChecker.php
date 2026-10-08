@@ -21,19 +21,35 @@ class VariantDuplicateOptionsChecker implements DataIntegrityCheckerInterface, C
     {
         $count = (int) $this->connection->fetchOne(
             <<<'SQL'
-                SELECT COALESCE(SUM(duplicated.variants), 0)
-                FROM (SELECT COUNT(*) AS variants
-                      FROM (SELECT p.parent_id,
-                                   GROUP_CONCAT(HEX(po.property_group_option_id) ORDER BY po.property_group_option_id) AS options
-                            FROM product p
-                            INNER JOIN product_option po
-                                ON po.product_id = p.id
-                                AND po.product_version_id = p.version_id
-                            WHERE p.version_id = :liveVersionId
-                              AND p.parent_id IS NOT NULL
-                            GROUP BY p.id, p.parent_id) variant_options
-                      GROUP BY variant_options.parent_id, variant_options.options
-                      HAVING COUNT(*) > 1) duplicated
+                SELECT COUNT(DISTINCT variant.id)
+                FROM product variant
+                INNER JOIN product sibling
+                    ON sibling.parent_id = variant.parent_id
+                    AND sibling.version_id = variant.version_id
+                    AND sibling.id != variant.id
+                WHERE variant.version_id = :liveVersionId
+                  AND variant.parent_id IS NOT NULL
+                  AND EXISTS (SELECT 1
+                              FROM product_option po
+                              WHERE po.product_id = variant.id
+                                AND po.product_version_id = variant.version_id)
+                  AND (SELECT COUNT(*)
+                       FROM product_option po
+                       WHERE po.product_id = variant.id
+                         AND po.product_version_id = variant.version_id)
+                    = (SELECT COUNT(*)
+                       FROM product_option so
+                       WHERE so.product_id = sibling.id
+                         AND so.product_version_id = sibling.version_id)
+                  AND NOT EXISTS (SELECT 1
+                                  FROM product_option po
+                                  WHERE po.product_id = variant.id
+                                    AND po.product_version_id = variant.version_id
+                                    AND NOT EXISTS (SELECT 1
+                                                    FROM product_option so
+                                                    WHERE so.product_id = sibling.id
+                                                      AND so.product_version_id = sibling.version_id
+                                                      AND so.property_group_option_id = po.property_group_option_id))
                 SQL,
             ['liveVersionId' => Uuid::fromHexToBytes(Defaults::LIVE_VERSION)],
         );

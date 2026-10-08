@@ -1,5 +1,4 @@
 import template from './template.twig';
-import recommendations from './recommendations.js';
 import '../frosh-tools-tab-index/style.scss';
 
 const { Component, Mixin } = Shopware;
@@ -28,7 +27,17 @@ Component.register('frosh-tools-tab-data-integrity', {
 
     methods: {
         recommendationFor(item) {
-            return (item && recommendations[item.id]) || null;
+            const key = `frosh-tools.tabs.data-integrity.recommendations.${item?.id}`;
+            if (!item || !this.$te(`${key}.description`, 'en-GB')) {
+                return null;
+            }
+
+            return {
+                description: this.$t(`${key}.description`),
+                solution: this.$te(`${key}.solution`, 'en-GB')
+                    ? this.$t(`${key}.solution`)
+                    : null,
+            };
         },
 
         hasInfo(item) {

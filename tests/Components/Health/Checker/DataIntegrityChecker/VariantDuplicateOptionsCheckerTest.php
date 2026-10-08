@@ -36,6 +36,28 @@ class VariantDuplicateOptionsCheckerTest extends DataIntegrityCheckerTestCase
         static::assertAffectedCount($this->collectResult($this->checker, self::ID), 0);
     }
 
+    public function testDoesNotReportDifferentOptionSetsWithACommonPrefix(): void
+    {
+        $optionIds = $this->createPropertyOptions(3);
+        sort($optionIds);
+        [$first, $second, $third] = $optionIds;
+
+        $mainProductId = $this->createProduct();
+        $this->createVariant($mainProductId, [$first, $second]);
+        $this->createVariant($mainProductId, [$first, $third]);
+
+        $groupConcatMaxLength = $this->connection->fetchOne('SELECT @@SESSION.group_concat_max_len');
+        $this->connection->executeStatement('SET SESSION group_concat_max_len = 4');
+
+        try {
+            $result = $this->collectResult($this->checker, self::ID);
+        } finally {
+            $this->connection->executeStatement('SET SESSION group_concat_max_len = ' . (int) $groupConcatMaxLength);
+        }
+
+        static::assertAffectedCount($result, 0);
+    }
+
     public function testCountsEveryVariantOfADuplicateOptionSet(): void
     {
         [$red, $blue, $small] = $this->createPropertyOptions(3);

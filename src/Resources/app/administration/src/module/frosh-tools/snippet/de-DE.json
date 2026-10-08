@@ -24,6 +24,100 @@
                 "recommendation": {
                     "what": "Worum es geht",
                     "how": "So wird es behoben"
+                },
+                "recommendations": {
+                    "product-canonical-without-variants": {
+                        "description": "Ein Produkt ohne Varianten hat ein kanonisches Produkt. Das kanonische Produkt legt fest, welche Variante eines Produkts als kanonische URL verwendet wird. Bei einem Produkt ohne Varianten ist es daher ein Überbleibsel, zum Beispiel von später gelöschten Varianten. Es kann Suchmaschinen auf eine URL verweisen, die nicht mehr zu diesem Produkt gehört.",
+                        "solution": "Der SEO-Tab der Administration bietet das kanonische Produkt nur bei Produkten mit Varianten an. Entfernen Sie es daher über die Admin-API, indem Sie \"canonicalProductId\" auf null setzen, zum Beispiel per Import."
+                    },
+                    "product-canonical-other-family": {
+                        "description": "Das kanonische Produkt dieser Produkte ist keine ihrer eigenen Varianten, sondern gehört zu einem anderen Produkt. Suchmaschinen erhalten so die Information, dass die Seite ein Duplikat eines anderen Produkts ist, und die Produktseite kann aus dem Suchindex fallen.",
+                        "solution": "Öffnen Sie das Produkt in der Administration und wählen Sie im SEO-Tab eine seiner eigenen Varianten als kanonisches Produkt, oder entfernen Sie das kanonische Produkt."
+                    },
+                    "product-main-variant-invalid": {
+                        "description": "Die für das Listing konfigurierte Hauptvariante existiert nicht mehr oder ist keine Variante dieses Produkts. Das Listing kann dann nicht die vorgesehene Variante des Produkts anzeigen.",
+                        "solution": "Öffnen Sie das Produkt in der Administration und wählen Sie im Varianten-Tab unter \"Darstellung in der Storefront\" eine seiner eigenen Varianten als Hauptvariante."
+                    },
+                    "variant-main-variant-config": {
+                        "description": "Eine Variante hat eine eigene Hauptvarianten-Konfiguration. Die Hauptvariante wird am Hauptprodukt konfiguriert und gilt für alle seine Varianten. Ein Wert an einer Variante ist ein Überbleibsel, zum Beispiel von einem Produkt, das in eine Variante umgewandelt wurde.",
+                        "solution": "Entfernen Sie die Hauptvarianten-Konfiguration von diesen Varianten, damit sie die Konfiguration ihres Hauptprodukts erben."
+                    },
+                    "product-description-too-long": {
+                        "description": "Elasticsearch lehnt einzelne Terme ab, die größer als 32766 Bytes sind. Vor Shopware 6.6.6.0 wurde die Produktbeschreibung als ein solcher Term indexiert. Produkte mit einer längeren Beschreibung werden daher nicht indexiert und fehlen in Suche und Listings.",
+                        "solution": "Kürzen Sie die Beschreibungen oder aktualisieren Sie Shopware auf 6.6.6.0 oder neuer. Ab dieser Version werden lange Werte nicht mehr als einzelner Term indexiert."
+                    },
+                    "duplicate-delivery-times": {
+                        "description": "Mehrere Lieferzeiten haben dasselbe Minimum, dasselbe Maximum und dieselbe Einheit. In der Storefront werden sie identisch angezeigt, aber Regeln, Filter und Importe, die sich auf eine davon beziehen, erfassen die Produkte mit den anderen nicht.",
+                        "solution": "Weisen Sie die Produkte und Versandarten der Duplikate einer der Lieferzeiten zu und löschen Sie die anderen."
+                    },
+                    "duplicate-customer-emails": {
+                        "description": "Mehrere registrierte Kunden teilen sich eine E-Mail-Adresse. Shopware verlangt, dass sie pro Verkaufskanal eindeutig ist, wenn Kunden an ihren Verkaufskanal gebunden sind, und sonst über alle Verkaufskanäle hinweg. Die Anmeldung verwendet immer das neueste dieser Konten, daher können sich die Kunden der älteren Konten nicht mehr anmelden.",
+                        "solution": "Führen Sie die doppelten Kundenkonten zusammen, löschen Sie sie oder ändern Sie ihre E-Mail-Adressen. Gastkonten werden nicht gezählt."
+                    },
+                    "product-cover-invalid": {
+                        "description": "Das Coverbild dieser Produkte verweist auf ein Bild, das gelöscht wurde oder zu einem anderen Produkt gehört. \"product.product_media_id\" hat keinen Fremdschlüssel, daher bleibt der Verweis beim Löschen des Bildes bestehen. Listings und Produktseite zeigen dann kein Bild oder das Bild eines anderen Produkts.",
+                        "solution": "Öffnen Sie das Produkt in der Administration und wählen Sie im Medien-Tab ein Coverbild."
+                    },
+                    "variant-duplicate-options": {
+                        "description": "Mehrere Varianten eines Produkts haben genau dieselben Optionen. Die Variantenauswahl in der Storefront erreicht nur eine davon, daher können die anderen nicht ausgewählt und ihr Bestand nicht verkauft werden.",
+                        "solution": "Übertragen Sie Bestand, Preise und Medien der überzähligen Varianten auf die verbleibende Variante und löschen Sie die überzähligen dann im Varianten-Tab des Hauptprodukts."
+                    },
+                    "variant-without-options": {
+                        "description": "Diese Varianten haben gar keine Optionen, meist weil sie ohne Optionen importiert oder die Optionen gelöscht wurden. Die Variantenauswahl kann sie nicht auswählen.",
+                        "solution": "Löschen Sie diese Varianten und generieren Sie sie im Varianten-Tab des Hauptprodukts neu, oder weisen Sie ihre Optionen über die Admin-API zu."
+                    },
+                    "product-delivery-time-missing": {
+                        "description": "Diese Produkte verweisen auf eine gelöschte Lieferzeit. \"product.delivery_time_id\" hat keinen Fremdschlüssel, daher bleibt der Verweis bestehen und für das Produkt wird keine Lieferzeit angezeigt.",
+                        "solution": "Wählen Sie im Bereich Lieferbarkeit des Produkts eine vorhandene Lieferzeit."
+                    },
+                    "product-layout-wrong-type": {
+                        "description": "Diese Produkte verwenden ein Layout, das kein Produktseiten-Layout ist, zum Beispiel ein Listing- oder Landingpage-Layout. Solchen Layouts fehlen die produktspezifischen Elemente wie die Buy-Box.",
+                        "solution": "Weisen Sie im Layout-Tab des Produkts ein Produktseiten-Layout zu, oder entfernen Sie das Layout, um das Standard-Layout zu verwenden."
+                    },
+                    "category-layout-wrong-type": {
+                        "description": "Diese Kategorien verwenden ein Produktseiten-Layout. Es erwartet ein Produkt und kann keine Kategorieseite darstellen.",
+                        "solution": "Weisen Sie im Layout-Tab der Kategorie ein Listing-, Landingpage- oder Shopseiten-Layout zu."
+                    },
+                    "rule-invalid": {
+                        "description": "Shopware markiert eine Regel als ungültig, wenn eine ihrer Bedingungen nicht mehr geladen werden kann, meist weil die Erweiterung entfernt wurde, die sie bereitgestellt hat. Ungültige Regeln werden nie in den Warenkorb geladen, daher funktionieren Preise, Versandarten, Zahlungsarten und Promotionen, die von ihnen abhängen, nicht mehr.",
+                        "solution": "Öffnen Sie die Regeln im Rule Builder und ersetzen Sie die fehlenden Bedingungen, oder installieren Sie die Erweiterung erneut, die sie bereitgestellt hat."
+                    },
+                    "flow-invalid": {
+                        "description": "Shopware markiert einen Flow als ungültig, wenn eine seiner Aktionen nicht mehr geladen werden kann, meist weil die Erweiterung entfernt wurde, die sie bereitgestellt hat. Ungültige Flows werden übersprungen, daher werden ihre Mails und anderen Aktionen nicht ausgeführt, obwohl der Flow aktiv ist.",
+                        "solution": "Öffnen Sie die Flows im Flow Builder und ersetzen Sie die fehlenden Aktionen, oder installieren Sie die Erweiterung erneut, die sie bereitgestellt hat."
+                    },
+                    "product-stream-invalid": {
+                        "description": "Shopware markiert eine dynamische Produktgruppe als ungültig, wenn ihre Filter nicht in eine Suche umgewandelt werden können, zum Beispiel weil ein gefiltertes Feld oder Zusatzfeld nicht mehr existiert. Der Core wirft für eine solche Gruppe einen Fehler, daher schlagen Kategorie-Listings, Cross-Selling, Produkt-Slider und Produktexporte fehl, die sie verwenden.",
+                        "solution": "Öffnen Sie die dynamischen Produktgruppen und korrigieren oder entfernen Sie die fehlerhaften Filter."
+                    },
+                    "sales-channel-default-payment-unassigned": {
+                        "description": "Die Standard-Zahlungsart dieser Verkaufskanäle ist keine ihrer zugewiesenen Zahlungsarten. Neue Warenkörbe starten trotzdem mit der Standard-Zahlungsart, die der Verkaufskanal nicht anbietet, daher meldet der Warenkorb sie als gesperrt: Die Storefront wechselt zu einer anderen Zahlungsart und zeigt einen Hinweis, Headless-Clients müssen selbst wechseln. Die Administration verhindert das, daher stammt es meist aus Importen oder API-Schreibzugriffen.",
+                        "solution": "Weisen Sie die Standard-Zahlungsart dem Verkaufskanal zu oder wählen Sie eine der zugewiesenen Zahlungsarten als Standard."
+                    },
+                    "sales-channel-default-shipping-unassigned": {
+                        "description": "Die Standard-Versandart dieser Verkaufskanäle ist keine ihrer zugewiesenen Versandarten. Neue Warenkörbe starten trotzdem mit der Standard-Versandart, die der Verkaufskanal nicht anbietet, daher meldet der Warenkorb sie als gesperrt: Die Storefront wechselt zu einer anderen Versandart und zeigt einen Hinweis, Headless-Clients müssen selbst wechseln. Die Administration verhindert das, daher stammt es meist aus Importen oder API-Schreibzugriffen.",
+                        "solution": "Weisen Sie die Standard-Versandart dem Verkaufskanal zu oder wählen Sie eine der zugewiesenen Versandarten als Standard."
+                    },
+                    "sales-channel-domain-language-unassigned": {
+                        "description": "Diese Domains verwenden eine Sprache, die ihrem Verkaufskanal nicht zugewiesen ist. Funktionen, die auf den zugewiesenen Sprachen basieren, wie die Sprachauswahl, berücksichtigen die Domain nicht. Die Administration bietet nur zugewiesene Sprachen an, daher stammt es meist aus Importen oder API-Schreibzugriffen.",
+                        "solution": "Weisen Sie die Sprache dem Verkaufskanal zu oder ändern Sie die Sprache der Domain."
+                    },
+                    "sales-channel-domain-currency-unassigned": {
+                        "description": "Diese Domains verwenden eine Währung, die ihrem Verkaufskanal nicht zugewiesen ist. Funktionen, die auf den zugewiesenen Währungen basieren, wie die Währungsauswahl, berücksichtigen die Domain nicht. Die Administration bietet nur zugewiesene Währungen an, daher stammt es meist aus Importen oder API-Schreibzugriffen.",
+                        "solution": "Weisen Sie die Währung dem Verkaufskanal zu oder ändern Sie die Währung der Domain."
+                    },
+                    "shipping-method-without-prices": {
+                        "description": "Diese Versandarten sind aktiv, haben aber keine Preismatrix. Ihre Versandkosten können nicht berechnet werden, daher sind sie im Checkout nicht nutzbar.",
+                        "solution": "Hinterlegen Sie Preise für die Versandarten oder deaktivieren Sie sie."
+                    },
+                    "customer-default-address-invalid": {
+                        "description": "Die Standard-Rechnungs- oder -Lieferadresse dieser Kunden existiert nicht oder gehört zu einem anderen Kunden. Die Spalten der Standardadressen haben keine Fremdschlüssel, daher bleiben gelöschte oder umgehängte Adressen referenziert. Checkout und Kundenkonto erwarten beide Adressen und können für diese Kunden fehlschlagen.",
+                        "solution": "Wählen Sie auf der Kundendetailseite vorhandene Adressen des Kunden als Standard-Rechnungs- und -Lieferadresse."
+                    },
+                    "category-sorting-invalid": {
+                        "description": "Diese Kategorien sind nach einer Kategorie mit einem anderen Elternelement einsortiert. Die Position einer Kategorie wird als die Geschwisterkategorie gespeichert, der sie folgt, daher ist die Sortierung des Kategoriebaums für sie fehlerhaft.",
+                        "solution": "Ziehen Sie die Kategorien im Kategoriebaum der Administration an die gewünschte Position. Dabei wird eine gültige Geschwisterkategorie gespeichert."
+                    }
                 }
             },
             "cache": {

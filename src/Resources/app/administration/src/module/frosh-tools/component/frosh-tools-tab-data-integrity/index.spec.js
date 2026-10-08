@@ -4,6 +4,8 @@ import { mountRegistered } from '../../../../../test/helpers.js';
 import '../../../../mixin/sortable-table.js';
 import '../../../../mixin/settings-result.js';
 import './index.js';
+import enGB from '../../snippet/en-GB.json';
+import deDE from '../../snippet/de-DE.json';
 
 async function createWrapper(service) {
     return mountRegistered('frosh-tools-tab-data-integrity', {
@@ -101,7 +103,31 @@ describe('frosh-tools-tab-data-integrity', () => {
         }
         expect(wrapper.vm.hasInfo({ id: 'unknown-check' })).toBe(false);
 
+        expect(wrapper.vm.recommendationFor({ id: 'rule-invalid' })).toEqual({
+            description:
+                enGB['frosh-tools'].tabs['data-integrity'].recommendations[
+                    'rule-invalid'
+                ].description,
+            solution:
+                enGB['frosh-tools'].tabs['data-integrity'].recommendations[
+                    'rule-invalid'
+                ].solution,
+        });
+
         expect(wrapper.vm.pillVariant('STATE_INFO')).toBe('info');
         expect(wrapper.vm.pillVariant('STATE_OK')).toBe('success');
+    });
+
+    it('translates the info of every data integrity check into German', () => {
+        const english =
+            enGB['frosh-tools'].tabs['data-integrity'].recommendations;
+        const german =
+            deDE['frosh-tools'].tabs['data-integrity'].recommendations;
+
+        expect(Object.keys(german)).toEqual(Object.keys(english));
+        for (const [id, texts] of Object.entries(german)) {
+            expect(texts.description, id).not.toBe(english[id].description);
+            expect(texts.solution, id).not.toBe(english[id].solution);
+        }
     });
 });
