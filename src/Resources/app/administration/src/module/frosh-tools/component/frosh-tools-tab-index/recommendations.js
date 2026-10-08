@@ -199,7 +199,7 @@ export default {
     },
     sql_time_zone: {
         description:
-            'The database is not running in UTC. Shopware stores timestamps in UTC, so a different database time zone leads to wrong dates and times.',
+            'The database is not running in UTC. Shopware stores timestamps in UTC, so a different database time zone leads to wrong dates and times. (Relevant before Shopware 6.7.)',
         solution: 'Set the MySQL time_zone to UTC.',
         code: '# my.cnf\n[mysqld]\ndefault-time-zone = "+00:00"',
     },
