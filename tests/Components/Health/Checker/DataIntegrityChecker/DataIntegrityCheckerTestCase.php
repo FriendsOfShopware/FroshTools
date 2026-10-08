@@ -134,6 +134,43 @@ abstract class DataIntegrityCheckerTestCase extends IntegrationTestCase
         return $row['id'];
     }
 
+    protected function createApp(bool $active): string
+    {
+        $integrationId = Uuid::randomBytes();
+        $this->connection->insert('integration', [
+            'id' => $integrationId,
+            'access_key' => Uuid::randomHex(),
+            'secret_access_key' => Uuid::randomHex(),
+            'label' => 'FroshApp',
+            'created_at' => self::now(),
+        ]);
+
+        $aclRoleId = Uuid::randomBytes();
+        $this->connection->insert('acl_role', [
+            'id' => $aclRoleId,
+            'name' => 'FroshApp ' . Uuid::randomHex(),
+            'privileges' => '[]',
+            'created_at' => self::now(),
+        ]);
+
+        $appId = Uuid::randomBytes();
+        $app = [
+            'id' => $appId,
+            'name' => 'FroshApp' . Uuid::randomHex(),
+            'version' => '1.0.0',
+            'active' => (int) $active,
+            'integration_id' => $integrationId,
+            'acl_role_id' => $aclRoleId,
+            'created_at' => self::now(),
+        ];
+        if ($this->columnExists('app', 'path')) {
+            $app['path'] = 'custom/apps/FroshApp';
+        }
+        $this->connection->insert('app', $app);
+
+        return $appId;
+    }
+
     protected function columnExists(string $table, string $column): bool
     {
         return (bool) $this->connection->fetchOne(

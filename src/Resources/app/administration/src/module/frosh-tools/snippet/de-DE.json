@@ -117,6 +117,118 @@
                     "category-sorting-invalid": {
                         "description": "Diese Kategorien sind nach einer Kategorie mit einem anderen Elternelement einsortiert. Die Position einer Kategorie wird als die Geschwisterkategorie gespeichert, der sie folgt, daher ist die Sortierung des Kategoriebaums für sie fehlerhaft.",
                         "solution": "Ziehen Sie die Kategorien im Kategoriebaum der Administration an die gewünschte Position. Dabei wird eine gültige Geschwisterkategorie gespeichert."
+                    },
+                    "sales-channel-navigation-category-inactive": {
+                        "description": "Die Hauptnavigation dieser aktiven Storefront-Verkaufskanäle ist eine inaktive Kategorie. Die Storefront lädt diese Kategorie als Startseite und antwortet mit einem 404-Fehler, wenn sie inaktiv ist. Die Startseite des Shops ist dadurch nicht erreichbar.",
+                        "solution": "Aktivieren Sie die Kategorie im Kategoriebaum der Administration oder wählen Sie in den Einstellungen des Verkaufskanals eine aktive Kategorie als Hauptnavigation aus."
+                    },
+                    "system-config-cms-page-missing": {
+                        "description": "Eine in den Stammdaten ausgewählte Shopseite, zum Beispiel AGB, Datenschutz, Impressum, 404- oder Wartungsseite, oder ein Standard-Layout für Produkte oder Kategorien verweist auf ein Layout, das nicht mehr existiert. Links auf diese Shopseiten führen auf eine Fehlerseite, fehlt die 404-Seite, wird jeder 404-Fehler zu einem Serverfehler mit Status 500, und fehlt die Wartungsseite, funktioniert der Wartungsmodus nicht. Ohne Standard-Layout für Produkte werden Produktseiten ohne eigenes Layout ganz ohne Layout dargestellt, und ohne Standard-Layout für Kategorien können Kategorieseiten ohne eigenes Layout unter Shopware 6.6 fehlschlagen.",
+                        "solution": "Wählen Sie in den Stammdaten für diese Seiten ein vorhandenes Layout aus, global und in jedem Verkaufskanal, der sie überschreibt, und legen Sie in den Erlebniswelten ein vorhandenes Layout als Standard für Produkte und Kategorien fest."
+                    },
+                    "product-stream-without-filters-in-use": {
+                        "description": "Diese dynamischen Produktgruppen haben keine gültigen Filter, weil alle Filter entfernt wurden oder die Filter ungültig sind, werden aber noch von einer Kategorie, einem aktiven Cross-Selling, einem Produktvergleich oder einem Produkt-Slider in einem Layout verwendet. Shopware wirft dann einen Fehler, statt Produkte anzuzeigen, sodass die Kategorie-, Produkt- oder Layoutseite nicht lädt und der Produktvergleich nicht erzeugt werden kann.",
+                        "solution": "Fügen Sie den dynamischen Produktgruppen gültige Filter hinzu und speichern Sie sie, oder entfernen Sie sie aus den Kategorien, Cross-Sellings, Produktvergleichen und Layouts, die sie verwenden."
+                    },
+                    "product-display-group-missing": {
+                        "description": "Diese Produkte oder Varianten haben keine Anzeigegruppe. Listings, Suche und Produkt-Slider zeigen nur Produkte mit Anzeigegruppe, daher fehlen diese Produkte dort, obwohl sie aktiv und sichtbar sind. Das passiert, wenn Produkte direkt in die Datenbank importiert und danach nicht indexiert werden, oder wenn einer Variante eine Ausprägung einer Eigenschaftsgruppe fehlt, die in der Varianten-Listing-Konfiguration ihres Hauptprodukts aufgeklappt wird.",
+                        "solution": "Weisen Sie der Variante bei Bedarf die fehlende Ausprägung zu oder ändern Sie die Varianten-Listing-Konfiguration des Hauptprodukts, und bauen Sie den Produktindex anschließend mit \"bin/console dal:refresh:index --only=product.indexer\" oder in der Administration unter Einstellungen, System, Caches und Indizes neu auf."
+                    },
+                    "payment-method-handler-missing": {
+                        "description": "Diese Zahlungsarten sind aktiv und einem Verkaufskanal zugewiesen, aber ihr Payment-Handler existiert nicht mehr, meist weil das Plugin, das ihn bereitgestellt hat, deaktiviert oder entfernt oder die App gelöscht wurde. Kunden können sie weiterhin auswählen. Bei Zahlungsarten von Plugins schlägt das Abschließen der Bestellung mit einem Fehler zur unbekannten Zahlungsart fehl. Bei Zahlungsarten gelöschter Apps wird die Bestellung angelegt, aber die Zahlung schlägt fehl.",
+                        "solution": "Aktivieren oder installieren Sie das Plugin oder die App erneut, die die Zahlungsarten bereitstellt, oder deaktivieren Sie die Zahlungsarten und entfernen Sie sie aus den Verkaufskanälen."
+                    },
+                    "delivery-time-invalid": {
+                        "description": "Diese Lieferzeiten verwenden eine Einheit, die Shopware nicht unterstützt, gültig sind nur hour, day, week, month und year in Kleinbuchstaben, oder sie haben ein negatives Minimum oder Maximum. Shopware kann daraus kein Lieferdatum berechnen, daher schlägt die Warenkorbberechnung mit einem Fehler fehl, für Positionen mit einer solchen Lieferzeit und für Positionen ohne eigene Lieferzeit, wenn die gewählte Versandart eine solche hat. Die Administration bietet nur gültige Werte an, daher stammen sie meist aus Importen oder API-Schreibzugriffen.",
+                        "solution": "Öffnen Sie die Lieferzeiten in den Einstellungen der Administration und wählen Sie eine gültige Einheit sowie nicht negative Werte für Minimum und Maximum."
+                    },
+                    "currency-rounding-interval-zero": {
+                        "description": "Die Positions- oder Gesamtrundung dieser Währungen oder länderspezifischen Währungsrundungen hat ein Intervall von null oder kein Intervall, bei höchstens zwei Nachkommastellen. Shopware teilt beim Runden von Preisen durch das Intervall, daher schlägt jede Warenkorbberechnung in dieser Währung mit einem Fehler wegen Division durch null fehl, bei einer länderspezifischen Rundung nur für Kunden aus diesem Land.",
+                        "solution": "Öffnen Sie die Währung in der Administration und hinterlegen Sie für die Positions- und die Gesamtrundung ein Rundungsintervall größer als null, zum Beispiel 0.01, auch in den länderspezifischen Rundungen der Währung."
+                    },
+                    "currency-factor-invalid": {
+                        "description": "Diese Währungen haben einen Umrechnungsfaktor von null oder kleiner, oder sie sind die Standardwährung und ihr Faktor ist nicht 1. Preise ohne eigenen Wert in einer Währung werden mit deren Faktor umgerechnet, daher führt ein Faktor von null oder kleiner zu kostenlosen oder negativen Preisen. Shopware erwartet für die Standardwährung den Faktor 1, sonst werden zum Beispiel Versandkosten in der Standardwährung mit dem Faktor multipliziert und falsch berechnet.",
+                        "solution": "Öffnen Sie die Währungen in der Administration und tragen Sie einen positiven Faktor ein, und setzen Sie den Faktor der Standardwährung auf 1."
+                    },
+                    "tax-provider-unavailable": {
+                        "description": "Diese Steueranbieter sind aktiv, aber kein Steueranbieter mit ihrer Kennung ist registriert und sie werden nicht von einer App verarbeitet, meist weil das Plugin, das sie bereitgestellt hat, deaktiviert oder entfernt wurde. Shopware meldet dann einen Fehler für den fehlenden Steueranbieter, daher schlägt die Warenkorbberechnung fehl, sofern nicht ein Steueranbieter mit höherer Priorität die Steuern bereits geliefert hat.",
+                        "solution": "Aktivieren oder installieren Sie das Plugin erneut, das die Steueranbieter bereitstellt, oder deaktivieren Sie die Steueranbieter in den Steuereinstellungen der Administration."
+                    },
+                    "country-forced-state-without-states": {
+                        "description": "Diese Länder sind aktiv, einem Verkaufskanal zugewiesen und verlangen ein Bundesland für Adressen, haben aber kein aktives Bundesland. Kunden können für eine Adresse in diesem Land kein Bundesland auswählen, und der Warenkorb sperrt Bestellungen, deren Rechnungs- oder Lieferadresse in diesem Land liegt, weil das Bundesland fehlt.",
+                        "solution": "Legen Sie die Bundesländer des Landes in der Administration an oder aktivieren Sie sie, oder deaktivieren Sie die Einstellung, die für dieses Land ein Bundesland verlangt."
+                    },
+                    "sales-channel-default-country-unavailable": {
+                        "description": "Das Standardland dieser aktiven Storefront- oder Headless-Verkaufskanäle ist inaktiv, nicht für den Versand verfügbar oder dem Verkaufskanal nicht zugewiesen. Warenkörbe von nicht angemeldeten Besuchern verwenden das Standardland als Lieferort, daher meldet der Warenkorb den Versand in dieses Land als gesperrt, und Bestellungen sind erst möglich, wenn der Kunde eine Adresse in einem belieferbaren Land verwendet.",
+                        "solution": "Wählen Sie ein aktives, belieferbares Land, das dem Verkaufskanal zugewiesen ist, als Standardland, oder aktivieren Sie das Land, erlauben Sie den Versand dorthin und weisen Sie es dem Verkaufskanal zu."
+                    },
+                    "promotion-discount-setgroup-missing": {
+                        "description": "Diese Rabatte aktiver Promotionen gelten für eine Set-Gruppe anhand ihrer Position, aber die Promotion hat an dieser Position keine Set-Gruppe, meist weil Set-Gruppen gelöscht wurden, nachdem der Rabatt eingerichtet wurde. Sobald der Warenkorb alle Set-Gruppen der Promotion erfüllt, schlägt die Warenkorbberechnung mit einem Fehler fehl, weil die Set-Gruppe nicht gefunden wird. Eine Promotion ohne Set-Gruppen wendet einen solchen Rabatt nie an.",
+                        "solution": "Öffnen Sie die Promotion in der Administration und wählen Sie eine der vorhandenen Set-Gruppen als Geltungsbereich des Rabatts, oder legen Sie die fehlende Set-Gruppe erneut an."
+                    },
+                    "customer-requested-group-missing": {
+                        "description": "Diese Kunden haben eine Kundengruppe angefragt, die gelöscht wurde. Die Spalte hat keinen Fremdschlüssel, daher wird die Anfrage beim Löschen der Gruppe nicht zurückgesetzt. Die Benachrichtigung über offene Kundengruppen-Anfragen in der Administration schlägt bei der Anmeldung fehl, und das Annehmen oder Ablehnen der Anfrage schlägt mit einem Fehler fehl.",
+                        "solution": "Entfernen Sie die angefragte Kundengruppe bei diesen Kunden in der Datenbank oder legen Sie die Kundengruppe erneut an und bearbeiten Sie die Anfragen."
+                    },
+                    "language-translation-code-missing": {
+                        "description": "Diese Sprachen haben keinen Übersetzungscode, und ihre übergeordnete Sprache auch nicht. Shopware ermittelt über den Übersetzungscode das Gebietsschema einer Sprache, zum Beispiel für Mails, Textbausteine und Produktexporte, und schlägt bei diesen Sprachen mit einem Fehler fehl.",
+                        "solution": "Wählen Sie in den Spracheinstellungen einen Übersetzungscode für diese Sprachen oder ihre übergeordnete Sprache."
+                    },
+                    "product-price-tiers-invalid": {
+                        "description": "Die erweiterten Preise dieser Produkte bilden für mindestens eine Regel keine lückenlose Staffel: Die erste Staffel beginnt nicht bei Menge 1, eine Staffel endet vor ihrem Beginn, oder Staffeln lassen eine Lücke oder überschneiden sich. Der Warenkorb wählt die Staffel nur anhand der Endmenge der sortierten Staffeln aus, daher zahlen Kunden unter Umständen einen anderen Preis, als die Staffelpreistabelle auf der Produktseite anzeigt.",
+                        "solution": "Öffnen Sie das Produkt in der Administration und passen Sie die erweiterten Preise im Tab Preise so an, dass die erste Staffel bei 1 beginnt und jede weitere Staffel direkt nach dem Ende der vorherigen."
+                    },
+                    "product-max-purchase-below-min-purchase": {
+                        "description": "Die Maximalabnahme dieser Produkte, auch wenn sie vom Hauptprodukt geerbt ist oder ohne eigenen Wert aus der maximalen Menge pro Produkt in den Warenkorb-Einstellungen stammt, liegt unter ihrer Mindestabnahme. Die Produktseite zeigt weiterhin den Kaufen-Button, aber der Warenkorb entfernt das Produkt sofort mit dem Hinweis, dass es nicht verfügbar ist, sodass es nicht bestellt werden kann.",
+                        "solution": "Öffnen Sie das Produkt in der Administration und setzen Sie eine Maximalabnahme, die mindestens der Mindestabnahme entspricht, oder entfernen Sie die Maximalabnahme."
+                    },
+                    "media-folder-configuration-missing": {
+                        "description": "Diese Medienordner verweisen auf eine Ordnerkonfiguration, die nicht mehr existiert. Der Verweis hat keinen Fremdschlüssel und bleibt daher beim Löschen der Konfiguration zurück. Shopware erzeugt für neue Medien in diesen Ordnern dann keine Thumbnails, und das erneute Erzeugen von Thumbnails, zum Beispiel mit \"bin/console media:generate-thumbnails\", löscht die vorhandenen, sodass die Storefront die Bilder in voller Größe lädt.",
+                        "solution": "Weisen Sie dem Medienordner über die Admin-API mit \"configurationId\" eine vorhandene Ordnerkonfiguration zu, bevor Sie Thumbnails neu erzeugen, und erzeugen Sie die Thumbnails anschließend mit \"bin/console media:generate-thumbnails\" neu."
+                    },
+                    "category-link-target-invalid": {
+                        "description": "Diese Kategorien vom Typ Link haben kein gültiges Ziel: Das verlinkte Produkt, die verlinkte Kategorie oder Landingpage wurde gelöscht, es ist kein internes Ziel ausgewählt, oder ein externer Link hat keine URL. Interne Linkziele haben keinen Fremdschlüssel, daher bleibt der Verweis beim Löschen des Ziels zurück. Der Menüeintrag führt auf eine 404-Seite oder auf gar keine Seite.",
+                        "solution": "Öffnen Sie die Kategorie in der Administration und wählen Sie ein vorhandenes Linkziel aus oder geben Sie eine URL ein, oder ändern Sie den Kategorietyp."
+                    },
+                    "product-export-currency-invalid": {
+                        "description": "Die Währung dieser Produktvergleiche wurde gelöscht oder ist seit Shopware 6.7.15.0 nicht dem Storefront-Verkaufskanal zugewiesen, auf dem der Produktvergleich basiert. Der Verweis auf die Währung hat keinen Fremdschlüssel und bleibt daher beim Löschen der Währung zurück. Das Erzeugen des Produktvergleichs schlägt fehl, weil die Währung nicht gefunden wird, und der Feed wird nicht mehr aktualisiert.",
+                        "solution": "Öffnen Sie den Produktvergleich-Verkaufskanal in der Administration und wählen Sie eine Währung aus, die seinem Storefront-Verkaufskanal zugewiesen ist, oder weisen Sie die Währung dem Storefront-Verkaufskanal zu."
+                    },
+                    "product-configurator-settings-missing": {
+                        "description": "Diese Hauptprodukte haben Varianten mit Ausprägungen, aber keine Konfigurator-Einstellungen, daher zeigt die Produktseite keine Variantenauswahl und Kunden können nicht zwischen den Varianten wechseln. Das kann gewollt sein, zum Beispiel wenn die Varianten als eigene Produkte gelistet werden. Andernfalls passiert es meist, wenn Varianten ohne Konfigurator-Einstellungen importiert werden.",
+                        "solution": "Legen Sie die Konfigurator-Einstellungen über die Admin-API an, indem Sie dem Hauptprodukt unter \"configuratorSettings\" die Ausprägungen seiner Varianten hinzufügen. Werden die Varianten absichtlich ohne Variantenauswahl verkauft, deaktivieren Sie diese Prüfung mit der Kennung \"product-configurator-settings-missing\" in \"frosh_tools.checker.disabled_checks\"."
+                    },
+                    "variant-option-configurator-setting-missing": {
+                        "description": "Diese Varianten haben Ausprägungen, die in den Konfigurator-Einstellungen ihres Hauptprodukts fehlen. Vor Shopware 6.7.14.0 bietet die Variantenauswahl auf der Produktseite nur konfigurierte Ausprägungen an, daher können diese Varianten nicht ausgewählt werden und andere Ausprägungen können als nicht verfügbar erscheinen.",
+                        "solution": "Fügen Sie die fehlenden Ausprägungen über die Admin-API unter \"configuratorSettings\" des Hauptprodukts hinzu oder aktualisieren Sie Shopware auf 6.7.14.0 oder neuer, das auch Ausprägungen ohne Konfigurator-Einstellung anbietet."
+                    },
+                    "product-main-category-invalid": {
+                        "description": "Die für diese Produkte in einem Verkaufskanal gewählte Hauptkategorie ist dem Produkt nicht zugewiesen, inaktiv, unter Shopware 6.7.9 bis 6.7.14 ausgeblendet oder liegt nicht im Navigations-, Service- oder Footer-Kategoriebaum dieses Verkaufskanals. Der Breadcrumb ignoriert eine solche Hauptkategorie und verwendet eine andere Kategorie, während SEO-URL-Templates, die die Hauptkategorie verwenden, sie weiterhin verwenden, sodass URL und Breadcrumb voneinander abweichen können. Vor Shopware 6.7.9 wird eine inaktive Hauptkategorie weiterhin verwendet, sodass der Breadcrumb auf eine Kategorieseite verlinkt, die nicht aufgerufen werden kann.",
+                        "solution": "Öffnen Sie das Produkt in der Administration und wählen Sie im SEO-Tab eine zugewiesene, aktive Kategorie des Verkaufskanals als Hauptkategorie aus, oder weisen Sie die Kategorie zu und aktivieren Sie sie."
+                    },
+                    "rule-condition-deleted-references": {
+                        "description": "Diese Regelbedingungen verweisen nur auf Zahlungsarten, Versandarten, Kundengruppen, Länder, Bundesländer, Verkaufskanäle, Währungen, Sprachen, Tags, Anreden oder dynamische Produktgruppen, die gelöscht wurden. Shopware entfernt gelöschte Entitäten nicht aus Regelbedingungen, daher trifft eine Bedingung mit ist eine von nie zu und eine Bedingung mit ist keine von immer zu. Preise, Versandarten, Zahlungsarten, Promotionen und Flows, die von diesen Regeln abhängen, verhalten sich anders als vorgesehen.",
+                        "solution": "Öffnen Sie die Regeln im Rule Builder und wählen Sie in den Bedingungen vorhandene Entitäten aus, oder entfernen Sie die Bedingungen."
+                    },
+                    "flow-action-deleted-references": {
+                        "description": "Diese Aktionen aktiver Flows verweisen auf ein E-Mail-Template, einen Tag oder eine Kundengruppe, die gelöscht wurden. Eine Aktion zum E-Mail-Versand mit gelöschtem E-Mail-Template wird ohne Fehler übersprungen, daher wird die E-Mail nie versendet. Das Hinzufügen eines gelöschten Tags oder der Wechsel zu einer gelöschten Kundengruppe schlägt mit einem Fehler fehl, und die übrigen Aktionen des Flows werden nicht ausgeführt.",
+                        "solution": "Öffnen Sie die Flows im Flow Builder und wählen Sie in diesen Aktionen ein vorhandenes E-Mail-Template, einen vorhandenen Tag oder eine vorhandene Kundengruppe aus, oder entfernen Sie die Aktionen."
+                    },
+                    "tax-rule-states-invalid": {
+                        "description": "Diese Steuerregeln vom Typ einzelne Bundesländer enthalten kein Bundesland ihres eigenen Landes, zum Beispiel weil die Bundesländer gelöscht wurden, die Kennungen der Bundesländer in Großbuchstaben gespeichert sind oder die Regel in ein anderes Land kopiert wurde. Eine solche Regel greift nie, daher wird Kunden aus den vorgesehenen Bundesländern stillschweigend der Standardsteuersatz berechnet. Vor Shopware 6.6.7 lässt eine Regel ganz ohne Bundesländer sogar die Warenkorbberechnung mit einem Fehler fehlschlagen.",
+                        "solution": "Öffnen Sie die Steuer in der Administration und wählen Sie in der Steuerregel die vorgesehenen Bundesländer des Landes aus, oder löschen Sie die Steuerregel."
+                    },
+                    "flow-mail-template-incomplete": {
+                        "description": "Diese E-Mail-Templates werden von aktiven Flows versendet, aber ihre Übersetzung in der Standardsprache fehlt oder hat einen leeren Betreff, HTML-Inhalt oder Text-Inhalt. E-Mails in Sprachen ohne eigene vollständige Übersetzung greifen auf die Standardsprache zurück, scheitern an der Validierung des Mail-Service und werden nicht versendet. Der Fehler wird nur protokolliert.",
+                        "solution": "Öffnen Sie die E-Mail-Templates in der Administration und füllen Sie Betreff, HTML-Inhalt und Text-Inhalt in der Standardsprache aus."
+                    },
+                    "number-range-type-missing": {
+                        "description": "Diese Nummernkreise gehören zu einem Nummernkreistyp, der nicht mehr existiert, meist weil eine Erweiterung ihren Nummernkreistyp entfernt, ihre Nummernkreise aber zurückgelassen hat. Shopware verwendet diese Nummernkreise nie, es sind Überbleibsel.",
+                        "solution": "Löschen Sie die Nummernkreise, zum Beispiel über die Admin-API, oder installieren Sie die Erweiterung erneut, die den Nummernkreistyp bereitgestellt hat."
+                    },
+                    "number-range-sales-channel-missing": {
+                        "description": "Für diese Kombinationen aus aktivem Storefront- oder Headless-Verkaufskanal und Nummernkreistyp gibt es keinen Nummernkreis: Keiner ist dem Verkaufskanal zugewiesen, und weder der Typ noch einer seiner Nummernkreise ist global. Shopware kann für den Verkaufskanal keine Nummer dieses Typs erzeugen, daher schlägt zum Beispiel das Abschließen einer Bestellung, die Registrierung eines Kunden oder das Erstellen eines Dokuments mit einem Fehler fehl.",
+                        "solution": "Öffnen Sie die Nummernkreise in der Administration und weisen Sie dem Verkaufskanal einen Nummernkreis dieses Typs zu, oder legen Sie einen globalen Nummernkreis für den Typ an."
                     }
                 }
             },

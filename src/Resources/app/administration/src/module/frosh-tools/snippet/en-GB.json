@@ -117,6 +117,118 @@
                     "category-sorting-invalid": {
                         "description": "These categories are sorted after a category that has another parent. The position of a category is stored as the sibling it follows, so the sorting of the category tree breaks for them.",
                         "solution": "Drag the categories to their intended position in the category tree of the administration, which stores a valid sibling."
+                    },
+                    "sales-channel-navigation-category-inactive": {
+                        "description": "The main navigation category of these active storefront sales channels is inactive. The storefront loads this category as homepage and answers with a 404 error when it is inactive, so the homepage of the shop cannot be reached.",
+                        "solution": "Activate the category in the category tree of the administration, or select an active category as main navigation in the settings of the sales channel."
+                    },
+                    "system-config-cms-page-missing": {
+                        "description": "A shop page selected in the basic information settings, for example terms and conditions, privacy, imprint, 404 or maintenance page, or a default layout for products or categories points to a layout that no longer exists. Links to these shop pages lead to an error page, a missing 404 page turns every 404 error into a server error with status 500, and a missing maintenance page breaks the maintenance mode. Without the default product layout, product pages without their own layout are rendered without any layout, and without the default category layout, category pages without their own layout can fail on Shopware 6.6.",
+                        "solution": "Select an existing layout for these pages in the basic information settings, globally and in every sales channel that overrides them, and set an existing layout as default for products and categories in Shopping Experiences."
+                    },
+                    "product-stream-without-filters-in-use": {
+                        "description": "These dynamic product groups have no valid filters, because all filters were removed or the filters are invalid, but they are still used by a category, an active cross-selling, a product comparison or a product slider in a layout. Shopware throws an error instead of showing products, so the category, product or layout page fails to load and the product comparison cannot be generated.",
+                        "solution": "Add valid filters to the dynamic product groups and save them, or remove them from the categories, cross-sellings, product comparisons and layouts that use them."
+                    },
+                    "product-display-group-missing": {
+                        "description": "These products or variants have no display group. Listings, search and product sliders only show products with a display group, so these products are missing there although they are active and visible. This happens when products are imported directly into the database without running the indexer afterwards, or when a variant has no option of a property group that is expanded in the variant listing configuration of its main product.",
+                        "solution": "Assign the missing option to the variant or change the variant listing configuration of the main product if needed, then rebuild the product index with \"bin/console dal:refresh:index --only=product.indexer\" or in the administration under Settings, System, Caches and indexes."
+                    },
+                    "payment-method-handler-missing": {
+                        "description": "These payment methods are active and assigned to a sales channel, but their payment handler is gone, usually because the plugin that provided it was deactivated or removed, or the app was deleted. Customers can still select them. For payment methods of plugins, placing an order fails with an unknown payment method error. For payment methods of deleted apps, the order is created, but the payment fails.",
+                        "solution": "Reactivate or reinstall the plugin or app that provides the payment methods, or deactivate the payment methods and remove them from the sales channels."
+                    },
+                    "delivery-time-invalid": {
+                        "description": "These delivery times use a unit Shopware does not support, only hour, day, week, month and year in lowercase are valid, or they have a negative minimum or maximum. Shopware cannot calculate a delivery date from them, so the cart calculation fails with an error for line items with such a delivery time, and for line items without their own delivery time when the selected shipping method has one. The administration only offers valid values, so they usually come from imports or API writes.",
+                        "solution": "Open the delivery times in the administration settings and select a valid unit and non-negative minimum and maximum values."
+                    },
+                    "currency-rounding-interval-zero": {
+                        "description": "The item or total rounding of these currencies or country specific currency roundings has an interval of zero or no interval, with at most two decimal places. Shopware divides by the interval when rounding prices, so every cart calculation in this currency fails with a division by zero error, for a country specific rounding only for customers from that country.",
+                        "solution": "Open the currency in the administration and set a rounding interval greater than zero, for example 0.01, for the item and the total rounding, also in the country specific roundings of the currency."
+                    },
+                    "currency-factor-invalid": {
+                        "description": "These currencies have an exchange rate factor of zero or below, or they are the default currency and their factor is not 1. Prices without an explicit value in a currency are converted with its factor, so a factor of zero or below results in free or negative prices. Shopware expects the default currency to have the factor 1, otherwise for example shipping costs in the default currency are multiplied by the factor and charged wrongly.",
+                        "solution": "Open the currencies in the administration and enter a positive factor, and set the factor of the default currency to 1."
+                    },
+                    "tax-provider-unavailable": {
+                        "description": "These tax providers are active, but no tax provider with their identifier is registered and they are not handled by an app, usually because the plugin that provided them was deactivated or removed. Shopware then reports an error for the missing tax provider, so the cart calculation fails unless a tax provider with a higher priority already provided the taxes.",
+                        "solution": "Reactivate or reinstall the plugin that provides the tax providers, or deactivate the tax providers in the tax settings of the administration."
+                    },
+                    "country-forced-state-without-states": {
+                        "description": "These countries are active, assigned to a sales channel and require a state for addresses, but have no active state. Customers cannot select a state for an address in this country, and the cart blocks orders whose billing or shipping address is in this country because the state is missing.",
+                        "solution": "Add or activate the states of the country in the administration, or disable the setting that requires a state for this country."
+                    },
+                    "sales-channel-default-country-unavailable": {
+                        "description": "The default country of these active storefront or headless sales channels is inactive, not available for shipping or not assigned to the sales channel. Carts of visitors who are not logged in use the default country as shipping location, so the cart reports shipping to this country as blocked, and orders cannot be placed until the customer uses an address in a deliverable country.",
+                        "solution": "Choose an active, deliverable country that is assigned to the sales channel as its default country, or activate the country, allow shipping to it and assign it to the sales channel."
+                    },
+                    "promotion-discount-setgroup-missing": {
+                        "description": "These discounts of active promotions apply to a set group by its position, but the promotion has no set group at that position, usually because set groups were deleted after the discount was configured. As soon as the cart fulfils all set groups of the promotion, the cart calculation fails with a set group not found error. A promotion without any set group never applies such a discount.",
+                        "solution": "Open the promotion in the administration and select one of the existing set groups as scope of the discount, or add the missing set group again."
+                    },
+                    "customer-requested-group-missing": {
+                        "description": "These customers requested a customer group that has been deleted. The column has no foreign key, so deleting the group does not reset the request. The administration notification for open customer group requests fails on login, and accepting or declining the request fails with an error.",
+                        "solution": "Remove the requested customer group from these customers in the database, or create the customer group again and process the requests."
+                    },
+                    "language-translation-code-missing": {
+                        "description": "These languages have no translation code, and neither has their parent language. Shopware uses the translation code to find the locale of a language, for example for mails, snippets and product exports, and fails with an error for these languages.",
+                        "solution": "Select a translation code for these languages or their parent language in the language settings."
+                    },
+                    "product-price-tiers-invalid": {
+                        "description": "The advanced prices of these products do not form a continuous scale for at least one rule: the first tier does not start at quantity 1, a tier ends before it starts, or tiers leave a gap or overlap. The cart selects the tier only by the end quantity of the sorted tiers, so customers can be charged a different price than the price table on the product page shows.",
+                        "solution": "Open the product in the administration and adjust the advanced prices in the prices tab so that the first tier starts at 1 and every further tier starts directly after the end of the previous one."
+                    },
+                    "product-max-purchase-below-min-purchase": {
+                        "description": "The maximum order quantity of these products, including a value inherited from the main product or, without any value, the maximum quantity per product from the cart settings, is lower than their minimum order quantity. The product page still shows the buy button, but the cart removes the product right away with an out of stock message, so it cannot be ordered.",
+                        "solution": "Open the product in the administration and set a maximum order quantity that is at least the minimum order quantity, or remove the maximum order quantity."
+                    },
+                    "media-folder-configuration-missing": {
+                        "description": "These media folders refer to a folder configuration that no longer exists. The reference has no foreign key, so it is left behind when the configuration is deleted. Shopware then generates no thumbnails for new media in these folders, and regenerating thumbnails, for example with \"bin/console media:generate-thumbnails\", deletes the existing ones, so the storefront loads the full-size images.",
+                        "solution": "Assign an existing folder configuration to the media folder through the Admin API by setting \"configurationId\" before regenerating thumbnails, then generate the thumbnails again with \"bin/console media:generate-thumbnails\"."
+                    },
+                    "category-link-target-invalid": {
+                        "description": "These categories of type link have no usable target: the linked product, category or landing page was deleted, no internal target is selected, or an external link has no URL. Internal link targets have no foreign key, so deleting the target leaves the reference behind. The menu entry leads to a 404 page or to no page at all.",
+                        "solution": "Open the category in the administration and select an existing link target or enter a URL, or change the category type."
+                    },
+                    "product-export-currency-invalid": {
+                        "description": "The currency of these product comparisons was deleted, or, since Shopware 6.7.15.0, is not assigned to the storefront sales channel the comparison is based on. The currency reference has no foreign key, so it is left behind when the currency is deleted. Generating the product comparison fails because the currency cannot be found, so the feed is not updated anymore.",
+                        "solution": "Open the product comparison sales channel in the administration and select a currency that is assigned to its storefront sales channel, or assign the currency to the storefront sales channel."
+                    },
+                    "product-configurator-settings-missing": {
+                        "description": "These main products have variants with options, but no configurator settings, so the product page shows no variant selection and customers cannot switch between the variants. This can be intended, for example when the variants are listed as separate products. Otherwise it usually happens when variants are imported without configurator settings.",
+                        "solution": "Create the configurator settings through the Admin API by adding the options of the variants to \"configuratorSettings\" of the main product. If the variants are intentionally sold without a variant selection, disable this check with the id \"product-configurator-settings-missing\" in \"frosh_tools.checker.disabled_checks\"."
+                    },
+                    "variant-option-configurator-setting-missing": {
+                        "description": "These variants have options that are missing in the configurator settings of their main product. Before Shopware 6.7.14.0 the variant selection on the product page only offers configured options, so these variants cannot be selected and other options can appear as unavailable.",
+                        "solution": "Add the missing options to \"configuratorSettings\" of the main product through the Admin API, or update Shopware to 6.7.14.0 or later, which also offers options without a configurator setting."
+                    },
+                    "product-main-category-invalid": {
+                        "description": "The main category selected for these products in a sales channel is not assigned to the product, is inactive, hidden on Shopware 6.7.9 to 6.7.14, or is not part of the navigation, service or footer category tree of that sales channel. The breadcrumb ignores such a main category and falls back to another category, while SEO URL templates that use the main category still use it, so URL and breadcrumb can disagree. Before Shopware 6.7.9 an inactive main category is still used, so the breadcrumb links to a category page that cannot be opened.",
+                        "solution": "Open the product in the administration and select an assigned, active category of the sales channel as main category in the SEO tab, or assign and activate the category."
+                    },
+                    "rule-condition-deleted-references": {
+                        "description": "These rule conditions only reference payment methods, shipping methods, customer groups, countries, states, sales channels, currencies, languages, tags, salutations or dynamic product groups that were deleted. Shopware does not remove deleted entities from rule conditions, so a condition with is one of never matches and a condition with is none of always matches. Prices, shipping methods, payment methods, promotions and flows that depend on these rules behave differently than intended.",
+                        "solution": "Open the rules in the rule builder and select existing entities in the conditions, or remove the conditions."
+                    },
+                    "flow-action-deleted-references": {
+                        "description": "These actions of active flows reference a mail template, tag or customer group that was deleted. A send mail action with a deleted mail template is skipped without any error, so the mail is never sent. Adding a deleted tag or changing to a deleted customer group fails with an error, and the remaining actions of the flow are not executed.",
+                        "solution": "Open the flows in the Flow Builder and select an existing mail template, tag or customer group in these actions, or remove the actions."
+                    },
+                    "tax-rule-states-invalid": {
+                        "description": "These tax rules of the type individual states do not contain any state of their own country, for example because the states were deleted, the state ids are stored in uppercase, or the rule was copied to another country. Such a rule never applies, so customers from the intended states are silently charged the standard tax rate. Before Shopware 6.6.7, a rule without any states even makes the cart calculation fail with an error.",
+                        "solution": "Open the tax in the administration and select the intended states of the country in the tax rule, or delete the tax rule."
+                    },
+                    "flow-mail-template-incomplete": {
+                        "description": "These mail templates are sent by active flows, but their translation in the default language is missing or has an empty subject, HTML content or plain text content. Mails in languages without their own complete translation fall back to the default language, fail the validation of the mail service and are not sent. The error is only logged.",
+                        "solution": "Open the mail templates in the administration and fill in the subject, the HTML content and the plain text content in the default language."
+                    },
+                    "number-range-type-missing": {
+                        "description": "These number ranges belong to a number range type that does not exist anymore, usually because an extension removed its number range type but left its number ranges behind. Shopware never uses these number ranges, they are leftovers.",
+                        "solution": "Delete the number ranges, for example through the Admin API, or reinstall the extension that provided the number range type."
+                    },
+                    "number-range-sales-channel-missing": {
+                        "description": "For these combinations of an active storefront or headless sales channel and a number range type, there is no number range: none is assigned to the sales channel, and neither the type nor one of its number ranges is global. Shopware cannot generate a number of this type for the sales channel, so for example placing an order, registering a customer or creating a document fails with an error.",
+                        "solution": "Open the number ranges in the administration and assign a number range of this type to the sales channel, or create a global number range for the type."
                     }
                 }
             },
