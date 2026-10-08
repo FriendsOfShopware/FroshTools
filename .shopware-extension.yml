@@ -119,3 +119,5 @@ validation:
     # old versions of symfony
     - identifier: 'phpstan/missingType.generics'
       path: src/DependencyInjection/Configuration.php
+    - identifier: 'phpstan/generics.notGeneric'
+      path: src/Components/Security/Subscriber/SecurityActivitySubscriber.php
