@@ -29,6 +29,7 @@ async function createWrapper({ service = createService(), query = {} } = {}) {
             'frosh-tools-security-overview': true,
             'frosh-tools-security-dependencies': true,
             'frosh-tools-security-files': true,
+            'frosh-tools-security-timeline': true,
         },
         global: {
             mocks: {
@@ -56,10 +57,10 @@ describe('frosh-tools-tab-security', () => {
     });
 
     it('opens a deep-linked section and updates the query on tab change', async () => {
-        const wrapper = await createWrapper({ query: { section: 'files' } });
+        const wrapper = await createWrapper({ query: { section: 'timeline' } });
         await flushPromises();
 
-        expect(wrapper.vm.activeTab).toBe('files');
+        expect(wrapper.vm.activeTab).toBe('timeline');
 
         wrapper.vm.selectTab('dependencies');
         expect(wrapper.vm.activeTab).toBe('dependencies');

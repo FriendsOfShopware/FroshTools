@@ -1,0 +1,49 @@
+.frosh-security-timeline {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+
+    &__filters {
+        display: flex;
+        flex-wrap: wrap;
+        align-items: flex-end;
+        gap: 12px;
+
+        > label {
+            display: flex;
+            flex: 1 1 160px;
+            flex-direction: column;
+            gap: 6px;
+        }
+
+        > label > input {
+            min-width: 0;
+            padding: 8px;
+            border: 1px solid var(--ft-border);
+            border-radius: var(--ft-radius-md);
+            color: var(--ft-text);
+            background: var(--ft-surface);
+            font: inherit;
+        }
+    }
+
+    &__select {
+        flex: 1 1 220px;
+        min-width: 0;
+
+        .sw-single-select__selection-text {
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+        }
+
+        .sw-field {
+            margin-bottom: 0;
+        }
+    }
+
+    &__details {
+        white-space: pre-wrap;
+        overflow-wrap: anywhere;
+    }
+}
