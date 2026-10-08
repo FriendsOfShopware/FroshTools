@@ -510,7 +510,7 @@
                 "copyError": "Konnte nicht in die Zwischenablage kopieren",
                 "communication": {
                     "title": "So kommunizieren Apps mit Deinem Shop",
-                    "intro": "Apps mit einem externen Backend führen ihre Logik auf den Servern des App-Anbieters aus. Dein Shop und der App-Server müssen in beide Richtungen kommunizieren können.",
+                    "intro": "Apps mit einem externen Backend führen ihre Logik auf den Servern des App-Anbieters aus. Dein Shop und der App-Server müssen in beide Richtungen kommunizieren können. Das gilt auch für Shopware Services, die auf dem App-System basieren und ebenfalls auf die Erreichbarkeit des Shops und die Shop-App-ID angewiesen sind.",
                     "shop": "Dein Shopware-Shop",
                     "shopDescription": "Stellt Shop-Daten über die Admin-API bereit.",
                     "internet": "Kommunikation über das Internet",
