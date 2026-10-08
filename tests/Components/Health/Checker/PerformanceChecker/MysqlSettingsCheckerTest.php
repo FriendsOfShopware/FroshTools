@@ -72,7 +72,6 @@ class MysqlSettingsCheckerTest extends TestCase
             ['SELECT @@sql_mode', [], [], ''],
         ]);
         $connection->expects($expectQuery ? static::once() : static::never())
-        $connection->expects($expectQuery ? static::once() : static::never())
             ->method('fetchAssociative')
             ->with('SELECT @@time_zone AS time_zone, @@system_time_zone AS system_time_zone')
             ->willReturn(['time_zone' => $timeZone, 'system_time_zone' => $systemTimeZone]);
