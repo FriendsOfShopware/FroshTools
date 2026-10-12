@@ -22,6 +22,7 @@ import './component/frosh-tools-security-overview/index.js';
 import './component/frosh-tools-security-dependencies/index.js';
 import './component/frosh-tools-security-files/index.js';
 import './component/frosh-tools-tab-security/index.js';
+import './component/frosh-tools-security-timeline/index.ts';
 import './component/frosh-tools-tab-fastly/index.js';
 import './component/frosh-tools-tab-statistics/index.js';
 import './component/frosh-tools-tab-shopmon/index.js';

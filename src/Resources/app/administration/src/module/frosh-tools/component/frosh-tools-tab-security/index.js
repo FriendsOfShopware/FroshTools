@@ -3,7 +3,7 @@ import './style.scss';
 
 const { Component, Mixin } = Shopware;
 
-const VALID_TABS = ['overview', 'dependencies', 'files'];
+const VALID_TABS = ['overview', 'dependencies', 'files', 'timeline'];
 const NOTICE_KEY = 'frosh-tools.security.notice-dismissed';
 
 // Security Center container: owns the posture summary (fetched once) and the
@@ -65,6 +65,14 @@ Component.register('frosh-tools-tab-security', {
                     ),
                     badge: this.dependencyBadge,
                     badgeVariant: 'danger',
+                },
+                {
+                    key: 'timeline',
+                    label: this.$t(
+                        'frosh-tools.tabs.security.sections.timeline'
+                    ),
+                    badge: null,
+                    badgeVariant: 'muted',
                 },
                 {
                     key: 'files',
