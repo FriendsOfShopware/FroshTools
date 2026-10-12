@@ -66,6 +66,14 @@ Component.register('frosh-tools-tab-security', {
                     badgeVariant: 'danger',
                 },
                 {
+                    key: 'timeline',
+                    label: this.$t(
+                        'frosh-tools.tabs.security.sections.timeline'
+                    ),
+                    badge: null,
+                    badgeVariant: 'muted',
+                },
+                {
                     key: 'files',
                     label: this.$t('frosh-tools.tabs.security.sections.files'),
                     badge: null,

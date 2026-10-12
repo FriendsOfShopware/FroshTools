@@ -9,6 +9,7 @@ use Frosh\Tools\Components\Security\Subscriber\SystemActivitySubscriber;
 use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\TestCase;
 use Psr\Log\LoggerInterface;
+use Shopware\Core\Framework\Api\Context\AdminApiSource;
 use Shopware\Core\Framework\App\AppEntity;
 use Shopware\Core\Framework\App\Event\AppActivatedEvent;
 use Shopware\Core\Framework\App\Event\AppDeactivatedEvent;
@@ -29,6 +30,20 @@ use Shopware\Core\Framework\Uuid\Uuid;
 #[CoversClass(SystemActivitySubscriber::class)]
 final class SystemActivitySubscriberTest extends TestCase
 {
+    public function testIntegrationActorRetainsItsUuidWithoutAnAccessKeyLookupResult(): void
+    {
+        $integrationId = Uuid::randomHex();
+        $connection = static::createStub(Connection::class);
+        $connection->method('fetchOne')->willReturn(false);
+        $subscriber = new SystemActivitySubscriber(static::createStub(LoggerInterface::class), $connection);
+
+        $actor = $subscriber->actor(new Context(new AdminApiSource(null, $integrationId)));
+
+        static::assertSame('integration', $actor['actorType']);
+        static::assertSame($integrationId, $actor['integrationId']);
+        static::assertNull($actor['integrationAccessKey']);
+    }
+
     public function testLogsOnlyNewUsers(): void
     {
         $logger = $this->createMock(LoggerInterface::class);

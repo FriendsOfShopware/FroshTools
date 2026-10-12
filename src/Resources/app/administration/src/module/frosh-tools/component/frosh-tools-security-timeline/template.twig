@@ -1,0 +1,231 @@
+<div class="frosh-security-timeline">
+    <p>
+        {{ $t('frosh-tools.tabs.security.timeline.description') }}
+    </p>
+    <p
+        v-if="userId"
+        class="frosh-security-timeline__user"
+    >
+        {{ $t('frosh-tools.tabs.security.timeline.userFilter') }}
+        <code>{{ userId }}</code>    </p>
+    <p
+        v-if="subjectId"
+        class="frosh-security-timeline__subject"
+    >
+        {{ $t('frosh-tools.tabs.security.timeline.subjectFilter', { type: $t(`frosh-tools.tabs.security.timeline.subjectTypes.${subjectType}`) }) }}
+        <code>{{ subjectId }}</code>        {{ $t('frosh-tools.tabs.security.timeline.subjectHelp') }}
+    </p>
+    <p
+        v-if="exportError"
+        role="alert"
+    >
+        {{ $t('frosh-tools.tabs.security.timeline.exportError') }}
+    </p>
+    <form
+        class="frosh-security-timeline__filters"
+        @submit.prevent="applyFilters"
+    >
+        <div class="frosh-security-timeline__select">
+            <frosh-tools-security-activity-select
+                v-model:value="actor"
+                :label="$t('frosh-tools.tabs.security.timeline.actor')"
+                :placeholder="$t('frosh-tools.tabs.security.timeline.allActors')"
+                :options="actorOptions"
+                @update:value="clearUser"
+                :is-loading="optionsLoading.actor"
+                show-clearable-button
+                @search="loadOptions('actor', $event)"
+            />
+            <small v-if="moreActors">
+                {{ $t('frosh-tools.tabs.security.timeline.moreActors') }}
+            </small>
+        </div>
+        <div class="frosh-security-timeline__select">
+            <frosh-tools-security-activity-select
+                v-model:value="action"
+                :label="$t('frosh-tools.tabs.security.timeline.action')"
+                :placeholder="$t('frosh-tools.tabs.security.timeline.allActions')"
+                :options="actionOptions"
+                @paginate="loadMoreActions"
+                :is-loading="optionsLoading.action"
+                show-clearable-button
+            />
+            <ft-button
+                v-if="moreActions"
+                variant="ghost"
+                @click="loadMoreActions"
+            >
+                {{ $t('frosh-tools.tabs.security.timeline.moreActions') }}
+            </ft-button>
+        </div>
+        <div class="frosh-security-timeline__select">
+            <frosh-tools-security-activity-select
+                :value="period"
+                :options="periodOptions"
+                :label="$t('frosh-tools.tabs.security.timeline.period')"
+                @update:value="selectPeriod"
+            />
+        </div>
+        <label>
+            {{ $t('frosh-tools.tabs.security.timeline.clientIp') }}
+            <input
+                v-model="clientIp"
+                name="clientIp"
+                type="text"
+                maxlength="45"
+                :placeholder="$t('frosh-tools.tabs.security.timeline.anyIp')"
+            />
+        </label>
+        <label>
+            {{ $t('frosh-tools.tabs.security.timeline.from') }}
+            <input
+                v-model="from"
+                @input="period = 'custom'"
+                name="from"
+                type="date"
+                :max="to || undefined"
+            />
+        </label>
+        <label>
+            {{ $t('frosh-tools.tabs.security.timeline.to') }}
+            <input
+                v-model="to"
+                @input="period = 'custom'"
+                name="to"
+                type="date"
+                :min="from || undefined"
+            />
+        </label>
+        <button
+            type="submit"
+            class="ft-btn"
+            :disabled="isLoading"
+        >
+            {{ $t('frosh-tools.tabs.security.timeline.apply') }}
+        </button>
+        <ft-button
+            variant="ghost"
+            @click="resetFilters"
+        >
+            {{ $t('frosh-tools.tabs.security.timeline.clear') }}
+        </ft-button>
+    </form>
+    <div
+        v-if="optionsError.actor || optionsError.action"
+        role="alert"
+    >
+        {{ $t('frosh-tools.tabs.security.timeline.optionsError') }}
+        <ft-button @click="retryOptions">
+            {{ $t('frosh-tools.loadError.retry') }}
+        </ft-button>
+    </div>
+    <ft-panel
+        :title="$t('frosh-tools.tabs.security.sections.timeline')"
+        flush
+    >
+        <template #actions>
+            <ft-button
+                :disabled="isExporting || isLoading || error"
+                @click="exportActivity"
+            >
+                {{ $t('frosh-tools.tabs.security.timeline.export') }}
+            </ft-button>
+            <ft-refresh-button
+                :loading="isLoading"
+                @click="load"
+            />
+        </template>
+        <ft-hero-state
+            v-if="error"
+            variant="danger"
+            icon="alert"
+            :title="$t('frosh-tools.loadError.title')"
+            :body="$t('frosh-tools.tabs.security.timeline.loadError')"
+        >
+            <template #actions>
+                <ft-button @click="load">
+                    {{ $t('frosh-tools.loadError.retry') }}
+                </ft-button>
+            </template>
+        </ft-hero-state>
+        <ft-empty
+            v-else-if="isLoading && !entries.length"
+            loading
+        />
+        <ft-empty
+            v-else-if="!entries.length"
+            :title="$t('frosh-tools.tabs.security.timeline.empty')"
+        />
+        <div
+            v-else
+            class="ft-table-wrap"
+            :aria-busy="isLoading"
+        >
+            <table class="ft-table">
+                <thead>
+                    <tr>
+                        <th>{{ $t('frosh-tools.date') }}</th>
+                        <th>
+                            {{ $t('frosh-tools.tabs.security.timeline.action') }}
+                        </th>
+                        <th>
+                            {{ $t('frosh-tools.tabs.security.timeline.actor') }}
+                        </th>
+                        <th>
+                            {{ $t('frosh-tools.tabs.security.timeline.clientIp') }}
+                        </th>
+                        <th>
+                            {{ $t('frosh-tools.tabs.security.timeline.target') }}
+                        </th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr
+                        v-for="entry in entries"
+                        :key="entry.id"
+                    >
+                        <td>
+                            {{ formatDate(entry.createdAt) }}
+                        </td>
+                        <td>
+                            <button
+                                type="button"
+                                class="ft-link"
+                                @click="selected = entry"
+                            >
+                                <ft-pill
+                                    :variant="entry.level >= 400 ? 'danger' : entry.level >= 300 ? 'warning' : 'muted'"
+                                >
+                                    {{ actionLabel(entry.action) }}
+                                </ft-pill>
+                            </button>
+                        </td>
+                        <td>{{ actorLabel(entry) }}</td>
+                        <td class="ft-mono">
+                            {{ entry.context.clientIp || '—' }}
+                        </td>
+                        <td>{{ targetLabel(entry) }}</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+        <sw-pagination
+            v-if="total > limit || page > 1"
+            :total="total"
+            :limit="limit"
+            :page="page"
+            @page-change="changePage"
+        />
+    </ft-panel>
+    <ft-modal
+        v-if="selected"
+        @close="selected = null"
+    >
+        <template #header>
+            {{ actionLabel(selected.action) }}
+            ·
+            {{ formatDate(selected.createdAt) }}
+        </template>
+        <pre class="frosh-security-timeline__details">{{ details(selected) }}</pre>
+    </ft-modal>
+</div>

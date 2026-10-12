@@ -127,7 +127,7 @@ final class SystemActivitySubscriber implements EventSubscriberInterface
     }
 
     /**
-     * @return array{actorType?: string|null, userId?: string|null, username?: string|null, integrationAccessKey?: string|null}
+     * @return array{actorType?: string|null, userId?: string|null, username?: string|null, integrationId?: string|null, integrationAccessKey?: string|null}
      */
     public function actor(Context $context): array
     {
@@ -146,6 +146,7 @@ final class SystemActivitySubscriber implements EventSubscriberInterface
                 default => null,
             },
             'userId' => $source->getUserId(),
+            'integrationId' => $source->getIntegrationId(),
             'integrationAccessKey' => null,
         ];
         if ($source->getUserId() !== null) {
