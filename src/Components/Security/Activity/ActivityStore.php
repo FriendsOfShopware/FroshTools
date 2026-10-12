@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Frosh\Tools\Components\Security\Activity;
 
 use Doctrine\DBAL\Connection;
+use Doctrine\DBAL\Query\QueryBuilder;
 use Shopware\Core\Defaults;
 use Shopware\Core\Framework\Uuid\Uuid;
 
@@ -28,7 +29,13 @@ class ActivityStore
         // Some core versions only supply the integration's access key.
         if (!isset($context['userId']) && !isset($context['integrationId']) && \is_string($context['integrationAccessKey'] ?? null)) {
             try {
-                $integrationId = $this->connection->fetchOne('SELECT LOWER(HEX(id)) FROM integration WHERE access_key = ?', [$context['integrationAccessKey']]);
+                $integrationId = $this->connection->createQueryBuilder()
+                    ->select('LOWER(HEX(id))')
+                    ->from('integration')
+                    ->where('access_key = :accessKey')
+                    ->setParameter('accessKey', $context['integrationAccessKey'])
+                    ->executeQuery()
+                    ->fetchOne();
                 if (\is_string($integrationId)) {
                     $context['integrationId'] = $integrationId;
                 }
@@ -60,13 +67,16 @@ class ActivityStore
      */
     public function search(int $page, int $limit, string $action, string $actor, ?\DateTimeImmutable $from, ?\DateTimeImmutable $to, bool $exact = false, string $clientIp = '', string $userId = '', string $subjectType = '', string $subjectId = ''): array
     {
-        [$where, $parameters] = $this->filters($action, $actor, $from, $to, $exact, $clientIp, $userId, $subjectType, $subjectId);
-        $total = (int) $this->connection->fetchOne('SELECT COUNT(*) FROM frosh_tools_security_activity' . $where, $parameters);
-        $rows = $this->connection->fetchAllAssociative(
-            'SELECT id, action, level, context, created_at FROM frosh_tools_security_activity' . $where
-            . ' ORDER BY created_at DESC, id DESC LIMIT ' . $limit . ' OFFSET ' . (($page - 1) * $limit),
-            $parameters,
-        );
+        $query = $this->filteredQuery($action, $actor, $from, $to, $exact, $clientIp, $userId, $subjectType, $subjectId);
+        $total = (int) (clone $query)->select('COUNT(*)')->executeQuery()->fetchOne();
+        $rows = $query
+            ->select('id', 'action', 'level', 'context', 'created_at')
+            ->orderBy('created_at', 'DESC')
+            ->addOrderBy('id', 'DESC')
+            ->setMaxResults($limit)
+            ->setFirstResult(($page - 1) * $limit)
+            ->executeQuery()
+            ->fetchAllAssociative();
 
         return ['entries' => array_map($this->entry(...), $rows), 'total' => $total];
     }
@@ -79,20 +89,27 @@ class ActivityStore
      */
     public function export(string $action, string $actor, ?\DateTimeImmutable $from, ?\DateTimeImmutable $to, bool $exact = false, string $clientIp = '', string $userId = '', string $subjectType = '', string $subjectId = ''): \Generator
     {
-        [$where, $parameters] = $this->filters($action, $actor, $from, $to, $exact, $clientIp, $userId, $subjectType, $subjectId);
+        $query = $this->filteredQuery($action, $actor, $from, $to, $exact, $clientIp, $userId, $subjectType, $subjectId)
+            ->select('id', 'action', 'level', 'context', 'created_at')
+            ->orderBy('created_at', 'DESC')
+            ->addOrderBy('id', 'DESC')
+            ->setMaxResults(500);
         $cursor = null;
         do {
-            $queryWhere = $where;
-            $queryParameters = $parameters;
+            $batch = clone $query;
             if ($cursor !== null) {
-                $queryWhere .= ($where === '' ? ' WHERE ' : ' AND ') . '(created_at < :cursorDate OR (created_at = :cursorDate AND id < :cursorId))';
-                $queryParameters['cursorDate'] = $cursor['created_at'];
-                $queryParameters['cursorId'] = $cursor['id'];
+                $expression = $batch->expr();
+                $batch->andWhere($expression->or(
+                    $expression->lt('created_at', ':cursorDate'),
+                    $expression->and(
+                        $expression->eq('created_at', ':cursorDate'),
+                        $expression->lt('id', ':cursorId'),
+                    ),
+                ))
+                    ->setParameter('cursorDate', $cursor['created_at'])
+                    ->setParameter('cursorId', $cursor['id']);
             }
-            $rows = $this->connection->fetchAllAssociative(
-                'SELECT id, action, level, context, created_at FROM frosh_tools_security_activity' . $queryWhere . ' ORDER BY created_at DESC, id DESC LIMIT 500',
-                $queryParameters,
-            );
+            $rows = $batch->executeQuery()->fetchAllAssociative();
             foreach ($rows as $row) {
                 $cursor = $row;
                 yield $this->entry($row);
@@ -110,20 +127,29 @@ class ActivityStore
             'actor' => 'actor_label',
             default => throw new \InvalidArgumentException('Unknown activity filter.'),
         };
-        $values = $this->connection->fetchFirstColumn(
-            'SELECT DISTINCT ' . $column . ' AS value FROM frosh_tools_security_activity'
-            . ' WHERE ' . $column . ' LIKE :term ESCAPE \'!\' ORDER BY value LIMIT 51 OFFSET ' . (($page - 1) * 50),
-            ['term' => $this->prefix($term)],
-        );
+        $query = $this->connection->createQueryBuilder();
+        $values = $query
+            ->select($column)
+            ->distinct()
+            ->from('frosh_tools_security_activity')
+            ->where($query->expr()->like($column, ':term', '\'!\''))
+            ->setParameter('term', $this->prefix($term))
+            ->orderBy($column)
+            ->setMaxResults(51)
+            ->setFirstResult(($page - 1) * 50)
+            ->executeQuery()
+            ->fetchFirstColumn();
 
         return ['values' => \array_slice($values, 0, 50), 'hasMore' => \count($values) > 50];
     }
 
     public function deleteBefore(\DateTimeImmutable $cutoff): void
     {
-        $this->connection->executeStatement('DELETE FROM frosh_tools_security_activity WHERE created_at < :cutoff', [
-            'cutoff' => $cutoff->setTimezone(new \DateTimeZone('UTC'))->format(Defaults::STORAGE_DATE_TIME_FORMAT),
-        ]);
+        $this->connection->createQueryBuilder()
+            ->delete('frosh_tools_security_activity')
+            ->where('created_at < :cutoff')
+            ->setParameter('cutoff', $cutoff->setTimezone(new \DateTimeZone('UTC'))->format(Defaults::STORAGE_DATE_TIME_FORMAT))
+            ->executeStatement();
     }
 
     /**
@@ -142,50 +168,56 @@ class ActivityStore
         ];
     }
 
-    /**
-     * @return array{string, array<string, mixed>}
-     */
-    private function filters(string $action, string $actor, ?\DateTimeImmutable $from, ?\DateTimeImmutable $to, bool $exact, string $clientIp, string $userId, string $subjectType, string $subjectId): array
+    private function filteredQuery(string $action, string $actor, ?\DateTimeImmutable $from, ?\DateTimeImmutable $to, bool $exact, string $clientIp, string $userId, string $subjectType, string $subjectId): QueryBuilder
     {
-        $conditions = [];
-        $parameters = [];
+        $query = $this->connection->createQueryBuilder()->from('frosh_tools_security_activity');
+        $expression = $query->expr();
         if ($action !== '') {
-            $conditions[] = $exact ? 'action = :action' : 'action LIKE :action ESCAPE \'!\'';
-            $parameters['action'] = $exact ? $action : $this->prefix($action);
+            $query->andWhere($exact ? $expression->eq('action', ':action') : $expression->like('action', ':action', '\'!\''))
+                ->setParameter('action', $exact ? $action : $this->prefix($action));
         }
         if ($actor !== '') {
-            $conditions[] = $exact ? 'actor_label = :actor' : '(actor_id LIKE :actor ESCAPE \'!\' OR actor_name LIKE :actor ESCAPE \'!\' OR actor_type LIKE :actor ESCAPE \'!\')';
-            $parameters['actor'] = $exact ? $actor : $this->prefix($actor);
+            $query->andWhere($exact ? $expression->eq('actor_label', ':actor') : $expression->or(
+                $expression->like('actor_id', ':actor', '\'!\''),
+                $expression->like('actor_name', ':actor', '\'!\''),
+                $expression->like('actor_type', ':actor', '\'!\''),
+            ))
+                ->setParameter('actor', $exact ? $actor : $this->prefix($actor));
         }
         if ($clientIp !== '') {
-            $conditions[] = 'client_ip = :clientIp';
-            $parameters['clientIp'] = inet_pton($clientIp);
+            $query->andWhere('client_ip = :clientIp')->setParameter('clientIp', inet_pton($clientIp));
         }
         if ($userId !== '') {
-            $conditions[] = 'actor_type = \'user\' AND actor_id = :userId';
-            $parameters['userId'] = $userId;
+            $query->andWhere('actor_type = \'user\'')->andWhere('actor_id = :userId')->setParameter('userId', $userId);
         }
         if ($subjectId !== '') {
-            $entityId = 'JSON_UNQUOTE(JSON_EXTRACT(context, \'$.entityId\')) = :subjectId';
-            $conditions[] = match ($subjectType) {
-                'users' => "((actor_type = 'user' AND actor_id = :subjectId) OR JSON_UNQUOTE(JSON_EXTRACT(context, '$.targetUserId')) = :subjectId OR ($entityId AND action LIKE 'user:%'))",
-                'integrations' => "((actor_type = 'integration' AND actor_id = :subjectId) OR ($entityId AND (action LIKE 'integration:%' OR action IN ('integration_role:create', 'integration_role:update', 'integration_role:delete'))))",
-                'keys' => "($entityId AND (action IN ('user_access_key:create', 'user_access_key:update', 'user_access_key:delete')))",
+            $entityId = $expression->eq('JSON_UNQUOTE(JSON_EXTRACT(context, \'$.entityId\'))', ':subjectId');
+            $query->andWhere(match ($subjectType) {
+                'users' => $expression->or(
+                    $expression->and('actor_type = \'user\'', 'actor_id = :subjectId'),
+                    $expression->eq('JSON_UNQUOTE(JSON_EXTRACT(context, \'$.targetUserId\'))', ':subjectId'),
+                    $expression->and($entityId, 'action LIKE \'user:%\''),
+                ),
+                'integrations' => $expression->or(
+                    $expression->and('actor_type = \'integration\'', 'actor_id = :subjectId'),
+                    $expression->and($entityId, $expression->or(
+                        'action LIKE \'integration:%\'',
+                        'action IN (\'integration_role:create\', \'integration_role:update\', \'integration_role:delete\')',
+                    )),
+                ),
+                'keys' => $expression->and($entityId, 'action IN (\'user_access_key:create\', \'user_access_key:update\', \'user_access_key:delete\')'),
                 default => throw new \InvalidArgumentException('Unknown activity subject.'),
-            };
-            $parameters['subjectId'] = $subjectId;
+            })
+                ->setParameter('subjectId', $subjectId);
         }
         if ($from !== null) {
-            $conditions[] = 'created_at >= :from';
-            $parameters['from'] = $from->format(Defaults::STORAGE_DATE_TIME_FORMAT);
+            $query->andWhere('created_at >= :from')->setParameter('from', $from->format(Defaults::STORAGE_DATE_TIME_FORMAT));
         }
         if ($to !== null) {
-            $conditions[] = 'created_at < :to';
-            $parameters['to'] = $to->modify('+1 day')->format(Defaults::STORAGE_DATE_TIME_FORMAT);
+            $query->andWhere('created_at < :to')->setParameter('to', $to->modify('+1 day')->format(Defaults::STORAGE_DATE_TIME_FORMAT));
         }
-        $where = $conditions === [] ? '' : ' WHERE ' . implode(' AND ', $conditions);
 
-        return [$where, $parameters];
+        return $query;
     }
 
     private function prefix(string $value): string
