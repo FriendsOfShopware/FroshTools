@@ -37,6 +37,18 @@
             }
           },
           "additionalProperties": false
+        },
+        "user_recovery": {
+          "title": "Administration user password recovery settings (backport of shopware.api.user_recovery.enabled)",
+          "type": "object",
+          "properties": {
+            "enabled": {
+              "title": "Enable the Administration forgot password flow (set to false to disable it, e.g. when passwords are managed via SSO)",
+              "type": "boolean",
+              "default": true
+            }
+          },
+          "additionalProperties": false
         }
       },
       "additionalProperties": false

@@ -42,6 +42,15 @@ class Configuration implements ConfigurationInterface
                         ->end()
                     ->end()
                 ->end()
+                ->arrayNode('user_recovery')
+                    ->info('Administration user password recovery ("forgot password") flow. Disable it when passwords are managed externally, e.g. via SSO. Backport of shopware.api.user_recovery.enabled for Shopware versions without core support.')
+                    ->addDefaultsIfNotSet()
+                    ->children()
+                        ->booleanNode('enabled')
+                            ->defaultTrue()
+                        ->end()
+                    ->end()
+                ->end()
             ->end()
         ;
 
