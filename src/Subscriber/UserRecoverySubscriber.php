@@ -41,6 +41,8 @@ class UserRecoverySubscriber
         }
 
         // Silently do nothing to avoid revealing that the flow is disabled or whether the email exists.
+        // Empty response is intentional, mirroring the core UserRecoveryController.
+        /** @phpstan-ignore shopware.noEmptyResponse */
         $event->setController(static fn (): Response => new Response());
     }
 
@@ -51,6 +53,8 @@ class UserRecoverySubscriber
             return;
         }
 
+        // Empty 400 response is intentional, mirroring the core error response for an invalid hash.
+        /** @phpstan-ignore shopware.noEmptyResponse */
         $event->setController(static fn (): Response => new Response('', Response::HTTP_BAD_REQUEST));
     }
 
@@ -61,6 +65,8 @@ class UserRecoverySubscriber
             return;
         }
 
+        // Empty 400 response is intentional, mirroring the core error response for an invalid hash.
+        /** @phpstan-ignore shopware.noEmptyResponse */
         $event->setController(static fn (): Response => new Response('', Response::HTTP_BAD_REQUEST));
     }
 }
