@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Frosh\Tools\Tests\Controller;
 
+use Frosh\Tools\Components\Security\Checker\UserRecoveryChecker;
 use Frosh\Tools\Controller\SecurityController;
 use Frosh\Tools\Tests\IntegrationTestCase;
 use PHPUnit\Framework\Attributes\CoversClass;
@@ -47,6 +48,7 @@ class SecurityControllerTest extends IntegrationTestCase
             $ids[] = $finding['id'];
         }
         static::assertContains('shopware-installer', $ids);
+        static::assertContains(UserRecoveryChecker::ID, $ids);
     }
 
     public function testSbomReturnsCycloneDxJsonAttachment(): void
