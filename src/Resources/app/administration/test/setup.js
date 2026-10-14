@@ -1,3 +1,4 @@
+import * as Vue from 'vue';
 import { beforeEach } from 'vitest';
 import { allowConsoleMessage } from '@friendsofshopware/vitest-shopware-admin-bridge/test-utils';
 import enTools from '../src/module/frosh-tools/snippet/en-GB.json';
@@ -12,6 +13,14 @@ function extendLocale(name, messages) {
 }
 
 beforeEach(() => {
+    if ('configureCompat' in Vue) {
+        // Match Vue 3 rendering while retaining legacy cleanup hooks on 6.6.
+        Vue.configureCompat({
+            MODE: 3,
+            OPTIONS_BEFORE_DESTROY: 'suppress-warning',
+        });
+    }
+
     const english = { ...enTools, ...enWebhook };
     const german = { ...deTools, ...deWebhook };
 

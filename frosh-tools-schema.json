@@ -37,6 +37,18 @@
             }
           },
           "additionalProperties": false
+        },
+        "security_activity": {
+          "type": "object",
+          "properties": {
+            "retention_days": {
+              "type": "integer",
+              "minimum": 1,
+              "maximum": 3650,
+              "default": 90
+            }
+          },
+          "additionalProperties": false
         }
       },
       "additionalProperties": false
