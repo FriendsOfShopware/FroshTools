@@ -51,5 +51,9 @@ class FroshToolsExtension extends Extension
         if (!$container->hasParameter('frosh_tools.elasticsearch.show_all_indices')) {
             $container->setParameter('frosh_tools.elasticsearch.show_all_indices', false);
         }
+
+        if (!$container->hasParameter('frosh_tools.user_recovery.enabled')) {
+            $container->setParameter('frosh_tools.user_recovery.enabled', true);
+        }
     }
 }

@@ -206,6 +206,11 @@ frosh_tools:
     # Elasticsearch manager: list every index instead of only Shopware prefixes
     elasticsearch:
         show_all_indices: false
+
+    # Administration "forgot password" flow (backport of shopware.api.user_recovery.enabled).
+    # Set to false when passwords are managed externally, e.g. via SSO.
+    user_recovery:
+        enabled: true
 ```
 
 Plugin system config (Admin → Extensions → Frosh Tools):
