@@ -90,7 +90,7 @@ final class UserRecoverySubscriberTest extends TestCase
             $kernel,
             $controller ?? static fn (): Response => new Response('original'),
             new Request(),
-            null
+            HttpKernelInterface::MAIN_REQUEST
         );
     }
 }
