@@ -60,25 +60,15 @@ class ShopwareFilesController extends AbstractController
             return new JsonResponse(['error' => 'Git version is not supported']);
         }
 
-        $url = \sprintf('https://swagger.docs.fos.gg/version/%s/Files.xxhsums', $this->shopwareVersion);
-        $data = $this->httpClient->request('GET', $url)->getContent(false);
-        $data = trim((string) $data);
-
-        // Cloudflare fallbacks to index.html for 404 pages...
-        if (empty($data) || str_contains($data, '<!DOCTYPE html>')) {
+        $shopwareFiles = $this->getShopwareFileChecksums();
+        if ($shopwareFiles === null) {
             return new JsonResponse(['error' => 'No file information for this Shopware version']);
         }
 
         $invalidFiles = [];
         $allFilesAreOkay = true;
 
-        foreach (explode("\n", $data) as $row) {
-            if ($this->isPlatform) {
-                $row = preg_replace_callback('/vendor\/shopware\/(.)/', static fn ($matches): string => 'src/' . strtoupper($matches[1]), $row);
-            }
-
-            [$expectedMd5Sum, $file] = explode('  ', trim((string) $row));
-
+        foreach ($shopwareFiles as $file => $expectedXxhSum) {
             $path = $this->projectDir . '/' . $file;
 
             if (!is_file($path)) {
@@ -92,7 +82,7 @@ class ShopwareFilesController extends AbstractController
                 continue;
             }
 
-            if ($xxhSum !== $expectedMd5Sum) {
+            if ($xxhSum !== $expectedXxhSum) {
                 if ($ignoredState === self::STATUS_OK) {
                     $allFilesAreOkay = false;
                 }
@@ -129,8 +119,8 @@ class ShopwareFilesController extends AbstractController
             return new JsonResponse(['error' => 'no file provided']);
         }
 
-        $path = realpath($this->projectDir . '/' . $file);
-        if ($path === false || !str_starts_with($path, $this->projectDir) || !is_file($path)) {
+        $path = $this->resolveShopwareFile($file);
+        if ($path === null) {
             return new JsonResponse(['error' => 'File is invalid']);
         }
 
@@ -154,8 +144,8 @@ class ShopwareFilesController extends AbstractController
             return new JsonResponse(['error' => 'no file provided']);
         }
 
-        $path = realpath($this->projectDir . '/' . $file);
-        if ($path === false || !str_starts_with($path, $this->projectDir) || !is_file($path)) {
+        $path = $this->resolveShopwareFile($file);
+        if ($path === null) {
             return new JsonResponse(['error' => 'File is invalid']);
         }
 
@@ -200,6 +190,65 @@ class ShopwareFilesController extends AbstractController
     private function getOriginalFileContent(string $name): ?string
     {
         return $this->httpClient->request('GET', $this->getShopwareUrl($name) . '?raw=true')->getContent(false) ?: null;
+    }
+
+    /**
+     * @return array<string, string>|null
+     */
+    private function getShopwareFileChecksums(): ?array
+    {
+        $url = \sprintf('https://swagger.docs.fos.gg/version/%s/Files.xxhsums', $this->shopwareVersion);
+        $data = trim($this->httpClient->request('GET', $url)->getContent(false));
+
+        // Cloudflare falls back to index.html for 404 pages...
+        if ($data === '' || str_contains($data, '<!DOCTYPE html>')) {
+            return null;
+        }
+
+        $shopwareFiles = [];
+        foreach (explode("\n", $data) as $row) {
+            if ($this->isPlatform) {
+                $row = preg_replace_callback('/vendor\/shopware\/(.)/', static fn ($matches): string => 'src/' . strtoupper($matches[1]), $row);
+            }
+
+            $parts = explode('  ', trim((string) $row), 2);
+            if (\count($parts) !== 2) {
+                continue;
+            }
+
+            [$expectedXxhSum, $file] = $parts;
+            $shopwareFiles[$file] = $expectedXxhSum;
+        }
+
+        return $shopwareFiles;
+    }
+
+    private function resolveShopwareFile(string $file): ?string
+    {
+        if (basename(str_replace('\\', '/', $file)) === '.env.local') {
+            return null;
+        }
+
+        $shopwareFiles = $this->getShopwareFileChecksums();
+        if ($shopwareFiles === null || !\array_key_exists($file, $shopwareFiles)) {
+            return null;
+        }
+
+        $projectDir = realpath($this->projectDir);
+        if ($projectDir === false) {
+            return null;
+        }
+
+        $path = realpath($projectDir . \DIRECTORY_SEPARATOR . $file);
+        if ($path === false || !is_file($path)) {
+            return null;
+        }
+
+        if (!str_starts_with($path, $projectDir . \DIRECTORY_SEPARATOR)) {
+            return null;
+        }
+
+        return $path;
     }
 
     private function isIgnoredFileHash(string $file): int
