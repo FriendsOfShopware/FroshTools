@@ -1,0 +1,11 @@
+{
+  "main.js": {
+    "file": "js/frosh-tools-DRUPE6LJ.js",
+    "name": "frosh-tools",
+    "src": "main.js",
+    "isEntry": true,
+    "css": [
+      "css/frosh-tools-LOTYX3DU.css"
+    ]
+  }
+}
