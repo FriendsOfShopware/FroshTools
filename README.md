@@ -208,7 +208,9 @@ frosh_tools:
         show_all_indices: false
 
     # Administration "forgot password" flow (backport of shopware.api.user_recovery.enabled).
-    # Set to false when passwords are managed externally, e.g. via SSO.
+    # It is generally recommended to disable it and reset passwords via
+    # "bin/console user:change-password" when needed. Also useful when passwords
+    # are managed externally, e.g. via SSO.
     user_recovery:
         enabled: true
 ```

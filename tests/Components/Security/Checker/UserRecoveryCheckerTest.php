@@ -41,6 +41,7 @@ class UserRecoveryCheckerTest extends TestCase
         static::assertSame(SecurityFinding::SEVERITY_LOW, $finding->severity);
         static::assertSame('enabled', $finding->current);
         static::assertStringContainsString('frosh_tools.user_recovery.enabled', $finding->recommended);
+        static::assertStringContainsString('user:change-password', $finding->recommended);
     }
 
     public function testReportsLowWhenShopwareOptionDoesNotExist(): void

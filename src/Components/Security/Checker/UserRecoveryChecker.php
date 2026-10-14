@@ -57,7 +57,7 @@ class UserRecoveryChecker implements SecurityCheckerInterface
             SecurityFinding::CATEGORY_CONFIGURATION,
             'Administration password recovery',
             'enabled',
-            'Set frosh_tools.user_recovery.enabled to false when Administration passwords are managed externally, e.g. via SSO (on supported Shopware versions shopware.api.user_recovery.enabled works as well)',
+            'It is generally recommended to disable the Administration password recovery flow and reset passwords via "bin/console user:change-password" when needed. Set frosh_tools.user_recovery.enabled to false (on supported Shopware versions shopware.api.user_recovery.enabled works as well)',
         ));
     }
 }
