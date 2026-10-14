@@ -59,8 +59,12 @@ class CategoryLinkTargetInvalidCheckerTest extends DataIntegrityCheckerTestCase
             Defaults::LANGUAGE_SYSTEM => ['external', null, 'https://example.com'],
             $languageId => ['external', null, ''],
         ]);
+        $this->createCategory('link', [
+            Defaults::LANGUAGE_SYSTEM => ['external', null, 'https://example.com'],
+            $languageId => ['product', null, null],
+        ]);
 
-        static::assertAffectedCount($this->collectResult($this->checker, self::ID), 7);
+        static::assertAffectedCount($this->collectResult($this->checker, self::ID), 8);
     }
 
     /**

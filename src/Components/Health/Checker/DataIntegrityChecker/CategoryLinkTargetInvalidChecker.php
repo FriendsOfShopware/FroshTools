@@ -52,6 +52,14 @@ class CategoryLinkTargetInvalidChecker implements DataIntegrityCheckerInterface,
                           FROM category_translation ct
                           WHERE ct.category_id = c.id
                             AND ct.category_version_id = c.version_id
+                            AND COALESCE(ct.link_type, system_translation.link_type) IN ('product', 'category', 'landing_page')
+                            AND COALESCE(ct.internal_link, system_translation.internal_link) IS NULL
+                      )
+                      OR EXISTS (
+                          SELECT 1
+                          FROM category_translation ct
+                          WHERE ct.category_id = c.id
+                            AND ct.category_version_id = c.version_id
                             AND ct.internal_link IS NOT NULL
                             AND (
                                 (ct.link_type = 'product' AND NOT EXISTS (
