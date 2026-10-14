@@ -6,6 +6,7 @@ namespace Frosh\Tools\Tests\Controller;
 
 use Frosh\Tools\Controller\ShopwareFilesController;
 use PHPUnit\Framework\Attributes\CoversClass;
+use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\TestCase;
 use Psr\Log\LoggerInterface;
 use Shopware\Core\Framework\Context;
@@ -64,16 +65,15 @@ class ShopwareFilesControllerTest extends TestCase
         static::assertSame('original content', $data['originalContent']);
     }
 
-    public function testRejectsEnvLocalWithoutRequestingChecksumManifest(): void
+    #[DataProvider('environmentFiles')]
+    public function testRejectsEnvironmentFilesWithoutRequestingChecksumManifest(string $file): void
     {
-        file_put_contents($this->projectDirectory . '/.env.local', 'DATABASE_URL=secret');
-
         $controller = $this->createController(new MockHttpClient(
             static function (): never {
-                static::fail('The checksum manifest must not be requested for .env.local');
+                static::fail('The checksum manifest must not be requested for environment files');
             },
         ));
-        $response = $controller->getFileContents(new Request(['file' => '.env.local']));
+        $response = $controller->getFileContents(new Request(['file' => $file]));
 
         static::assertSame(['error' => 'File is invalid'], json_decode($response->getContent(), true, flags: \JSON_THROW_ON_ERROR));
     }
@@ -91,21 +91,35 @@ class ShopwareFilesControllerTest extends TestCase
         static::assertSame(['error' => 'File is invalid'], json_decode($response->getContent(), true, flags: \JSON_THROW_ON_ERROR));
     }
 
-    public function testRestoreRejectsFileNotInChecksumManifest(): void
+    #[DataProvider('environmentFiles')]
+    public function testRestoreRejectsEnvironmentFiles(string $file): void
     {
-        $path = $this->projectDirectory . '/.env.local';
+        $path = $this->projectDirectory . '/' . str_replace('\\', '/', $file);
         file_put_contents($path, 'DATABASE_URL=secret');
 
-        $controller = $this->createController($this->manifestClient());
-        $response = $controller->restoreShopwareFile(new Request(['file' => '.env.local']), Context::createDefaultContext());
+        $controller = $this->createController(new MockHttpClient(
+            static function (): never {
+                static::fail('The checksum manifest must not be requested for environment files');
+            },
+        ));
+        $response = $controller->restoreShopwareFile(new Request(['file' => $file]), Context::createDefaultContext());
 
         static::assertSame(['error' => 'File is invalid'], json_decode($response->getContent(), true, flags: \JSON_THROW_ON_ERROR));
         static::assertSame('DATABASE_URL=secret', file_get_contents($path));
     }
 
-    private function manifestClient(): MockHttpClient
+    /**
+     * @return iterable<string, array{string}>
+     */
+    public static function environmentFiles(): iterable
     {
-        return new MockHttpClient(new MockResponse('checksum  vendor/shopware/core/Test/example.php'));
+        yield 'base' => ['.env'];
+        yield 'local' => ['.env.local'];
+        yield 'production' => ['.env.prod'];
+        yield 'production local' => ['.env.prod.local'];
+        yield 'compiled' => ['.env.local.php'];
+        yield 'nested' => ['vendor/shopware/core/Test/.env'];
+        yield 'nested Windows path' => ['vendor\\shopware\\core\\Test\\.env.local'];
     }
 
     private function createController(MockHttpClient $httpClient): ShopwareFilesController

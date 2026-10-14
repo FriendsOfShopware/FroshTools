@@ -225,7 +225,7 @@ class ShopwareFilesController extends AbstractController
 
     private function resolveShopwareFile(string $file): ?string
     {
-        if (basename(str_replace('\\', '/', $file)) === '.env.local') {
+        if (str_starts_with(basename(str_replace('\\', '/', $file)), '.env')) {
             return null;
         }
 
