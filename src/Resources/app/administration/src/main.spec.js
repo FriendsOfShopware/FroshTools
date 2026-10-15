@@ -15,6 +15,7 @@ const REGISTERED_COMPONENTS = [
     'ft-severity-bar',
     'frosh-tools-health-status',
     'frosh-tools-tab-index',
+    'frosh-tools-tab-data-integrity',
     'frosh-tools-tab-cache',
     'frosh-tools-tab-queue',
     'frosh-tools-tab-scheduled',

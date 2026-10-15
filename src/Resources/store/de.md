@@ -5,6 +5,8 @@ Der aktuelle Funktionsumfang besteht aus:
 *   System-Status
     *   Prüft PHP Version, MySQL, Queue funktioniert etc.
     *   Zeigt Performance Empfehlungen an
+*   Datenintegrität
+    *   Findet inkonsistente Shop-Daten wie kanonische Produkte anderer Produkte, ungültige Hauptvarianten, Varianten mit doppelten Optionen, ungültige Regeln und Flows, nicht zugewiesene Standard-Zahlungsarten und Kunden mit derselben E-Mail-Adresse
 *   Cache-Verwaltung
     *   Listet App und Http Cache und alle Ordner in var/cache auf
 *   Geplanter Task-Manager
