@@ -1,3 +1,4 @@
+import { resolveSection } from '../../section-navigation.ts';
 import template from './template.twig';
 import './style.scss';
 import { PRIVILEGE } from '../../acl/privileges.js';
@@ -30,6 +31,19 @@ Component.register('frosh-tools-tab-apps', {
     },
 
     computed: {
+        sections() {
+            return ['apps', 'connection', 'recovery']
+                .filter((key) => this.canUpdate || !['recovery'].includes(key))
+                .map((key) => ({
+                    key,
+                    label: this.$t(`frosh-tools.tabs.apps.sections.${key}`),
+                }));
+        },
+
+        activeSection() {
+            return resolveSection(this.$route?.query?.section, this.sections);
+        },
+
         canUpdate() {
             return this.acl.can(PRIVILEGE.APPS_UPDATE);
         },
@@ -83,6 +97,12 @@ Component.register('frosh-tools-tab-apps', {
             }
 
             return this.shopIdVisible ? this.shopId : '••••••••••••••••';
+        },
+    },
+
+    watch: {
+        activeSection(section) {
+            if (section !== 'connection') this.hideShopId();
         },
     },
 

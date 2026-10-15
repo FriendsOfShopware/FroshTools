@@ -17,8 +17,10 @@ function createService(overrides = {}) {
 async function createWrapper({
     service = createService(),
     canUpdate = true,
+    section = 'traffic',
 } = {}) {
     return mountRegistered('frosh-tools-tab-fastly', {
+        global: { mocks: { $route: { query: { section } } } },
         provide: {
             froshToolsService: service,
             acl: createAcl(canUpdate, 'frosh_tools_fastly:update'),
@@ -68,5 +70,44 @@ describe('frosh-tools-tab-fastly', () => {
         await wrapper.vm.onPurge();
         expect(service.fastlyPurge).not.toHaveBeenCalled();
         expect(wrapper.vm.canUpdate).toBe(false);
+    });
+    it('shows purge controls only on the permitted purge page', async () => {
+        const traffic = await createWrapper();
+        await flushPromises();
+        expect(traffic.find('sw-text-field-stub').exists()).toBe(false);
+        traffic.unmount();
+        const purge = await createWrapper({ section: 'purge' });
+        await flushPromises();
+        expect(purge.find('sw-text-field-stub').exists()).toBe(true);
+        purge.unmount();
+        const restricted = await createWrapper({
+            section: 'purge',
+            canUpdate: false,
+        });
+        await flushPromises();
+        expect(restricted.find('sw-text-field-stub').exists()).toBe(false);
+        expect(restricted.vm.activeSection).toBe('traffic');
+        restricted.unmount();
+    });
+    it('shows a snippets failure and can recover without refetching traffic', async () => {
+        const service = createService({
+            getFastlySnippets: vi
+                .fn()
+                .mockRejectedValueOnce(new Error('Fastly unavailable'))
+                .mockResolvedValue([]),
+        });
+        const wrapper = await createWrapper({ section: 'snippets', service });
+        await flushPromises();
+        expect(wrapper.find('ft-hero-state-stub').attributes('body')).toBe(
+            'Fastly unavailable'
+        );
+        await wrapper.find('ft-refresh-button-stub').trigger('click');
+        await flushPromises();
+        expect(wrapper.find('ft-hero-state-stub').exists()).toBe(false);
+        expect(wrapper.find('ft-empty-stub').attributes('title')).toBe(
+            'No VCL snippets reported'
+        );
+        expect(service.getFastlyStatistics).toHaveBeenCalledTimes(1);
+        wrapper.unmount();
     });
 });

@@ -3,13 +3,18 @@
         "title": "Tools",
         "tabs": {
             "index": {
-                "title": "System-Status",
+                "title": "System status",
                 "subtitle": "Live health and performance checks for this Shopware instance.",
                 "performance": "Performance recommendations",
                 "systemHealth": "System Health",
                 "noHealthChecks": "No health checks reported",
                 "allClear": "All clear",
                 "info": "Info",
+                "summary": {
+                    "attention": "System checks need attention",
+                    "reviewed": "Your system at a glance",
+                    "detail": "Checks: {total} · Errors: {errors} · Warnings: {warnings}"
+                },
                 "recommendation": {
                     "what": "What this means",
                     "how": "How to fix it"
@@ -94,8 +99,8 @@
                 "indices": "Indices",
                 "action": {
                     "reindex": "Reindex",
-                    "switchAlias": "Trigger \"Alias switching\"",
-                    "flushAll": "Delete all indices",
+                    "switchAlias": "Switch aliases",
+                    "flushAll": "Flush all indices",
                     "showUnused": "Show unused indices",
                     "cleanup": "Delete unused indices",
                     "cleanupOrphaned": "Delete orphaned indices",
@@ -123,13 +128,13 @@
                         "confirm": "Delete index"
                     },
                     "flushAll": {
-                        "title": "Delete all indices?",
-                        "description": "All indices, including the active ones, will be permanently deleted. Storefront search will be empty until a reindex finishes.",
-                        "confirm": "Delete all indices"
+                        "title": "Flush all indices?",
+                        "description": "Persist pending index operations to disk across all indices. Documents are kept.",
+                        "confirm": "Flush all indices"
                     },
                     "reset": {
                         "title": "Reset Search?",
-                        "description": "All indices will be deleted and the index aliases will be recreated from scratch. Storefront search will be empty until a reindex finishes.",
+                        "description": "Delete the indices used by this shop and clear its indexing tasks. Run a reindex afterwards to restore storefront search.",
                         "confirm": "Reset Search"
                     }
                 },
@@ -150,6 +155,20 @@
                     "title": "{engine} Console",
                     "send": "Send",
                     "output": "Output"
+                },
+                "sections": {
+                    "indices": "Indices",
+                    "maintenance": "Maintenance",
+                    "console": "Console"
+                },
+                "maintenanceIntro": "Rebuild and maintain search indices. Review the scope of each action before making changes.",
+                "actionHelp": {
+                    "reindex": "Queue a fresh indexing run using the current shop data.",
+                    "switchAlias": "Run the alias-switching task after indexing.",
+                    "cleanup": "Delete outdated indices identified by Shopware's index detector.",
+                    "cleanupOrphaned": "Preview untracked, alias-less indices with this shop’s prefix before deleting them.",
+                    "flushAll": "Persist pending index operations to disk across all indices. Documents are kept.",
+                    "reset": "Delete the indices used by this shop and clear its indexing tasks. Run a reindex afterwards to restore storefront search."
                 }
             },
             "feature-flags": {
@@ -326,7 +345,13 @@
                 "rows": "Rows",
                 "dataSize": "Data Size",
                 "indexSize": "Index Size",
-                "totalSize": "Total Size"
+                "totalSize": "Total Size",
+                "sections": {
+                    "runtime": "PHP runtime",
+                    "redis": "Redis",
+                    "database": "Database"
+                },
+                "noRedis": "No Redis connections reported"
             },
             "fastly": {
                 "title": "Fastly",
@@ -361,7 +386,14 @@
                     "24h": "Last 24 Hours",
                     "7d": "Last 7 Days",
                     "30d": "Last 30 Days"
-                }
+                },
+                "sections": {
+                    "traffic": "Traffic",
+                    "purge": "Purge cache",
+                    "snippets": "VCL snippets"
+                },
+                "noSnippets": "No VCL snippets reported",
+                "subtitle": "Inspect traffic, manage cached content and review VCL snippets."
             },
             "shopmon": {
                 "title": "Shopmon",
@@ -497,6 +529,11 @@
                         "confirm": "Uninstall all & reset",
                         "running": "Resetting…"
                     }
+                },
+                "sections": {
+                    "apps": "Installed apps",
+                    "connection": "Connection & identity",
+                    "recovery": "Recovery"
                 }
             }
         },
@@ -582,19 +619,22 @@
             "performance": "Performance",
             "operations": "Operations",
             "diagnostics": "Diagnostics",
-            "cdn": "CDN"
+            "cdn": "CDN",
+            "chooseTool": "Choose a tool",
+            "infrastructure": "Infrastructure",
+            "webhooks": "Webhooks"
         },
         "search": {
             "placeholder": {
-                "cache": "Search cache pools\u2026",
-                "queue": "Search transports\u2026",
-                "scheduled": "Search scheduled tasks\u2026",
-                "elasticsearch": "Search indices\u2026",
-                "featureFlags": "Search feature flags\u2026"
+                "cache": "Search cache pools…",
+                "queue": "Search transports…",
+                "scheduled": "Search scheduled tasks…",
+                "elasticsearch": "Search indices…",
+                "featureFlags": "Search feature flags…"
             },
             "noResults": "No results for \"{term}\""
         },
-        "loading": "Loading\u2026",
+        "loading": "Loading…",
         "loadError": {
             "title": "Could not load data",
             "retry": "Try again"

@@ -1,6 +1,7 @@
 .frosh-tab-fastly {
     &__select {
         min-width: 200px;
+
         .sw-single-select {
             margin: 0;
         }
@@ -12,19 +13,20 @@
         gap: 4px 24px;
 
         dt {
-            font-size: 12px;
-            text-transform: uppercase;
-            letter-spacing: 0.06em;
+            font-size: 0.75rem;
+            text-transform: none;
+            letter-spacing: 0.01em;
         }
+
         dd {
-            font-size: 20px;
+            font-size: 1.25rem;
             font-weight: 600;
         }
     }
 
     &__desc {
         margin: 0 0 16px;
-        font-size: 13.5px;
+        font-size: 0.8438rem;
         color: var(--ft-text-soft);
     }
 
@@ -52,12 +54,12 @@
 
     &__danger-title {
         font-weight: 600;
-        font-size: 14px;
+        font-size: 0.875rem;
         margin-bottom: 2px;
     }
 
     &__danger-sub {
-        font-size: 12.5px;
+        font-size: 0.7812rem;
         color: var(--ft-text-muted);
     }
 

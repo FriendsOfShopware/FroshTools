@@ -26,6 +26,38 @@ Component.register('frosh-tools-tab-index', {
         this.createdComponent();
     },
 
+    computed: {
+        checkSummary() {
+            if (this.isLoading || this.loadError) return null;
+            const checks = [
+                ...(this.health || []),
+                ...(this.performanceStatus || []),
+            ];
+            if (!checks.length) return null;
+
+            const errors = checks.filter(
+                (check) => check.state === 'STATE_ERROR'
+            ).length;
+            const warnings = checks.filter(
+                (check) => check.state === 'STATE_WARNING'
+            ).length;
+            const variant = errors ? 'danger' : warnings ? 'warning' : 'info';
+
+            return {
+                variant,
+                icon: errors || warnings ? 'alert' : 'activity',
+                title: this.$t(
+                    `frosh-tools.tabs.index.summary.${errors || warnings ? 'attention' : 'reviewed'}`
+                ),
+                body: this.$t('frosh-tools.tabs.index.summary.detail', {
+                    total: checks.length,
+                    errors,
+                    warnings,
+                }),
+            };
+        },
+    },
+
     methods: {
         recommendationFor(item) {
             return (item && recommendations[item.id]) || null;

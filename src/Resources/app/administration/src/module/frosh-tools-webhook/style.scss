@@ -1,0 +1,60 @@
+// Keep the native listing, editor and ACL flows while sharing the Tools material,
+// typography and surface hierarchy. All host component overrides are scoped.
+.ft.frosh-tools-webhook-list,
+.ft.frosh-tools-webhook-detail {
+    .sw-page__main-content,
+    .sw-card-view {
+        background: var(--ft-bg);
+    }
+
+    .sw-page__smart-bar {
+        background: var(--ft-surface);
+        border-bottom: 1px solid var(--ft-border);
+    }
+
+    .sw-page__smart-bar-header h2 {
+        color: var(--ft-text);
+        font-size: 1.75rem;
+        line-height: 1.2;
+        letter-spacing: -0.035em;
+        font-weight: 650;
+    }
+
+    .sw-card,
+    .mt-card {
+        background: var(--ft-surface);
+        border: 1px solid var(--ft-border);
+        border-radius: var(--ft-radius-lg);
+        box-shadow: none;
+        color: var(--ft-text);
+    }
+
+    .sw-card__title,
+    .mt-card__title {
+        font-size: 0.9375rem;
+        font-weight: 600;
+        letter-spacing: -0.015em;
+        color: var(--ft-text);
+    }
+
+    .sw-data-grid,
+    .sw-data-grid__cell {
+        background: var(--ft-surface);
+        color: var(--ft-text);
+        border-color: var(--ft-divider);
+        font-size: 0.875rem;
+    }
+
+    .sw-data-grid__header .sw-data-grid__cell {
+        background: var(--ft-surface-2);
+        color: var(--ft-text-soft);
+        font-size: 0.75rem;
+        font-weight: 600;
+    }
+
+    .sw-button,
+    .mt-button {
+        border-radius: var(--ft-radius-sm);
+        font-family: inherit;
+    }
+}

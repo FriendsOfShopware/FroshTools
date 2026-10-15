@@ -52,12 +52,15 @@
     &--danger {
         border-left-color: var(--ft-danger);
     }
+
     &--warning {
         border-left-color: var(--ft-warning);
     }
+
     &--info {
         border-left-color: var(--ft-info);
     }
+
     &--success {
         border-left-color: var(--ft-success);
     }
@@ -71,14 +74,14 @@
 }
 
 .frosh-security-overview__finding-title {
-    font-size: 13.5px;
+    font-size: 0.8438rem;
     font-weight: 600;
     color: var(--ft-text);
     line-height: 1.4;
 }
 
 .frosh-security-overview__finding-current {
-    font-size: 12px;
+    font-size: 0.75rem;
     color: var(--ft-text-soft);
 }
 
@@ -86,7 +89,7 @@
     display: flex;
     align-items: center;
     gap: 6px;
-    font-size: 12.5px;
+    font-size: 0.7812rem;
     color: var(--ft-text-soft);
 
     svg {

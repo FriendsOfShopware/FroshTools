@@ -1,3 +1,4 @@
+import { reactive } from 'vue';
 import { afterEach, describe, expect, it, vi } from 'vitest';
 import { flushPromises } from '@friendsofshopware/vitest-shopware-admin-bridge/test-utils';
 import { mountRegistered } from '../../../../../test/helpers.js';
@@ -32,8 +33,8 @@ async function createWrapper({ service = createService(), query = {} } = {}) {
         },
         global: {
             mocks: {
-                $route: { query },
-                $router: { replace: vi.fn().mockResolvedValue() },
+                $route: reactive({ query }),
+                $router: { push: vi.fn().mockResolvedValue() },
             },
         },
     });
@@ -53,6 +54,7 @@ describe('frosh-tools-tab-security', () => {
         expect(wrapper.vm.findingBadgeVariant).toBe('danger');
         expect(wrapper.vm.dependencyBadge).toBe(1);
         expect(wrapper.vm.activeTab).toBe('overview');
+        expect(wrapper.find('ft-refresh-button-stub').exists()).toBe(true);
     });
 
     it('opens a deep-linked section and updates the query on tab change', async () => {
@@ -60,12 +62,22 @@ describe('frosh-tools-tab-security', () => {
         await flushPromises();
 
         expect(wrapper.vm.activeTab).toBe('files');
+        expect(wrapper.find('ft-refresh-button-stub').exists()).toBe(false);
 
         wrapper.vm.selectTab('dependencies');
-        expect(wrapper.vm.activeTab).toBe('dependencies');
-        expect(wrapper.vm.$router.replace).toHaveBeenCalledWith({
+        expect(wrapper.vm.$router.push).toHaveBeenCalledWith({
             query: { section: 'dependencies' },
         });
+        wrapper.vm.$route.query = { section: 'dependencies' };
+        await wrapper.vm.$nextTick();
+        expect(
+            wrapper.find('frosh-tools-security-dependencies-stub').exists()
+        ).toBe(true);
+        wrapper.vm.$route.query = { section: 'files' };
+        await wrapper.vm.$nextTick();
+        expect(wrapper.find('frosh-tools-security-files-stub').exists()).toBe(
+            true
+        );
     });
 
     it('downloads the SBOM as a file', async () => {

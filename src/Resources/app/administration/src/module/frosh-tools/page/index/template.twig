@@ -1,8 +1,5 @@
 <sw-page class="frosh-tools">
-    <template
-        #search-bar
-        v-if="searchTab"
-    >
+    <template v-if="searchTab" #search-bar>
         <sw-search-bar
             :key="$route.name"
             :initial-search-type="searchTab.type"
@@ -14,9 +11,29 @@
 
     <template #content>
         <div class="ft ft-shell">
-            <aside class="ft-sidebar">
+            <div class="ft-mobile-navigation">
+                <label for="ft-tool-picker">{{ $t('frosh-tools.nav.chooseTool') }}</label>
+                <select
+                    id="ft-tool-picker"
+                    :value="$route.name"
+                    @change="navigateToTool($event.target.value)"
+                >
+                    <optgroup
+                        v-for="group in navGroups"
+                        :key="group.labelKey"
+                        :label="$t(group.labelKey)"
+                    >
+                        <option v-for="item in group.items" :key="item.route" :value="item.route">
+                            {{ $t(item.labelKey) }}
+                        </option>
+                    </optgroup>
+                </select>
+            </div>
+            <nav ref="navigation" class="ft-sidebar" :aria-label="$t('frosh-tools.title')">
                 <div class="ft-sidebar__brand">
-                    <div class="ft-sidebar__brand-mark">FT</div>
+                    <div class="ft-sidebar__brand-mark">
+                        <ft-icon name="tools" :size="22" />
+                    </div>
                     <div>
                         <div class="ft-sidebar__brand-title">{{ $t('frosh-tools.title') }}</div>
                         <div class="ft-sidebar__brand-sub">
@@ -24,14 +41,8 @@
                         </div>
                     </div>
                 </div>
-                <template
-                    v-for="group in navGroups"
-                    :key="group.labelKey"
-                >
-                    <div
-                        class="ft-sidebar__group"
-                        v-if="group.items.length"
-                    >
+                <template v-for="group in navGroups" :key="group.labelKey">
+                    <div v-if="group.items.length" class="ft-sidebar__group">
                         <div class="ft-sidebar__group-label">{{ $t(group.labelKey) }}</div>
                         <router-link
                             v-for="item in group.items"
@@ -40,14 +51,14 @@
                             class="ft-sidebar__item"
                             active-class="is-active"
                         >
-                            <span class="ft-sidebar__item-dot"></span>
+                            <ft-icon :name="item.icon" :size="18" />
                             <span>{{ $t(item.labelKey) }}</span>
                         </router-link>
                     </div>
                 </template>
-            </aside>
+            </nav>
             <main class="ft-main">
-                <router-view></router-view>
+                <router-view />
             </main>
         </div>
     </template>
