@@ -2,7 +2,7 @@
     background: var(--ft-surface);
     border: 1px solid var(--ft-border);
     border-radius: var(--ft-radius-lg);
-    box-shadow: var(--ft-shadow-sm);
+    box-shadow: none;
     overflow: hidden;
 
     & + & {
@@ -14,12 +14,13 @@
         flex-wrap: wrap;
         align-items: center;
         gap: 12px;
-        padding: 16px 20px;
+        padding: 1.125rem 1.5rem;
         border-bottom: 1px solid var(--ft-divider);
     }
 
     &__title {
-        font-size: 15px;
+        font-size: 0.9375rem;
+        letter-spacing: -0.015em;
         font-weight: 600;
         margin: 0;
         flex: 1;
@@ -34,7 +35,7 @@
         color: var(--ft-text-soft);
         padding: 2px 8px;
         border-radius: 999px;
-        font-size: 11.5px;
+        font-size: 0.7188rem;
         font-weight: 600;
         font-variant-numeric: tabular-nums;
     }
@@ -47,7 +48,7 @@
     }
 
     &__body {
-        padding: 20px;
+        padding: 1.5rem;
 
         &--flush {
             padding: 0;

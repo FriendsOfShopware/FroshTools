@@ -1,6 +1,7 @@
 import { mountShopwareComponent } from '@friendsofshopware/vitest-shopware-admin-bridge/test-utils';
 
 export const FT_STUBS = {
+    'ft-section-nav': true,
     'ft-page-head': {
         template:
             '<div class="ft-page-head"><slot name="subtitle" /><slot name="actions" /></div>',

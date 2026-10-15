@@ -27,6 +27,14 @@
         </template>
     </ft-hero-state>
     <template v-else>
+        <ft-hero-state
+            v-if="checkSummary"
+            class="frosh-tab-index__summary"
+            :variant="checkSummary.variant"
+            :icon="checkSummary.icon"
+            :title="checkSummary.title"
+            :body="checkSummary.body"
+        />
         <ft-panel
             :title="$t('frosh-tools.tabs.index.systemHealth')"
             :count="health ? health.length : 0"

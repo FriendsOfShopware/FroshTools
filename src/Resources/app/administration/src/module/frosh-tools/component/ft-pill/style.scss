@@ -4,7 +4,7 @@
     gap: 5px;
     padding: 2px 9px;
     border-radius: 999px;
-    font-size: 11.5px;
+    font-size: 0.7188rem;
     font-weight: 600;
     line-height: 1.6;
     letter-spacing: 0.01em;
@@ -14,11 +14,11 @@
     border: 1px solid transparent;
 
     &::before {
-        content: '';
+        content: "";
         width: 6px;
         height: 6px;
         border-radius: 50%;
-        background: currentColor;
+        background: currentcolor;
         flex-shrink: 0;
     }
 
@@ -30,22 +30,27 @@
         background: var(--ft-success-soft);
         color: var(--ft-success);
     }
+
     &--warning {
         background: var(--ft-warning-soft);
         color: var(--ft-warning);
     }
+
     &--danger {
         background: var(--ft-danger-soft);
         color: var(--ft-danger);
     }
+
     &--info {
         background: var(--ft-info-soft);
         color: var(--ft-info);
     }
+
     &--accent {
         background: var(--ft-accent-soft);
         color: var(--ft-accent);
     }
+
     &--muted {
         background: var(--ft-neutral-soft);
         color: var(--ft-text-muted);

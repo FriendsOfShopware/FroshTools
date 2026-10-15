@@ -16,7 +16,7 @@
 }
 
 .ft-severity-bar__verdict-text {
-    font-size: 16px;
+    font-size: 1rem;
     font-weight: 600;
     color: var(--ft-text);
 }
@@ -31,14 +31,17 @@
         background: var(--ft-danger);
         box-shadow: 0 0 0 4px var(--ft-danger-soft);
     }
+
     &--warning {
         background: var(--ft-warning);
         box-shadow: 0 0 0 4px var(--ft-warning-soft);
     }
+
     &--info {
         background: var(--ft-info);
         box-shadow: 0 0 0 4px var(--ft-info-soft);
     }
+
     &--success {
         background: var(--ft-success);
         box-shadow: 0 0 0 4px var(--ft-success-soft);
@@ -63,18 +66,23 @@
     &--danger {
         background: var(--ft-danger);
     }
+
     &--warning {
         background: var(--ft-warning);
     }
+
     &--info {
         background: var(--ft-info);
     }
+
     &--success {
         background: var(--ft-success);
     }
+
     &--muted {
         background: var(--ft-border-strong);
     }
+
     &--empty {
         background: var(--ft-success);
         opacity: 0.4;
@@ -91,7 +99,7 @@
     display: inline-flex;
     align-items: center;
     gap: 6px;
-    font-size: 12.5px;
+    font-size: 0.7812rem;
     color: var(--ft-text-soft);
 }
 
@@ -104,15 +112,19 @@
     &--danger {
         background: var(--ft-danger);
     }
+
     &--warning {
         background: var(--ft-warning);
     }
+
     &--info {
         background: var(--ft-info);
     }
+
     &--success {
         background: var(--ft-success);
     }
+
     &--muted {
         background: var(--ft-border-strong);
     }

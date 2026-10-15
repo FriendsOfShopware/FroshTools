@@ -5,26 +5,8 @@
         border-radius: var(--ft-radius-xl);
         padding: clamp(48px, 8vw, 96px) clamp(24px, 6vw, 64px);
         text-align: center;
-        background:
-            radial-gradient(
-                900px 420px at 18% 100%,
-                rgba(125, 211, 252, 0.35),
-                transparent 65%
-            ),
-            linear-gradient(168deg, #0b2e52 0%, #14528e 55%, #2a7cbf 100%);
-        box-shadow: var(--ft-shadow-lg);
-
-        &::before {
-            content: '';
-            position: absolute;
-            inset: 0;
-            background-image: radial-gradient(
-                rgba(255, 255, 255, 0.08) 1px,
-                transparent 1px
-            );
-            background-size: 26px 26px;
-            pointer-events: none;
-        }
+        background: var(--ft-surface);
+        border: 1px solid var(--ft-border);
 
         > * {
             position: relative;
@@ -37,10 +19,10 @@
         gap: 6px;
         padding: 6px 14px;
         border-radius: 999px;
-        background: rgba(255, 255, 255, 0.12);
-        border: 1px solid rgba(255, 255, 255, 0.22);
-        color: #e8f1fb;
-        font-size: 12.5px;
+        background: var(--ft-accent-soft);
+        border: 1px solid transparent;
+        color: var(--ft-accent);
+        font-size: 0.7812rem;
         font-weight: 500;
         margin-bottom: 28px;
     }
@@ -48,22 +30,22 @@
     &__headline {
         margin: 0 0 22px;
         font-size: clamp(30px, 4.6vw, 54px);
-        font-weight: 800;
+        font-weight: 650;
         line-height: 1.12;
         letter-spacing: -0.02em;
-        color: #ffffff;
+        color: var(--ft-text);
 
         span {
-            color: rgba(216, 230, 245, 0.62);
+            color: var(--ft-text-muted);
         }
     }
 
     &__lead {
         margin: 0 auto 36px;
         max-width: 620px;
-        font-size: 15.5px;
+        font-size: 0.9688rem;
         line-height: 1.65;
-        color: rgba(226, 238, 250, 0.85);
+        color: var(--ft-text-soft);
     }
 
     &__cta {
@@ -81,19 +63,18 @@
         padding: 13px 26px;
         border-radius: 999px;
         border: none;
-        background: #ffffff;
-        color: #0f2a47;
-        font-size: 14.5px;
+        background: var(--ft-accent);
+        color: var(--ft-on-accent);
+        font-size: 0.9062rem;
         font-weight: 600;
         cursor: pointer;
         transition:
             transform var(--ft-transition),
             box-shadow var(--ft-transition);
-        box-shadow: 0 8px 24px rgba(4, 22, 42, 0.35);
+        box-shadow: var(--ft-shadow-sm);
 
         &:hover:not(:disabled) {
-            transform: translateY(-1px);
-            box-shadow: 0 12px 30px rgba(4, 22, 42, 0.45);
+            background: var(--ft-accent-hover);
         }
 
         &:disabled {
@@ -102,8 +83,8 @@
         }
 
         .ft-spinner {
-            border-color: rgba(15, 42, 71, 0.25);
-            border-top-color: #0f2a47;
+            border-color: rgba(15, 42, 71, 25%);
+            border-top-color: var(--ft-on-accent);
             width: 14px;
             height: 14px;
         }
@@ -115,32 +96,32 @@
         gap: 8px;
         padding: 13px 26px;
         border-radius: 999px;
-        background: rgba(255, 255, 255, 0.08);
-        border: 1px solid rgba(255, 255, 255, 0.3);
-        color: #ffffff;
-        font-size: 14.5px;
+        background: var(--ft-surface-2);
+        border: 1px solid var(--ft-border);
+        color: var(--ft-text);
+        font-size: 0.9062rem;
         font-weight: 600;
         text-decoration: none;
         transition: background var(--ft-transition);
 
         &:hover {
-            background: rgba(255, 255, 255, 0.16);
-            color: #ffffff;
+            background: var(--ft-surface-hover);
+            color: var(--ft-text);
             text-decoration: none;
         }
     }
 
     &__hint {
         margin: 26px 0 0;
-        font-size: 12.5px;
-        color: rgba(210, 228, 245, 0.6);
+        font-size: 0.7812rem;
+        color: var(--ft-text-muted);
     }
 
     // Undo the admin's global a[target="_blank"] inline-link styling on the hero CTA.
-    &.ft a.frosh-tab-shopmon__cta-secondary[target='_blank'] {
+    &.ft a.frosh-tab-shopmon__cta-secondary[target="_blank"] {
         display: inline-flex;
-        font-size: 14.5px;
-        color: #ffffff;
+        font-size: 0.9062rem;
+        color: var(--ft-text);
         text-decoration: none;
         word-break: normal;
 
@@ -181,12 +162,12 @@
 
     &__feature-title {
         font-weight: 600;
-        font-size: 14px;
+        font-size: 0.875rem;
         margin-bottom: 6px;
     }
 
     &__feature-body {
-        font-size: 13px;
+        font-size: 0.8125rem;
         line-height: 1.55;
         color: var(--ft-text-soft);
     }
@@ -201,7 +182,7 @@
 
     &__setup-hint {
         margin: 0 0 12px;
-        font-size: 13px;
+        font-size: 0.8125rem;
         line-height: 1.55;
         color: var(--ft-text-soft);
     }
@@ -215,7 +196,7 @@
             flex: 1;
             min-width: 0;
             font-family: var(--ft-mono);
-            font-size: 12px;
+            font-size: 0.75rem;
             line-height: 1.6;
             background: var(--ft-surface-2);
             border: 1px solid var(--ft-border);
@@ -256,13 +237,13 @@
         place-items: center;
         background: var(--ft-accent-soft);
         color: var(--ft-accent);
-        font-size: 12.5px;
+        font-size: 0.7812rem;
         font-weight: 700;
         font-variant-numeric: tabular-nums;
     }
 
     &__step-text {
-        font-size: 13.5px;
+        font-size: 0.8438rem;
         color: var(--ft-text-soft);
         line-height: 1.55;
         padding-top: 4px;

@@ -3,266 +3,251 @@
 // alongside their components in /component/ft-*/style.scss.
 
 .ft {
-    --ft-bg: #f6f8fb;
-    --ft-surface: #ffffff;
-    --ft-surface-2: #f1f4f9;
-    --ft-surface-hover: #eef2f8;
-    --ft-border: #e1e6ee;
-    --ft-border-strong: #c9d1dd;
-    --ft-divider: #eef1f6;
-
-    --ft-text: #0f172a;
-    --ft-text-soft: #475569;
-    --ft-text-muted: #6b7a90;
-    --ft-text-inverse: #ffffff;
-
-    --ft-accent: #2563eb;
-    --ft-accent-soft: #e0ecff;
-    --ft-accent-hover: #1d4ed8;
-
-    --ft-success: #16a34a;
-    --ft-success-soft: #dcfce7;
-    --ft-warning: #d97706;
-    --ft-warning-soft: #fef3c7;
-    --ft-danger: #dc2626;
-    --ft-danger-soft: #fee2e2;
-    --ft-info: #0284c7;
-    --ft-info-soft: #e0f2fe;
-    --ft-neutral: #475569;
-    --ft-neutral-soft: #e2e8f0;
-
-    --ft-radius-sm: 6px;
-    --ft-radius-md: 10px;
-    --ft-radius-lg: 14px;
-    --ft-radius-xl: 18px;
-
-    --ft-shadow-sm: 0 1px 2px rgba(15, 23, 42, 0.04);
-    --ft-shadow-md:
-        0 4px 14px rgba(15, 23, 42, 0.06), 0 1px 3px rgba(15, 23, 42, 0.04);
-    --ft-shadow-lg: 0 10px 30px rgba(15, 23, 42, 0.08);
-
+    --ft-bg: #f5f5f7;
+    --ft-surface: #fff;
+    --ft-surface-2: #f0f0f2;
+    --ft-surface-hover: #e9e9ed;
+    --ft-border: #dedee3;
+    --ft-border-strong: #b8b8c0;
+    --ft-divider: #eaeaee;
+    --ft-text: #1d1d1f;
+    --ft-text-soft: #515157;
+    --ft-text-muted: #646469;
+    --ft-text-inverse: #fff;
+    --ft-accent: #06c;
+    --ft-accent-soft: #e7f1ff;
+    --ft-accent-hover: #0055ad;
+    --ft-success: #247541;
+    --ft-success-soft: #e9f5ed;
+    --ft-warning: #925700;
+    --ft-warning-soft: #fff3db;
+    --ft-danger: #c42b30;
+    --ft-danger-soft: #fff0ef;
+    --ft-info: #0066b8;
+    --ft-info-soft: #e8f3fc;
+    --ft-neutral: #515157;
+    --ft-neutral-soft: #eeeef0;
+    --ft-radius-sm: 0.5rem;
+    --ft-radius-md: 0.75rem;
+    --ft-radius-lg: 1rem;
+    --ft-radius-xl: 1.5rem;
+    --ft-shadow-sm: 0 1px 2px rgba(15, 23, 42, 4%);
+    --ft-shadow-md: 0 4px 14px rgba(15, 23, 42, 6%), 0 1px 3px rgba(15, 23, 42, 4%);
+    --ft-shadow-lg: 0 10px 30px rgba(15, 23, 42, 8%);
     --ft-mono:
-        'Fira Code', 'JetBrains Mono', ui-monospace, SFMono-Regular, Menlo,
-        Consolas, monospace;
+        ui-monospace,
+        sfmono-regular,
+        menlo,
+        consolas,
+        monospace;
+    --ft-transition: 160ms ease;
+    --ft-material: rgba(239, 239, 242, 86%);
+    --ft-scrim: rgba(0, 0, 0, 28%);
+    --ft-on-accent: #fff;
 
-    --ft-transition: 180ms cubic-bezier(0.4, 0, 0.2, 1);
-
+    font-family: -apple-system, BlinkMacSystemFont, system-ui, "Segoe UI", sans-serif;
+    font-size: 0.875rem;
+    line-height: 1.5;
+    font-optical-sizing: auto;
+    -webkit-font-smoothing: antialiased;
     color: var(--ft-text);
+
+    button,
+    input,
+    select,
+    textarea {
+        font-family: inherit;
+    }
+
+    :where(button, a, input, select, textarea, summary, [tabindex]):focus-visible {
+        outline: 3px solid var(--ft-accent);
+        outline-offset: 3px;
+    }
+
+    :where(button, a) {
+        touch-action: manipulation;
+    }
+
+    :where(button, .ft-sidebar__item, .ft-btn):active:not(:disabled) {
+        filter: brightness(0.9);
+        transition: none;
+    }
 }
 
 // Dark mode (Shopware admin toggles a dark theme via [data-theme="dark"] or .dark).
-[data-theme='dark'] .ft,
+[data-theme="dark"] .ft,
 .dark .ft,
 html.dark .ft,
 body.dark .ft {
-    --ft-bg: #0b1220;
-    --ft-surface: #131c2e;
-    --ft-surface-2: #182238;
-    --ft-surface-hover: #1f2a44;
-    --ft-border: #243049;
-    --ft-border-strong: #324063;
-    --ft-divider: #1c2740;
-
-    --ft-text: #e7edf7;
-    --ft-text-soft: #b6c2d5;
-    --ft-text-muted: #8c9ab2;
-
-    --ft-accent: #60a5fa;
-    --ft-accent-soft: rgba(96, 165, 250, 0.18);
+    --ft-bg: #1c1c1e;
+    --ft-surface: #272729;
+    --ft-surface-2: #303033;
+    --ft-surface-hover: #3a3a3d;
+    --ft-border: #424247;
+    --ft-border-strong: #68686e;
+    --ft-divider: #38383b;
+    --ft-text: #f5f5f7;
+    --ft-text-soft: #d1d1d6;
+    --ft-text-muted: #b5b5ba;
+    --ft-accent: #78b7ff;
+    --ft-on-accent: #102b48;
+    --ft-material: rgba(38, 38, 40, 90%);
+    --ft-scrim: rgba(0, 0, 0, 55%);
+    --ft-neutral: #a1a1a6;
+    --ft-accent-soft: rgba(96, 165, 250, 18%);
     --ft-accent-hover: #93c5fd;
-
     --ft-success: #4ade80;
-    --ft-success-soft: rgba(74, 222, 128, 0.16);
+    --ft-success-soft: rgba(74, 222, 128, 16%);
     --ft-warning: #fbbf24;
-    --ft-warning-soft: rgba(251, 191, 36, 0.18);
+    --ft-warning-soft: rgba(251, 191, 36, 18%);
     --ft-danger: #f87171;
-    --ft-danger-soft: rgba(248, 113, 113, 0.18);
+    --ft-danger-soft: rgba(248, 113, 113, 18%);
     --ft-info: #38bdf8;
-    --ft-info-soft: rgba(56, 189, 248, 0.18);
-    --ft-neutral-soft: rgba(148, 163, 184, 0.16);
-
-    --ft-shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.4);
-    --ft-shadow-md: 0 6px 20px rgba(0, 0, 0, 0.45);
-    --ft-shadow-lg: 0 14px 40px rgba(0, 0, 0, 0.55);
+    --ft-info-soft: rgba(56, 189, 248, 18%);
+    --ft-neutral-soft: rgba(148, 163, 184, 16%);
+    --ft-shadow-sm: 0 1px 2px rgba(0, 0, 0, 40%);
+    --ft-shadow-md: 0 6px 20px rgba(0, 0, 0, 45%);
+    --ft-shadow-lg: 0 14px 40px rgba(0, 0, 0, 55%);
 }
 
 // ============================================================
 // Module shell
 // ============================================================
 
+// A continuous sidebar material gives navigation its own level, without
+// making every navigation group another card. The host owns the scroll area.
 .ft-shell {
-    --ft-sidebar-w: 248px;
     display: grid;
-    grid-template-columns: var(--ft-sidebar-w) minmax(0, 1fr);
-    gap: 24px;
-    padding: 20px clamp(20px, 4vw, 40px) 40px;
+    grid-template-columns: 14.5rem minmax(0, 1fr);
     background: var(--ft-bg);
-    min-height: calc(100vh - 60px);
+    min-height: calc(100vh - 5.5rem);
     align-items: start;
 
-    @media (max-width: 1100px) {
-        grid-template-columns: 1fr;
-        gap: 16px;
-    }
-
-    @media (max-width: 540px) {
-        padding: 12px;
-        gap: 12px;
+    @media (max-width: 900px) {
+        grid-template-columns: minmax(0, 1fr);
     }
 }
 
 .ft-sidebar {
-    background: var(--ft-surface);
-    border: 1px solid var(--ft-border);
-    border-radius: var(--ft-radius-lg);
-    padding: 18px 14px;
     position: sticky;
-    top: 20px;
-    box-shadow: var(--ft-shadow-sm);
-
-    // On phones the stacked sidebar collapses into a horizontal scroll strip
-    // so it no longer eats a full screen of height above the content.
-    @media (max-width: 540px) {
-        position: static;
-        top: auto;
-        padding: 8px;
-        display: flex;
-        gap: 6px;
-        overflow-x: auto;
-        -webkit-overflow-scrolling: touch;
-        scrollbar-width: none;
-
-        &::-webkit-scrollbar {
-            display: none;
-        }
-    }
+    top: 0;
+    padding: 1.75rem 0.875rem;
+    background: var(--ft-material);
+    backdrop-filter: blur(24px) saturate(140%);
+    border-right: 1px solid var(--ft-border);
+    min-height: calc(100vh - 5.5rem);
+    max-height: calc(100vh - 5.5rem);
+    overflow-y: auto;
+    scrollbar-width: thin;
 
     &__brand {
         display: flex;
         align-items: center;
-        gap: 10px;
-        padding: 4px 8px 14px;
-        border-bottom: 1px solid var(--ft-divider);
-        margin-bottom: 12px;
-
-        @media (max-width: 540px) {
-            display: none;
-        }
+        gap: 0.75rem;
+        padding: 0 0.625rem 1.75rem;
 
         &-mark {
-            width: 32px;
-            height: 32px;
-            border-radius: 8px;
-            background: linear-gradient(135deg, #2563eb 0%, #7c3aed 100%);
-            color: #fff;
+            width: 2.5rem;
+            height: 2.5rem;
+            border-radius: 0.75rem;
+            background: var(--ft-surface);
+            color: var(--ft-accent);
             display: grid;
             place-items: center;
-            font-weight: 700;
-            font-family: var(--ft-mono);
-            letter-spacing: -0.5px;
-            font-size: 13px;
-            box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.18);
+            box-shadow: var(--ft-shadow-sm);
         }
 
         &-title {
-            font-weight: 600;
-            font-size: 15px;
-            line-height: 1.1;
+            font-size: 0.9375rem;
+            font-weight: 650;
+            letter-spacing: -0.02em;
         }
 
         &-sub {
-            font-size: 11px;
-            color: var(--ft-text-muted);
-            letter-spacing: 0.04em;
-            text-transform: uppercase;
-            margin-top: 2px;
+            font-size: 0.6875rem;
+            color: var(--ft-text-soft);
+            letter-spacing: 0.01em;
+            margin-top: 0.125rem;
         }
     }
 
     &__group {
-        margin-bottom: 14px;
-
-        @media (max-width: 540px) {
-            display: flex;
-            gap: 6px;
-            margin-bottom: 0;
-        }
+        margin-bottom: 1.25rem;
 
         &-label {
-            font-size: 10px;
-            text-transform: uppercase;
-            letter-spacing: 0.08em;
-            color: var(--ft-text-muted);
-            padding: 6px 10px;
+            font-size: 0.6875rem;
+            color: var(--ft-text-soft);
+            padding: 0.375rem 0.75rem;
             font-weight: 600;
-
-            @media (max-width: 540px) {
-                display: none;
-            }
+            letter-spacing: 0.015em;
         }
     }
 
     &__item {
         display: flex;
         align-items: center;
-        gap: 10px;
-        padding: 8px 10px;
+        gap: 0.625rem;
+        min-height: 2.5rem;
+        padding: 0.5rem 0.75rem;
         border-radius: var(--ft-radius-sm);
-        font-size: 13.5px;
-        color: var(--ft-text-soft);
-        cursor: pointer;
+        font-size: 0.8125rem;
+        color: var(--ft-text);
         text-decoration: none;
-        transition:
-            background var(--ft-transition),
-            color var(--ft-transition);
-        line-height: 1.2;
+        line-height: 1.35;
+        transition: background var(--ft-transition), color var(--ft-transition);
+
+        > .ft-icon {
+            color: var(--ft-accent);
+            flex-shrink: 0;
+        }
 
         &:hover {
             background: var(--ft-surface-hover);
-            color: var(--ft-text);
             text-decoration: none;
         }
 
         &.is-active {
-            background: var(--ft-accent-soft);
-            color: var(--ft-accent);
+            background: var(--ft-accent);
+            color: var(--ft-on-accent);
             font-weight: 600;
-        }
 
-        @media (max-width: 540px) {
-            white-space: nowrap;
-            border: 1px solid var(--ft-border);
-            background: var(--ft-surface);
-            padding: 8px 12px;
-
-            &.is-active {
-                border-color: var(--ft-accent);
-                background: var(--ft-accent-soft);
+            > .ft-icon {
+                color: inherit;
             }
-        }
-
-        .mt-icon,
-        .sw-icon {
-            width: 16px;
-            height: 16px;
-            flex-shrink: 0;
         }
     }
 
-    &__item-dot {
-        width: 6px;
-        height: 6px;
-        border-radius: 50%;
-        background: currentColor;
-        opacity: 0.4;
-        flex-shrink: 0;
+    @media (max-width: 900px) {
+        display: none;
+    }
+}
 
-        .is-active & {
-            opacity: 1;
+.ft-mobile-navigation {
+    display: none;
+
+    @media (max-width: 900px) {
+        display: flex;
+        align-items: center;
+        gap: 1rem;
+        padding: 0.75rem 1rem;
+        background: var(--ft-surface);
+        border-bottom: 1px solid var(--ft-border);
+
+        label {
+            color: var(--ft-text-soft);
+            font-size: 0.75rem;
         }
 
-        @media (max-width: 540px) {
-            display: none;
+        select {
+            flex: 1;
+            min-width: 0;
+            min-height: 2.75rem;
+            padding: 0.5rem 0.75rem;
+            border: 1px solid var(--ft-border);
+            border-radius: var(--ft-radius-sm);
+            background: var(--ft-surface);
+            color: var(--ft-text);
+            font-size: 0.875rem;
         }
     }
 }
@@ -277,7 +262,7 @@ body.dark .ft {
     gap: 6px;
     padding: 8px 14px;
     border-radius: var(--ft-radius-sm);
-    font-size: 13px;
+    font-size: 0.8125rem;
     font-weight: 500;
     line-height: 1.2;
     background: var(--ft-surface);
@@ -289,7 +274,7 @@ body.dark .ft {
         border-color var(--ft-transition),
         color var(--ft-transition);
     text-decoration: none;
-    min-height: 36px;
+    min-height: 2.5rem;
 
     &:hover:not(:disabled) {
         background: var(--ft-surface-hover);
@@ -316,13 +301,13 @@ body.dark .ft {
 
     &--primary {
         background: var(--ft-accent);
-        color: #fff;
+        color: var(--ft-on-accent);
         border-color: var(--ft-accent);
 
         &:hover:not(:disabled) {
             background: var(--ft-accent-hover);
             border-color: var(--ft-accent-hover);
-            color: #fff;
+            color: var(--ft-on-accent);
         }
     }
 
@@ -350,16 +335,16 @@ body.dark .ft {
 
     &--icon {
         padding: 8px;
-        width: 36px;
+        width: 2.5rem;
         justify-content: center;
     }
 }
 
 // The admin globally restyles a[target="_blank"] as an inline text link
 // (underline, brand color, small font, ::after icon) — undo that for anchor buttons.
-.ft a.ft-btn[target='_blank'] {
+.ft a.ft-btn[target="_blank"] {
     display: inline-flex;
-    font-size: 13px;
+    font-size: 0.8125rem;
     color: var(--ft-text);
     text-decoration: none;
     word-break: normal;
@@ -373,11 +358,11 @@ body.dark .ft {
     }
 }
 
-.ft a.ft-btn--primary[target='_blank'] {
-    color: #fff;
+.ft a.ft-btn--primary[target="_blank"] {
+    color: var(--ft-on-accent);
 
     &:hover:not(:disabled) {
-        color: #fff;
+        color: var(--ft-on-accent);
     }
 }
 
@@ -389,7 +374,7 @@ body.dark .ft {
     width: 100%;
     border-collapse: separate;
     border-spacing: 0;
-    font-size: 13.5px;
+    font-size: 0.875rem;
     color: var(--ft-text);
 
     th,
@@ -400,15 +385,14 @@ body.dark .ft {
         vertical-align: middle;
 
         @media (max-width: 540px) {
-            padding: 10px 10px;
+            padding: 10px;
         }
     }
 
     thead th {
-        font-size: 11px;
+        font-size: 0.75rem;
         font-weight: 600;
-        text-transform: uppercase;
-        letter-spacing: 0.06em;
+        letter-spacing: 0.01em;
         color: var(--ft-text-muted);
         background: var(--ft-surface-2);
         white-space: nowrap;
@@ -443,7 +427,7 @@ body.dark .ft {
         font-weight: 500;
 
         &-sub {
-            font-size: 11.5px;
+            font-size: 0.75rem;
             color: var(--ft-text-muted);
             font-weight: 400;
             font-family: var(--ft-mono);
@@ -490,7 +474,7 @@ body.dark .ft {
         text-align: left;
 
         @media (max-width: 540px) {
-            padding: 10px 10px;
+            padding: 10px;
         }
 
         &:focus-visible {
@@ -521,25 +505,25 @@ th.ft-table__sortable {
             linear-gradient(
                 to right,
                 var(--ft-surface) 30%,
-                rgba(255, 255, 255, 0)
+                rgba(255, 255, 255, 0%)
             ),
             linear-gradient(
-                    to left,
-                    var(--ft-surface) 30%,
-                    rgba(255, 255, 255, 0)
-                )
-                100% 0,
+                to left,
+                var(--ft-surface) 30%,
+                rgba(255, 255, 255, 0%)
+            )
+            100% 0,
             radial-gradient(
                 farthest-side at 0 50%,
-                rgba(0, 0, 0, 0.12),
-                rgba(0, 0, 0, 0)
+                rgba(0, 0, 0, 12%),
+                rgba(0, 0, 0, 0%)
             ),
             radial-gradient(
-                    farthest-side at 100% 50%,
-                    rgba(0, 0, 0, 0.12),
-                    rgba(0, 0, 0, 0)
-                )
-                100% 0;
+                farthest-side at 100% 50%,
+                rgba(0, 0, 0, 12%),
+                rgba(0, 0, 0, 0%)
+            )
+            100% 0;
         background-repeat: no-repeat;
         background-size:
             40px 100%,
@@ -567,7 +551,7 @@ th.ft-table__sortable {
 
 .ft-mono {
     font-family: var(--ft-mono);
-    font-size: 12.5px;
+    font-size: 0.8125rem;
 }
 
 .ft-link {
@@ -592,11 +576,12 @@ th.ft-table__sortable {
     display: grid;
     grid-template-columns: max-content 1fr;
     gap: 4px 16px;
-    font-size: 13px;
+    font-size: 0.8125rem;
 
     dt {
         color: var(--ft-text-muted);
     }
+
     dd {
         margin: 0;
         color: var(--ft-text);
@@ -631,9 +616,10 @@ th.ft-table__sortable {
     position: relative;
 
     &::after {
-        content: '';
+        content: "";
         position: absolute;
         inset: 0;
+
         // Derived from the surface token so the dim layer also works in dark mode.
         background: color-mix(in srgb, var(--ft-surface) 55%, transparent);
         backdrop-filter: blur(1px);
@@ -652,6 +638,7 @@ th.ft-table__sortable {
     .ft *::before,
     .ft *::after {
         animation-duration: 0.001ms !important;
+        animation-iteration-count: 1 !important;
         transition-duration: 0.001ms !important;
     }
 }
@@ -659,7 +646,7 @@ th.ft-table__sortable {
 // Diff modal pre (used by files tab + scheduled error modal + logs message)
 .ft-diff {
     font-family: var(--ft-mono);
-    font-size: 12.5px;
+    font-size: 0.8125rem;
     line-height: 1.55;
     background: var(--ft-surface-2);
     border-radius: var(--ft-radius-md);
@@ -668,4 +655,78 @@ th.ft-table__sortable {
     max-height: 60vh;
     white-space: pre;
     border: 1px solid var(--ft-border);
+}
+
+@media (pointer: coarse) {
+    .ft :where(button, .ft-btn, .ft-sidebar__item) {
+        min-height: 2.75rem;
+        min-width: 2.75rem;
+    }
+}
+
+@media (prefers-reduced-transparency: reduce) {
+    .ft-sidebar {
+        background: var(--ft-surface-2);
+        backdrop-filter: none;
+    }
+
+    .ft-modal {
+        backdrop-filter: none;
+        background: var(--ft-scrim);
+    }
+
+    .ft-loading-overlay::after {
+        background: var(--ft-surface-2);
+        backdrop-filter: none;
+    }
+}
+
+@media (prefers-contrast: more) {
+    .ft,
+    [data-theme="dark"] .ft,
+    .dark .ft,
+    html.dark .ft,
+    body.dark .ft {
+        --ft-text-muted: var(--ft-text);
+        --ft-text-soft: var(--ft-text);
+        --ft-border: currentcolor;
+        --ft-border-strong: currentcolor;
+        --ft-divider: currentcolor;
+    }
+
+    .ft-sidebar {
+        background: var(--ft-surface);
+        backdrop-filter: none;
+    }
+
+    .ft :where(button, .ft-btn, .ft-pill) {
+        border: 1px solid currentcolor;
+    }
+}
+
+.ft-disclosure {
+    border: 1px solid var(--ft-border);
+    border-radius: var(--ft-radius-lg);
+    background: var(--ft-surface);
+    margin-top: 1.5rem;
+    overflow: hidden;
+
+    > summary {
+        cursor: pointer;
+        padding: 1rem 1.25rem;
+        font-weight: 600;
+        color: var(--ft-text-soft);
+    }
+
+    > .ft-panel {
+        border: 0;
+        border-top: 1px solid var(--ft-divider);
+        border-radius: 0;
+    }
+}
+
+.ft-section-intro {
+    margin: 0 0 1.25rem;
+    color: var(--ft-text-soft);
+    line-height: 1.5;
 }
