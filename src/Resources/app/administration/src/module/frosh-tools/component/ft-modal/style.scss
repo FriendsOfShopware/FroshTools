@@ -2,8 +2,8 @@
     position: fixed;
     inset: 0;
     z-index: 1000;
-    background: rgba(15, 23, 42, 0.55);
-    backdrop-filter: blur(2px);
+    background: var(--ft-scrim);
+    backdrop-filter: blur(8px);
     display: flex;
     align-items: flex-start;
     justify-content: center;
@@ -15,14 +15,14 @@
         background: var(--ft-surface);
         color: var(--ft-text);
         border: 1px solid var(--ft-border);
-        border-radius: var(--ft-radius-lg);
+        border-radius: var(--ft-radius-xl);
         box-shadow: var(--ft-shadow-lg);
         width: 100%;
         max-width: 720px;
         display: flex;
         flex-direction: column;
         max-height: calc(100vh - 16vh);
-        animation: ft-modal-pop 180ms cubic-bezier(0.16, 1, 0.3, 1);
+        animation: ft-modal-fade 160ms ease-out;
         overflow: hidden;
 
         // The dialog itself only receives focus as a fallback when no
@@ -34,6 +34,7 @@
         &--small {
             max-width: 440px;
         }
+
         &--large {
             max-width: 1080px;
         }
@@ -43,27 +44,29 @@
         display: flex;
         align-items: center;
         gap: 12px;
-        padding: 14px 18px;
+        padding: 1.125rem 1.5rem;
         border-bottom: 1px solid var(--ft-divider);
         flex-shrink: 0;
     }
 
     &__title {
-        font-size: 15px;
+        font-size: 0.9375rem;
         font-weight: 600;
         margin: 0;
         flex: 1;
         min-width: 0;
         overflow: hidden;
         text-overflow: ellipsis;
-        white-space: nowrap;
+        overflow-wrap: anywhere;
     }
 
     &__close {
         background: transparent;
         border: none;
         border-radius: var(--ft-radius-sm);
-        padding: 6px;
+        padding: 0.5rem;
+        min-height: 2.25rem;
+        min-width: 2.25rem;
         color: var(--ft-text-muted);
         cursor: pointer;
         display: inline-flex;
@@ -80,7 +83,7 @@
     }
 
     &__body {
-        padding: 18px;
+        padding: 1.5rem;
         overflow-y: auto;
         flex: 1;
         min-height: 0;
@@ -101,19 +104,9 @@
     from {
         opacity: 0;
     }
-    to {
-        opacity: 1;
-    }
-}
 
-@keyframes ft-modal-pop {
-    from {
-        opacity: 0;
-        transform: translateY(-8px) scale(0.98);
-    }
     to {
         opacity: 1;
-        transform: translateY(0) scale(1);
     }
 }
 

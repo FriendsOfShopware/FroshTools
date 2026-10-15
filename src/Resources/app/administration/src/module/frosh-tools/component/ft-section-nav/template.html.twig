@@ -1,0 +1,13 @@
+<nav class="ft-section-nav" :aria-label="label">
+    <router-link
+        v-for="item in items"
+        :key="item.key"
+        :to="{ name: $route.name, query: { ...$route.query, section: item.key } }"
+        class="ft-section-nav__item"
+        :class="{ 'is-active': active === item.key }"
+        :aria-current="active === item.key ? 'page' : null"
+    >
+        <span>{{ item.label }}</span>
+        <span v-if="item.badge" class="ft-section-nav__badge">{{ item.badge }}</span>
+    </router-link>
+</nav>

@@ -1,3 +1,4 @@
+import { resolveSection } from '../../section-navigation.ts';
 import template from './template.twig';
 import './style.scss';
 
@@ -13,6 +14,8 @@ Component.register('frosh-tools-tab-statistics', {
         return {
             cacheStats: null,
             dbStats: null,
+            cacheError: null,
+            dbError: null,
             isLoadingCache: true,
             isLoadingDb: true,
         };
@@ -37,6 +40,23 @@ Component.register('frosh-tools-tab-statistics', {
     },
 
     computed: {
+        sectionLoading() {
+            return this.activeSection === 'database'
+                ? this.isLoadingDb
+                : this.isLoadingCache;
+        },
+
+        sections() {
+            return ['runtime', 'redis', 'database'].map((key) => ({
+                key,
+                label: this.$t(`frosh-tools.tabs.statistics.sections.${key}`),
+            }));
+        },
+
+        activeSection() {
+            return resolveSection(this.$route?.query?.section, this.sections);
+        },
+
         isLoading() {
             return this.isLoadingCache || this.isLoadingDb;
         },
@@ -54,6 +74,12 @@ Component.register('frosh-tools-tab-statistics', {
     },
 
     methods: {
+        refreshSection() {
+            return this.activeSection === 'database'
+                ? this.loadDbStats()
+                : this.loadCacheStats();
+        },
+
         loadData() {
             this.loadCacheStats();
             this.loadDbStats();
@@ -61,11 +87,15 @@ Component.register('frosh-tools-tab-statistics', {
 
         async loadCacheStats() {
             this.isLoadingCache = true;
+            this.cacheError = null;
             try {
                 this.cacheStats =
                     await this.froshToolsService.getCacheStatistics();
             } catch (e) {
                 this.cacheStats = null;
+                this.cacheError =
+                    e?.message ||
+                    this.$t('frosh-tools.tabs.statistics.loadError');
                 console.error(
                     '[frosh-tools] failed to load cache statistics',
                     e
@@ -76,11 +106,15 @@ Component.register('frosh-tools-tab-statistics', {
 
         async loadDbStats() {
             this.isLoadingDb = true;
+            this.dbError = null;
             try {
                 this.dbStats =
                     await this.froshToolsService.getDatabaseStatistics();
             } catch (e) {
                 this.dbStats = null;
+                this.dbError =
+                    e?.message ||
+                    this.$t('frosh-tools.tabs.statistics.loadError');
                 console.error(
                     '[frosh-tools] failed to load database statistics',
                     e

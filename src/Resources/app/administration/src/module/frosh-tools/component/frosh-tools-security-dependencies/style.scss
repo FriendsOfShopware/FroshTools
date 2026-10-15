@@ -1,5 +1,5 @@
 .frosh-security-dependencies__cached {
-    font-size: 12px;
+    font-size: 0.75rem;
     color: var(--ft-text-muted);
     margin-right: 4px;
 }
@@ -29,10 +29,12 @@
         color: var(--ft-accent);
         background: var(--ft-accent-soft);
     }
+
     &--warning {
         color: var(--ft-warning);
         background: var(--ft-warning-soft);
     }
+
     &--info {
         color: var(--ft-info);
         background: var(--ft-info-soft);
@@ -46,14 +48,14 @@
 
 .frosh-security-dependencies__point-title {
     margin: 0 0 3px;
-    font-size: 13.5px;
+    font-size: 0.8438rem;
     font-weight: 600;
     color: var(--ft-text);
 }
 
 .frosh-security-dependencies__point-text {
     margin: 0;
-    font-size: 13px;
+    font-size: 0.8125rem;
     line-height: 1.55;
     color: var(--ft-text-soft);
 }
@@ -109,12 +111,12 @@
 }
 
 .frosh-security-dependencies__group-name {
-    font-size: 14px;
+    font-size: 0.875rem;
     font-weight: 600;
 }
 
 .frosh-security-dependencies__group-version {
-    font-size: 12px;
+    font-size: 0.75rem;
     color: var(--ft-text-soft);
     padding: 2px 8px;
     background: var(--ft-surface);
@@ -155,12 +157,12 @@
 }
 
 .frosh-security-dependencies__cve {
-    font-size: 12px;
+    font-size: 0.75rem;
     color: var(--ft-text-soft);
 }
 
 .frosh-security-dependencies__advisory-title {
-    font-size: 13.5px;
+    font-size: 0.8438rem;
     font-weight: 500;
     color: var(--ft-text);
     line-height: 1.4;
@@ -170,7 +172,7 @@
     display: flex;
     flex-wrap: wrap;
     gap: 16px;
-    font-size: 12px;
+    font-size: 0.75rem;
     color: var(--ft-text-soft);
 
     strong {
@@ -189,7 +191,7 @@
     background: var(--ft-warning-soft);
     border: 1px solid var(--ft-warning);
     border-radius: var(--ft-radius-sm);
-    font-size: 12.5px;
+    font-size: 0.7812rem;
     font-weight: 600;
     line-height: 1.5;
     color: var(--ft-text);
@@ -229,7 +231,7 @@
         display: inline-flex;
         align-items: center;
         justify-content: center;
-        font-size: 12px;
+        font-size: 0.75rem;
         font-weight: 700;
         color: var(--ft-text-inverse);
         background: var(--ft-accent);
@@ -238,7 +240,7 @@
 }
 
 .frosh-security-dependencies__howto-text {
-    font-size: 13px;
+    font-size: 0.8125rem;
     line-height: 1.5;
     color: var(--ft-text);
     padding-top: 2px;
@@ -255,7 +257,7 @@
 
     code {
         flex: 1;
-        font-size: 12.5px;
+        font-size: 0.7812rem;
         color: var(--ft-text);
         white-space: pre-wrap;
         word-break: break-all;
@@ -274,7 +276,7 @@
     margin: 16px 0 0;
     padding-top: 14px;
     border-top: 1px solid var(--ft-divider);
-    font-size: 12px;
+    font-size: 0.75rem;
     line-height: 1.5;
     color: var(--ft-text-soft);
 

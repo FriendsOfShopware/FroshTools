@@ -12,6 +12,14 @@
 
     .ft-main {
         min-width: 0;
+        width: 100%;
+        max-width: 100rem;
+        margin: 0 auto;
+        padding: 2.5rem clamp(1.25rem, 3vw, 3.5rem) 4rem;
+
+        @media (max-width: 540px) {
+            padding: 1.5rem 1rem 2rem;
+        }
 
         > .sw-card-view,
         > .ft-card-view {
@@ -24,4 +32,14 @@
 
 .sw-version__status.has-permission {
     cursor: pointer;
+}
+
+.ft.frosh-tab-statistics,
+.ft.frosh-tab-security {
+    > .ft-page-head,
+    > .ft-section-nav,
+    > .ft-panel + .ft-panel {
+        margin-bottom: 0;
+        margin-top: 0;
+    }
 }

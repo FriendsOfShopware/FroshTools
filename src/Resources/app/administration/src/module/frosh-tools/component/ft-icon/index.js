@@ -4,6 +4,17 @@ import template from './template.html.twig';
 // Curated import set — only the icons we actually use, so tree-shaking keeps the bundle tiny.
 // lucide-static ships SVG strings as ES modules, so we do not need Vite-specific asset imports.
 import {
+    Activity,
+    Blocks,
+    Database,
+    Flag,
+    Gauge,
+    Layers,
+    ListTodo,
+    ShieldCheck,
+    Timer,
+    Cloud,
+    Wrench,
     AlertTriangle,
     ArrowRight,
     Check,
@@ -32,6 +43,17 @@ import {
 } from 'lucide-static';
 
 const ICONS = {
+    activity: Activity,
+    apps: Blocks,
+    database: Database,
+    flag: Flag,
+    gauge: Gauge,
+    layers: Layers,
+    queue: ListTodo,
+    shield: ShieldCheck,
+    timer: Timer,
+    cloud: Cloud,
+    tools: Wrench,
     refresh: RefreshCw,
     more: MoreHorizontal,
     pencil: Pencil,

@@ -1,22 +1,15 @@
 <div class="ft frosh-tab-es">
-    <ft-page-head
-        :title="engineName"
-        :subtitle="$t('frosh-tools.tabs.elasticsearch.subtitle')"
-    >
-        <template
-            #actions
-            v-if="!isLoading && isActive"
-        >
-            <ft-refresh-button
-                :loading="isLoading"
-                @click="createdComponent"
-            />
+    <ft-page-head :title="engineName" :subtitle="$t('frosh-tools.tabs.elasticsearch.subtitle')">
+        <template v-if="!isLoading && isActive" #actions>
+            <ft-refresh-button :loading="isLoading" @click="createdComponent" />
         </template>
     </ft-page-head>
-    <ft-empty
-        v-if="isLoading"
-        loading
+    <ft-section-nav
+        :items="sections"
+        :active="activeSection"
+        :label="$t('frosh-tools.tabs.elasticsearch.title')"
     />
+    <ft-empty v-if="isLoading" loading />
     <template v-else-if="!isActive">
         <ft-hero-state
             variant="danger"
@@ -31,28 +24,19 @@
             v-if="engineVersion || clusterHealth || nodeCount !== null"
             class="frosh-tab-es__status-bar"
         >
-            <div
-                v-if="engineVersion"
-                class="frosh-tab-es__status-item"
-            >
+            <div v-if="engineVersion" class="frosh-tab-es__status-item">
                 <span class="frosh-tab-es__status-label">
                     {{ $t('frosh-tools.tabs.elasticsearch.version') }}
                 </span>
                 <ft-pill variant="info">{{ engineVersion }}</ft-pill>
             </div>
-            <div
-                v-if="nodeCount !== null"
-                class="frosh-tab-es__status-item"
-            >
+            <div v-if="nodeCount !== null" class="frosh-tab-es__status-item">
                 <span class="frosh-tab-es__status-label">
                     {{ $t('frosh-tools.tabs.elasticsearch.nodes') }}
                 </span>
                 <ft-pill variant="info">{{ nodeCount }}</ft-pill>
             </div>
-            <div
-                v-if="clusterHealth"
-                class="frosh-tab-es__status-item"
-            >
+            <div v-if="clusterHealth" class="frosh-tab-es__status-item">
                 <span class="frosh-tab-es__status-label">
                     {{ $t('frosh-tools.tabs.elasticsearch.status') }}
                 </span>
@@ -60,97 +44,24 @@
             </div>
         </div>
         <ft-panel
+            v-if="activeSection === 'indices'"
             :title="$t('frosh-tools.tabs.elasticsearch.indices')"
             :count="visibleIndices ? visibleIndices.length : 0"
             flush
         >
             <template #actions>
                 <button
-                    v-if="canUpdate"
-                    class="ft-btn ft-btn--primary"
-                    @click="reindex"
-                >
-                    {{ $t('frosh-tools.tabs.elasticsearch.action.reindex') }}
-                </button>
-                <button
-                    v-if="canUpdate"
-                    class="ft-btn"
-                    @click="switchAlias"
-                >
-                    {{ $t('frosh-tools.tabs.elasticsearch.action.switchAlias') }}
-                </button>
-                <button
-                    class="ft-btn"
                     v-tooltip="{
                         showDelay: 300,
                         message: $t('frosh-tools.tabs.elasticsearch.tooltip.unused')
                     }"
+                    class="ft-btn"
                     @click="showUnusedIndices"
                 >
-                    <ft-pill
-                        bare
-                        variant="info"
-                        class="frosh-tab-es__action-pill"
-                    >
+                    <ft-pill bare variant="info" class="frosh-tab-es__action-pill">
                         {{ $t('frosh-tools.tabs.elasticsearch.badge.shopware') }}
                     </ft-pill>
                     {{ $t('frosh-tools.tabs.elasticsearch.action.showUnused') }}
-                </button>
-                <button
-                    v-if="canUpdate"
-                    class="ft-btn"
-                    v-tooltip="{
-                        showDelay: 300,
-                        message: $t('frosh-tools.tabs.elasticsearch.tooltip.cleanup')
-                    }"
-                    @click="cleanup"
-                >
-                    <ft-pill
-                        bare
-                        variant="info"
-                        class="frosh-tab-es__action-pill"
-                    >
-                        {{ $t('frosh-tools.tabs.elasticsearch.badge.shopware') }}
-                    </ft-pill>
-                    {{ $t('frosh-tools.tabs.elasticsearch.action.cleanup') }}
-                </button>
-                <button
-                    v-if="canUpdate"
-                    class="ft-btn ft-btn--danger"
-                    v-tooltip="{
-                        showDelay: 300,
-                        message: $t('frosh-tools.tabs.elasticsearch.tooltip.orphaned')
-                    }"
-                    :disabled="isLoadingOrphanedPreview || isCleaningOrphaned"
-                    @click="openOrphanedCleanupModal"
-                >
-                    <span
-                        v-if="isLoadingOrphanedPreview"
-                        class="ft-spinner"
-                    ></span>
-                    <ft-pill
-                        v-else
-                        bare
-                        variant="warning"
-                        class="frosh-tab-es__action-pill"
-                    >
-                        {{ $t('frosh-tools.tabs.elasticsearch.badge.heuristic') }}
-                    </ft-pill>
-                    {{ $t('frosh-tools.tabs.elasticsearch.action.cleanupOrphaned') }}
-                </button>
-                <button
-                    v-if="canUpdate"
-                    class="ft-btn ft-btn--danger"
-                    @click="askFlushAll"
-                >
-                    {{ $t('frosh-tools.tabs.elasticsearch.action.flushAll') }}
-                </button>
-                <button
-                    v-if="canUpdate"
-                    class="ft-btn ft-btn--danger"
-                    @click="askReset"
-                >
-                    {{ $t('frosh-tools.tabs.elasticsearch.action.reset') }}
                 </button>
             </template>
             <ft-empty
@@ -162,59 +73,40 @@
                 icon="search"
                 :title="$t('frosh-tools.search.noResults', { term: searchTerm })"
             />
-            <div
-                v-else
-                class="ft-table-wrap"
-            >
+            <div v-else class="ft-table-wrap">
                 <table class="ft-table">
                     <thead>
                         <tr>
                             <ft-th-sort sort-key="name">{{ $t('frosh-tools.name') }}</ft-th-sort>
-                            <ft-th-sort
-                                sort-key="indexSize"
-                                class="ft-table__num"
-                            >{{ $t('frosh-tools.size') }}</ft-th-sort>
-                            <ft-th-sort
-                                sort-key="docs"
-                                class="ft-table__num"
-                            >{{ $t('frosh-tools.docs') }}</ft-th-sort>
-                            <th
-                                v-if="canUpdate"
-                                class="ft-table__actions"
-                            >
+                            <ft-th-sort sort-key="indexSize" class="ft-table__num">
+                                {{ $t('frosh-tools.size') }}
+                            </ft-th-sort>
+                            <ft-th-sort sort-key="docs" class="ft-table__num">
+                                {{ $t('frosh-tools.docs') }}
+                            </ft-th-sort>
+                            <th v-if="canUpdate" class="ft-table__actions">
                                 {{ $t('frosh-tools.actions') }}
                             </th>
                         </tr>
                     </thead>
                     <tbody>
-                        <tr
-                            v-for="item in sortRows(visibleIndices)"
-                            :key="item.name"
-                        >
+                        <tr v-for="item in sortRows(visibleIndices)" :key="item.name">
                             <td class="ft-table__name">
                                 <div class="frosh-tab-es__name">
-                                    <ft-pill
-                                        v-if="item.aliases.length"
-                                        variant="success"
-                                    >{{ $t('frosh-tools.active') }}</ft-pill>
+                                    <ft-pill v-if="item.aliases.length" variant="success">
+                                        {{ $t('frosh-tools.active') }}
+                                    </ft-pill>
                                     <span class="ft-mono">{{ item.name }}</span>
                                 </div>
                             </td>
-                            <td class="ft-table__num">
-                                {{ formatSize(item.indexSize) }}
-                            </td>
-                            <td class="ft-table__num">
-                                {{ Number(item.docs).toLocaleString() }}
-                            </td>
-                            <td
-                                v-if="canUpdate"
-                                class="ft-table__actions"
-                            >
+                            <td class="ft-table__num">{{ formatSize(item.indexSize) }}</td>
+                            <td class="ft-table__num">{{ Number(item.docs).toLocaleString() }}</td>
+                            <td v-if="canUpdate" class="ft-table__actions">
                                 <button
                                     class="ft-btn ft-btn--danger"
                                     @click="askDeleteIndex(item.name)"
                                 >
-                                    <ft-icon name="trash"/>
+                                    <ft-icon name="trash" />
                                     {{ $t('frosh-tools.delete') }}
                                 </button>
                             </td>
@@ -224,30 +116,98 @@
             </div>
         </ft-panel>
         <ft-panel
-            v-if="canUpdate"
+            v-if="activeSection === 'maintenance' && canUpdate"
+            :title="$t('frosh-tools.tabs.elasticsearch.sections.maintenance')"
+        >
+            <p class="ft-section-intro">
+                {{ $t('frosh-tools.tabs.elasticsearch.maintenanceIntro') }}
+            </p>
+            <div class="frosh-tab-es__maintenance">
+                <div class="frosh-tab-es__maintenance-row">
+                    <div>
+                        <h3>{{ $t('frosh-tools.tabs.elasticsearch.action.reindex') }}</h3>
+                        <p>{{ $t('frosh-tools.tabs.elasticsearch.actionHelp.reindex') }}</p>
+                    </div>
+                    <button v-if="canUpdate" class="ft-btn ft-btn--primary" @click="reindex">
+                        {{ $t('frosh-tools.tabs.elasticsearch.action.reindex') }}
+                    </button>
+                </div>
+                <div class="frosh-tab-es__maintenance-row">
+                    <div>
+                        <h3>{{ $t('frosh-tools.tabs.elasticsearch.action.switchAlias') }}</h3>
+                        <p>{{ $t('frosh-tools.tabs.elasticsearch.actionHelp.switchAlias') }}</p>
+                    </div>
+                    <button v-if="canUpdate" class="ft-btn" @click="switchAlias">
+                        {{ $t('frosh-tools.tabs.elasticsearch.action.switchAlias') }}
+                    </button>
+                </div>
+                <div class="frosh-tab-es__maintenance-row">
+                    <div>
+                        <h3>{{ $t('frosh-tools.tabs.elasticsearch.action.cleanup') }}</h3>
+                        <p>{{ $t('frosh-tools.tabs.elasticsearch.actionHelp.cleanup') }}</p>
+                    </div>
+                    <button v-if="canUpdate" class="ft-btn" @click="cleanup">
+                        {{ $t('frosh-tools.tabs.elasticsearch.action.cleanup') }}
+                    </button>
+                </div>
+                <div class="frosh-tab-es__maintenance-row">
+                    <div>
+                        <h3>{{ $t('frosh-tools.tabs.elasticsearch.action.cleanupOrphaned') }}</h3>
+                        <p>{{ $t('frosh-tools.tabs.elasticsearch.actionHelp.cleanupOrphaned') }}</p>
+                    </div>
+                    <button
+                        v-if="canUpdate"
+                        class="ft-btn ft-btn--danger"
+                        :disabled="isLoadingOrphanedPreview || isCleaningOrphaned"
+                        @click="openOrphanedCleanupModal"
+                    >
+                        <span v-if="isLoadingOrphanedPreview" class="ft-spinner" />
+
+                        {{ $t('frosh-tools.tabs.elasticsearch.action.cleanupOrphaned') }}
+                    </button>
+                </div>
+                <div class="frosh-tab-es__maintenance-row">
+                    <div>
+                        <h3>{{ $t('frosh-tools.tabs.elasticsearch.action.flushAll') }}</h3>
+                        <p>{{ $t('frosh-tools.tabs.elasticsearch.actionHelp.flushAll') }}</p>
+                    </div>
+                    <button v-if="canUpdate" class="ft-btn" @click="askFlushAll">
+                        {{ $t('frosh-tools.tabs.elasticsearch.action.flushAll') }}
+                    </button>
+                </div>
+                <div class="frosh-tab-es__maintenance-row">
+                    <div>
+                        <h3>{{ $t('frosh-tools.tabs.elasticsearch.action.reset') }}</h3>
+                        <p>{{ $t('frosh-tools.tabs.elasticsearch.actionHelp.reset') }}</p>
+                    </div>
+                    <button v-if="canUpdate" class="ft-btn ft-btn--danger" @click="askReset">
+                        {{ $t('frosh-tools.tabs.elasticsearch.action.reset') }}
+                    </button>
+                </div>
+            </div>
+        </ft-panel>
+        <ft-panel
+            v-if="canUpdate && activeSection === 'console'"
             :title="$t('frosh-tools.tabs.elasticsearch.console.title', { engine: engineName })"
         >
             <template #actions>
-                <button
-                    class="ft-btn ft-btn--primary"
-                    @click="onConsoleEnter"
-                >
-                    <ft-icon name="send"/>
+                <button class="ft-btn ft-btn--primary" @click="onConsoleEnter">
+                    <ft-icon name="send" />
                     {{ $t('frosh-tools.tabs.elasticsearch.console.send') }}
                 </button>
             </template>
             <div class="frosh-tab-es__editor">
                 <sw-code-editor
                     ref="consoleEditor"
+                    v-model:value="consoleInput"
                     completion-mode="text"
                     mode="twig"
                     :soft-wraps="true"
                     :set-focus="false"
                     :disabled="false"
                     :sanitize-input="false"
-                    v-model:value="consoleInput"
                     @mounted="resizeCodeEditor('consoleEditor')"
-                ></sw-code-editor>
+                />
             </div>
             <div class="frosh-tab-es__output-label">
                 {{ $t('frosh-tools.tabs.elasticsearch.console.output') }}
@@ -262,28 +222,19 @@
         :close-on-backdrop="!isConfirmingAction"
         @close="cancelConfirmAction"
     >
-        {{ $t(`frosh-tools.tabs.elasticsearch.confirm.${confirmAction.key}.description`, { name: confirmAction.indexName }) }}
+        {{ $t(`frosh-tools.tabs.elasticsearch.confirm.${confirmAction.key}.description`, { name:
+        confirmAction.indexName }) }}
         <template #footer>
-            <button
-                class="ft-btn"
-                :disabled="isConfirmingAction"
-                @click="cancelConfirmAction"
-            >
+            <button class="ft-btn" :disabled="isConfirmingAction" @click="cancelConfirmAction">
                 {{ $t('global.default.cancel') }}
             </button>
             <button
-                class="ft-btn ft-btn--danger"
+                :class="['ft-btn', confirmAction.key === 'flushAll' ? 'ft-btn--primary' : 'ft-btn--danger']"
                 :disabled="isConfirmingAction"
                 @click="runConfirmedAction"
             >
-                <span
-                    v-if="isConfirmingAction"
-                    class="ft-spinner"
-                ></span>
-                <ft-icon
-                    v-else
-                    name="trash"
-                />
+                <span v-if="isConfirmingAction" class="ft-spinner" />
+                <ft-icon v-else name="trash" />
                 {{ $t(`frosh-tools.tabs.elasticsearch.confirm.${confirmAction.key}.confirm`) }}
             </button>
         </template>
@@ -300,7 +251,8 @@
                     {{ $t('frosh-tools.tabs.elasticsearch.badge.heuristic') }}
                 </ft-pill>
                 <span>
-                    {{ $t('frosh-tools.tabs.elasticsearch.orphanedModal.summary', { count: orphanedCleanupIndices.length }) }}
+                    {{ $t('frosh-tools.tabs.elasticsearch.orphanedModal.summary', { count:
+                    orphanedCleanupIndices.length }) }}
                 </span>
             </div>
             <p class="frosh-tab-es__cleanup-text">
@@ -329,14 +281,8 @@
                 :disabled="isCleaningOrphaned"
                 @click="confirmCleanupOrphaned"
             >
-                <span
-                    v-if="isCleaningOrphaned"
-                    class="ft-spinner"
-                ></span>
-                <ft-icon
-                    v-else
-                    name="trash"
-                />
+                <span v-if="isCleaningOrphaned" class="ft-spinner" />
+                <ft-icon v-else name="trash" />
                 {{ $t('frosh-tools.tabs.elasticsearch.orphanedModal.delete') }}
             </button>
         </template>

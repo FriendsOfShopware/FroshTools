@@ -11,25 +11,26 @@
 }
 
 .frosh-stat {
-    background: var(--ft-surface-2);
+    background: var(--ft-surface);
     border: 1px solid var(--ft-border);
     border-radius: var(--ft-radius-md);
-    padding: 14px 16px;
+    padding: 1.25rem;
     display: flex;
     flex-direction: column;
     gap: 8px;
 
     &__label {
-        font-size: 11px;
-        text-transform: uppercase;
-        letter-spacing: 0.06em;
+        font-size: 0.6875rem;
+        text-transform: none;
+        letter-spacing: 0.01em;
         color: var(--ft-text-muted);
         font-weight: 600;
         line-height: 1.3;
     }
 
     &__value {
-        font-size: 17px;
+        font-size: 1.5rem;
+        letter-spacing: -0.025em;
         font-weight: 600;
         line-height: 1.3;
         color: var(--ft-text);
@@ -57,7 +58,7 @@
         box-shadow: var(--ft-shadow-sm);
 
         .frosh-stat__value {
-            font-size: 30px;
+            font-size: 1.875rem;
             font-weight: 700;
             letter-spacing: -0.02em;
         }
@@ -68,7 +69,7 @@
     }
 
     &__caption {
-        font-size: 11.5px;
+        font-size: 0.7188rem;
         color: var(--ft-text-muted);
         font-variant-numeric: tabular-nums;
         margin-top: -2px;

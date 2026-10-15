@@ -1,3 +1,5 @@
+import '../frosh-tools/styles/design-system.scss';
+import './style.scss';
 import './acl/index.js';
 import './page/frosh-tools-webhook-list/index.js';
 import './page/frosh-tools-webhook-detail/index.js';

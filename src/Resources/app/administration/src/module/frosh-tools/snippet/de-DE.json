@@ -10,6 +10,11 @@
                 "noHealthChecks": "Keine Gesundheitsprüfungen gemeldet",
                 "allClear": "Alles in Ordnung",
                 "info": "Info",
+                "summary": {
+                    "attention": "Hier solltest Du genauer hinsehen",
+                    "reviewed": "Dein System auf einen Blick",
+                    "detail": "Prüfungen: {total} · Fehler: {errors} · Warnungen: {warnings}"
+                },
                 "recommendation": {
                     "what": "Worum es geht",
                     "how": "So wird es behoben"
@@ -311,8 +316,8 @@
                 "indices": "Indizes",
                 "action": {
                     "reindex": "Neu indexieren",
-                    "switchAlias": "\"Alias switching\" durchführen",
-                    "flushAll": "Alle Indizes löschen",
+                    "switchAlias": "Aliase wechseln",
+                    "flushAll": "Alle Indizes flushen",
                     "showUnused": "Ungenutzte Indizes anzeigen",
                     "cleanup": "Ungenutzte Indizes löschen",
                     "cleanupOrphaned": "Verwaiste Indizes löschen",
@@ -340,13 +345,13 @@
                         "confirm": "Index löschen"
                     },
                     "flushAll": {
-                        "title": "Alle Indizes löschen?",
-                        "description": "Alle Indizes, einschließlich der aktiven, werden endgültig gelöscht. Die Storefront-Suche ist leer, bis ein Reindex abgeschlossen ist.",
-                        "confirm": "Alle Indizes löschen"
+                        "title": "Alle Indizes flushen?",
+                        "description": "Ausstehende Indexoperationen für alle Indizes dauerhaft speichern. Dokumente bleiben erhalten.",
+                        "confirm": "Alle Indizes flushen"
                     },
                     "reset": {
                         "title": "Suche zurücksetzen?",
-                        "description": "Alle Indizes werden gelöscht und die Index-Aliase werden neu erstellt. Die Storefront-Suche ist leer, bis ein Reindex abgeschlossen ist.",
+                        "description": "Die von diesem Shop verwendeten Indizes löschen und seine Indexierungsaufgaben zurücksetzen. Starte danach eine neue Indexierung, um die Storefront-Suche wiederherzustellen.",
                         "confirm": "Suche zurücksetzen"
                     }
                 },
@@ -367,6 +372,20 @@
                     "title": "{engine} Konsole",
                     "send": "Senden",
                     "output": "Ausgabe"
+                },
+                "sections": {
+                    "indices": "Indizes",
+                    "maintenance": "Wartung",
+                    "console": "Konsole"
+                },
+                "maintenanceIntro": "Suchindizes neu aufbauen und verwalten. Prüfe den Umfang jeder Aktion, bevor Du Änderungen vornimmst.",
+                "actionHelp": {
+                    "reindex": "Eine neue Indexierung mit den aktuellen Shopdaten einreihen.",
+                    "switchAlias": "Den Alias-Wechsel nach der Indexierung ausführen.",
+                    "cleanup": "Von Shopware als veraltet erkannte Indizes löschen.",
+                    "cleanupOrphaned": "Nicht erfasste Indizes ohne Alias mit dem Präfix dieses Shops vor dem Löschen prüfen.",
+                    "flushAll": "Ausstehende Indexoperationen für alle Indizes dauerhaft speichern. Dokumente bleiben erhalten.",
+                    "reset": "Die von diesem Shop verwendeten Indizes löschen und seine Indexierungsaufgaben zurücksetzen. Starte danach eine neue Indexierung, um die Storefront-Suche wiederherzustellen."
                 }
             },
             "feature-flags": {
@@ -543,7 +562,13 @@
                 "rows": "Zeilen",
                 "dataSize": "Datengröße",
                 "indexSize": "Indexgröße",
-                "totalSize": "Gesamtgröße"
+                "totalSize": "Gesamtgröße",
+                "sections": {
+                    "runtime": "PHP-Laufzeit",
+                    "redis": "Redis",
+                    "database": "Datenbank"
+                },
+                "noRedis": "Keine Redis-Verbindungen gemeldet"
             },
             "fastly": {
                 "title": "Fastly",
@@ -578,7 +603,14 @@
                     "24h": "Letzte 24 Stunden",
                     "7d": "Letzte 7 Tage",
                     "30d": "Letzte 30 Tage"
-                }
+                },
+                "sections": {
+                    "traffic": "Datenverkehr",
+                    "purge": "Cache leeren",
+                    "snippets": "VCL-Snippets"
+                },
+                "noSnippets": "Keine VCL-Snippets gemeldet",
+                "subtitle": "Datenverkehr prüfen, Cache verwalten und VCL-Snippets ansehen."
             },
             "shopmon": {
                 "title": "Shopmon",
@@ -714,6 +746,11 @@
                         "confirm": "Alle deinstallieren & zurücksetzen",
                         "running": "Setze zurück…"
                     }
+                },
+                "sections": {
+                    "apps": "Installierte Apps",
+                    "connection": "Verbindung & Identität",
+                    "recovery": "Wiederherstellung"
                 }
             }
         },
@@ -799,19 +836,22 @@
             "performance": "Performance",
             "operations": "Betrieb",
             "diagnostics": "Diagnose",
-            "cdn": "CDN"
+            "cdn": "CDN",
+            "chooseTool": "Tool auswählen",
+            "infrastructure": "Infrastruktur",
+            "webhooks": "Webhooks"
         },
         "search": {
             "placeholder": {
-                "cache": "Cache-Pools durchsuchen\u2026",
-                "queue": "Transporte durchsuchen\u2026",
-                "scheduled": "Geplante Aufgaben durchsuchen\u2026",
-                "elasticsearch": "Indizes durchsuchen\u2026",
-                "featureFlags": "Feature-Flags durchsuchen\u2026"
+                "cache": "Cache-Pools durchsuchen…",
+                "queue": "Transporte durchsuchen…",
+                "scheduled": "Geplante Aufgaben durchsuchen…",
+                "elasticsearch": "Indizes durchsuchen…",
+                "featureFlags": "Feature-Flags durchsuchen…"
             },
             "noResults": "Keine Ergebnisse für \"{term}\""
         },
-        "loading": "Wird geladen\u2026",
+        "loading": "Wird geladen…",
         "loadError": {
             "title": "Daten konnten nicht geladen werden",
             "retry": "Erneut versuchen"

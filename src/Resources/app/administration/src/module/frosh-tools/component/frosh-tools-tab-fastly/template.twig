@@ -1,62 +1,71 @@
 <div class="ft frosh-tab-fastly">
     <ft-page-head
         :title="$t('frosh-tools.tabs.fastly.title')"
-        subtitle="Fastly cache observability and purge controls."
+        :subtitle="$t('frosh-tools.tabs.fastly.subtitle')"
+    >
+        <template #actions>
+            <ft-refresh-button
+                v-if="activeSection !== 'purge'"
+                :loading="sectionLoading"
+                @click="refreshSection"
+            />
+        </template>
+    </ft-page-head>
+    <ft-section-nav
+        :items="sections"
+        :active="activeSection"
+        :label="$t('frosh-tools.tabs.fastly.title')"
     />
-    <ft-panel :title="$t('frosh-tools.tabs.fastly.statsTitle')">
+    <ft-hero-state
+        v-if="sectionError"
+        variant="danger"
+        icon="alert"
+        :title="$t('frosh-tools.loadError.title')"
+        :body="sectionError"
+    >
+        <template #actions>
+            <ft-button @click="refreshSection">{{ $t('frosh-tools.loadError.retry') }}</ft-button>
+        </template>
+    </ft-hero-state>
+    <ft-empty v-if="activeSection === 'snippets' && snippetsLoading" loading />
+    <ft-panel
+        v-if="activeSection === 'traffic' && !sectionError"
+        :title="$t('frosh-tools.tabs.fastly.statsTitle')"
+    >
         <template #actions>
             <div class="frosh-tab-fastly__select">
                 <sw-single-select
+                    v-model:value="timeframe"
                     :placeholder="$t('frosh-tools.tabs.fastly.timeframeLabel')"
                     :options="timeframeOptions"
-                    v-model:value="timeframe"
-                    @update:value="loadStats"
-                    :showSearch="false"
+                    :show-search="false"
                     size="small"
+                    @update:value="loadStats"
                 />
             </div>
         </template>
+        <ft-empty v-if="statsLoading" loading />
         <ft-empty
-            v-if="!stats"
+            v-else-if="!stats"
             icon="chart"
             :title="$t('frosh-tools.tabs.fastly.emptyStats')"
         />
-        <dl
-            v-else
-            class="ft-kv frosh-tab-fastly__metrics"
-        >
-            <dt>
-                {{ $t('frosh-tools.tabs.fastly.requests') }}
-            </dt>
-            <dd>
-                {{ formatNumber(stats.requests) }}
-            </dd>
-            <dt>
-                {{ $t('frosh-tools.tabs.fastly.hitRate') }}
-            </dt>
-            <dd>
-                {{ formatNumber(stats.hit_ratio * 100) }}
-                %
-            </dd>
-            <dt>
-                {{ $t('frosh-tools.tabs.fastly.bandwidth') }}
-            </dt>
-            <dd>
-                {{ formatSize(stats.bandwidth) }}
-            </dd>
-            <dt>
-                {{ $t('frosh-tools.tabs.fastly.hits') }}
-            </dt>
+        <dl v-else class="ft-kv frosh-tab-fastly__metrics">
+            <dt>{{ $t('frosh-tools.tabs.fastly.requests') }}</dt>
+            <dd>{{ formatNumber(stats.requests) }}</dd>
+            <dt>{{ $t('frosh-tools.tabs.fastly.hitRate') }}</dt>
+            <dd>{{ formatNumber(stats.hit_ratio * 100) }} %</dd>
+            <dt>{{ $t('frosh-tools.tabs.fastly.bandwidth') }}</dt>
+            <dd>{{ formatSize(stats.bandwidth) }}</dd>
+            <dt>{{ $t('frosh-tools.tabs.fastly.hits') }}</dt>
             <dd>{{ formatNumber(stats.hits) }}</dd>
         </dl>
     </ft-panel>
     <ft-panel
-        v-if="canUpdate"
-        title="Purge controls"
+        v-if="canUpdate && activeSection === 'purge'"
+        :title="$t('frosh-tools.tabs.fastly.sections.purge')"
     >
-        <p class="frosh-tab-fastly__desc">
-            {{ $t('frosh-tools.tabs.fastly.description') }}
-        </p>
+        <p class="frosh-tab-fastly__desc">{{ $t('frosh-tools.tabs.fastly.description') }}</p>
         <div class="frosh-tab-fastly__row">
             <div class="frosh-tab-fastly__row-grow">
                 <sw-text-field
@@ -66,33 +75,27 @@
                 />
             </div>
             <div class="frosh-tab-fastly__row-actions">
-                <button
-                    class="ft-btn"
-                    :disabled="!purgePath || isLoading"
-                    @click="onPurge"
-                >
-                    <ft-icon name="trash"/>
+                <button class="ft-btn" :disabled="!purgePath || isLoading" @click="onPurge">
+                    <ft-icon name="trash" />
                     {{ $t('frosh-tools.tabs.fastly.purge') }}
                 </button>
             </div>
         </div>
-        <div class="ft-divider"></div>
+        <div class="ft-divider" />
         <div class="ft-toolbar ft-toolbar--spread">
             <div>
                 <div class="frosh-tab-fastly__danger-title">Full cache purge</div>
-                <div class="frosh-tab-fastly__danger-sub">Invalidates every cached object in this Fastly service.</div>
+                <div class="frosh-tab-fastly__danger-sub">
+                    Invalidates every cached object in this Fastly service.
+                </div>
             </div>
-            <button
-                class="ft-btn ft-btn--danger"
-                @click="onPurgeAll"
-                :disabled="isLoading"
-            >
+            <button class="ft-btn ft-btn--danger" :disabled="isLoading" @click="onPurgeAll">
                 {{ $t('frosh-tools.tabs.fastly.purgeAll') }}
             </button>
         </div>
     </ft-panel>
     <ft-panel
-        v-if="snippets && snippets.length > 0"
+        v-if="activeSection === 'snippets' && !snippetsLoading && !sectionError && snippets && snippets.length > 0"
         :title="$t('frosh-tools.tabs.fastly.snippets.title')"
         :count="snippets.length"
         flush
@@ -107,35 +110,21 @@
                         <ft-th-sort sort-key="type">
                             {{ $t('frosh-tools.tabs.fastly.snippets.type') }}
                         </ft-th-sort>
-                        <ft-th-sort
-                            sort-key="priority"
-                            class="ft-table__num"
-                        >
+                        <ft-th-sort sort-key="priority" class="ft-table__num">
                             {{ $t('frosh-tools.tabs.fastly.snippets.priority') }}
                         </ft-th-sort>
-                        <th class="ft-table__actions">
-                            {{ $t('frosh-tools.actions') }}
-                        </th>
+                        <th class="ft-table__actions">{{ $t('frosh-tools.actions') }}</th>
                     </tr>
                 </thead>
                 <tbody>
-                    <tr
-                        v-for="item in sortRows(snippets)"
-                        :key="item.name"
-                    >
+                    <tr v-for="item in sortRows(snippets)" :key="item.name">
                         <td class="ft-table__name ft-mono">{{ item.name }}</td>
                         <td>
-                            <ft-pill
-                                variant="accent"
-                                bare
-                            >{{ item.type }}</ft-pill>
+                            <ft-pill variant="accent" bare>{{ item.type }}</ft-pill>
                         </td>
                         <td class="ft-table__num">{{ item.priority }}</td>
                         <td class="ft-table__actions">
-                            <button
-                                class="ft-btn"
-                                @click="activeSnippet = item"
-                            >
+                            <button class="ft-btn" @click="activeSnippet = item">
                                 {{ $t('frosh-tools.tabs.fastly.snippets.view') }}
                             </button>
                         </td>
@@ -147,8 +136,8 @@
     <ft-modal
         v-if="activeSnippet"
         :title="activeSnippet.name"
-        @close="activeSnippet = null"
         variant="large"
+        @close="activeSnippet = null"
     >
         <div class="frosh-tab-fastly__editor">
             <sw-code-editor
@@ -163,12 +152,14 @@
             />
         </div>
         <template #footer>
-            <button
-                class="ft-btn"
-                @click="activeSnippet = null"
-            >
+            <button class="ft-btn" @click="activeSnippet = null">
                 {{ $t('global.default.close') }}
             </button>
         </template>
     </ft-modal>
+    <ft-empty
+        v-if="activeSection === 'snippets' && !snippetsLoading && !sectionError && (!snippets || !snippets.length)"
+        icon="file"
+        :title="$t('frosh-tools.tabs.fastly.noSnippets')"
+    />
 </div>

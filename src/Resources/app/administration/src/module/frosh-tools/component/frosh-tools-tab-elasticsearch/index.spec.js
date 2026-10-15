@@ -23,9 +23,13 @@ function createService() {
     };
 }
 
-async function createWrapper(service, { canUpdate = true } = {}) {
+async function createWrapper(
+    service,
+    { canUpdate = true, section = 'indices' } = {}
+) {
     return mountShopwareComponent('frosh-tools-tab-elasticsearch', {
         global: {
+            mocks: { $route: { query: { section } } },
             provide: {
                 froshElasticSearch: service,
                 acl: createAcl(canUpdate, 'frosh_tools_elasticsearch:update'),
@@ -135,5 +139,26 @@ describe('frosh-tools-tab-elasticsearch destructive actions', () => {
         expect(wrapper.vm.engineVersion).toBe('2.11.0');
         expect(wrapper.vm.healthVariant).toBe('warning');
         expect(wrapper.vm.nodeCount).toBe(3);
+    });
+    it('separates maintenance and console from index browsing', async () => {
+        const indices = await createWrapper(createService());
+        await flushPromises();
+        expect(indices.find('sw-code-editor-stub').exists()).toBe(false);
+        expect(indices.text()).not.toContain('Reindex');
+        indices.unmount();
+        const consolePage = await createWrapper(createService(), {
+            section: 'console',
+        });
+        await flushPromises();
+        expect(consolePage.find('sw-code-editor-stub').exists()).toBe(true);
+        consolePage.unmount();
+        const restricted = await createWrapper(createService(), {
+            section: 'console',
+            canUpdate: false,
+        });
+        await flushPromises();
+        expect(restricted.find('sw-code-editor-stub').exists()).toBe(false);
+        expect(restricted.vm.activeSection).toBe('indices');
+        restricted.unmount();
     });
 });

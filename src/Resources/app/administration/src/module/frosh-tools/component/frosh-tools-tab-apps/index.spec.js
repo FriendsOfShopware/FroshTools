@@ -1,3 +1,4 @@
+import { reactive } from 'vue';
 import { afterEach, describe, expect, it, vi } from 'vitest';
 import { flushPromises } from '@friendsofshopware/vitest-shopware-admin-bridge/test-utils';
 import { createAcl, mountRegistered } from '../../../../../test/helpers';
@@ -57,8 +58,10 @@ function createService(overrides = {}) {
 async function createWrapper({
     service = createService(),
     canUpdate = true,
+    section = 'connection',
 } = {}) {
     return mountRegistered('frosh-tools-tab-apps', {
+        global: { mocks: { $route: reactive({ query: { section } }) } },
         stubs: {
             'sw-verify-user-modal': {
                 name: 'sw-verify-user-modal',
@@ -85,9 +88,9 @@ describe('frosh-tools-tab-apps', () => {
         vi.unstubAllGlobals();
     });
 
-    it('loads the status overview', async () => {
+    it('opens the installed apps list by default', async () => {
         const service = createService();
-        const wrapper = await createWrapper({ service });
+        const wrapper = await createWrapper({ service, section: null });
         await flushPromises();
 
         expect(wrapper.vm.status.appUrl).toBe('https://shop.example.com');
@@ -355,8 +358,8 @@ describe('frosh-tools-tab-apps', () => {
         expect(wrapper.find('.frosh-tab-apps__danger').exists()).toBe(false);
     });
 
-    it('shows the danger zone with update privileges', async () => {
-        const wrapper = await createWrapper();
+    it('shows the danger zone on Recovery with update privileges', async () => {
+        const wrapper = await createWrapper({ section: 'recovery' });
         await flushPromises();
 
         expect(wrapper.find('.frosh-tab-apps__danger').exists()).toBe(true);
@@ -370,5 +373,36 @@ describe('frosh-tools-tab-apps', () => {
         await flushPromises();
 
         expect(wrapper.vm.loadError).toBe('boom');
+    });
+    it('keeps recovery out of the default page and rejects a restricted deep link', async () => {
+        const overview = await createWrapper({ section: null });
+        await flushPromises();
+        expect(overview.text()).toContain('FroshTestApp');
+        expect(overview.find('.frosh-tab-apps__danger').exists()).toBe(false);
+        expect(overview.find('.frosh-tab-apps__grid').exists()).toBe(false);
+        overview.unmount();
+
+        const restricted = await createWrapper({
+            section: 'recovery',
+            canUpdate: false,
+        });
+        await flushPromises();
+        expect(restricted.text()).toContain('FroshTestApp');
+        expect(restricted.find('.frosh-tab-apps__danger').exists()).toBe(false);
+        expect(
+            restricted.vm.sections.map((section) => section.key)
+        ).not.toContain('recovery');
+        restricted.unmount();
+    });
+    it('hides a revealed identity when leaving its section', async () => {
+        const wrapper = await createWrapper();
+        await flushPromises();
+        await wrapper.vm.onShopIdVerified();
+        expect(wrapper.vm.shopIdVisible).toBe(true);
+        wrapper.vm.$route.query = { section: 'apps' };
+        await wrapper.vm.$nextTick();
+        expect(wrapper.vm.shopIdVisible).toBe(false);
+        expect(wrapper.vm.revealedShopId).toBeNull();
+        wrapper.unmount();
     });
 });

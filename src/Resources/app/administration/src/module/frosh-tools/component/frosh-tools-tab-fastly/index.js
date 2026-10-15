@@ -1,3 +1,4 @@
+import { resolveSection } from '../../section-navigation.ts';
 import template from './template.twig';
 import './frosh-tools-tab-fastly.scss';
 import { PRIVILEGE } from '../../acl/privileges.js';
@@ -17,6 +18,10 @@ Component.register('frosh-tools-tab-fastly', {
             purgePath: '',
             isLoading: false,
             stats: null,
+            statsLoading: true,
+            snippetsLoading: true,
+            statsError: null,
+            snippetsError: null,
             snippets: [],
             activeSnippet: null,
             timeframe: '2h',
@@ -25,6 +30,30 @@ Component.register('frosh-tools-tab-fastly', {
     },
 
     computed: {
+        sectionLoading() {
+            return this.activeSection === 'snippets'
+                ? this.snippetsLoading
+                : this.statsLoading;
+        },
+        sectionError() {
+            if (this.activeSection === 'traffic') return this.statsError;
+            if (this.activeSection === 'snippets') return this.snippetsError;
+            return null;
+        },
+
+        sections() {
+            return ['traffic', 'purge', 'snippets']
+                .filter((key) => this.canUpdate || !['purge'].includes(key))
+                .map((key) => ({
+                    key,
+                    label: this.$t(`frosh-tools.tabs.fastly.sections.${key}`),
+                }));
+        },
+
+        activeSection() {
+            return resolveSection(this.$route?.query?.section, this.sections);
+        },
+
         timeframeOptions() {
             return [
                 {
@@ -107,14 +136,38 @@ Component.register('frosh-tools-tab-fastly', {
             });
         },
 
+        async refreshSection() {
+            if (this.activeSection === 'snippets') await this.loadSnippets();
+            else await this.loadStats();
+        },
+
         async loadStats() {
-            this.stats = await this.froshToolsService.getFastlyStatistics(
-                this.timeframe
-            );
+            this.statsLoading = true;
+            this.statsError = null;
+            try {
+                this.stats = await this.froshToolsService.getFastlyStatistics(
+                    this.timeframe
+                );
+            } catch (error) {
+                this.statsError =
+                    error?.message || this.$t('frosh-tools.loadError.title');
+            } finally {
+                this.statsLoading = false;
+            }
         },
 
         async loadSnippets() {
-            this.snippets = await this.froshToolsService.getFastlySnippets();
+            this.snippetsLoading = true;
+            this.snippetsError = null;
+            try {
+                this.snippets =
+                    await this.froshToolsService.getFastlySnippets();
+            } catch (error) {
+                this.snippetsError =
+                    error?.message || this.$t('frosh-tools.loadError.title');
+            } finally {
+                this.snippetsLoading = false;
+            }
         },
 
         formatSize(bytes) {
