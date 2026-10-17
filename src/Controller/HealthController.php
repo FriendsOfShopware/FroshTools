@@ -13,6 +13,7 @@ use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\DependencyInjection\Attribute\Autowire;
 use Symfony\Component\DependencyInjection\Attribute\AutowireIterator;
 use Symfony\Component\HttpFoundation\JsonResponse;
+use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Routing\Attribute\Route;
 use Symfony\Contracts\Cache\CacheInterface;
 use Symfony\Contracts\Cache\ItemInterface;
@@ -20,6 +21,10 @@ use Symfony\Contracts\Cache\ItemInterface;
 #[Route(path: '/api/_action/frosh-tools', defaults: ['_routeScope' => ['api'], '_acl' => [FroshToolsPrivileges::READ]])]
 class HealthController extends AbstractController
 {
+    private const DATA_INTEGRITY_CACHE_KEY = 'frosh-tools-data-integrity-status';
+
+    private const DATA_INTEGRITY_CACHE_TTL_SECONDS = 300;
+
     /**
      * @param CheckerInterface[] $healthCheckers
      * @param CheckerInterface[] $performanceCheckers
@@ -67,17 +72,25 @@ class HealthController extends AbstractController
     }
 
     #[Route(path: '/data-integrity/status', name: 'api.frosh.tools.data-integrity.status', methods: ['GET'])]
-    public function dataIntegrityStatus(): JsonResponse
+    public function dataIntegrityStatus(Request $request): JsonResponse
     {
-        $collection = new DataIntegrityCollection();
-        foreach ($this->dataIntegrityCheckers as $checker) {
-            $checker->collect($collection);
+        if ($request->query->getBoolean('refresh')) {
+            $this->cacheObject->delete(self::DATA_INTEGRITY_CACHE_KEY);
         }
 
-        $collection->sortByState();
-        $collection->removeByIds($this->ignoredChecks);
+        return $this->cacheObject->get(self::DATA_INTEGRITY_CACHE_KEY, function (ItemInterface $cacheItem) {
+            $cacheItem->expiresAfter(self::DATA_INTEGRITY_CACHE_TTL_SECONDS);
 
-        return new JsonResponse($collection);
+            $collection = new DataIntegrityCollection();
+            foreach ($this->dataIntegrityCheckers as $checker) {
+                $checker->collect($collection);
+            }
+
+            $collection->sortByState();
+            $collection->removeByIds($this->ignoredChecks);
+
+            return new JsonResponse($collection);
+        });
     }
 
     #[Route(path: '/health-ping/status', name: 'api.frosh.tools.health-ping.status', methods: ['GET'])]

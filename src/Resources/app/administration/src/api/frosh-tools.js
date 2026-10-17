@@ -228,11 +228,12 @@ class FroshTools extends ApiService {
             });
     }
 
-    dataIntegrityStatus() {
+    dataIntegrityStatus(forceRefresh = false) {
         const apiRoute = `${this.getApiBasePath()}/data-integrity/status`;
         return this.httpClient
             .get(apiRoute, {
                 headers: this.getBasicHeaders(),
+                params: forceRefresh ? { refresh: 1 } : {},
             })
             .then((response) => {
                 return ApiService.handleResponse(response);

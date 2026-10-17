@@ -53,16 +53,18 @@ Component.register('frosh-tools-tab-data-integrity', {
         },
 
         async refresh() {
-            await this.createdComponent();
+            await this.createdComponent(true);
         },
 
-        async createdComponent() {
+        async createdComponent(forceRefresh = false) {
             this.isLoading = true;
             this.loadError = null;
 
             try {
                 this.dataIntegrityStatus =
-                    await this.froshToolsService.dataIntegrityStatus();
+                    await this.froshToolsService.dataIntegrityStatus(
+                        forceRefresh
+                    );
             } catch (error) {
                 this.dataIntegrityStatus = null;
                 this.loadError = error?.response?.data?.error ?? error.message;

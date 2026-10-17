@@ -26,6 +26,7 @@ describe('frosh-tools-tab-data-integrity', () => {
         await flushPromises();
 
         expect(service.dataIntegrityStatus).toHaveBeenCalledTimes(1);
+        expect(service.dataIntegrityStatus).toHaveBeenCalledWith(false);
         expect(wrapper.vm.isLoading).toBe(false);
         expect(wrapper.vm.loadError).toBeNull();
         expect(wrapper.vm.dataIntegrityStatus).toEqual(status);
@@ -62,6 +63,8 @@ describe('frosh-tools-tab-data-integrity', () => {
 
         await wrapper.vm.refresh();
         await flushPromises();
+
+        expect(service.dataIntegrityStatus).toHaveBeenLastCalledWith(true);
 
         expect(wrapper.vm.loadError).toBeNull();
         expect(wrapper.vm.dataIntegrityStatus).toEqual([]);

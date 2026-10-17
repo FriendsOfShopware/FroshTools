@@ -98,7 +98,18 @@ describe('FroshTools queue API', () => {
         ]);
         expect(service.httpClient.get).toHaveBeenCalledWith(
             '/_action/frosh-tools/data-integrity/status',
-            { headers: {} }
+            { headers: {}, params: {} }
+        );
+    });
+
+    it('bypasses the cached data integrity results on refresh', async () => {
+        service.httpClient.get.mockResolvedValue({ data: [] });
+
+        await service.dataIntegrityStatus(true);
+
+        expect(service.httpClient.get).toHaveBeenCalledWith(
+            '/_action/frosh-tools/data-integrity/status',
+            { headers: {}, params: { refresh: 1 } }
         );
     });
 });
