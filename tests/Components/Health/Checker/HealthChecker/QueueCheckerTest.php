@@ -8,12 +8,18 @@ use Doctrine\DBAL\Connection;
 use Frosh\Tools\Components\Health\Checker\HealthChecker\QueueChecker;
 use Frosh\Tools\Components\Health\HealthCollection;
 use Frosh\Tools\Components\Health\SettingsResult;
+use Frosh\Tools\Components\Queue\QueueRegistry;
 use Frosh\Tools\Tests\IntegrationTestCase;
 use PHPUnit\Framework\Attributes\CoversClass;
 use Shopware\Core\System\SystemConfig\SystemConfigService;
+use Symfony\Component\DependencyInjection\ServiceLocator;
+use Symfony\Component\Messenger\Bridge\Doctrine\Transport\Connection as MessengerConnection;
+use Symfony\Component\Messenger\Bridge\Doctrine\Transport\DoctrineTransport;
+use Symfony\Component\Messenger\MessageBusInterface;
+use Symfony\Component\Messenger\Transport\Serialization\PhpSerializer;
 
 /**
- * Kernel + DB coverage for QueueChecker (QueryBuilder against real messenger_messages).
+ * Kernel + DB coverage for QueueChecker through configured Doctrine transports.
  * Fast mock-based edge cases live in QueueCheckerUnitTest.
  */
 #[CoversClass(QueueChecker::class)]
@@ -27,9 +33,16 @@ class QueueCheckerTest extends IntegrationTestCase
 
     protected function setUp(): void
     {
-        $this->checker = static::getContainer()->get(QueueChecker::class);
         $this->connection = static::getContainer()->get(Connection::class);
         $this->configService = static::getContainer()->get(SystemConfigService::class);
+
+        $receivers = [];
+        foreach (['async', 'async_failed', 'low_priority'] as $name) {
+            $transport = new DoctrineTransport(new MessengerConnection(['queue_name' => $name], $this->connection), new PhpSerializer());
+            $receivers[$name] = static fn () => $transport;
+        }
+        $registry = new QueueRegistry(new ServiceLocator($receivers), $this->createMock(MessageBusInterface::class));
+        $this->checker = new QueueChecker($registry, $this->configService);
 
         $this->connection->executeStatement('DELETE FROM messenger_messages');
         $this->resetMonitorConfig();
@@ -130,6 +143,28 @@ class QueueCheckerTest extends IntegrationTestCase
         static::assertSame('max 10 mins', $result->recommended);
     }
 
+    public function testStaleMessagesFromUnconfiguredQueueAreIgnored(): void
+    {
+        $this->insertMessage('UTC_TIMESTAMP() - INTERVAL 90 DAY', 'default');
+
+        static::assertSame('0 mins', $this->collectQueueResult()->current);
+    }
+
+    public function testFutureMessagesAreNotOverdue(): void
+    {
+        $this->insertMessage('UTC_TIMESTAMP() + INTERVAL 1 HOUR', 'async');
+
+        static::assertSame(SettingsResult::INFO, $this->collectQueueResult()->state);
+    }
+
+    public function testClaimedMessagesDoNotCauseAnAgeWarning(): void
+    {
+        $this->insertMessage('UTC_TIMESTAMP() - INTERVAL 2 HOUR', 'async');
+        $this->connection->executeStatement('UPDATE messenger_messages SET delivered_at = UTC_TIMESTAMP()');
+
+        static::assertSame('0 mins', $this->collectQueueResult()->current);
+    }
+
     private function insertMessage(string $availableAt, string $queueName = 'default'): void
     {
         $this->connection->executeStatement(
@@ -147,7 +182,7 @@ class QueueCheckerTest extends IntegrationTestCase
         $this->checker->collect($collection);
 
         foreach ($collection->getElements() as $element) {
-            if ($element->id === 'queue') {
+            if ('queue' === $element->id) {
                 return $element;
             }
         }

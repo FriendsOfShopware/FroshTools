@@ -29,21 +29,29 @@ class DoctrineQueueAdapter extends ListableQueueAdapter
         return class_exists(DoctrineTransport::class) && $transport instanceof DoctrineTransport;
     }
 
+    /**
+     * Queue name used by existing health-monitor settings, which may differ from the transport alias.
+     */
+    public function getQueueName(): string
+    {
+        return $this->getMessengerConnection()->getConfiguration()['queue_name'];
+    }
+
     public function getOldestMessageAge(): ?int
     {
         try {
             $configuration = $this->getMessengerConnection()->getConfiguration();
 
-            $createdAt = $this->getDbalConnection()->fetchOne(
-                \sprintf('SELECT MIN(created_at) FROM %s WHERE queue_name = ? AND delivered_at IS NULL', $configuration['table_name']),
-                [$configuration['queue_name']],
+            $availableAt = $this->getDbalConnection()->fetchOne(
+                \sprintf('SELECT MIN(available_at) FROM %s WHERE queue_name = ? AND delivered_at IS NULL AND available_at <= ?', $configuration['table_name']),
+                [$configuration['queue_name'], (new \DateTimeImmutable('now', new \DateTimeZone('UTC')))->format('Y-m-d H:i:s')],
             );
 
-            if (!\is_string($createdAt) || $createdAt === '') {
+            if (!\is_string($availableAt) || $availableAt === '') {
                 return null;
             }
 
-            $age = time() - (new \DateTimeImmutable($createdAt, new \DateTimeZone('UTC')))->getTimestamp();
+            $age = time() - (new \DateTimeImmutable($availableAt, new \DateTimeZone('UTC')))->getTimestamp();
 
             return max(0, $age);
         } catch (\Throwable) {
