@@ -9,6 +9,7 @@ import './component/ft-hero-state/index.js';
 import './component/ft-refresh-button/index.js';
 import './component/ft-th-sort/index.js';
 import './component/frosh-tools-tab-index/index.js';
+import './component/frosh-tools-tab-data-integrity/index.js';
 import './component/frosh-tools-tab-cache/index.js';
 import './component/frosh-tools-tab-queue/index.js';
 import './component/frosh-tools-tab-scheduled/index.js';
@@ -90,6 +91,14 @@ Shopware.Module.register('frosh-tools', {
                     meta: {
                         privilege: PRIVILEGE.READ,
                         parentPath: 'frosh.tools.index.index',
+                    },
+                },
+                dataintegrity: {
+                    component: 'frosh-tools-tab-data-integrity',
+                    path: 'data-integrity',
+                    meta: {
+                        privilege: PRIVILEGE.READ,
+                        parentPath: 'sw.settings.index.plugins',
                     },
                 },
                 logs: {

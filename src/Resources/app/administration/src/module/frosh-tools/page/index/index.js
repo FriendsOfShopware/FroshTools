@@ -163,7 +163,13 @@ Component.register('frosh-tools-index', {
                 },
             ];
 
-            const diagnostics = [];
+            const diagnostics = [
+                {
+                    route: 'frosh.tools.index.dataintegrity',
+                    labelKey: 'frosh-tools.tabs.data-integrity.title',
+                    privilege: PRIVILEGE.READ,
+                },
+            ];
             if (this.logsAvailable) {
                 diagnostics.push({
                     route: 'frosh.tools.index.logs',

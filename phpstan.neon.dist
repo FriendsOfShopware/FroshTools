@@ -10,5 +10,9 @@ parameters:
         -
             identifier: method.deprecatedClass
             message: "#Call to method getEntities\\(\\) of deprecated class Shopware\\\\Core\\\\Framework\\\\DataAbstractionLayer\\\\Search\\\\EntitySearchResult#"
+        # Only the expectedHandlerType parameter is deprecated in 6.6; the method stays in 6.7.
+        -
+            identifier: method.deprecated
+            message: "#Call to deprecated method getPaymentMethodHandler\\(\\) of class Shopware\\\\Core\\\\Checkout\\\\Payment\\\\Cart\\\\PaymentHandler\\\\PaymentHandlerRegistry#"
     excludePaths:
         - vendor (?)
