@@ -11,6 +11,16 @@ use Frosh\Tools\FroshTools;
 
 class PhpChecker implements HealthCheckerInterface, CheckerInterface
 {
+    /**
+     * Minimum patch version per supported PHP minor version, the lowest one is the overall minimum
+     */
+    private const MIN_PHP_VERSIONS = [
+        '8.2' => '8.2.35',
+        '8.3' => '8.3.36',
+        '8.4' => '8.4.27',
+        '8.5' => '8.5.12',
+    ];
+
     public function collect(HealthCollection $collection): void
     {
         $this->checkPhp($collection);
@@ -22,29 +32,14 @@ class PhpChecker implements HealthCheckerInterface, CheckerInterface
 
     private function checkPhp(HealthCollection $collection): void
     {
-        $minPhpVersion = '8.2.0';
-        $currentPhpVersion = \PHP_VERSION;
-        if (version_compare($minPhpVersion, $currentPhpVersion, '>')) {
-            $collection->add(
-                SettingsResult::warning(
-                    'php-version',
-                    'PHP Version',
-                    $currentPhpVersion,
-                    'min ' . $minPhpVersion,
-                ),
-            );
+        $minPhpVersion = self::MIN_PHP_VERSIONS[\PHP_MAJOR_VERSION . '.' . \PHP_MINOR_VERSION] ?? self::MIN_PHP_VERSIONS['8.2'];
+        $currentPhpVersion = \PHP_MAJOR_VERSION . '.' . \PHP_MINOR_VERSION . '.' . \PHP_RELEASE_VERSION;
 
-            return;
-        }
+        $result = version_compare($currentPhpVersion, $minPhpVersion, '<')
+            ? SettingsResult::error(...)
+            : SettingsResult::ok(...);
 
-        $collection->add(
-            SettingsResult::ok(
-                'php-version',
-                'PHP Version',
-                $currentPhpVersion,
-                'min ' . $minPhpVersion,
-            ),
-        );
+        $collection->add($result('php-version', 'PHP Version', \PHP_VERSION, 'min ' . $minPhpVersion));
     }
 
     private function checkMaxExecutionTime(HealthCollection $collection): void
