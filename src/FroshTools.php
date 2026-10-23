@@ -10,10 +10,13 @@ use Frosh\Tools\DependencyInjection\DisableElasticsearchCompilerPass;
 use Frosh\Tools\DependencyInjection\FroshToolsExtension;
 use Frosh\Tools\DependencyInjection\SymfonyConfigCompilerPass;
 use Frosh\Tools\DependencyInjection\WhenClassMissingCompilerPass;
+use Shopware\Core\Framework\Api\Acl\Role\AclRoleCollection;
 use Shopware\Core\Framework\Context;
+use Shopware\Core\Framework\DataAbstractionLayer\EntityRepository;
 use Shopware\Core\Framework\Plugin;
 use Shopware\Core\Framework\Plugin\Context\InstallContext;
 use Shopware\Core\Framework\Plugin\Context\UpdateContext;
+use Shopware\Core\System\Integration\IntegrationCollection;
 use Shopware\Core\System\SystemConfig\SystemConfigService;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
 
@@ -43,11 +46,20 @@ class FroshTools extends Plugin
 
     private function initializeShopmon(Context $context): void
     {
+        \assert($this->container !== null);
+
         // The plugin's services may not be registered yet during installation.
+        /** @var EntityRepository<IntegrationCollection> $integrationRepository */
+        $integrationRepository = $this->container->get('integration.repository');
+        /** @var EntityRepository<AclRoleCollection> $aclRoleRepository */
+        $aclRoleRepository = $this->container->get('acl_role.repository');
+        $systemConfigService = $this->container->get(SystemConfigService::class);
+        \assert($systemConfigService instanceof SystemConfigService);
+
         $service = new ShopmonIntegrationService(
-            $this->container->get('integration.repository'),
-            $this->container->get('acl_role.repository'),
-            $this->container->get(SystemConfigService::class),
+            $integrationRepository,
+            $aclRoleRepository,
+            $systemConfigService,
         );
         $service->initialize($context);
     }
