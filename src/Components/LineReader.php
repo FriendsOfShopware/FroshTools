@@ -90,7 +90,7 @@ final class LineReader
                 continue;
             }
 
-            if ($pos === 0 && \is_array($buffer)) {
+            if ($pos === 0) {
                 yield array_pop($buffer);
                 break;
             }
