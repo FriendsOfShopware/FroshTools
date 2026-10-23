@@ -7,8 +7,6 @@ store:
     localizations:
         - de_DE
         - en_GB
-    categories:
-        - Administration
     type: extension
     icon: src/Resources/store/icon.png
     automatic_bugfix_version_compatibility: true
@@ -104,9 +102,6 @@ build:
             enable_es_build_for_admin: true
             enable_es_build_for_storefront: true
             npm_strict: true
-
-changelog:
-    enabled: true
 
 validation:
   ignore:
