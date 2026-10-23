@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Frosh\Tools\Tests\Components\Security;
 
+use Doctrine\DBAL\Connection;
 use Frosh\Tools\Components\Security\AdminAccountService;
 use Frosh\Tools\Tests\IntegrationTestCase;
 use PHPUnit\Framework\Attributes\CoversClass;
@@ -78,24 +79,65 @@ class AdminAccountServiceTest extends IntegrationTestCase
 
     public function testAppIntegrationReportsItsAppAclRole(): void
     {
-        $roleIds = [];
-        foreach ($this->accounts->getAclRoles() as $role) {
-            $roleIds[] = $role['id'];
+        $connection = static::getContainer()->get(Connection::class);
+
+        $integrationId = hex2bin(str_repeat('c1', 16));
+        $appRoleId = hex2bin(str_repeat('c2', 16));
+        $otherRoleId = hex2bin(str_repeat('c3', 16));
+
+        $connection->insert('integration', [
+            'id' => $integrationId,
+            'label' => 'frosh_tools_app_test',
+            'access_key' => 'frosh_tools_app_test_key',
+            'secret_access_key' => 'frosh_tools_app_test_secret',
+            'admin' => 0,
+            'created_at' => '2024-01-01 00:00:00.000',
+        ]);
+
+        foreach ([$appRoleId => 'frosh_tools_app_role', $otherRoleId => 'frosh_tools_other_role'] as $id => $name) {
+            $connection->insert('acl_role', [
+                'id' => $id,
+                'name' => $name,
+                'privileges' => json_encode(['app:read'], \JSON_THROW_ON_ERROR),
+                'created_at' => '2024-01-01 00:00:00.000',
+            ]);
         }
 
-        foreach ($this->accounts->getIntegrations() as $integration) {
-            if (!$integration['managedByApp']) {
-                continue;
-            }
+        // Attached the way Shopware wires an app: through integration_role, which the
+        // service must not mistake for the app's own role.
+        $connection->insert('integration_role', [
+            'integration_id' => $integrationId,
+            'acl_role_id' => $otherRoleId,
+        ]);
 
-            // Apps attach permissions via `app.acl_role_id`, so an app integration
-            // must never look role-less while it actually holds privileges.
-            static::assertNotEmpty($integration['aclRoleIds'], \sprintf('App integration "%s" reports no ACL role', $integration['label']));
+        $connection->insert('app', [
+            'id' => hex2bin(str_repeat('c4', 16)),
+            'name' => 'FroshToolsAppTest',
+            'path' => 'custom/apps/FroshToolsAppTest',
+            'version' => '1.0.0',
+            'active' => 1,
+            'configurable' => 0,
+            'allow_disable' => 1,
+            'integration_id' => $integrationId,
+            'acl_role_id' => $appRoleId,
+            'created_at' => '2024-01-01 00:00:00.000',
+        ]);
 
-            foreach ($integration['aclRoleIds'] as $roleId) {
-                static::assertContains($roleId, $roleIds);
+        $integration = null;
+        foreach ($this->accounts->getIntegrations() as $candidate) {
+            if ($candidate['label'] === 'frosh_tools_app_test') {
+                $integration = $candidate;
             }
         }
+
+        static::assertNotNull($integration, 'App integration fixture not returned');
+        static::assertTrue($integration['managedByApp']);
+        static::assertSame('FroshToolsAppTest', $integration['appName']);
+
+        // Apps grant permissions via app.acl_role_id, which Shopware resolves with
+        // precedence over integration_role - that role must not go missing here.
+        static::assertContains(bin2hex($appRoleId), $integration['aclRoleIds']);
+        static::assertContains(bin2hex($otherRoleId), $integration['aclRoleIds']);
     }
 
     public function testAclRolesAreHashedInsteadOfListed(): void
@@ -113,7 +155,7 @@ class AdminAccountServiceTest extends IntegrationTestCase
 
     public function testPrivilegeHashIsStableAndOrderIndependent(): void
     {
-        $connection = static::getContainer()->get(\Doctrine\DBAL\Connection::class);
+        $connection = static::getContainer()->get(Connection::class);
         $id = hex2bin(str_repeat('ab', 16));
 
         $connection->insert('acl_role', [

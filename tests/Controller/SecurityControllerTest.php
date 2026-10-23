@@ -39,9 +39,13 @@ class SecurityControllerTest extends IntegrationTestCase
         static::assertNotEmpty($data['users']);
         static::assertSame(\count($data['users']), $data['summary']['users']);
 
-        $payload = (string) $response->getContent();
-        foreach (['username', 'email', 'firstName', 'lastName', 'accessKey', 'secretAccessKey'] as $forbidden) {
-            static::assertStringNotContainsString($forbidden, $payload);
+        // Exact keys, not substrings: accessKeyCount legitimately contains "accessKey".
+        foreach (['users', 'integrations'] as $section) {
+            foreach ($data[$section] as $entry) {
+                foreach (['username', 'email', 'firstName', 'lastName', 'password', 'accessKey', 'secretAccessKey', 'storeToken'] as $forbidden) {
+                    static::assertArrayNotHasKey($forbidden, $entry);
+                }
+            }
         }
     }
 
