@@ -4,11 +4,11 @@ declare(strict_types=1);
 
 namespace Frosh\Tools\Components\Health\Checker\HealthChecker;
 
-use Doctrine\DBAL\ArrayParameterType;
-use Doctrine\DBAL\Connection;
 use Frosh\Tools\Components\Health\Checker\CheckerInterface;
 use Frosh\Tools\Components\Health\HealthCollection;
 use Frosh\Tools\Components\Health\SettingsResult;
+use Frosh\Tools\Components\Queue\DoctrineQueueAdapter;
+use Frosh\Tools\Components\Queue\QueueRegistry;
 use Shopware\Core\System\SystemConfig\SystemConfigService;
 
 class QueueChecker implements HealthCheckerInterface, CheckerInterface
@@ -20,26 +20,56 @@ class QueueChecker implements HealthCheckerInterface, CheckerInterface
     private const DEFAULT_GRACE_MINUTES = 15;
 
     public function __construct(
-        private readonly Connection $connection,
+        private readonly QueueRegistry $queueRegistry,
         private readonly SystemConfigService $configService,
     ) {
     }
 
     public function collect(HealthCollection $collection): void
     {
-        $defaultGrace = $this->configService->getInt(self::CONFIG_GRACE) ?: self::DEFAULT_GRACE_MINUTES;
+        $defaultGrace = $this->configService->getInt(self::CONFIG_GRACE);
+        if ($defaultGrace === 0) {
+            $defaultGrace = self::DEFAULT_GRACE_MINUTES;
+        }
         $excludeFailed = $this->shouldExcludeFailedQueues();
         $queues = $this->parseCsvList($this->configService->getString(self::CONFIG_QUEUES));
         $graceByQueue = $this->parseGraceMap($this->configService->getString(self::CONFIG_GRACE_TIMES));
 
         $snippet = 'Open Queues';
-        $pendingByQueue = $this->fetchOldestPendingMessagePerQueue($excludeFailed, $queues);
+        $pendingByQueue = [];
+        $unknownQueues = [];
+
+        foreach ($this->queueRegistry->all() as $name => $adapter) {
+            // Preserve saved Doctrine queue filters and grace periods from the SQL-based checker.
+            if ($adapter instanceof DoctrineQueueAdapter) {
+                $name = $adapter->getQueueName();
+            }
+
+            if (($excludeFailed && \str_contains(\strtolower($name), 'failed'))
+                || ($queues !== [] && !\in_array($name, $queues, true))) {
+                continue;
+            }
+
+            if ($adapter->getMessageCount() === 0) {
+                continue;
+            }
+
+            $age = $adapter->getOldestMessageAge();
+            if ($age === null) {
+                $unknownQueues[] = $name;
+                continue;
+            }
+
+            $pendingByQueue[] = ['queue_name' => $name, 'ageMinutes' => (int) \floor(\max(0, $age) / 60)];
+        }
+
+        $unknown = $unknownQueues === [] ? '' : \sprintf('Age unavailable (%s)', \implode(', ', $unknownQueues));
 
         if ($pendingByQueue === []) {
             $collection->add(SettingsResult::info(
                 'queue',
                 $snippet,
-                '0 mins',
+                $unknown !== '' ? $unknown : '0 mins',
                 \sprintf('max %d mins', $defaultGrace),
             ));
 
@@ -56,48 +86,19 @@ class QueueChecker implements HealthCheckerInterface, CheckerInterface
             return;
         }
 
+        if ($unknown !== '') {
+            $collection->add(SettingsResult::info('queue', $snippet, $current . '; ' . $unknown, $recommended));
+
+            return;
+        }
+
         $collection->add(SettingsResult::ok('queue', $snippet, $current, $recommended));
-    }
-
-    /**
-     * @param list<string> $queues
-     *
-     * @return list<array{available_at: string, queue_name: string}>
-     */
-    private function fetchOldestPendingMessagePerQueue(bool $excludeFailed, array $queues): array
-    {
-        // One row per queue (oldest pending message). Evaluating each queue against its
-        // own grace avoids masking a tighter queue behind an older message on a looser one.
-        $query = $this->connection->createQueryBuilder()
-            ->select('queue_name', 'MIN(available_at) AS available_at')
-            ->from('messenger_messages')
-            ->where('available_at <= UTC_TIMESTAMP()')
-            ->groupBy('queue_name')
-            ->orderBy('available_at', 'ASC');
-
-        if ($excludeFailed) {
-            // Symfony failure transport names typically contain "failed" (e.g. async_failed).
-            $query
-                ->andWhere('queue_name NOT LIKE :failedPattern')
-                ->setParameter('failedPattern', '%failed%');
-        }
-
-        if ($queues !== []) {
-            $query
-                ->andWhere('queue_name IN (:queues)')
-                ->setParameter('queues', $queues, ArrayParameterType::STRING);
-        }
-
-        /** @var list<array{available_at: string, queue_name: string}> $rows */
-        $rows = $query->fetchAllAssociative();
-
-        return $rows;
     }
 
     /**
      * Prefer any overdue queue (highest minutes-over-grace); otherwise the oldest pending age.
      *
-     * @param list<array{available_at: string, queue_name: string}> $pendingByQueue
+     * @param list<array{queue_name: string, ageMinutes: int}> $pendingByQueue
      * @param array<string, int> $graceByQueue
      *
      * @return array{queueName: string, ageMinutes: int, grace: int, overdue: bool}
@@ -107,9 +108,9 @@ class QueueChecker implements HealthCheckerInterface, CheckerInterface
         $worst = null;
 
         foreach ($pendingByQueue as $row) {
-            $queueName = (string) $row['queue_name'];
+            $queueName = $row['queue_name'];
             $grace = $graceByQueue[$queueName] ?? $defaultGrace;
-            $ageMinutes = $this->ageInMinutes((string) $row['available_at']);
+            $ageMinutes = $row['ageMinutes'];
             $overdue = $ageMinutes > $grace;
             $overBy = $overdue ? $ageMinutes - $grace : 0;
 
@@ -156,15 +157,6 @@ class QueueChecker implements HealthCheckerInterface, CheckerInterface
             'grace' => $worst['grace'],
             'overdue' => $worst['overdue'],
         ];
-    }
-
-    private function ageInMinutes(string $availableAt): int
-    {
-        $available = new \DateTimeImmutable($availableAt, new \DateTimeZone('UTC'));
-        $now = new \DateTimeImmutable('now', new \DateTimeZone('UTC'));
-        $seconds = \max(0, $now->getTimestamp() - $available->getTimestamp());
-
-        return (int) \floor($seconds / 60);
     }
 
     private function shouldExcludeFailedQueues(): bool
