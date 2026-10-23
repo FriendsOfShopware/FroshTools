@@ -12,6 +12,7 @@ use PHPUnit\Framework\Attributes\DataProvider;
 use Shopware\Core\Framework\Api\Util\AccessKeyHelper;
 use Shopware\Core\Framework\Context;
 use Shopware\Core\Framework\DataAbstractionLayer\Search\Criteria;
+use Shopware\Core\Framework\DataAbstractionLayer\Search\Filter\EqualsFilter;
 use Shopware\Core\System\SystemConfig\SystemConfigService;
 
 #[CoversClass(ShopmonIntegrationService::class)]
@@ -77,8 +78,11 @@ class ShopmonIntegrationServiceTest extends IntegrationTestCase
         // Environment changes must not replace an integration already in use.
         $_SERVER['SHOPMON_ACCESS_KEY'] = AccessKeyHelper::generateAccessKey('integration');
         $_SERVER['SHOPMON_ACCESS_SECRET'] = 'another-secret';
-        $this->service->initialize($context);
-        $this->service->setup($context);
+        for ($run = 0; $run < 3; ++$run) {
+            $this->service->initialize($context);
+            $this->service->setup($context);
+            $this->assertSingleShopmonRole(self::LEGACY_ID, $context);
+        }
 
         $integrations = $repository->search(new Criteria([self::ID, self::LEGACY_ID]), $context)->getEntities();
         static::assertCount(1, $integrations);
@@ -100,6 +104,17 @@ class ShopmonIntegrationServiceTest extends IntegrationTestCase
         static::assertSame('', $config->getString(self::LEGACY_CONFIG));
         static::assertCount(0, $repository->search(new Criteria([self::ID, self::LEGACY_ID]), $context)->getEntities());
         static::assertCount(0, static::getContainer()->get('acl_role.repository')->search(new Criteria([self::LEGACY_ID]), $context)->getEntities());
+    }
+
+    public function testRepeatedSetupAndInitializationDoNotDuplicateAclRoles(): void
+    {
+        $context = Context::createDefaultContext();
+
+        for ($run = 0; $run < 3; ++$run) {
+            $this->service->setup($context);
+            $this->service->initialize($context);
+            $this->assertSingleShopmonRole(self::ID, $context);
+        }
     }
 
     public function testInitializePreservesExistingFroshToolsCredentialsAndUpdatesRole(): void
@@ -155,4 +170,18 @@ class ShopmonIntegrationServiceTest extends IntegrationTestCase
         static::getContainer()->get(SystemConfigService::class)->set(self::CONFIG, base64_encode('{invalid'));
         static::assertSame(['configured' => false], $this->service->status($context));
     }
+    private function assertSingleShopmonRole(string $expectedId, Context $context): void
+    {
+        // Searching by name also detects extra roles created with a random ID.
+        $criteria = (new Criteria())->addFilter(new EqualsFilter('name', 'frosh_shopmon_role'));
+        $roles = static::getContainer()->get('acl_role.repository')->search($criteria, $context)->getEntities();
+        static::assertSame([$expectedId], array_values($roles->getIds()), 'Repeated runs must reuse the existing ACL role');
+
+        $criteria = (new Criteria([$expectedId]))->addAssociation('aclRoles');
+        $integration = static::getContainer()->get('integration.repository')->search($criteria, $context)->getEntities()->first();
+        static::assertNotNull($integration);
+        static::assertNotNull($integration->getAclRoles());
+        static::assertSame([$expectedId], array_values($integration->getAclRoles()->getIds()), 'The integration must retain exactly one role association');
+    }
+
 }
