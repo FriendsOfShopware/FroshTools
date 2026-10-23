@@ -44,6 +44,23 @@ class FroshTools extends Plugin
         $this->initializeShopmon($updateContext->getContext());
     }
 
+    public static function formatSize(float $size): string
+    {
+        if ($size <= 0) {
+            return '0';
+        }
+
+        $base = log($size) / log(1024);
+        $suffix = ['', 'k', 'M', 'G', 'T'][(int) floor($base)];
+
+        return round(1024 ** ($base - floor($base)), 2) . $suffix;
+    }
+
+    protected function createContainerExtension(): FroshToolsExtension
+    {
+        return new FroshToolsExtension();
+    }
+
     private function initializeShopmon(Context $context): void
     {
         \assert($this->container !== null);
@@ -62,22 +79,5 @@ class FroshTools extends Plugin
             $systemConfigService,
         );
         $service->initialize($context);
-    }
-
-    public static function formatSize(float $size): string
-    {
-        if ($size <= 0) {
-            return '0';
-        }
-
-        $base = log($size) / log(1024);
-        $suffix = ['', 'k', 'M', 'G', 'T'][(int) floor($base)];
-
-        return round(1024 ** ($base - floor($base)), 2) . $suffix;
-    }
-
-    protected function createContainerExtension(): FroshToolsExtension
-    {
-        return new FroshToolsExtension();
     }
 }

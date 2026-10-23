@@ -33,35 +33,6 @@ class ShopmonIntegrationService
     ) {
     }
 
-    /** Refresh existing integrations without rotating credentials; opt in to creation via environment variables. */
-    public function initialize(Context $context): void
-    {
-        $context->scope(Context::SYSTEM_SCOPE, function (Context $context): void {
-            $integrations = $this->findIntegrations($context);
-
-            if ($integrations->count() > 0) {
-                foreach ($integrations as $integration) {
-                    $this->updatePermissions($integration->getId(), $context);
-                }
-
-                $integration = $integrations->get(self::INTEGRATION_ID) ?? $integrations->first();
-                \assert($integration !== null);
-                $encoded = $this->getIntegrationData($integration);
-
-                if ($encoded !== '') {
-                    $this->systemConfigService->set(self::CONFIG_KEY, $encoded);
-                }
-
-                return;
-            }
-
-            if (EnvironmentHelper::getVariable('SHOPMON_ACCESS_KEY', '') !== ''
-                && EnvironmentHelper::getVariable('SHOPMON_ACCESS_SECRET', '') !== '') {
-                $this->setup($context);
-            }
-        });
-    }
-
     public function setup(Context $context): void
     {
         $context->scope(Context::SYSTEM_SCOPE, function (Context $context): void {
@@ -95,7 +66,40 @@ class ShopmonIntegrationService
         });
     }
 
-    /** @return array<string, mixed> */
+    /**
+     * Refresh existing integrations without rotating credentials; opt in to creation via environment variables.
+     */
+    public function initialize(Context $context): void
+    {
+        $context->scope(Context::SYSTEM_SCOPE, function (Context $context): void {
+            $integrations = $this->findIntegrations($context);
+
+            if ($integrations->count() > 0) {
+                foreach ($integrations as $integration) {
+                    $this->updatePermissions($integration->getId(), $context);
+                }
+
+                $integration = $integrations->get(self::INTEGRATION_ID) ?? $integrations->first();
+                \assert($integration !== null);
+                $encoded = $this->getIntegrationData($integration);
+
+                if ($encoded !== '') {
+                    $this->systemConfigService->set(self::CONFIG_KEY, $encoded);
+                }
+
+                return;
+            }
+
+            if (EnvironmentHelper::getVariable('SHOPMON_ACCESS_KEY', '') !== ''
+                && EnvironmentHelper::getVariable('SHOPMON_ACCESS_SECRET', '') !== '') {
+                $this->setup($context);
+            }
+        });
+    }
+
+    /**
+     * @return array<string, mixed>
+     */
     public function status(Context $context): array
     {
         return $context->scope(Context::SYSTEM_SCOPE, function (Context $context): array {
