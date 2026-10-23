@@ -20,6 +20,31 @@ class SecurityControllerTest extends IntegrationTestCase
         $this->controller = static::getContainer()->get(SecurityController::class);
     }
 
+    public function testAccountsReturnsInventoryWithoutPersonalData(): void
+    {
+        $response = $this->controller->accounts();
+
+        static::assertSame(200, $response->getStatusCode());
+
+        $data = json_decode((string) $response->getContent(), true, 512, JSON_THROW_ON_ERROR);
+
+        static::assertIsArray($data);
+        static::assertArrayHasKey('generatedAt', $data);
+
+        foreach (['users', 'adminUsers', 'activeUsers', 'integrations', 'adminIntegrations', 'manualIntegrations', 'aclRoles'] as $key) {
+            static::assertArrayHasKey($key, $data['summary']);
+            static::assertIsInt($data['summary'][$key]);
+        }
+
+        static::assertNotEmpty($data['users']);
+        static::assertSame(\count($data['users']), $data['summary']['users']);
+
+        $payload = (string) $response->getContent();
+        foreach (['username', 'email', 'firstName', 'lastName', 'accessKey', 'secretAccessKey'] as $forbidden) {
+            static::assertStringNotContainsString($forbidden, $payload);
+        }
+    }
+
     public function testStatusReturnsSummaryAndFindings(): void
     {
         $response = $this->controller->status();
