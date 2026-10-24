@@ -418,6 +418,59 @@
                 },
                 "copyError": "Could not copy to clipboard"
             },
+            "telemetry": {
+                "title": "Telemetry",
+                "subtitle": "Anonymous usage telemetry for Frosh Tools — opt-in, off by default.",
+                "why": {
+                    "title": "Why we collect this",
+                    "intro": "Frosh Tools is maintained by the Friends of Shopware community. Anonymous telemetry helps us understand which environments Frosh Tools actually runs in, so we can support and test the right setups.",
+                    "versions": "See which Shopware, Symfony, PHP and database versions are used in the wild — so we know what to keep supporting.",
+                    "prioritize": "See which infrastructure is common (cache, queue, search, mail and storage types) — so new checks and features target real setups.",
+                    "anonymous": "Count active installations without knowing which shop they belong to. Events use a random installation ID; no person profiles are created and no location is derived from the IP address.",
+                    "public": "The collected data is available for anyone to see and allows Shopware and extension developers to improve their extensions and focus on the most important things.",
+                    "dashboard": "View the public dashboard",
+                    "notCollected": "Never collected: shop URL, host or shop name, IP address, customer, order or product data, extension names, file paths or any free text. Shop sizes are sent as ranges (e.g. \"101-1000\"), never as exact numbers."
+                },
+                "optIn": {
+                    "title": "Opt-in",
+                    "label": "Share anonymous usage telemetry",
+                    "enabled": "Enabled",
+                    "disabled": "Disabled",
+                    "help": "Off by default. When enabled, one event with exactly the properties below is sent per day by the scheduled task \"frosh_tools.telemetry\". You can disable it again at any time — here or in the plugin configuration.",
+                    "enabledSuccess": "Telemetry has been enabled. Thank you for helping improve Frosh Tools!",
+                    "disabledSuccess": "Telemetry has been disabled. No more events will be sent.",
+                    "saveError": "The telemetry setting could not be saved"
+                },
+                "status": {
+                    "destination": "Destination (PostHog EU)",
+                    "event": "Event name",
+                    "schemaVersion": "Schema version",
+                    "schedule": "Schedule",
+                    "scheduleDaily": "Daily (scheduled task)",
+                    "instanceId": "Anonymous installation ID",
+                    "instanceIdNone": "Not created yet — it is generated on the first send.",
+                    "instanceIdReset": "Reset",
+                    "instanceIdResetSuccess": "The installation ID has been reset. The next send generates a new one.",
+                    "notConfigured": "This Frosh Tools build has no PostHog project key configured, so nothing can be sent even when telemetry is enabled."
+                },
+                "send": {
+                    "now": "Send now",
+                    "success": "The telemetry event has been sent to PostHog EU",
+                    "failed": "The telemetry event could not be sent. See the frosh-tools log channel for details.",
+                    "notEnabled": "Telemetry is not enabled",
+                    "notConfigured": "No PostHog project key is configured in this build"
+                },
+                "payload": {
+                    "title": "Payload preview",
+                    "hint": "This is exactly what would be sent right now — collected live from this installation. Viewing this page sends nothing.",
+                    "property": "Property",
+                    "value": "Value",
+                    "copyJson": "Copy as JSON",
+                    "copied": "Copied",
+                    "copyError": "Could not copy to clipboard",
+                    "empty": "No properties could be collected"
+                }
+            },
             "apps": {
                 "title": "Apps",
                 "subtitle": "App system status: shop reachability, Shopware account and shop identity.",
@@ -628,6 +681,9 @@
             },
             "frosh_tools_shopmon": {
                 "label": "Frosh Tools — Shopmon"
+            },
+            "frosh_tools_telemetry": {
+                "label": "Frosh Tools — Telemetry"
             }
         }
     },

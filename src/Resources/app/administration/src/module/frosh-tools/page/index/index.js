@@ -118,6 +118,11 @@ Component.register('frosh-tools-index', {
                     labelKey: 'frosh-tools.tabs.shopmon.title',
                     privilege: PRIVILEGE.SHOPMON_READ,
                 },
+                {
+                    route: 'frosh.tools.index.telemetry',
+                    labelKey: 'frosh-tools.tabs.telemetry.title',
+                    privilege: PRIVILEGE.TELEMETRY_READ,
+                },
             ];
 
             const performance = [

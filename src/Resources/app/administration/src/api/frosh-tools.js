@@ -475,6 +475,58 @@ class FroshTools extends ApiService {
             });
     }
 
+    getTelemetryStatus() {
+        const apiRoute = `${this.getApiBasePath()}/telemetry`;
+        return this.httpClient
+            .get(apiRoute, {
+                headers: this.getBasicHeaders(),
+            })
+            .then((response) => {
+                return ApiService.handleResponse(response);
+            });
+    }
+
+    setTelemetryEnabled(enabled) {
+        const apiRoute = `${this.getApiBasePath()}/telemetry/opt-in`;
+        return this.httpClient
+            .post(
+                apiRoute,
+                { enabled },
+                {
+                    headers: this.getBasicHeaders(),
+                }
+            )
+            .then((response) => {
+                return ApiService.handleResponse(response);
+            });
+    }
+
+    sendTelemetryNow() {
+        const apiRoute = `${this.getApiBasePath()}/telemetry/send`;
+        return this.httpClient
+            .post(
+                apiRoute,
+                {},
+                {
+                    headers: this.getBasicHeaders(),
+                }
+            )
+            .then((response) => {
+                return ApiService.handleResponse(response);
+            });
+    }
+
+    resetTelemetryInstanceId() {
+        const apiRoute = `${this.getApiBasePath()}/telemetry/instance-id`;
+        return this.httpClient
+            .delete(apiRoute, {
+                headers: this.getBasicHeaders(),
+            })
+            .then((response) => {
+                return ApiService.handleResponse(response);
+            });
+    }
+
     getAppsStatus() {
         const apiRoute = `${this.getApiBasePath()}/apps/status`;
         return this.httpClient

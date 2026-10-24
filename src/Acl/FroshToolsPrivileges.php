@@ -40,6 +40,9 @@ final class FroshToolsPrivileges
     public const APPS_READ = 'frosh_tools_apps:read';
     public const APPS_UPDATE = 'frosh_tools_apps:update';
 
+    public const TELEMETRY_READ = 'frosh_tools_telemetry:read';
+    public const TELEMETRY_UPDATE = 'frosh_tools_telemetry:update';
+
     /**
      * @return list<string>
      */
@@ -56,6 +59,7 @@ final class FroshToolsPrivileges
             self::FASTLY_READ,
             self::SHOPMON_READ,
             self::APPS_READ,
+            self::TELEMETRY_READ,
         ];
     }
 
@@ -73,6 +77,7 @@ final class FroshToolsPrivileges
             self::FASTLY_UPDATE,
             self::SHOPMON_UPDATE,
             self::APPS_UPDATE,
+            self::TELEMETRY_UPDATE,
         ];
     }
 }

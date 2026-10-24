@@ -29,4 +29,7 @@ export const PRIVILEGE = {
 
     APPS_READ: 'frosh_tools_apps:read',
     APPS_UPDATE: 'frosh_tools_apps:update',
+
+    TELEMETRY_READ: 'frosh_tools_telemetry:read',
+    TELEMETRY_UPDATE: 'frosh_tools_telemetry:update',
 };

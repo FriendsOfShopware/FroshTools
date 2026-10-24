@@ -60,4 +60,18 @@
         </input-field>
     </card>
 
+    <card>
+        <title>Telemetry</title>
+        <title lang="de-DE">Telemetrie</title>
+
+        <input-field type="bool">
+            <name>telemetryEnabled</name>
+            <label>Share anonymous usage telemetry</label>
+            <label lang="de-DE">Anonyme Nutzungsdaten teilen</label>
+            <helpText>Off by default. When enabled, Frosh Tools sends one anonymous event per day (scheduled task "frosh_tools.telemetry") to PostHog EU (eu.i.posthog.com). It contains only technical environment data: Shopware/Symfony/PHP/database/Frosh Tools versions (major.minor), prod/debug mode, loaded PHP extensions and APM agents, cache/queue/session/increment/mail/media-storage/HTTP-cache/search types (e.g. "redis", "smtp", "amazon-s3" — never hosts, bucket names or credentials), whether the Admin Worker and runtime extension management are enabled, the number of active/total apps and extensions, and bucketed shop sizes (products/orders/customers as ranges like "101-1000"). The collected data is available for anyone to see on the public dashboard (https://eu.posthog.com/shared/iY7ArzsigzNyWEnm0kAGBQaEib9qxQ) and allows Shopware and extension developers to improve their extensions and focus on the most important things. No shop URL, IP address, shop name, customer, order or product data is sent. The event uses a random installation ID so active installations can be counted. Run "bin/console frosh:telemetry" to preview the exact payload. The full list is documented in the plugin README ("Anonymous telemetry").</helpText>
+            <helpText lang="de-DE">Standardmäßig deaktiviert. Wenn aktiviert, sendet Frosh Tools einmal täglich ein anonymes Event (Scheduled Task "frosh_tools.telemetry") an PostHog EU (eu.i.posthog.com). Enthalten sind nur technische Umgebungsdaten: Shopware-/Symfony-/PHP-/Datenbank-/Frosh-Tools-Versionen (Major.Minor), Prod-/Debug-Modus, geladene PHP-Erweiterungen und APM-Agenten, Cache-/Queue-/Session-/Increment-/Mail-/Media-Storage-/HTTP-Cache-/Such-Typen (z. B. "redis", "smtp", "amazon-s3" — niemals Hosts, Bucket-Namen oder Zugangsdaten), ob Admin Worker und Runtime-Extension-Management aktiv sind, Anzahl aktiver/aller Apps und Extensions sowie Shop-Größen in Bereichen (Produkte/Bestellungen/Kunden, z. B. "101-1000"). Die erhobenen Daten sind für alle im öffentlichen Dashboard einsehbar (https://eu.posthog.com/shared/iY7ArzsigzNyWEnm0kAGBQaEib9qxQ) und ermöglichen es Shopware- und Extension-Entwicklern, ihre Extensions zu verbessern und sich auf die wichtigsten Dinge zu konzentrieren. Es werden keine Shop-URL, IP-Adresse, Shop-Name oder Kunden-/Bestell-/Produktdaten gesendet. Das Event nutzt eine zufällige Installations-ID, um aktive Installationen zu zählen. Mit "bin/console frosh:telemetry" lässt sich die genaue Payload vorher ansehen. Die vollständige Liste steht im Plugin-README ("Anonymous telemetry").</helpText>
+            <defaultValue>false</defaultValue>
+        </input-field>
+    </card>
+
 </config>

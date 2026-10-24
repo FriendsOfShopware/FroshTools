@@ -418,6 +418,59 @@
                 },
                 "copyError": "Konnte nicht in die Zwischenablage kopieren"
             },
+            "telemetry": {
+                "title": "Telemetrie",
+                "subtitle": "Anonyme Nutzungsdaten für Frosh Tools — Opt-in, standardmäßig deaktiviert.",
+                "why": {
+                    "title": "Warum wir das erheben",
+                    "intro": "Frosh Tools wird von der Friends-of-Shopware-Community gepflegt. Anonyme Telemetrie hilft uns zu verstehen, in welchen Umgebungen Frosh Tools tatsächlich läuft, damit wir die richtigen Setups unterstützen und testen können.",
+                    "versions": "Sehen, welche Shopware-, Symfony-, PHP- und Datenbank-Versionen im Einsatz sind — damit wir wissen, was wir weiter unterstützen müssen.",
+                    "prioritize": "Sehen, welche Infrastruktur verbreitet ist (Cache-, Queue-, Such-, Mail- und Storage-Typen) — damit neue Checks und Features echte Setups treffen.",
+                    "anonymous": "Aktive Installationen zählen, ohne zu wissen, zu welchem Shop sie gehören. Events nutzen eine zufällige Installations-ID; es werden keine Personenprofile erstellt und kein Standort aus der IP-Adresse abgeleitet.",
+                    "public": "Die erhobenen Daten sind für alle öffentlich einsehbar und ermöglichen es Shopware- und Extension-Entwicklern, ihre Extensions zu verbessern und sich auf die wichtigsten Dinge zu konzentrieren.",
+                    "dashboard": "Öffentliches Dashboard ansehen",
+                    "notCollected": "Wird niemals erhoben: Shop-URL, Host- oder Shop-Name, IP-Adresse, Kunden-, Bestell- oder Produktdaten, Extension-Namen, Dateipfade oder Freitext. Shop-Größen werden als Bereich (z. B. \"101-1000\") gesendet, niemals als exakte Zahl."
+                },
+                "optIn": {
+                    "title": "Opt-in",
+                    "label": "Anonyme Nutzungsdaten teilen",
+                    "enabled": "Aktiviert",
+                    "disabled": "Deaktiviert",
+                    "help": "Standardmäßig deaktiviert. Wenn aktiviert, wird einmal täglich ein Event mit genau den unten stehenden Eigenschaften durch den Scheduled Task \"frosh_tools.telemetry\" gesendet. Die Deaktivierung ist jederzeit möglich — hier oder in der Plugin-Konfiguration.",
+                    "enabledSuccess": "Telemetrie wurde aktiviert. Danke, dass du hilfst, Frosh Tools besser zu machen!",
+                    "disabledSuccess": "Telemetrie wurde deaktiviert. Es werden keine weiteren Events gesendet.",
+                    "saveError": "Die Telemetrie-Einstellung konnte nicht gespeichert werden"
+                },
+                "status": {
+                    "destination": "Ziel (PostHog EU)",
+                    "event": "Event-Name",
+                    "schemaVersion": "Schema-Version",
+                    "schedule": "Intervall",
+                    "scheduleDaily": "Täglich (Scheduled Task)",
+                    "instanceId": "Anonyme Installations-ID",
+                    "instanceIdNone": "Noch nicht erstellt — sie wird beim ersten Senden generiert.",
+                    "instanceIdReset": "Zurücksetzen",
+                    "instanceIdResetSuccess": "Die Installations-ID wurde zurückgesetzt. Beim nächsten Senden wird eine neue generiert.",
+                    "notConfigured": "In diesem Frosh-Tools-Build ist kein PostHog-Projektkey hinterlegt, daher kann auch bei aktivierter Telemetrie nichts gesendet werden."
+                },
+                "send": {
+                    "now": "Jetzt senden",
+                    "success": "Das Telemetrie-Event wurde an PostHog EU gesendet",
+                    "failed": "Das Telemetrie-Event konnte nicht gesendet werden. Details stehen im frosh-tools-Logchannel.",
+                    "notEnabled": "Telemetrie ist nicht aktiviert",
+                    "notConfigured": "In diesem Build ist kein PostHog-Projektkey hinterlegt"
+                },
+                "payload": {
+                    "title": "Payload-Vorschau",
+                    "hint": "Das ist exakt, was jetzt gesendet würde — live aus dieser Installation erhoben. Das Ansehen dieser Seite sendet nichts.",
+                    "property": "Eigenschaft",
+                    "value": "Wert",
+                    "copyJson": "Als JSON kopieren",
+                    "copied": "Kopiert",
+                    "copyError": "Konnte nicht in die Zwischenablage kopieren",
+                    "empty": "Es konnten keine Eigenschaften erhoben werden"
+                }
+            },
             "apps": {
                 "title": "Apps",
                 "subtitle": "Status des App-Systems: Erreichbarkeit des Shops, Shopware-Account und Shop-Identität.",
@@ -628,6 +681,9 @@
             },
             "frosh_tools_shopmon": {
                 "label": "Frosh Tools — Shopmon"
+            },
+            "frosh_tools_telemetry": {
+                "label": "Frosh Tools — Telemetrie"
             }
         }
     },

@@ -56,6 +56,7 @@ privileges.addPrivilegeMappingEntry({
                 PRIVILEGE.FASTLY_UPDATE,
                 PRIVILEGE.SHOPMON_UPDATE,
                 PRIVILEGE.APPS_UPDATE,
+                PRIVILEGE.TELEMETRY_UPDATE,
             ],
             dependencies: [
                 'frosh_tools.viewer',
@@ -68,6 +69,7 @@ privileges.addPrivilegeMappingEntry({
                 'frosh_tools_fastly.viewer',
                 'frosh_tools_shopmon.viewer',
                 'frosh_tools_apps.viewer',
+                'frosh_tools_telemetry.viewer',
             ],
         },
     },
@@ -127,4 +129,10 @@ registerArea({
     key: 'frosh_tools_apps',
     viewer: PRIVILEGE.APPS_READ,
     editor: PRIVILEGE.APPS_UPDATE,
+});
+
+registerArea({
+    key: 'frosh_tools_telemetry',
+    viewer: PRIVILEGE.TELEMETRY_READ,
+    editor: PRIVILEGE.TELEMETRY_UPDATE,
 });

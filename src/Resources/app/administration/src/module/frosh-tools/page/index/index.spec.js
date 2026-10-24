@@ -111,5 +111,6 @@ describe('frosh-tools-index', () => {
         expect(routes).not.toContain('frosh.tools.index.cache');
         expect(routes).not.toContain('frosh.tools.index.security');
         expect(routes).not.toContain('frosh.tools.index.apps');
+        expect(routes).not.toContain('frosh.tools.index.telemetry');
     });
 });

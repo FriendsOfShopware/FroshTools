@@ -21,6 +21,7 @@ use Frosh\Tools\Controller\ShopmonController;
 use Frosh\Tools\Controller\ShopwareFilesController;
 use Frosh\Tools\Controller\StatisticsController;
 use Frosh\Tools\Controller\SymfonySchedulerController;
+use Frosh\Tools\Controller\TelemetryController;
 use PHPUnit\Framework\Attributes\CoversNothing;
 use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\TestCase;
@@ -126,6 +127,11 @@ class AclRouteTest extends TestCase
         yield 'shopmon.status' => [ShopmonController::class, 'status', FroshToolsPrivileges::SHOPMON_READ];
         yield 'shopmon.setup' => [ShopmonController::class, 'setup', FroshToolsPrivileges::SHOPMON_UPDATE];
         yield 'shopmon.remove' => [ShopmonController::class, 'remove', FroshToolsPrivileges::SHOPMON_UPDATE];
+
+        yield 'telemetry.status' => [TelemetryController::class, 'status', FroshToolsPrivileges::TELEMETRY_READ];
+        yield 'telemetry.opt-in' => [TelemetryController::class, 'setOptIn', FroshToolsPrivileges::TELEMETRY_UPDATE];
+        yield 'telemetry.send' => [TelemetryController::class, 'sendNow', FroshToolsPrivileges::TELEMETRY_UPDATE];
+        yield 'telemetry.reset-instance-id' => [TelemetryController::class, 'resetInstanceId', FroshToolsPrivileges::TELEMETRY_UPDATE];
 
         yield 'apps.reachability-probe' => [AppController::class, 'reachabilityProbe', null];
         yield 'apps.shop-id' => [AppController::class, 'shopId', FroshToolsPrivileges::APPS_READ];

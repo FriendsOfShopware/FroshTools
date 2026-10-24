@@ -1,0 +1,206 @@
+<div class="ft frosh-tab-telemetry">
+    <ft-page-head
+        :title="$t('frosh-tools.tabs.telemetry.title')"
+        :subtitle="$t('frosh-tools.tabs.telemetry.subtitle')"
+    >
+        <template #actions>
+            <ft-refresh-button
+                :loading="isLoading"
+                @click="loadStatus"
+            />
+        </template>
+    </ft-page-head>
+
+    <ft-empty
+        v-if="isLoading && !status"
+        loading
+    />
+    <ft-hero-state
+        v-else-if="loadError"
+        variant="danger"
+        icon="alert"
+        :title="$t('frosh-tools.loadError.title')"
+        :body="loadError"
+    >
+        <template #actions>
+            <ft-button
+                icon="refresh"
+                @click="loadStatus"
+            >
+                {{ $t('frosh-tools.loadError.retry') }}
+            </ft-button>
+        </template>
+    </ft-hero-state>
+
+    <template v-else-if="status">
+        <ft-panel :title="$t('frosh-tools.tabs.telemetry.why.title')">
+            <p class="frosh-tab-telemetry__text">
+                {{ $t('frosh-tools.tabs.telemetry.why.intro') }}
+            </p>
+            <ul class="frosh-tab-telemetry__list">
+                <li>{{ $t('frosh-tools.tabs.telemetry.why.versions') }}</li>
+                <li>{{ $t('frosh-tools.tabs.telemetry.why.prioritize') }}</li>
+                <li>{{ $t('frosh-tools.tabs.telemetry.why.anonymous') }}</li>
+                <li>{{ $t('frosh-tools.tabs.telemetry.why.public') }}</li>
+            </ul>
+            <p class="frosh-tab-telemetry__text">
+                {{ $t('frosh-tools.tabs.telemetry.why.notCollected') }}
+            </p>
+            <p class="frosh-tab-telemetry__text">
+                <a
+                    class="frosh-tab-telemetry__dashboard-link"
+                    href="https://eu.posthog.com/shared/iY7ArzsigzNyWEnm0kAGBQaEib9qxQ"
+                    target="_blank"
+                    rel="noopener"
+                >
+                    <ft-icon name="external-link"/>
+                    <span>{{ $t('frosh-tools.tabs.telemetry.why.dashboard') }}</span>
+                </a>
+            </p>
+        </ft-panel>
+
+        <ft-panel :title="$t('frosh-tools.tabs.telemetry.optIn.title')">
+            <div class="frosh-tab-telemetry__optin">
+                <div>
+                    <div class="frosh-tab-telemetry__optin-label">
+                        {{ $t('frosh-tools.tabs.telemetry.optIn.label') }}
+                        <ft-pill :variant="isEnabled ? 'success' : 'muted'">
+                            {{ isEnabled ? $t('frosh-tools.tabs.telemetry.optIn.enabled') : $t('frosh-tools.tabs.telemetry.optIn.disabled') }}
+                        </ft-pill>
+                    </div>
+                    <p class="frosh-tab-telemetry__hint">
+                        {{ $t('frosh-tools.tabs.telemetry.optIn.help') }}
+                    </p>
+                </div>
+                <sw-switch-field
+                    :value="isEnabled"
+                    :disabled="!canUpdate || isSaving"
+                    @update:value="onToggleEnabled"
+                />
+            </div>
+
+            <div
+                v-if="!isConfigured"
+                class="frosh-tab-telemetry__warning"
+            >
+                <ft-icon
+                    name="alert"
+                    :size="16"
+                />
+                <span>{{ $t('frosh-tools.tabs.telemetry.status.notConfigured') }}</span>
+            </div>
+
+            <dl class="frosh-tab-telemetry__meta">
+                <div>
+                    <dt>{{ $t('frosh-tools.tabs.telemetry.status.destination') }}</dt>
+                    <dd class="ft-mono">
+                        {{ status.host }}
+                    </dd>
+                </div>
+                <div>
+                    <dt>{{ $t('frosh-tools.tabs.telemetry.status.event') }}</dt>
+                    <dd class="ft-mono">
+                        {{ status.event }}
+                    </dd>
+                </div>
+                <div>
+                    <dt>{{ $t('frosh-tools.tabs.telemetry.status.schemaVersion') }}</dt>
+                    <dd class="ft-mono">
+                        {{ status.schemaVersion }}
+                    </dd>
+                </div>
+                <div>
+                    <dt>{{ $t('frosh-tools.tabs.telemetry.status.schedule') }}</dt>
+                    <dd>{{ $t('frosh-tools.tabs.telemetry.status.scheduleDaily') }}</dd>
+                </div>
+                <div>
+                    <dt>{{ $t('frosh-tools.tabs.telemetry.status.instanceId') }}</dt>
+                    <dd>
+                        <span
+                            v-if="status.instanceId"
+                            class="ft-mono"
+                        >{{ status.instanceId }}</span>
+                        <span v-else>{{ $t('frosh-tools.tabs.telemetry.status.instanceIdNone') }}</span>
+                        <button
+                            v-if="status.instanceId && canUpdate"
+                            class="ft-btn frosh-tab-telemetry__reset"
+                            :disabled="isSaving"
+                            @click="resetInstanceId"
+                        >
+                            <ft-icon name="refresh"/>
+                            <span>{{ $t('frosh-tools.tabs.telemetry.status.instanceIdReset') }}</span>
+                        </button>
+                    </dd>
+                </div>
+            </dl>
+
+            <div
+                v-if="isEnabled && canUpdate"
+                class="frosh-tab-telemetry__actions"
+            >
+                <button
+                    class="ft-btn ft-btn--primary"
+                    :disabled="isSending || !isConfigured"
+                    @click="sendNow"
+                >
+                    <span
+                        v-if="isSending"
+                        class="ft-spinner"
+                    ></span>
+                    <span>{{ $t('frosh-tools.tabs.telemetry.send.now') }}</span>
+                </button>
+            </div>
+        </ft-panel>
+
+        <ft-panel
+            :title="$t('frosh-tools.tabs.telemetry.payload.title')"
+            :count="payloadEntries.length"
+            flush
+        >
+            <template #actions>
+                <button
+                    class="ft-btn"
+                    @click="copyPayload"
+                >
+                    <ft-icon :name="copied ? 'check' : 'copy'"/>
+                    <span>
+                        {{ copied ? $t('frosh-tools.tabs.telemetry.payload.copied') : $t('frosh-tools.tabs.telemetry.payload.copyJson') }}
+                    </span>
+                </button>
+            </template>
+            <p class="frosh-tab-telemetry__hint frosh-tab-telemetry__payload-hint">
+                {{ $t('frosh-tools.tabs.telemetry.payload.hint') }}
+            </p>
+            <ft-empty
+                v-if="!payloadEntries.length"
+                :title="$t('frosh-tools.tabs.telemetry.payload.empty')"
+            />
+            <div
+                v-else
+                class="ft-table-wrap"
+            >
+                <table class="ft-table">
+                    <thead>
+                        <tr>
+                            <th>{{ $t('frosh-tools.tabs.telemetry.payload.property') }}</th>
+                            <th>{{ $t('frosh-tools.tabs.telemetry.payload.value') }}</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr
+                            v-for="entry in payloadEntries"
+                            :key="entry.key"
+                        >
+                            <td class="ft-table__name ft-mono">
+                                {{ entry.key }}
+                            </td>
+                            <td class="ft-mono">
+                                {{ formatValue(entry.value) }}
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </ft-panel>
+    </template>
+</div>

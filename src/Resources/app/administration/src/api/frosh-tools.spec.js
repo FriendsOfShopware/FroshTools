@@ -87,4 +87,32 @@ describe('FroshTools queue API', () => {
             }
         );
     });
+
+    it('calls the telemetry endpoints', async () => {
+        await service.getTelemetryStatus();
+        await service.setTelemetryEnabled(true);
+        await service.sendTelemetryNow();
+        await service.resetTelemetryInstanceId();
+
+        expect(service.httpClient.get).toHaveBeenCalledWith(
+            '/_action/frosh-tools/telemetry',
+            expect.any(Object)
+        );
+        expect(service.httpClient.post).toHaveBeenNthCalledWith(
+            1,
+            '/_action/frosh-tools/telemetry/opt-in',
+            { enabled: true },
+            expect.any(Object)
+        );
+        expect(service.httpClient.post).toHaveBeenNthCalledWith(
+            2,
+            '/_action/frosh-tools/telemetry/send',
+            {},
+            expect.any(Object)
+        );
+        expect(service.httpClient.delete).toHaveBeenCalledWith(
+            '/_action/frosh-tools/telemetry/instance-id',
+            expect.any(Object)
+        );
+    });
 });

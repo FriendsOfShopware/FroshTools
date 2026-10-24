@@ -1,0 +1,107 @@
+.frosh-tab-telemetry {
+    &__text {
+        margin: 0 0 12px;
+        color: var(--ft-text-soft);
+        line-height: 1.55;
+
+        &:last-child {
+            margin-bottom: 0;
+        }
+    }
+
+    &__list {
+        margin: 0 0 12px;
+        padding-left: 20px;
+        color: var(--ft-text-soft);
+        line-height: 1.55;
+
+        li + li {
+            margin-top: 4px;
+        }
+    }
+
+    &__hint {
+        margin: 4px 0 0;
+        color: var(--ft-text-muted);
+        font-size: 13px;
+        line-height: 1.5;
+    }
+
+    &__optin {
+        display: flex;
+        align-items: flex-start;
+        justify-content: space-between;
+        gap: 24px;
+    }
+
+    &__optin-label {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        font-weight: 600;
+        color: var(--ft-text);
+    }
+
+    &__warning {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        margin-top: 16px;
+        padding: 10px 12px;
+        border-radius: var(--ft-radius-md);
+        background: var(--ft-warning-soft);
+        color: var(--ft-warning);
+        font-size: 13px;
+        line-height: 1.5;
+    }
+
+    &__meta {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+        gap: 16px 24px;
+        margin: 20px 0 0;
+        padding-top: 16px;
+        border-top: 1px solid var(--ft-divider);
+
+        dt {
+            margin-bottom: 4px;
+            color: var(--ft-text-muted);
+            font-size: 12px;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.04em;
+        }
+
+        dd {
+            margin: 0;
+            color: var(--ft-text-soft);
+            overflow-wrap: anywhere;
+        }
+    }
+
+    &__reset {
+        margin-left: 8px;
+    }
+
+    &__actions {
+        margin-top: 20px;
+    }
+
+    &__payload-hint {
+        padding: 12px 16px 0;
+    }
+
+    &__dashboard-link {
+        display: inline-flex;
+        align-items: center;
+        gap: 6px;
+        color: var(--ft-accent);
+        font-weight: 600;
+        text-decoration: none;
+
+        &:hover {
+            color: var(--ft-accent-hover);
+            text-decoration: underline;
+        }
+    }
+}
