@@ -16,7 +16,6 @@ final class IntegrationActivitySubscriber extends EntityActivitySubscriber
     protected const CORE_CREATION = true;
 
     /**
-     * @param EntityWriteResult<string|array<string, string>> $result
      * @return array<string, mixed>
      */
     protected function details(EntityWriteResult $result): array

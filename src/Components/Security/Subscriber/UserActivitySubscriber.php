@@ -30,7 +30,6 @@ final class UserActivitySubscriber extends EntityActivitySubscriber
         parent::__construct($logger, $actors);
     }
 
-    /** @param EntityWriteResult<string|array<string, string>> $result */
     protected function action(EntityWriteResult $result, Context $context): ?string
     {
         return $this->resets->matches($result, 'api.action.user.user-recovery.password')

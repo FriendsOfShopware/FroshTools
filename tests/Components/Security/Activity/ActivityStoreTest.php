@@ -6,11 +6,8 @@ namespace Frosh\Tools\Tests\Components\Security\Activity;
 
 use Doctrine\DBAL\Connection;
 use Frosh\Tools\Components\Security\Activity\ActivityActorResolver;
-use Frosh\Tools\Components\Security\Activity\ActivityStore;
 use Frosh\Tools\Components\Security\Subscriber\PluginActivitySubscriber;
-use Frosh\Tools\Components\Security\Subscriber\UserActivitySubscriber;
-use Frosh\Tools\Components\Security\Activity\PasswordResetContext;
-use Symfony\Component\HttpFoundation\RequestStack;
+use Frosh\Tools\Components\Security\Activity\ActivityStore;
 use Frosh\Tools\Tests\IntegrationTestCase;
 use Shopware\Core\Framework\Api\Context\AdminApiSource;
 use Shopware\Core\Framework\Context;
@@ -214,23 +211,30 @@ class ActivityStoreTest extends IntegrationTestCase
         static::assertSame('Example', $result['entries'][0]['context']['pluginName']);
     }
 
-    public function testBackportedIntegrationActionsAppearInSubjectHistoryAndExport(): void
+    public function testConfiguredIntegrationActionsAppearInSubjectHistoryAndExport(): void
     {
         $integrationId = Uuid::randomHex();
         $context = new Context(new AdminApiSource(null, $integrationId));
-        $connection = static::createStub(Connection::class);
-        $connection->method('fetchOne')->willReturn('integration-access-key');
-        $logger = static::getContainer()->get('monolog.logger.system_activity');
-        $subscriber = new UserActivitySubscriber($logger, new ActivityActorResolver($connection), new PasswordResetContext(new RequestStack()));
-        $subscriber->onEntityWritten(new EntityWrittenEvent('user', [
+        static::getContainer()->get('integration.repository')->create([[
+            'id' => $integrationId,
+            'label' => 'Timeline actor',
+            'accessKey' => 'timeline-' . Uuid::randomHex(),
+            'secretAccessKey' => 'test-secret',
+        ]], Context::createDefaultContext());
+        static::getContainer()->get(Connection::class)->executeStatement('DELETE FROM frosh_tools_security_activity');
+        $dispatcher = static::getContainer()->get('event_dispatcher');
+        $dispatcher->dispatch(new EntityWrittenEvent('user', [
             new EntityWriteResult(Uuid::randomHex(), [], 'user', EntityWriteResult::OPERATION_INSERT),
-        ], $context));
+        ], $context), 'user.written');
         $plugin = new PluginEntity();
         $plugin->setName('Example');
         $activateContext = static::createStub(ActivateContext::class);
         $activateContext->method('getContext')->willReturn($context);
         $activateContext->method('getCurrentPluginVersion')->willReturn('1.0.0');
-        (new PluginActivitySubscriber($logger, new ActivityActorResolver($connection)))->onPluginLifecycle(new PluginPostActivateEvent($plugin, $activateContext));
+        (new PluginActivitySubscriber(
+            static::getContainer()->get('monolog.logger.system_activity'),
+            new ActivityActorResolver(static::getContainer()->get(Connection::class)),
+        ))->onPluginLifecycle(new PluginPostActivateEvent($plugin, $activateContext));
 
         $result = $this->store->search(1, 25, '', '', null, null, subjectType: 'integrations', subjectId: $integrationId);
         static::assertSame(2, $result['total']);

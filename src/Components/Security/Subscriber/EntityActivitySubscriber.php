@@ -13,7 +13,7 @@ use Symfony\Component\DependencyInjection\Attribute\Autowire;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 
 /**
- * @internal
+ * Shared entity-write processing for the dedicated activity subscribers.
  */
 abstract class EntityActivitySubscriber implements EventSubscriberInterface
 {
@@ -34,7 +34,6 @@ abstract class EntityActivitySubscriber implements EventSubscriberInterface
         return [static::ENTITY . '.written' => 'onEntityWritten', static::ENTITY . '.deleted' => 'onEntityWritten'];
     }
 
-    /** @param EntityWrittenEvent<string|array<string, string>> $event */
     public function onEntityWritten(EntityWrittenEvent $event): void
     {
         foreach ($event->getWriteResults() as $result) {
@@ -52,7 +51,6 @@ abstract class EntityActivitySubscriber implements EventSubscriberInterface
         }
     }
 
-    /** @param EntityWriteResult<string|array<string, string>> $result */
     protected function action(EntityWriteResult $result, Context $context): ?string
     {
         return match ($result->getOperation()) {
@@ -65,7 +63,6 @@ abstract class EntityActivitySubscriber implements EventSubscriberInterface
     }
 
     /**
-     * @param EntityWriteResult<string|array<string, string>> $result
      * @return array<string, mixed>
      */
     protected function details(EntityWriteResult $result): array

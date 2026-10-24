@@ -16,7 +16,6 @@ final class PasswordResetContext
     {
     }
 
-    /** @param EntityWriteResult<string|array<string, string>> $result */
     public function matches(EntityWriteResult $result, string $route): bool
     {
         return $result->getOperation() === EntityWriteResult::OPERATION_UPDATE

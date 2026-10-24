@@ -19,24 +19,6 @@ final class ActivityActorResolver
     {
     }
 
-    private function actorName(AdminApiSource $source): ?string
-    {
-        try {
-            if ($source->getUserId() !== null) {
-                $name = $this->connection->fetchOne('SELECT username FROM `user` WHERE id = :id', ['id' => Uuid::fromHexToBytes($source->getUserId())]);
-            } elseif ($source->getIntegrationId() !== null) {
-                $name = $this->connection->fetchOne('SELECT label FROM integration WHERE id = :id', ['id' => Uuid::fromHexToBytes($source->getIntegrationId())]);
-            } else {
-                return null;
-            }
-        } catch (\Throwable) {
-            // Keep the known actor ID when an optional display-name lookup fails.
-            return null;
-        }
-
-        return \is_string($name) ? $name : null;
-    }
-
     /**
      * @return array<string, string|null>
      */
@@ -56,5 +38,23 @@ final class ActivityActorResolver
         }
 
         return ['actorType' => 'unknown'];
+    }
+
+    private function actorName(AdminApiSource $source): ?string
+    {
+        try {
+            if ($source->getUserId() !== null) {
+                $name = $this->connection->fetchOne('SELECT username FROM `user` WHERE id = :id', ['id' => Uuid::fromHexToBytes($source->getUserId())]);
+            } elseif ($source->getIntegrationId() !== null) {
+                $name = $this->connection->fetchOne('SELECT label FROM integration WHERE id = :id', ['id' => Uuid::fromHexToBytes($source->getIntegrationId())]);
+            } else {
+                return null;
+            }
+        } catch (\Throwable) {
+            // Keep the known actor ID when an optional display-name lookup fails.
+            return null;
+        }
+
+        return \is_string($name) ? $name : null;
     }
 }

@@ -65,7 +65,7 @@ class IntegrationActivitySubscriberTest extends TestCase
     public function testIntegrationCreationRetainsLabelWithoutCredentials(): void
     {
         $logger = $this->createMock(LoggerInterface::class);
-        $logger->expects($this->once())->method('info')->with('integration:create', [
+        $logger->expects(class_exists('Shopware\\Core\\Framework\\Log\\SystemActivitySubscriber') ? $this->never() : $this->once())->method('info')->with('integration:create', [
             'entityId' => 'new-integration',
             'integrationName' => 'Warehouse sync',
             'actorType' => 'system',

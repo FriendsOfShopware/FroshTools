@@ -15,12 +15,13 @@ final class UserRoleActivitySubscriber extends EntityActivitySubscriber
     protected const FIELDS = ['userId', 'aclRoleId'];
 
     /**
-     * @param EntityWriteResult<string|array<string, string>> $result
      * @return array<string, mixed>
      */
     protected function details(EntityWriteResult $result): array
     {
+        /** @var string|array<string, string> $key */
         $key = $result->getPrimaryKey();
+
         return \is_string($key) ? parent::details($result) : [
             'targetUserId' => $key['userId'] ?? null,
             'roleId' => $key['aclRoleId'] ?? null,

@@ -67,13 +67,32 @@ describe('security timeline', () => {
     it('shows the recorded integration name and falls back to IDs for older events', async () => {
         await mount({
             getSecurityActivity: vi.fn().mockResolvedValue({
-                entries: [{ ...entry, action: 'integration:create', context: { entityId: 'target-id', integrationName: 'Warehouse sync' } }],
+                entries: [
+                    {
+                        ...entry,
+                        action: 'integration:create',
+                        context: {
+                            entityId: 'target-id',
+                            integrationName: 'Warehouse sync',
+                        },
+                    },
+                ],
                 total: 1,
             }),
         });
         expect(wrapper.text()).toContain('Warehouse sync');
-        expect(wrapper.vm.targetLabel({ ...entry, context: { entityId: 'legacy-id' } })).toBe('legacy-id');
-        expect(wrapper.vm.details({ ...entry, context: { integrationName: 'Warehouse sync' } })).toContain('Warehouse sync');
+        expect(
+            wrapper.vm.targetLabel({
+                ...entry,
+                context: { entityId: 'legacy-id' },
+            })
+        ).toBe('legacy-id');
+        expect(
+            wrapper.vm.details({
+                ...entry,
+                context: { integrationName: 'Warehouse sync' },
+            })
+        ).toContain('Warehouse sync');
     });
 
     it('loads the linked subject, follows subject navigation and clears identity scope on reset', async () => {

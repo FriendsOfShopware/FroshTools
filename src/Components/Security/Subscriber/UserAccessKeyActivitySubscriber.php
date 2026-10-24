@@ -15,7 +15,6 @@ final class UserAccessKeyActivitySubscriber extends EntityActivitySubscriber
     protected const FIELDS = ['accessKey', 'secretAccessKey', 'userId'];
 
     /**
-     * @param EntityWriteResult<string|array<string, string>> $result
      * @return array<string, mixed>
      */
     protected function details(EntityWriteResult $result): array

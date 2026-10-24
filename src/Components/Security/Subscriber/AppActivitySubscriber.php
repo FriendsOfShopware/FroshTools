@@ -79,6 +79,7 @@ final class AppActivitySubscriber implements EventSubscriberInterface
 
     /**
      * @param array<string, mixed> $context
+     *
      * @return array<string, mixed>
      */
     private function withoutNullValues(array $context): array

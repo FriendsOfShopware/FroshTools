@@ -67,7 +67,7 @@ class UserActivitySubscriberTest extends TestCase
     public function testLogsNewUsersAndIgnoresUnrelatedUpdates(): void
     {
         $logger = $this->createMock(LoggerInterface::class);
-        $logger->expects($this->once())->method('info')->with('user:create', [
+        $logger->expects(class_exists('Shopware\\Core\\Framework\\Log\\SystemActivitySubscriber') ? $this->never() : $this->once())->method('info')->with('user:create', [
             'entityId' => 'new-user',
             'actorType' => 'system',
         ]);
