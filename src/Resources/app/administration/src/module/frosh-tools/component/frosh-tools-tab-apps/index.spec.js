@@ -1,7 +1,10 @@
-import { reactive } from 'vue';
 import { afterEach, describe, expect, it, vi } from 'vitest';
 import { flushPromises } from '@friendsofshopware/vitest-shopware-admin-bridge/test-utils';
-import { createAcl, mountRegistered } from '../../../../../test/helpers';
+import {
+    createAcl,
+    createTestRouter,
+    mountRegistered,
+} from '../../../../../test/helpers';
 import './index';
 
 function createStatus(overrides = {}) {
@@ -60,8 +63,10 @@ async function createWrapper({
     canUpdate = true,
     section = 'connection',
 } = {}) {
+    const router = await createTestRouter({ section });
+
     return mountRegistered('frosh-tools-tab-apps', {
-        global: { mocks: { $route: reactive({ query: { section } }) } },
+        global: { plugins: [router] },
         stubs: {
             'sw-verify-user-modal': {
                 name: 'sw-verify-user-modal',
@@ -399,8 +404,8 @@ describe('frosh-tools-tab-apps', () => {
         await flushPromises();
         await wrapper.vm.onShopIdVerified();
         expect(wrapper.vm.shopIdVisible).toBe(true);
-        wrapper.vm.$route.query = { section: 'apps' };
-        await wrapper.vm.$nextTick();
+        await wrapper.vm.$router.push({ query: { section: 'apps' } });
+        await flushPromises();
         expect(wrapper.vm.shopIdVisible).toBe(false);
         expect(wrapper.vm.revealedShopId).toBeNull();
         wrapper.unmount();

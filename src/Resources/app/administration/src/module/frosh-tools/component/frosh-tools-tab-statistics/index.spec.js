@@ -1,10 +1,12 @@
-import { reactive } from 'vue';
 import { describe, expect, it, vi } from 'vitest';
 import {
     allowConsoleMessage,
     flushPromises,
 } from '@friendsofshopware/vitest-shopware-admin-bridge/test-utils';
-import { mountRegistered } from '../../../../../test/helpers.js';
+import {
+    createTestRouter,
+    mountRegistered,
+} from '../../../../../test/helpers.js';
 import '../../../../mixin/sortable-table.js';
 import './index.js';
 
@@ -60,6 +62,8 @@ async function createWrapper({
     section = 'runtime',
     service = null,
 } = {}) {
+    const router = await createTestRouter({ section });
+
     return mountRegistered('frosh-tools-tab-statistics', {
         stubs: {
             'ft-hero-state': {
@@ -68,7 +72,7 @@ async function createWrapper({
                     '<div class="ft-hero-state"><p class="ft-hero-state__body">{{ body }}</p><slot name="actions" /></div>',
             },
         },
-        global: { mocks: { $route: reactive({ query: { section } }) } },
+        global: { plugins: [router] },
         provide: {
             froshToolsService: service || {
                 getCacheStatistics: fail
@@ -113,14 +117,14 @@ describe('frosh-tools-tab-statistics', () => {
         await flushPromises();
         expect(wrapper.text()).toContain('product');
         expect(wrapper.text()).not.toContain('OPcache');
-        wrapper.vm.$route.query = { section: 'redis' };
-        await wrapper.vm.$nextTick();
+        await wrapper.vm.$router.push({ query: { section: 'redis' } });
+        await flushPromises();
         expect(wrapper.find('ft-empty-stub').attributes('title')).toBe(
             'No Redis connections reported'
         );
         expect(wrapper.text()).not.toContain('product');
-        wrapper.vm.$route.query = { section: 'invalid' };
-        await wrapper.vm.$nextTick();
+        await wrapper.vm.$router.push({ query: { section: 'invalid' } });
+        await flushPromises();
         expect(wrapper.text()).toContain('OPcache');
         wrapper.unmount();
     });

@@ -1,7 +1,9 @@
-import { reactive } from 'vue';
 import { afterEach, describe, expect, it, vi } from 'vitest';
 import { flushPromises } from '@friendsofshopware/vitest-shopware-admin-bridge/test-utils';
-import { mountRegistered } from '../../../../../test/helpers.js';
+import {
+    createTestRouter,
+    mountRegistered,
+} from '../../../../../test/helpers.js';
 import './index.js';
 
 const STATUS = {
@@ -24,6 +26,8 @@ function createService(overrides = {}) {
 }
 
 async function createWrapper({ service = createService(), query = {} } = {}) {
+    const router = await createTestRouter(query);
+
     return mountRegistered('frosh-tools-tab-security', {
         provide: { froshToolsService: service },
         stubs: {
@@ -31,12 +35,7 @@ async function createWrapper({ service = createService(), query = {} } = {}) {
             'frosh-tools-security-dependencies': true,
             'frosh-tools-security-files': true,
         },
-        global: {
-            mocks: {
-                $route: reactive({ query }),
-                $router: { push: vi.fn().mockResolvedValue() },
-            },
-        },
+        global: { plugins: [router] },
     });
 }
 
@@ -64,17 +63,17 @@ describe('frosh-tools-tab-security', () => {
         expect(wrapper.vm.activeTab).toBe('files');
         expect(wrapper.find('ft-refresh-button-stub').exists()).toBe(false);
 
+        const push = vi.spyOn(wrapper.vm.$router, 'push');
         wrapper.vm.selectTab('dependencies');
-        expect(wrapper.vm.$router.push).toHaveBeenCalledWith({
+        expect(push).toHaveBeenCalledWith({
             query: { section: 'dependencies' },
         });
-        wrapper.vm.$route.query = { section: 'dependencies' };
-        await wrapper.vm.$nextTick();
+        await flushPromises();
         expect(
             wrapper.find('frosh-tools-security-dependencies-stub').exists()
         ).toBe(true);
-        wrapper.vm.$route.query = { section: 'files' };
-        await wrapper.vm.$nextTick();
+        await wrapper.vm.$router.push({ query: { section: 'files' } });
+        await flushPromises();
         expect(wrapper.find('frosh-tools-security-files-stub').exists()).toBe(
             true
         );
