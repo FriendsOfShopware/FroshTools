@@ -118,7 +118,7 @@
     }
 
     // Undo the admin's global a[target="_blank"] inline-link styling on the hero CTA.
-    &.ft a.frosh-tab-shopmon__cta-secondary[target="_blank"] {
+    &.ft a.frosh-tab-shopmon__cta-secondary[target='_blank'] {
         display: inline-flex;
         font-size: 0.9062rem;
         color: var(--ft-text);

@@ -38,20 +38,20 @@
     --ft-radius-lg: 1rem;
     --ft-radius-xl: 1.5rem;
     --ft-shadow-sm: 0 1px 2px rgba(15, 23, 42, 4%);
-    --ft-shadow-md: 0 4px 14px rgba(15, 23, 42, 6%), 0 1px 3px rgba(15, 23, 42, 4%);
+    --ft-shadow-md:
+        0 4px 14px rgba(15, 23, 42, 6%), 0 1px 3px rgba(15, 23, 42, 4%);
     --ft-shadow-lg: 0 10px 30px rgba(15, 23, 42, 8%);
-    --ft-mono:
-        ui-monospace,
-        sfmono-regular,
-        menlo,
-        consolas,
-        monospace;
+    --ft-mono: ui-monospace, sfmono-regular, menlo, consolas, monospace;
     --ft-transition: 160ms ease;
-    --ft-material: var(--color-elevation-surface-raised, rgba(239, 239, 242, 86%));
+    --ft-material: var(
+        --color-elevation-surface-raised,
+        rgba(239, 239, 242, 86%)
+    );
     --ft-scrim: var(--color-elevation-backdrop-default, rgba(0, 0, 0, 28%));
     --ft-on-accent: var(--color-text-static-default, #fff);
 
-    font-family: -apple-system, BlinkMacSystemFont, system-ui, "Segoe UI", sans-serif;
+    font-family:
+        -apple-system, BlinkMacSystemFont, system-ui, 'Segoe UI', sans-serif;
     font-size: 0.875rem;
     line-height: 1.5;
     font-optical-sizing: auto;
@@ -65,7 +65,15 @@
         font-family: inherit;
     }
 
-    :where(button, a, input, select, textarea, summary, [tabindex]):focus-visible {
+    :where(
+        button,
+        a,
+        input,
+        select,
+        textarea,
+        summary,
+        [tabindex]
+    ):focus-visible {
         outline: 3px solid var(--ft-accent);
         outline-offset: 3px;
     }
@@ -81,7 +89,7 @@
 }
 
 // Dark mode (Shopware admin toggles a dark theme via [data-theme="dark"] or .dark).
-[data-theme="dark"] .ft,
+[data-theme='dark'] .ft,
 .dark .ft,
 html.dark .ft,
 body.dark .ft {
@@ -102,17 +110,32 @@ body.dark .ft {
     --ft-material: var(--color-elevation-surface-raised, rgba(38, 38, 40, 90%));
     --ft-scrim: var(--color-elevation-backdrop-default, rgba(0, 0, 0, 55%));
     --ft-neutral: var(--color-text-secondary-default, #a1a1a6);
-    --ft-accent-soft: var(--color-background-brand-default, rgba(96, 165, 250, 18%));
+    --ft-accent-soft: var(
+        --color-background-brand-default,
+        rgba(96, 165, 250, 18%)
+    );
     --ft-accent-hover: var(--color-brand-200, #93c5fd);
     --ft-success: var(--color-text-positive-default, #4ade80);
-    --ft-success-soft: var(--color-background-positive-default, rgba(74, 222, 128, 16%));
+    --ft-success-soft: var(
+        --color-background-positive-default,
+        rgba(74, 222, 128, 16%)
+    );
     --ft-warning: var(--color-text-attention-default, #fbbf24);
-    --ft-warning-soft: var(--color-background-attention-default, rgba(251, 191, 36, 18%));
+    --ft-warning-soft: var(
+        --color-background-attention-default,
+        rgba(251, 191, 36, 18%)
+    );
     --ft-danger: var(--color-text-critical-default, #f99);
     --ft-danger-soft: var(--color-background-critical-default, #44272a);
     --ft-info: var(--color-brand-300, #38bdf8);
-    --ft-info-soft: var(--color-background-brand-default, rgba(56, 189, 248, 18%));
-    --ft-neutral-soft: var(--color-background-tertiary-default, rgba(148, 163, 184, 16%));
+    --ft-info-soft: var(
+        --color-background-brand-default,
+        rgba(56, 189, 248, 18%)
+    );
+    --ft-neutral-soft: var(
+        --color-background-tertiary-default,
+        rgba(148, 163, 184, 16%)
+    );
     --ft-shadow-sm: 0 1px 2px rgba(0, 0, 0, 40%);
     --ft-shadow-md: 0 6px 20px rgba(0, 0, 0, 45%);
     --ft-shadow-lg: 0 14px 40px rgba(0, 0, 0, 55%);
@@ -202,7 +225,9 @@ body.dark .ft {
         color: var(--ft-text);
         text-decoration: none;
         line-height: 1.35;
-        transition: background var(--ft-transition), color var(--ft-transition);
+        transition:
+            background var(--ft-transition),
+            color var(--ft-transition);
 
         > .ft-icon {
             color: var(--ft-accent);
@@ -336,7 +361,11 @@ body.dark .ft {
         background: var(--ft-danger-soft);
 
         &:hover:not(:disabled) {
-            background: color-mix(in srgb, var(--ft-danger) 8%, var(--ft-danger-soft));
+            background: color-mix(
+                in srgb,
+                var(--ft-danger) 8%,
+                var(--ft-danger-soft)
+            );
             border-color: var(--ft-danger);
             color: var(--ft-danger);
         }
@@ -351,7 +380,7 @@ body.dark .ft {
 
 // The admin globally restyles a[target="_blank"] as an inline text link
 // (underline, brand color, small font, ::after icon) — undo that for anchor buttons.
-.ft a.ft-btn[target="_blank"] {
+.ft a.ft-btn[target='_blank'] {
     display: inline-flex;
     font-size: 0.8125rem;
     color: var(--ft-text);
@@ -367,7 +396,7 @@ body.dark .ft {
     }
 }
 
-.ft a.ft-btn--primary[target="_blank"] {
+.ft a.ft-btn--primary[target='_blank'] {
     color: var(--ft-on-accent);
 
     &:hover:not(:disabled) {
@@ -517,22 +546,22 @@ th.ft-table__sortable {
                 rgba(255, 255, 255, 0%)
             ),
             linear-gradient(
-                to left,
-                var(--ft-surface) 30%,
-                rgba(255, 255, 255, 0%)
-            )
-            100% 0,
+                    to left,
+                    var(--ft-surface) 30%,
+                    rgba(255, 255, 255, 0%)
+                )
+                100% 0,
             radial-gradient(
                 farthest-side at 0 50%,
                 rgba(0, 0, 0, 12%),
                 rgba(0, 0, 0, 0%)
             ),
             radial-gradient(
-                farthest-side at 100% 50%,
-                rgba(0, 0, 0, 12%),
-                rgba(0, 0, 0, 0%)
-            )
-            100% 0;
+                    farthest-side at 100% 50%,
+                    rgba(0, 0, 0, 12%),
+                    rgba(0, 0, 0, 0%)
+                )
+                100% 0;
         background-repeat: no-repeat;
         background-size:
             40px 100%,
@@ -625,7 +654,7 @@ th.ft-table__sortable {
     position: relative;
 
     &::after {
-        content: "";
+        content: '';
         position: absolute;
         inset: 0;
 
@@ -692,7 +721,7 @@ th.ft-table__sortable {
 
 @media (prefers-contrast: more) {
     .ft,
-    [data-theme="dark"] .ft,
+    [data-theme='dark'] .ft,
     .dark .ft,
     html.dark .ft,
     body.dark .ft {

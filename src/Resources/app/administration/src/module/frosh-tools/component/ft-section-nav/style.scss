@@ -22,7 +22,9 @@
         font-size: 0.8125rem;
         font-weight: 600;
         text-decoration: none;
-        transition: background var(--ft-transition), color var(--ft-transition);
+        transition:
+            background var(--ft-transition),
+            color var(--ft-transition);
 
         &:hover {
             background: var(--ft-surface-hover);
