@@ -10,9 +10,10 @@ use Doctrine\DBAL\Connection;
  * Reads all accounts that can authenticate against the Admin API: admin users,
  * integrations and their ACL roles.
  *
- * Exposes ids and security relevant attributes only - no usernames, names,
- * e-mail addresses or access keys. Aggregated across many shops those would
- * form a credential stuffing list, so do not add them.
+ * Exposes ids and security relevant attributes only - no usernames, real names
+ * or access keys. Aggregated across many shops those would form a credential
+ * stuffing list, so do not add them. E-mail addresses are masked to a fixed
+ * width by {@see maskEmail()} and must stay that way.
  */
 class AdminAccountService
 {
@@ -30,6 +31,7 @@ class AdminAccountService
     {
         $rows = $this->connection->fetchAllAssociative(
             'SELECT LOWER(HEX(`u`.`id`)) AS `id`,
+                    `u`.`email`,
                     `u`.`active`,
                     `u`.`admin`,
                     `u`.`created_at`,
@@ -55,6 +57,7 @@ class AdminAccountService
 
             $users[] = [
                 'id' => $id,
+                'maskedEmail' => $this->maskEmail($row['email']),
                 'active' => (bool) $row['active'],
                 'admin' => (bool) $row['admin'],
                 'aclRoleIds' => $roles[$id] ?? [],
@@ -198,6 +201,23 @@ class AdminAccountService
         }
 
         return array_values(array_map(strval(...), $decoded));
+    }
+
+    private function maskEmail(mixed $value): ?string
+    {
+        if (!\is_string($value) || $value === '') {
+            return null;
+        }
+
+        $at = strrpos($value, '@');
+        if ($at === false || $at === 0 || $at === \strlen($value) - 1) {
+            return null;
+        }
+
+        $domain = substr($value, $at + 1);
+        $dot = strrpos($domain, '.');
+
+        return $value[0] . '***@' . $domain[0] . '***' . ($dot !== false ? substr($domain, $dot) : '');
     }
 
     private function formatDate(mixed $value): ?string

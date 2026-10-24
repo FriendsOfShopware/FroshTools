@@ -8,6 +8,7 @@ use Doctrine\DBAL\Connection;
 use Frosh\Tools\Components\Security\AdminAccountService;
 use Frosh\Tools\Tests\IntegrationTestCase;
 use PHPUnit\Framework\Attributes\CoversClass;
+use PHPUnit\Framework\Attributes\DataProvider;
 
 #[CoversClass(AdminAccountService::class)]
 class AdminAccountServiceTest extends IntegrationTestCase
@@ -49,6 +50,7 @@ class AdminAccountServiceTest extends IntegrationTestCase
             }
 
             static::assertMatchesRegularExpression('/^[0-9a-f]{32}$/', $user['id']);
+            static::assertMatchesRegularExpression('/^.\\*{3}@.\\*{3}(\\..+)?$/', (string) $user['maskedEmail']);
             static::assertIsBool($user['active']);
             static::assertIsBool($user['admin']);
             static::assertIsBool($user['passwordRecoveryPending']);
@@ -57,6 +59,43 @@ class AdminAccountServiceTest extends IntegrationTestCase
             static::assertSame('/admin#/sw/users/permissions/user/detail/' . $user['id'], $user['adminPath']);
             static::assertNotNull($user['createdAt']);
         }
+    }
+
+    /**
+     * @return iterable<string, array{string, ?string}>
+     */
+    public static function emails(): iterable
+    {
+        yield 'company address' => ['admin@example.com', 'a***@e***.com'];
+        yield 'long local part' => ['verylongfirstname.lastname@example.com', 'v***@e***.com'];
+        yield 'single char local part' => ['a@example.com', 'a***@e***.com'];
+        yield 'subdomain' => ['admin@mail.example.com', 'a***@m***.com'];
+        yield 'multi part tld' => ['admin@example.co.uk', 'a***@e***.uk'];
+        yield 'no tld' => ['admin@localhost', 'a***@l***'];
+        yield 'plus addressing' => ['admin+shop@example.com', 'a***@e***.com'];
+        yield 'empty' => ['', null];
+        yield 'no at sign' => ['notanemail', null];
+        yield 'nothing before at' => ['@example.com', null];
+        yield 'nothing after at' => ['admin@', null];
+    }
+
+    #[DataProvider('emails')]
+    public function testEmailMaskingHidesLengthAndContent(string $email, ?string $expected): void
+    {
+        $mask = new \ReflectionMethod(AdminAccountService::class, 'maskEmail');
+
+        static::assertSame($expected, $mask->invoke($this->accounts, $email));
+    }
+
+    public function testMaskedEmailsOfDifferentLengthAreIndistinguishable(): void
+    {
+        $mask = new \ReflectionMethod(AdminAccountService::class, 'maskEmail');
+
+        static::assertSame(
+            $mask->invoke($this->accounts, 'a@example.com'),
+            $mask->invoke($this->accounts, 'averylongadminaddress@example.com'),
+            'The star count must not reveal the real length',
+        );
     }
 
     public function testIntegrationsExposeNoCredentials(): void
