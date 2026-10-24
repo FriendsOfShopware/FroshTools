@@ -54,6 +54,21 @@ class LoginActivitySubscriberTest extends TestCase
         static::assertCount(0, $this->logs->getRecords());
     }
 
+    public function testThrottledBurstDoesNotHideTheInitialFailureOrSubsequentLogin(): void
+    {
+        $request = new Request(request: ['grant_type' => 'password', 'client_id' => 'administration', 'username' => 'admin'], attributes: ['_route' => 'api.oauth.token']);
+        $kernel = static::createStub(HttpKernelInterface::class);
+        foreach ([401, ...array_fill(0, 100, 429), 200] as $status) {
+            $this->subscriber->onLoginResponse(new ResponseEvent($kernel, $request, HttpKernelInterface::MAIN_REQUEST, new Response('', $status)));
+        }
+
+        $records = $this->logs->getRecords();
+        static::assertCount(2, $records);
+        static::assertSame('user:login_failed', $records[0]->message);
+        static::assertSame(401, $records[0]->context['statusCode']);
+        static::assertSame('user:login', $records[1]->message);
+    }
+
     #[DataProvider('loginResponses')]
     public function testRecordsOnlyPasswordLoginOutcomes(int $status, string $grant, ?string $action, int $requestType = HttpKernelInterface::MAIN_REQUEST): void
     {
@@ -74,7 +89,7 @@ class LoginActivitySubscriberTest extends TestCase
     {
         yield 'successful login' => [200, 'password', 'user:login'];
         yield 'rejected credentials' => [401, 'password', 'user:login_failed'];
-        yield 'rate limited login' => [429, 'password', 'user:login_failed'];
+        yield 'rate limited requests are not credential checks' => [429, 'password', null];
         yield 'refresh is not login' => [200, 'refresh_token', null];
         yield 'server failure is not credential rejection' => [500, 'password', null];
         yield 'ignore subrequests' => [200, 'password', null, HttpKernelInterface::SUB_REQUEST];

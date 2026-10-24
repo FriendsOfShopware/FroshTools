@@ -39,6 +39,11 @@ final class LoginActivitySubscriber implements EventSubscriberInterface
             return;
         }
         $status = $event->getResponse()->getStatusCode();
+        if ($status === 429) {
+            // Throttled requests do not check credentials. Avoid a log write for
+            // every request in a brute-force burst after the limiter takes over.
+            return;
+        }
         if ($status >= 500 || ($status >= 300 && $status < 400)) {
             return; // Server errors are not evidence of rejected credentials.
         }

@@ -6,9 +6,10 @@ namespace Frosh\Tools\Tests\Components\Security\Activity;
 
 use Doctrine\DBAL\Connection;
 use Frosh\Tools\Components\Security\Activity\ActivityActorResolver;
-use Frosh\Tools\Components\Security\Subscriber\PluginActivitySubscriber;
 use Frosh\Tools\Components\Security\Activity\ActivityStore;
+use Frosh\Tools\Components\Security\Subscriber\PluginActivitySubscriber;
 use Frosh\Tools\Tests\IntegrationTestCase;
+use PHPUnit\Framework\Attributes\DataProvider;
 use Shopware\Core\Framework\Api\Context\AdminApiSource;
 use Shopware\Core\Framework\Context;
 use Shopware\Core\Framework\DataAbstractionLayer\EntityWriteResult;
@@ -18,6 +19,8 @@ use Shopware\Core\Framework\Plugin\Context\ActivateContext;
 use Shopware\Core\Framework\Plugin\Event\PluginPostActivateEvent;
 use Shopware\Core\Framework\Plugin\PluginEntity;
 use Shopware\Core\Framework\Uuid\Uuid;
+use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\HttpFoundation\RequestStack;
 
 /**
  * @internal
@@ -209,6 +212,43 @@ class ActivityStoreTest extends IntegrationTestCase
         $result = $this->store->search(1, 25, 'plugin:install', '', null, null);
         static::assertSame(1, $result['total']);
         static::assertSame('Example', $result['entries'][0]['context']['pluginName']);
+    }
+
+    #[DataProvider('entityClientAddresses')]
+    public function testEntityActivityRetainsRequestIpInTimelineAndExport(string $ip): void
+    {
+        $requests = static::getContainer()->get(RequestStack::class);
+        $requests->push(new Request(server: ['REMOTE_ADDR' => $ip]));
+        try {
+            static::getContainer()->get('acl_role.repository')->create([[
+                'id' => Uuid::randomHex(),
+                'name' => 'IP activity test',
+                'privileges' => [],
+            ]], Context::createDefaultContext());
+        } finally {
+            $requests->pop();
+        }
+
+        $result = $this->store->search(1, 25, 'acl_role:create', '', null, null, clientIp: $ip);
+        static::assertSame(1, $result['total']);
+        static::assertSame($ip, $result['entries'][0]['context']['clientIp']);
+        static::assertSame($result['entries'], iterator_to_array($this->store->export('acl_role:create', '', null, null, clientIp: $ip)));
+
+        // Background work must not inherit an address from an earlier request.
+        static::getContainer()->get('acl_role.repository')->create([[
+            'id' => Uuid::randomHex(),
+            'name' => 'Background activity test',
+            'privileges' => [],
+        ]], Context::createDefaultContext());
+        $all = $this->store->search(1, 25, 'acl_role:create', '', null, null);
+        static::assertSame(2, $all['total']);
+        static::assertCount(1, array_filter($all['entries'], static fn (array $entry): bool => isset($entry['context']['clientIp'])));
+    }
+
+    public static function entityClientAddresses(): iterable
+    {
+        yield 'IPv4' => ['192.0.2.10'];
+        yield 'IPv6' => ['2001:db8::1'];
     }
 
     public function testConfiguredIntegrationActionsAppearInSubjectHistoryAndExport(): void

@@ -42,6 +42,8 @@ abstract class EntityActivitySubscriber implements EventSubscriberInterface
             if ($action === null || ($action === 'update' && $changed === [])) {
                 continue;
             }
+            // ActivityHandler adds the originating client IP from RequestStack
+            // for every event, respecting Symfony's trusted proxy configuration.
             $this->logger->info(static::ENTITY . ':' . $action, array_filter([
                 ...($action === 'password_reset' ? ['actorType' => 'recovery'] : $this->actors->resolve($event->getContext())),
                 ...$this->details($result),
