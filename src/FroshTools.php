@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Frosh\Tools;
 
+use Doctrine\DBAL\Connection;
 use Frosh\Tools\Components\ShopmonIntegrationService;
 use Frosh\Tools\DependencyInjection\CacheCompilerPass;
 use Frosh\Tools\DependencyInjection\DisableElasticsearchCompilerPass;
@@ -15,6 +16,7 @@ use Shopware\Core\Framework\Context;
 use Shopware\Core\Framework\DataAbstractionLayer\EntityRepository;
 use Shopware\Core\Framework\Plugin;
 use Shopware\Core\Framework\Plugin\Context\InstallContext;
+use Shopware\Core\Framework\Plugin\Context\UninstallContext;
 use Shopware\Core\Framework\Plugin\Context\UpdateContext;
 use Shopware\Core\System\Integration\IntegrationCollection;
 use Shopware\Core\System\SystemConfig\SystemConfigService;
@@ -42,6 +44,18 @@ class FroshTools extends Plugin
     {
         parent::update($updateContext);
         $this->initializeShopmon($updateContext->getContext());
+    }
+
+    public function uninstall(UninstallContext $uninstallContext): void
+    {
+        parent::uninstall($uninstallContext);
+        if ($uninstallContext->keepUserData()) {
+            return;
+        }
+        \assert($this->container !== null);
+        $connection = $this->container->get(Connection::class);
+        \assert($connection instanceof Connection);
+        $connection->executeStatement('DROP TABLE IF EXISTS frosh_tools_security_activity');
     }
 
     public static function formatSize(float $size): string

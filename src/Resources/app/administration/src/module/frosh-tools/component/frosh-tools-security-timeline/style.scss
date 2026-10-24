@@ -1,0 +1,68 @@
+.frosh-security-timeline {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+
+    &__filters {
+        display: grid;
+        grid-template-columns: repeat(3, minmax(0, 1fr));
+        align-items: end;
+        gap: 12px;
+
+        > label {
+            display: flex;
+            min-width: 0;
+            flex-direction: column;
+            gap: 6px;
+        }
+
+        > label > input {
+            min-width: 0;
+            min-height: 48px;
+            padding: 12px;
+            border: 1px solid var(--ft-border);
+            border-radius: 4px;
+            color: var(--ft-text);
+            background: var(--color-background-primary-default, #fff);
+            font: inherit;
+        }
+    }
+
+    &__select {
+        min-width: 0;
+
+        .sw-single-select__selection-text {
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+        }
+
+        .sw-field {
+            margin-bottom: 0;
+        }
+    }
+
+    &__filter-actions {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 8px;
+        grid-column: 1 / -1;
+    }
+
+    @media (max-width: 1200px) {
+        &__filters {
+            grid-template-columns: repeat(2, minmax(0, 1fr));
+        }
+    }
+
+    @media (max-width: 700px) {
+        &__filters {
+            grid-template-columns: minmax(0, 1fr);
+        }
+    }
+
+    &__details {
+        white-space: pre-wrap;
+        overflow-wrap: anywhere;
+    }
+}
