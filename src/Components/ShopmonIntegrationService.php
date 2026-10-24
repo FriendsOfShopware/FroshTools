@@ -22,6 +22,22 @@ class ShopmonIntegrationService
     private const CONFIG_KEY = 'FroshTools.config.shopmonIntegrationData';
     private const LEGACY_CONFIG_KEY = 'FroshShopmon.config.integrationData';
 
+    private const PERMISSIONS = [
+        'app:read',
+        'plugin:read',
+        'scheduled_task:read',
+        'scheduled_task:update',
+        FroshToolsPrivileges::READ,
+        FroshToolsPrivileges::APPS_READ,
+        FroshToolsPrivileges::CACHE_READ,
+        FroshToolsPrivileges::CACHE_UPDATE,
+        FroshToolsPrivileges::SCHEDULED_TASK_READ,
+        FroshToolsPrivileges::SCHEDULED_TASK_UPDATE,
+        FroshToolsPrivileges::SECURITY_READ,
+        'system:clear:cache',
+        'system:cache:info',
+    ];
+
     /**
      * @param EntityRepository<IntegrationCollection> $integrationRepository
      * @param EntityRepository<AclRoleCollection> $aclRoleRepository
@@ -172,21 +188,7 @@ class ShopmonIntegrationService
             'aclRoles' => [[
                 'id' => $id,
                 'name' => 'frosh_shopmon_role',
-                'privileges' => [
-                    'app:read',
-                    'plugin:read',
-                    'scheduled_task:read',
-                    'scheduled_task:update',
-                    FroshToolsPrivileges::READ,
-                    FroshToolsPrivileges::APPS_READ,
-                    FroshToolsPrivileges::CACHE_READ,
-                    FroshToolsPrivileges::CACHE_UPDATE,
-                    FroshToolsPrivileges::SCHEDULED_TASK_READ,
-                    FroshToolsPrivileges::SCHEDULED_TASK_UPDATE,
-                    FroshToolsPrivileges::SECURITY_READ,
-                    'system:clear:cache',
-                    'system:cache:info',
-                ],
+                'privileges' => self::PERMISSIONS,
             ]],
         ]], $context);
     }
