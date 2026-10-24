@@ -20,6 +20,35 @@ class SecurityControllerTest extends IntegrationTestCase
         $this->controller = static::getContainer()->get(SecurityController::class);
     }
 
+    public function testAccountsReturnsInventoryWithoutPersonalData(): void
+    {
+        $response = $this->controller->accounts();
+
+        static::assertSame(200, $response->getStatusCode());
+
+        $data = json_decode((string) $response->getContent(), true, 512, JSON_THROW_ON_ERROR);
+
+        static::assertIsArray($data);
+        static::assertArrayHasKey('generatedAt', $data);
+
+        foreach (['users', 'adminUsers', 'activeUsers', 'integrations', 'adminIntegrations', 'manualIntegrations', 'aclRoles'] as $key) {
+            static::assertArrayHasKey($key, $data['summary']);
+            static::assertIsInt($data['summary'][$key]);
+        }
+
+        static::assertNotEmpty($data['users']);
+        static::assertSame(\count($data['users']), $data['summary']['users']);
+
+        // Exact keys, not substrings: accessKeyCount legitimately contains "accessKey".
+        foreach (['users', 'integrations'] as $section) {
+            foreach ($data[$section] as $entry) {
+                foreach (['username', 'email', 'firstName', 'lastName', 'password', 'accessKey', 'secretAccessKey', 'storeToken'] as $forbidden) {
+                    static::assertArrayNotHasKey($forbidden, $entry);
+                }
+            }
+        }
+    }
+
     public function testStatusReturnsSummaryAndFindings(): void
     {
         $response = $this->controller->status();

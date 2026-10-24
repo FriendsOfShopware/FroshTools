@@ -115,6 +115,7 @@ class AclRouteTest extends TestCase
         yield 'security.activity.export' => [SecurityActivityController::class, 'export', FroshToolsPrivileges::SECURITY_READ];
         yield 'security.activity' => [SecurityActivityController::class, 'activity', FroshToolsPrivileges::SECURITY_READ];
         yield 'security.status' => [SecurityController::class, 'status', FroshToolsPrivileges::SECURITY_READ];
+        yield 'security.accounts' => [SecurityController::class, 'accounts', FroshToolsPrivileges::SECURITY_READ];
         yield 'security.sbom' => [SecurityController::class, 'sbom', FroshToolsPrivileges::SECURITY_READ];
         yield 'security.audit' => [ComposerAuditController::class, 'audit', FroshToolsPrivileges::SECURITY_READ];
         yield 'security.extensions' => [ExtensionFilesController::class, 'listExtensionFiles', FroshToolsPrivileges::SECURITY_READ];
