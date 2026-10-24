@@ -68,6 +68,7 @@ class ShopmonControllerTest extends IntegrationTestCase
 
         static::assertTrue($first['configured']);
         static::assertTrue($second['configured']);
+        static::assertSame($first, $second, 'Repeated setup must preserve credentials');
 
         $result = static::getContainer()->get('integration.repository')
             ->search(new Criteria([self::INTEGRATION_ID]), $context);
