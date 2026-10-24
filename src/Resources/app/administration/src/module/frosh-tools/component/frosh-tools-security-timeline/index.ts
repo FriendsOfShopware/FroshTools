@@ -94,7 +94,13 @@ Shopware.Component.register('frosh-tools-security-timeline', {
             return values.map((value) => ({ value, label: value }));
         },
         actionOptions() {
-            return this.actionValues.map((value) => ({
+            const values = [
+                ...new Set([
+                    ...(this.action ? [this.action] : []),
+                    ...this.actionValues,
+                ]),
+            ];
+            return values.map((value) => ({
                 value,
                 label: this.actionLabel(value),
             }));
@@ -169,6 +175,12 @@ Shopware.Component.register('frosh-tools-security-timeline', {
             } finally {
                 this.isExporting = false;
             }
+        },
+
+        refresh() {
+            void this.load();
+            void this.loadOptions('actor');
+            void this.loadOptions('action');
         },
 
         async load() {

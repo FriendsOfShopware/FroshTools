@@ -96,19 +96,21 @@
                 :min="from || undefined"
             />
         </label>
-        <button
-            type="submit"
-            class="ft-btn"
-            :disabled="isLoading"
-        >
-            {{ $t('frosh-tools.tabs.security.timeline.apply') }}
-        </button>
-        <ft-button
-            variant="ghost"
-            @click="resetFilters"
-        >
-            {{ $t('frosh-tools.tabs.security.timeline.clear') }}
-        </ft-button>
+        <div class="frosh-security-timeline__filter-actions">
+            <button
+                type="submit"
+                class="ft-btn"
+                :disabled="isLoading"
+            >
+                {{ $t('frosh-tools.tabs.security.timeline.apply') }}
+            </button>
+            <ft-button
+                variant="ghost"
+                @click="resetFilters"
+            >
+                {{ $t('frosh-tools.tabs.security.timeline.clear') }}
+            </ft-button>
+        </div>
     </form>
     <div
         v-if="optionsError.actor || optionsError.action"
@@ -132,7 +134,7 @@
             </ft-button>
             <ft-refresh-button
                 :loading="isLoading"
-                @click="load"
+                @click="refresh"
             />
         </template>
         <ft-hero-state

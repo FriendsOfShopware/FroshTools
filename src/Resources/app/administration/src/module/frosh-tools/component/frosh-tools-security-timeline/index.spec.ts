@@ -256,6 +256,51 @@ describe('security timeline', () => {
         expect(wrapper.findComponent({ name: 'ft-empty' }).exists()).toBe(true);
     });
 
+    it('refreshes filter choices while preserving the applied scope and selected action', async () => {
+        const service = await mount();
+        await wrapper.setData({ actor: 'alice', action: 'plugin:install' });
+        await wrapper.get('form').trigger('submit');
+        await flushPromises();
+        service.getSecurityActivityOptions.mockImplementation((field) =>
+            Promise.resolve({
+                values: field === 'actor' ? ['new-admin'] : ['user:login'],
+                hasMore: false,
+            })
+        );
+        service.getSecurityActivityOptions.mockClear();
+
+        wrapper.findComponent({ name: 'ft-refresh-button' }).vm.$emit('click');
+        await flushPromises();
+
+        expect(service.getSecurityActivityOptions).toHaveBeenCalledWith(
+            'actor',
+            '',
+            1
+        );
+        expect(service.getSecurityActivityOptions).toHaveBeenCalledWith(
+            'action',
+            '',
+            1
+        );
+        expect(service.getSecurityActivity).toHaveBeenLastCalledWith(
+            expect.objectContaining({
+                actor: 'alice',
+                action: 'plugin:install',
+            })
+        );
+        const selects = wrapper.findAllComponents({
+            name: 'frosh-tools-security-activity-select',
+        });
+        expect(selects[0].props('options')).toContainEqual({
+            value: 'new-admin',
+            label: 'new-admin',
+        });
+        expect(selects[1].props('options')).toContainEqual({
+            value: 'plugin:install',
+            label: 'Plugin installed',
+        });
+    });
+
     it('searches recorded actors and clears the filter selection', async () => {
         const service = await mount();
         const actorSelect = wrapper.findAllComponents({
