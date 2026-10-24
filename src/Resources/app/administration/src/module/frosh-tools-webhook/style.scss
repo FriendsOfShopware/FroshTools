@@ -57,4 +57,16 @@
         border-radius: var(--ft-radius-sm);
         font-family: inherit;
     }
+
+    .sw-button--primary,
+    .mt-button--primary {
+        background: var(--ft-accent-fill);
+        border-color: var(--ft-accent-fill);
+        color: var(--ft-on-accent);
+
+        &:hover:not(:disabled) {
+            background: var(--ft-accent-fill-hover);
+            border-color: var(--ft-accent-fill-hover);
+        }
+    }
 }

@@ -70,8 +70,8 @@
     border-radius: var(--ft-radius-md);
 
     .frosh-security-dependencies__point-icon--info {
-        color: var(--ft-text-inverse);
-        background: var(--ft-info);
+        color: var(--ft-on-accent);
+        background: var(--ft-accent-fill);
     }
 
     .frosh-security-dependencies__point-text {
@@ -233,8 +233,8 @@
         justify-content: center;
         font-size: 0.75rem;
         font-weight: 700;
-        color: var(--ft-text-inverse);
-        background: var(--ft-accent);
+        color: var(--ft-on-accent);
+        background: var(--ft-accent-fill);
         border-radius: 50%;
     }
 }

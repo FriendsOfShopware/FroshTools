@@ -1,6 +1,7 @@
 .frosh-tab-sm {
     &__select {
         min-width: 280px;
+
         .sw-single-select {
             margin: 0;
         }
@@ -24,5 +25,37 @@
             max-width: 100%;
             height: auto;
         }
+    }
+}
+
+// Mermaid embeds light-theme colors in the SVG. Keep the diagram tied to the
+// current Tools theme, including when appearance changes without a re-render.
+#state_machine svg {
+    .node rect,
+    .node polygon,
+    .node circle,
+    .node ellipse {
+        fill: var(--ft-surface);
+        stroke: var(--ft-accent);
+    }
+
+    .nodeLabel,
+    .edgeLabel {
+        color: var(--ft-text);
+    }
+
+    .edgeLabel,
+    .edgeLabel span {
+        background-color: var(--ft-surface-2);
+    }
+
+    .flowchart-link {
+        stroke: var(--ft-text-soft);
+    }
+
+    .marker,
+    .marker path {
+        fill: var(--ft-text-soft);
+        stroke: var(--ft-text-soft);
     }
 }

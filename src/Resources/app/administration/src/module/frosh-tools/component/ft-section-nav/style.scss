@@ -16,6 +16,7 @@
         gap: 0.5rem;
         padding: 0.5rem 1rem;
         min-height: 2.5rem;
+        border: 1px solid transparent;
         border-radius: var(--ft-radius-sm);
         color: var(--ft-text-soft);
         font-size: 0.8125rem;
@@ -31,7 +32,8 @@
 
         &.is-active {
             background: var(--ft-surface);
-            color: var(--ft-text);
+            border-color: var(--ft-accent);
+            color: var(--ft-accent);
             box-shadow: var(--ft-shadow-sm);
         }
     }

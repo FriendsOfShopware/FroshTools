@@ -63,7 +63,7 @@
         padding: 13px 26px;
         border-radius: 999px;
         border: none;
-        background: var(--ft-accent);
+        background: var(--ft-accent-fill);
         color: var(--ft-on-accent);
         font-size: 0.9062rem;
         font-weight: 600;
@@ -74,7 +74,7 @@
         box-shadow: var(--ft-shadow-sm);
 
         &:hover:not(:disabled) {
-            background: var(--ft-accent-hover);
+            background: var(--ft-accent-fill-hover);
         }
 
         &:disabled {
