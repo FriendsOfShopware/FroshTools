@@ -16,31 +16,8 @@
         gap: 8px;
     }
 
-    // Looks like the bare accent pill it replaced, but is a real
-    // button so keyboard users can open the browse modal too.
     &__browse-btn {
-        display: inline-flex;
-        align-items: center;
-        background: transparent;
-        border: none;
-        border-radius: 999px;
-        padding: 2px 8px;
-        font: inherit;
-        font-size: 11.5px;
-        font-weight: 600;
-        color: var(--ft-accent);
-        cursor: pointer;
         white-space: nowrap;
-        transition: background var(--ft-transition);
-
-        &:hover {
-            background: var(--ft-accent-soft);
-        }
-
-        &:focus-visible {
-            outline: 2px solid var(--ft-accent);
-            outline-offset: 1px;
-        }
     }
 
     &__purge-btn {
@@ -53,7 +30,7 @@
         border-radius: var(--ft-radius-sm);
         padding: 8px 12px;
         margin-bottom: 10px;
-        font-size: 12.5px;
+        font-size: 0.7812rem;
         font-family: var(--ft-mono);
         overflow-wrap: anywhere;
     }
@@ -80,7 +57,7 @@
 
         label {
             color: var(--ft-text-soft);
-            font-size: 13px;
+            font-size: 0.8125rem;
         }
     }
 
@@ -91,7 +68,7 @@
         border-radius: var(--ft-radius-sm);
         background: var(--ft-surface);
         color: var(--ft-text);
-        font-size: 13px;
+        font-size: 0.8125rem;
 
         &:focus {
             outline: none;
@@ -102,7 +79,7 @@
     &__browse-hint {
         display: block;
         color: var(--ft-text-muted);
-        font-size: 12px;
+        font-size: 0.75rem;
         line-height: 1.45;
 
         &--warning {
@@ -142,7 +119,7 @@
         background: var(--ft-danger-soft);
         border-radius: var(--ft-radius-md);
         padding: 12px 14px;
-        font-size: 13px;
+        font-size: 0.8125rem;
     }
 
     &__messages {
@@ -166,7 +143,7 @@
         border: 0;
         background: var(--ft-surface);
         color: var(--ft-text);
-        font-size: 13px;
+        font-size: 0.8125rem;
         text-align: left;
         cursor: pointer;
 
@@ -182,7 +159,7 @@
     &__message-index {
         color: var(--ft-text-muted);
         font-family: var(--ft-mono);
-        font-size: 12px;
+        font-size: 0.75rem;
         min-width: 20px;
     }
 
@@ -193,7 +170,7 @@
     &__message-id {
         color: var(--ft-text-muted);
         font-family: var(--ft-mono);
-        font-size: 12px;
+        font-size: 0.75rem;
     }
 
     &__message-body {

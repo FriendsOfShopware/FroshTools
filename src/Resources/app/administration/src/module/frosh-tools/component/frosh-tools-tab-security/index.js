@@ -1,9 +1,9 @@
+import { resolveSection } from '../../section-navigation.ts';
 import template from './template.twig';
 import './style.scss';
 
 const { Component, Mixin } = Shopware;
 
-const VALID_TABS = ['overview', 'dependencies', 'files'];
 const NOTICE_KEY = 'frosh-tools.security.notice-dismissed';
 
 // Security Center container: owns the posture summary (fetched once) and the
@@ -19,7 +19,6 @@ Component.register('frosh-tools-tab-security', {
             isLoading: true,
             isExportingSbom: false,
             error: null,
-            activeTab: 'overview',
             noticeDismissed: false,
             summary: {
                 critical: 0,
@@ -34,10 +33,6 @@ Component.register('frosh-tools-tab-security', {
     },
 
     created() {
-        const requested = this.$route?.query?.section;
-        if (VALID_TABS.includes(requested)) {
-            this.activeTab = requested;
-        }
         try {
             this.noticeDismissed =
                 window.localStorage.getItem(NOTICE_KEY) === '1';
@@ -48,6 +43,10 @@ Component.register('frosh-tools-tab-security', {
     },
 
     computed: {
+        activeTab() {
+            return resolveSection(this.$route?.query?.section, this.tabs);
+        },
+
         tabs() {
             return [
                 {
@@ -208,10 +207,10 @@ Component.register('frosh-tools-tab-security', {
 
         selectTab(key) {
             if (this.activeTab === key) return;
-            this.activeTab = key;
-            // keep the section deep-linkable without polluting browser history
+            if (!this.tabs.some((tab) => tab.key === key)) return;
+            // Section navigation is part of the browser Back/Forward history.
             const query = { ...(this.$route?.query || {}), section: key };
-            this.$router?.replace({ query }).catch(() => {});
+            this.$router?.push({ query }).catch(() => {});
         },
     },
 });

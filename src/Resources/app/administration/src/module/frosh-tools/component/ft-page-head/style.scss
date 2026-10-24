@@ -4,11 +4,12 @@
     gap: 16px;
     align-items: flex-end;
     justify-content: space-between;
-    margin-bottom: 22px;
+    margin-bottom: 1.75rem;
 
     &__title {
-        font-size: 22px;
-        font-weight: 600;
+        font-size: clamp(1.75rem, 2.5vw, 2.125rem);
+        letter-spacing: -0.035em;
+        font-weight: 650;
         margin: 0;
         line-height: 1.2;
         color: var(--ft-text);
@@ -16,8 +17,10 @@
 
     &__sub {
         color: var(--ft-text-muted);
-        font-size: 13.5px;
-        margin-top: 4px;
+        font-size: 0.8438rem;
+        margin-top: 0.5rem;
+        max-width: 44rem;
+        line-height: 1.5;
     }
 
     &__actions {

@@ -3,7 +3,10 @@ import {
     allowConsoleMessage,
     flushPromises,
 } from '@friendsofshopware/vitest-shopware-admin-bridge/test-utils';
-import { mountRegistered } from '../../../../../test/helpers.js';
+import {
+    createTestRouter,
+    mountRegistered,
+} from '../../../../../test/helpers.js';
 import '../../../../mixin/sortable-table.js';
 import './index.js';
 
@@ -54,10 +57,24 @@ const DB_STATS = {
     ],
 };
 
-async function createWrapper({ fail = false } = {}) {
+async function createWrapper({
+    fail = false,
+    section = 'runtime',
+    service = null,
+} = {}) {
+    const router = await createTestRouter({ section });
+
     return mountRegistered('frosh-tools-tab-statistics', {
+        stubs: {
+            'ft-hero-state': {
+                props: ['body'],
+                template:
+                    '<div class="ft-hero-state"><p class="ft-hero-state__body">{{ body }}</p><slot name="actions" /></div>',
+            },
+        },
+        global: { plugins: [router] },
         provide: {
-            froshToolsService: {
+            froshToolsService: service || {
                 getCacheStatistics: fail
                     ? vi.fn().mockRejectedValue(new Error('cache fail'))
                     : vi.fn().mockResolvedValue(CACHE_STATS),
@@ -94,5 +111,43 @@ describe('frosh-tools-tab-statistics', () => {
         expect(wrapper.vm.cacheStats).toBeNull();
         expect(wrapper.vm.dbStats).toBeNull();
         expect(wrapper.vm.largestTableSize).toBe(0);
+    });
+    it('keeps PHP, Redis and database diagnostics on distinct deep-linked pages', async () => {
+        const wrapper = await createWrapper({ section: 'database' });
+        await flushPromises();
+        expect(wrapper.text()).toContain('product');
+        expect(wrapper.text()).not.toContain('OPcache');
+        await wrapper.vm.$router.push({ query: { section: 'redis' } });
+        await flushPromises();
+        expect(wrapper.find('ft-empty-stub').attributes('title')).toBe(
+            'No Redis connections reported'
+        );
+        expect(wrapper.text()).not.toContain('product');
+        await wrapper.vm.$router.push({ query: { section: 'invalid' } });
+        await flushPromises();
+        expect(wrapper.text()).toContain('OPcache');
+        wrapper.unmount();
+    });
+
+    it('shows a partial database failure and retries without dropping PHP data', async () => {
+        allowConsoleMessage('[frosh-tools] failed to load database statistics');
+        const service = {
+            getCacheStatistics: vi.fn().mockResolvedValue(CACHE_STATS),
+            getDatabaseStatistics: vi
+                .fn()
+                .mockRejectedValueOnce(new Error('Database unavailable'))
+                .mockResolvedValue(DB_STATS),
+        };
+        const wrapper = await createWrapper({ section: 'database', service });
+        await flushPromises();
+        expect(wrapper.find('.ft-hero-state__body').text()).toBe(
+            'Database unavailable'
+        );
+        await wrapper.find('button').trigger('click');
+        await flushPromises();
+        expect(wrapper.text()).toContain('product');
+        expect(wrapper.find('.ft-hero-state').exists()).toBe(false);
+        expect(service.getCacheStatistics).toHaveBeenCalledTimes(1);
+        wrapper.unmount();
     });
 });

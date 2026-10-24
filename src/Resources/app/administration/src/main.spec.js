@@ -3,6 +3,7 @@ import { mockShopwareService } from '@friendsofshopware/vitest-shopware-admin-br
 
 const REGISTERED_COMPONENTS = [
     'ft-icon',
+    'ft-section-nav',
     'ft-button',
     'ft-modal',
     'ft-page-head',

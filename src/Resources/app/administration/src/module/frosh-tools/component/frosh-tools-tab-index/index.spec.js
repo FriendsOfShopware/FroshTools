@@ -80,4 +80,39 @@ describe('frosh-tools-tab-index', () => {
         expect(wrapper.vm.hasInfo({ id: 'queue' })).toBe(true);
         expect(wrapper.vm.hasInfo({ id: 'unknown-check' })).toBe(false);
     });
+    it('summarizes health and performance findings together', async () => {
+        const wrapper = await createWrapper({
+            healthStatus: vi
+                .fn()
+                .mockResolvedValue([
+                    { state: 'STATE_OK' },
+                    { state: 'STATE_WARNING' },
+                ]),
+            performanceStatus: vi
+                .fn()
+                .mockResolvedValue([{ state: 'STATE_ERROR' }]),
+        });
+        await flushPromises();
+
+        const summary = wrapper.findAll('ft-hero-state-stub')[0];
+        expect(summary.attributes('variant')).toBe('danger');
+        expect(summary.attributes('body')).toBe(
+            'Checks: 3 · Errors: 1 · Warnings: 1'
+        );
+    });
+
+    it('does not show a summary while loading or when no checks were returned', async () => {
+        let resolveHealth;
+        const wrapper = await createWrapper({
+            healthStatus: () =>
+                new Promise((resolve) => {
+                    resolveHealth = resolve;
+                }),
+            performanceStatus: vi.fn().mockResolvedValue([]),
+        });
+        expect(wrapper.find('.frosh-tab-index__summary').exists()).toBe(false);
+        resolveHealth([]);
+        await flushPromises();
+        expect(wrapper.find('.frosh-tab-index__summary').exists()).toBe(false);
+    });
 });

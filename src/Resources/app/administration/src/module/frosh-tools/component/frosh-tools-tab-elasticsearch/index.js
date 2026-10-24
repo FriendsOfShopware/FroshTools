@@ -1,3 +1,4 @@
+import { resolveSection } from '../../section-navigation.ts';
 import template from './template.twig';
 import './style.scss';
 import { PRIVILEGE } from '../../acl/privileges.js';
@@ -35,6 +36,25 @@ Component.register('frosh-tools-tab-elasticsearch', {
     },
 
     computed: {
+        sections() {
+            return ['indices', 'maintenance', 'console']
+                .filter(
+                    (key) =>
+                        this.canUpdate ||
+                        !['maintenance', 'console'].includes(key)
+                )
+                .map((key) => ({
+                    key,
+                    label: this.$t(
+                        `frosh-tools.tabs.elasticsearch.sections.${key}`
+                    ),
+                }));
+        },
+
+        activeSection() {
+            return resolveSection(this.$route?.query?.section, this.sections);
+        },
+
         searchTerm() {
             return this.froshToolsSearch?.searchTerm ?? '';
         },

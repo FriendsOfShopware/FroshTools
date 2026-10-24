@@ -1,4 +1,5 @@
 import './component/ft-icon/index.js';
+import './component/ft-section-nav/index.ts';
 import './component/ft-button/index.js';
 import './component/ft-modal/index.js';
 import './component/ft-page-head/index.js';

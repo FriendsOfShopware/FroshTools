@@ -1,6 +1,9 @@
 import { afterEach, describe, expect, it, vi } from 'vitest';
 import { flushPromises } from '@friendsofshopware/vitest-shopware-admin-bridge/test-utils';
-import { mountRegistered } from '../../../../../test/helpers.js';
+import {
+    createTestRouter,
+    mountRegistered,
+} from '../../../../../test/helpers.js';
 import './index.js';
 
 const STATUS = {
@@ -23,6 +26,8 @@ function createService(overrides = {}) {
 }
 
 async function createWrapper({ service = createService(), query = {} } = {}) {
+    const router = await createTestRouter(query);
+
     return mountRegistered('frosh-tools-tab-security', {
         provide: { froshToolsService: service },
         stubs: {
@@ -30,12 +35,7 @@ async function createWrapper({ service = createService(), query = {} } = {}) {
             'frosh-tools-security-dependencies': true,
             'frosh-tools-security-files': true,
         },
-        global: {
-            mocks: {
-                $route: { query },
-                $router: { replace: vi.fn().mockResolvedValue() },
-            },
-        },
+        global: { plugins: [router] },
     });
 }
 
@@ -53,6 +53,7 @@ describe('frosh-tools-tab-security', () => {
         expect(wrapper.vm.findingBadgeVariant).toBe('danger');
         expect(wrapper.vm.dependencyBadge).toBe(1);
         expect(wrapper.vm.activeTab).toBe('overview');
+        expect(wrapper.find('ft-refresh-button-stub').exists()).toBe(true);
     });
 
     it('opens a deep-linked section and updates the query on tab change', async () => {
@@ -60,12 +61,22 @@ describe('frosh-tools-tab-security', () => {
         await flushPromises();
 
         expect(wrapper.vm.activeTab).toBe('files');
+        expect(wrapper.find('ft-refresh-button-stub').exists()).toBe(false);
 
+        const push = vi.spyOn(wrapper.vm.$router, 'push');
         wrapper.vm.selectTab('dependencies');
-        expect(wrapper.vm.activeTab).toBe('dependencies');
-        expect(wrapper.vm.$router.replace).toHaveBeenCalledWith({
+        expect(push).toHaveBeenCalledWith({
             query: { section: 'dependencies' },
         });
+        await flushPromises();
+        expect(
+            wrapper.find('frosh-tools-security-dependencies-stub').exists()
+        ).toBe(true);
+        await wrapper.vm.$router.push({ query: { section: 'files' } });
+        await flushPromises();
+        expect(wrapper.find('frosh-tools-security-files-stub').exists()).toBe(
+            true
+        );
     });
 
     it('downloads the SBOM as a file', async () => {

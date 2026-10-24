@@ -1,4 +1,4 @@
-import { describe, expect, it } from 'vitest';
+import { describe, expect, it, vi } from 'vitest';
 import { mountShopwareComponent } from '@friendsofshopware/vitest-shopware-admin-bridge/test-utils';
 import { FT_STUBS } from '../../../../../test/helpers.js';
 import './index.js';
@@ -27,6 +27,7 @@ function setFroshToolsSettings(settings) {
 async function createWrapper({
     routeName = 'frosh.tools.index.cache',
     privileges = null,
+    query = {},
 } = {}) {
     setFroshToolsSettings({
         fastlyEnabled: true,
@@ -40,13 +41,15 @@ async function createWrapper({
                 ...FT_STUBS,
                 'sw-search-bar': true,
                 'router-link': {
-                    template: '<a><slot /></a>',
+                    template:
+                        '<a :class="{ \'is-active\': to.name === $route.name }"><slot /></a>',
                     props: ['to'],
                 },
                 'router-view': true,
             },
             mocks: {
-                $route: { name: routeName },
+                $route: { name: routeName, query },
+                $router: { push: vi.fn() },
                 $createTitle: () => 'Tools',
             },
             provide: {
@@ -61,6 +64,17 @@ async function createWrapper({
 }
 
 describe('frosh-tools-index', () => {
+    it('keeps index search available when a restricted section falls back to indices', async () => {
+        const options = {
+            routeName: 'frosh.tools.index.elasticsearch',
+            query: { section: 'console' },
+        };
+        const editor = await createWrapper(options);
+        expect(editor.vm.searchTab).toBeNull();
+        const viewer = await createWrapper({ ...options, privileges: [] });
+        expect(viewer.vm.searchTab.type).toBe('frosh_tools_elasticsearch');
+    });
+
     it('exposes the shared search term and clears it when the tab changes', async () => {
         const wrapper = await createWrapper();
 
@@ -112,5 +126,55 @@ describe('frosh-tools-index', () => {
         expect(routes).not.toContain('frosh.tools.index.cache');
         expect(routes).not.toContain('frosh.tools.index.security');
         expect(routes).not.toContain('frosh.tools.index.apps');
+    });
+    it('labels the navigation landmark and keeps every destination named', async () => {
+        const wrapper = await createWrapper();
+        const navigation = wrapper.find('nav.ft-sidebar');
+        expect(navigation.attributes('aria-label')).toBe('Tools');
+        expect(
+            navigation.findAll('a').every((link) => link.text().length > 0)
+        ).toBe(true);
+    });
+    it('reveals the selected destination when opening a deep link', async () => {
+        const scrollIntoView = vi.fn();
+        const original = Element.prototype.scrollIntoView;
+        Element.prototype.scrollIntoView = scrollIntoView;
+        try {
+            const wrapper = await createWrapper({
+                routeName: 'frosh.tools.index.fastly',
+            });
+            await wrapper.vm.$nextTick();
+            expect(scrollIntoView).toHaveBeenCalledOnce();
+            expect(scrollIntoView.mock.contexts[0].textContent.trim()).toBe(
+                'Fastly'
+            );
+            wrapper.unmount();
+        } finally {
+            if (original) Element.prototype.scrollIntoView = original;
+            else delete Element.prototype.scrollIntoView;
+        }
+    });
+    it('offers every permitted tool in the mobile picker, including webhooks', async () => {
+        const wrapper = await createWrapper();
+        const picker = wrapper.find('#ft-tool-picker');
+        expect(
+            picker.find('option[value="frosh.tools.webhook.index"]').text()
+        ).toBe('Webhooks');
+        await picker.setValue('frosh.tools.index.logs');
+        expect(wrapper.vm.$router.push).toHaveBeenCalledWith({
+            name: 'frosh.tools.index.logs',
+        });
+        wrapper.unmount();
+        const restricted = await createWrapper({
+            privileges: ['frosh_tools:read'],
+        });
+        expect(
+            restricted
+                .find('option[value="frosh.tools.webhook.index"]')
+                .exists()
+        ).toBe(false);
+        restricted.vm.navigateToTool('frosh.tools.webhook.index');
+        expect(restricted.vm.$router.push).not.toHaveBeenCalled();
+        restricted.unmount();
     });
 });

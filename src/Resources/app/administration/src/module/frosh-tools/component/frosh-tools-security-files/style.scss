@@ -16,6 +16,7 @@
             border-bottom: none;
             padding-bottom: 0;
         }
+
         &:first-of-type {
             padding-top: 18px;
         }
@@ -29,7 +30,7 @@
     }
 
     &__ext-name {
-        font-size: 14px;
+        font-size: 0.875rem;
         font-weight: 600;
         font-family: var(--ft-mono);
         margin: 0;
@@ -52,7 +53,7 @@
         display: flex;
         align-items: center;
         gap: 8px;
-        font-size: 12.5px;
+        font-size: 0.7812rem;
         font-weight: 600;
         color: var(--ft-text);
         margin-bottom: 8px;
@@ -62,7 +63,7 @@
         list-style: none;
         margin: 0;
         padding: 0;
-        font-size: 12px;
+        font-size: 0.75rem;
         color: var(--ft-text-soft);
         max-height: 220px;
         overflow-y: auto;

@@ -1,6 +1,11 @@
-import { mountShopwareComponent } from '@friendsofshopware/vitest-shopware-admin-bridge/test-utils';
+import { createMemoryHistory, createRouter } from 'vue-router';
+import {
+    config,
+    mountShopwareComponent,
+} from '@friendsofshopware/vitest-shopware-admin-bridge/test-utils';
 
 export const FT_STUBS = {
+    'ft-section-nav': true,
     'ft-page-head': {
         template:
             '<div class="ft-page-head"><slot name="subtitle" /><slot name="actions" /></div>',
@@ -50,4 +55,20 @@ export async function mountRegistered(name, options = {}) {
             },
         },
     });
+}
+
+export async function createTestRouter(query = {}) {
+    // The bridge's default route mocks would shadow the real router plugin.
+    delete config.global.mocks.$route;
+    delete config.global.mocks.$router;
+
+    const router = createRouter({
+        history: createMemoryHistory(),
+        routes: [{ path: '/', component: { template: '<div />' } }],
+    });
+
+    await router.push({ path: '/', query });
+    await router.isReady();
+
+    return router;
 }

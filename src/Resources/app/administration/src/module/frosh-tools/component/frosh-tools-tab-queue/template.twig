@@ -125,9 +125,10 @@
                             <button
                                 v-if="transport.browsable"
                                 type="button"
-                                class="frosh-tab-queue__browse-btn"
+                                class="ft-btn frosh-tab-queue__browse-btn"
                                 @click.stop="openBrowseModal(transport)"
                             >
+                                <ft-icon name="search" />
                                 {{ $t('frosh-tools.tabs.queue.transports.browse') }}
                             </button>
                             <ft-button
