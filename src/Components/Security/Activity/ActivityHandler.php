@@ -20,7 +20,7 @@ class ActivityHandler extends AbstractProcessingHandler
 {
     private const CONTEXT_FIELDS = [
         'actorType', 'userId', 'username', 'integrationId', 'integrationAccessKey',
-        'loginUsername', 'entityId', 'targetUserId', 'roleId', 'pluginName', 'pluginVersion',
+        'loginUsername', 'entityId', 'integrationName', 'targetUserId', 'roleId', 'pluginName', 'pluginVersion',
         'previousPluginVersion', 'appName', 'appVersion', 'appId', 'filename', 'statusCode',
     ];
 

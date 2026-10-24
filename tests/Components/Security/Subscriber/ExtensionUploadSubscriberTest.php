@@ -5,8 +5,8 @@ declare(strict_types=1);
 namespace Frosh\Tools\Tests\Components\Security\Subscriber;
 
 use Doctrine\DBAL\Connection;
+use Frosh\Tools\Components\Security\Activity\ActivityActorResolver;
 use Frosh\Tools\Components\Security\Subscriber\ExtensionUploadSubscriber;
-use Frosh\Tools\Components\Security\Subscriber\SystemActivitySubscriber;
 use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\TestCase;
 use Psr\Log\LoggerInterface;
@@ -19,9 +19,9 @@ use Symfony\Component\Filesystem\Filesystem;
 use Symfony\Component\HttpFoundation\File\UploadedFile;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
-use Symfony\Component\HttpKernel\HttpKernelInterface;
 use Symfony\Component\HttpKernel\Event\RequestEvent;
 use Symfony\Component\HttpKernel\Event\ResponseEvent;
+use Symfony\Component\HttpKernel\HttpKernelInterface;
 
 /**
  * @internal
@@ -63,7 +63,7 @@ final class ExtensionUploadSubscriberTest extends TestCase
         ]);
         $subscriber = new ExtensionUploadSubscriber(
             new PluginZipDetector(),
-            new SystemActivitySubscriber($logger, static::createStub(Connection::class)),
+            new ActivityActorResolver(static::createStub(Connection::class)),
             $logger,
         );
         $request = new Request([], [], [
@@ -83,7 +83,7 @@ final class ExtensionUploadSubscriberTest extends TestCase
         $logger->expects($this->never())->method('info');
         $subscriber = new ExtensionUploadSubscriber(
             new PluginZipDetector(),
-            new SystemActivitySubscriber($logger, static::createStub(Connection::class)),
+            new ActivityActorResolver(static::createStub(Connection::class)),
             $logger,
         );
         $request = new Request([], [], [
@@ -108,7 +108,7 @@ final class ExtensionUploadSubscriberTest extends TestCase
         $logger->expects($this->never())->method('info');
         $subscriber = new ExtensionUploadSubscriber(
             new PluginZipDetector(),
-            new SystemActivitySubscriber($logger, static::createStub(Connection::class)),
+            new ActivityActorResolver(static::createStub(Connection::class)),
             $logger,
         );
         $request = new Request([], [], [

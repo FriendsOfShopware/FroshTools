@@ -5,8 +5,12 @@ declare(strict_types=1);
 namespace Frosh\Tools\Tests\Components\Security\Activity;
 
 use Doctrine\DBAL\Connection;
+use Frosh\Tools\Components\Security\Activity\ActivityActorResolver;
 use Frosh\Tools\Components\Security\Activity\ActivityStore;
-use Frosh\Tools\Components\Security\Subscriber\SystemActivitySubscriber;
+use Frosh\Tools\Components\Security\Subscriber\PluginActivitySubscriber;
+use Frosh\Tools\Components\Security\Subscriber\UserActivitySubscriber;
+use Frosh\Tools\Components\Security\Activity\PasswordResetContext;
+use Symfony\Component\HttpFoundation\RequestStack;
 use Frosh\Tools\Tests\IntegrationTestCase;
 use Shopware\Core\Framework\Api\Context\AdminApiSource;
 use Shopware\Core\Framework\Context;
@@ -178,6 +182,30 @@ class ActivityStoreTest extends IntegrationTestCase
         }
     }
 
+    public function testIntegrationNamesAreSnapshottedThroughConfiguredSubscribersAndProcessor(): void
+    {
+        $id = Uuid::randomHex();
+        $repository = static::getContainer()->get('integration.repository');
+        $context = Context::createDefaultContext();
+        $repository->create([[
+            'id' => $id,
+            'label' => 'Original integration',
+            'accessKey' => 'timeline-' . Uuid::randomHex(),
+            'secretAccessKey' => 'test-secret',
+        ]], $context);
+        $repository->update([['id' => $id, 'label' => 'Renamed integration']], $context);
+        $repository->update([['id' => $id, 'admin' => true]], $context);
+
+        $created = $this->store->search(1, 25, 'integration:create', '', null, null, subjectType: 'integrations', subjectId: $id);
+        static::assertSame(1, $created['total']);
+        static::assertSame('Original integration', $created['entries'][0]['context']['integrationName']);
+        $updated = $this->store->search(1, 25, 'integration:update', '', null, null, subjectType: 'integrations', subjectId: $id);
+        static::assertSame(2, $updated['total']);
+        foreach ($updated['entries'] as $entry) {
+            static::assertSame('Renamed integration', $entry['context']['integrationName']);
+        }
+    }
+
     public function testConfiguredLoggerCapturesExistingChannelExactlyOnce(): void
     {
         static::getContainer()->get('monolog.logger.system_activity')->info('plugin:install', ['pluginName' => 'Example', 'actorType' => 'system']);
@@ -192,7 +220,8 @@ class ActivityStoreTest extends IntegrationTestCase
         $context = new Context(new AdminApiSource(null, $integrationId));
         $connection = static::createStub(Connection::class);
         $connection->method('fetchOne')->willReturn('integration-access-key');
-        $subscriber = new SystemActivitySubscriber(static::getContainer()->get('monolog.logger.system_activity'), $connection);
+        $logger = static::getContainer()->get('monolog.logger.system_activity');
+        $subscriber = new UserActivitySubscriber($logger, new ActivityActorResolver($connection), new PasswordResetContext(new RequestStack()));
         $subscriber->onEntityWritten(new EntityWrittenEvent('user', [
             new EntityWriteResult(Uuid::randomHex(), [], 'user', EntityWriteResult::OPERATION_INSERT),
         ], $context));
@@ -201,7 +230,7 @@ class ActivityStoreTest extends IntegrationTestCase
         $activateContext = static::createStub(ActivateContext::class);
         $activateContext->method('getContext')->willReturn($context);
         $activateContext->method('getCurrentPluginVersion')->willReturn('1.0.0');
-        $subscriber->onPluginLifecycle(new PluginPostActivateEvent($plugin, $activateContext));
+        (new PluginActivitySubscriber($logger, new ActivityActorResolver($connection)))->onPluginLifecycle(new PluginPostActivateEvent($plugin, $activateContext));
 
         $result = $this->store->search(1, 25, '', '', null, null, subjectType: 'integrations', subjectId: $integrationId);
         static::assertSame(2, $result['total']);
