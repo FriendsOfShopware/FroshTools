@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Frosh\Tools\Components\Security\Subscriber;
 
+use Frosh\Tools\Components\Security\Activity\ActivityActorResolver;
 use Frosh\Tools\DependencyInjection\Attribute\WhenClassMissing;
 use Psr\Log\LoggerInterface;
 use Shopware\Core\Framework\App\Manifest\Manifest;
@@ -34,7 +35,7 @@ final class ExtensionUploadSubscriber implements EventSubscriberInterface
 
     public function __construct(
         private readonly PluginZipDetector $pluginZipDetector,
-        private readonly SystemActivitySubscriber $activitySubscriber,
+        private readonly ActivityActorResolver $actors,
         #[Autowire(service: 'monolog.logger.system_activity')]
         private readonly LoggerInterface $logger,
     ) {
@@ -88,12 +89,12 @@ final class ExtensionUploadSubscriber implements EventSubscriberInterface
             return;
         }
 
-        $this->logger->info($type . ':upload', $this->activitySubscriber->withoutNullValues([
+        $this->logger->info($type . ':upload', array_filter([
             'filename' => $upload['filename'] ?? null,
             $type . 'Name' => $upload['name'] ?? null,
             $type . 'Version' => $upload['version'] ?? null,
-            ...$this->activitySubscriber->actor($context),
-        ]));
+            ...$this->actors->resolve($context),
+        ], static fn (mixed $value): bool => $value !== null));
     }
 
     /**

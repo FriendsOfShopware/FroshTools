@@ -5,9 +5,11 @@ declare(strict_types=1);
 namespace Frosh\Tools\Tests\Components\Security\Activity;
 
 use Doctrine\DBAL\Connection;
+use Frosh\Tools\Components\Security\Activity\ActivityActorResolver;
 use Frosh\Tools\Components\Security\Activity\ActivityStore;
-use Frosh\Tools\Components\Security\Subscriber\SystemActivitySubscriber;
+use Frosh\Tools\Components\Security\Subscriber\PluginActivitySubscriber;
 use Frosh\Tools\Tests\IntegrationTestCase;
+use PHPUnit\Framework\Attributes\DataProvider;
 use Shopware\Core\Framework\Api\Context\AdminApiSource;
 use Shopware\Core\Framework\Context;
 use Shopware\Core\Framework\DataAbstractionLayer\EntityWriteResult;
@@ -17,6 +19,8 @@ use Shopware\Core\Framework\Plugin\Context\ActivateContext;
 use Shopware\Core\Framework\Plugin\Event\PluginPostActivateEvent;
 use Shopware\Core\Framework\Plugin\PluginEntity;
 use Shopware\Core\Framework\Uuid\Uuid;
+use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\HttpFoundation\RequestStack;
 
 /**
  * @internal
@@ -178,6 +182,30 @@ class ActivityStoreTest extends IntegrationTestCase
         }
     }
 
+    public function testIntegrationNamesAreSnapshottedThroughConfiguredSubscribersAndProcessor(): void
+    {
+        $id = Uuid::randomHex();
+        $repository = static::getContainer()->get('integration.repository');
+        $context = Context::createDefaultContext();
+        $repository->create([[
+            'id' => $id,
+            'label' => 'Original integration',
+            'accessKey' => 'timeline-' . Uuid::randomHex(),
+            'secretAccessKey' => 'test-secret',
+        ]], $context);
+        $repository->update([['id' => $id, 'label' => 'Renamed integration']], $context);
+        $repository->update([['id' => $id, 'admin' => true]], $context);
+
+        $created = $this->store->search(1, 25, 'integration:create', '', null, null, subjectType: 'integrations', subjectId: $id);
+        static::assertSame(1, $created['total']);
+        static::assertSame('Original integration', $created['entries'][0]['context']['integrationName']);
+        $updated = $this->store->search(1, 25, 'integration:update', '', null, null, subjectType: 'integrations', subjectId: $id);
+        static::assertSame(2, $updated['total']);
+        foreach ($updated['entries'] as $entry) {
+            static::assertSame('Renamed integration', $entry['context']['integrationName']);
+        }
+    }
+
     public function testConfiguredLoggerCapturesExistingChannelExactlyOnce(): void
     {
         static::getContainer()->get('monolog.logger.system_activity')->info('plugin:install', ['pluginName' => 'Example', 'actorType' => 'system']);
@@ -186,22 +214,67 @@ class ActivityStoreTest extends IntegrationTestCase
         static::assertSame('Example', $result['entries'][0]['context']['pluginName']);
     }
 
-    public function testBackportedIntegrationActionsAppearInSubjectHistoryAndExport(): void
+    #[DataProvider('entityClientAddresses')]
+    public function testEntityActivityRetainsRequestIpInTimelineAndExport(string $ip): void
+    {
+        $requests = static::getContainer()->get(RequestStack::class);
+        $requests->push(new Request(server: ['REMOTE_ADDR' => $ip]));
+        try {
+            static::getContainer()->get('acl_role.repository')->create([[
+                'id' => Uuid::randomHex(),
+                'name' => 'IP activity test',
+                'privileges' => [],
+            ]], Context::createDefaultContext());
+        } finally {
+            $requests->pop();
+        }
+
+        $result = $this->store->search(1, 25, 'acl_role:create', '', null, null, clientIp: $ip);
+        static::assertSame(1, $result['total']);
+        static::assertSame($ip, $result['entries'][0]['context']['clientIp']);
+        static::assertSame($result['entries'], iterator_to_array($this->store->export('acl_role:create', '', null, null, clientIp: $ip)));
+
+        // Background work must not inherit an address from an earlier request.
+        static::getContainer()->get('acl_role.repository')->create([[
+            'id' => Uuid::randomHex(),
+            'name' => 'Background activity test',
+            'privileges' => [],
+        ]], Context::createDefaultContext());
+        $all = $this->store->search(1, 25, 'acl_role:create', '', null, null);
+        static::assertSame(2, $all['total']);
+        static::assertCount(1, array_filter($all['entries'], static fn (array $entry): bool => isset($entry['context']['clientIp'])));
+    }
+
+    public static function entityClientAddresses(): iterable
+    {
+        yield 'IPv4' => ['192.0.2.10'];
+        yield 'IPv6' => ['2001:db8::1'];
+    }
+
+    public function testConfiguredIntegrationActionsAppearInSubjectHistoryAndExport(): void
     {
         $integrationId = Uuid::randomHex();
         $context = new Context(new AdminApiSource(null, $integrationId));
-        $connection = static::createStub(Connection::class);
-        $connection->method('fetchOne')->willReturn('integration-access-key');
-        $subscriber = new SystemActivitySubscriber(static::getContainer()->get('monolog.logger.system_activity'), $connection);
-        $subscriber->onEntityWritten(new EntityWrittenEvent('user', [
+        static::getContainer()->get('integration.repository')->create([[
+            'id' => $integrationId,
+            'label' => 'Timeline actor',
+            'accessKey' => 'timeline-' . Uuid::randomHex(),
+            'secretAccessKey' => 'test-secret',
+        ]], Context::createDefaultContext());
+        static::getContainer()->get(Connection::class)->executeStatement('DELETE FROM frosh_tools_security_activity');
+        $dispatcher = static::getContainer()->get('event_dispatcher');
+        $dispatcher->dispatch(new EntityWrittenEvent('user', [
             new EntityWriteResult(Uuid::randomHex(), [], 'user', EntityWriteResult::OPERATION_INSERT),
-        ], $context));
+        ], $context), 'user.written');
         $plugin = new PluginEntity();
         $plugin->setName('Example');
         $activateContext = static::createStub(ActivateContext::class);
         $activateContext->method('getContext')->willReturn($context);
         $activateContext->method('getCurrentPluginVersion')->willReturn('1.0.0');
-        $subscriber->onPluginLifecycle(new PluginPostActivateEvent($plugin, $activateContext));
+        (new PluginActivitySubscriber(
+            static::getContainer()->get('monolog.logger.system_activity'),
+            new ActivityActorResolver(static::getContainer()->get(Connection::class)),
+        ))->onPluginLifecycle(new PluginPostActivateEvent($plugin, $activateContext));
 
         $result = $this->store->search(1, 25, '', '', null, null, subjectType: 'integrations', subjectId: $integrationId);
         static::assertSame(2, $result['total']);

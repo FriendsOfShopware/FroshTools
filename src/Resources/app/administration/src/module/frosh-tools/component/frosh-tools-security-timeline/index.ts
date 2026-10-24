@@ -333,6 +333,7 @@ Shopware.Component.register('frosh-tools-security-timeline', {
             return (
                 entry.context.pluginName ||
                 entry.context.appName ||
+                entry.context.integrationName ||
                 entry.context.targetUserId ||
                 entry.context.entityId ||
                 entry.context.appId ||
