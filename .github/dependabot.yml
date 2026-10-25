@@ -1,0 +1,28 @@
+version: 2
+
+multi-ecosystem-groups:
+  dependencies:
+    schedule:
+      interval: weekly
+
+updates:
+  - package-ecosystem: composer
+    directory: /
+    patterns:
+      - "*"
+    multi-ecosystem-group: dependencies
+
+  - package-ecosystem: npm
+    directories:
+      - /src/Resources/app/administration
+      - /workers/app-url-reachability
+    patterns:
+      - "*"
+    multi-ecosystem-group: dependencies
+
+  # The root directory covers all workflows and local action manifests.
+  - package-ecosystem: github-actions
+    directory: /
+    patterns:
+      - "*"
+    multi-ecosystem-group: dependencies
