@@ -113,7 +113,40 @@ class CycloneDxSbomGeneratorTest extends TestCase
 
         $refTypes = array_column($console['externalReferences'], 'type');
         sort($refTypes);
-        static::assertSame(['distribution', 'vcs', 'website'], $refTypes);
+        static::assertSame(['vcs', 'website'], $refTypes);
+    }
+
+    public function testExternalReferencesDoNotExposePackageUrlCredentials(): void
+    {
+        file_put_contents($this->projectDir . '/composer.lock', json_encode([
+            'packages' => [
+                [
+                    'name' => 'acme/private',
+                    'version' => '1.0.0',
+                    'license' => ['proprietary'],
+                    'source' => [
+                        'type' => 'git',
+                        'url' => 'https://build-user:source-password@example.com/acme/private.git?access_token=source-token#main',
+                    ],
+                    'dist' => [
+                        'type' => 'zip',
+                        'url' => 'https://downloads.example.com/private.zip?access_token=dist-token',
+                    ],
+                ],
+            ],
+            'packages-dev' => [],
+        ], \JSON_THROW_ON_ERROR));
+
+        $json = $this->generator()->generateJson();
+        $bom = json_decode($json, true, 512, \JSON_THROW_ON_ERROR);
+        $component = $this->findComponent($bom, 'private');
+
+        static::assertSame([
+            ['type' => 'vcs', 'url' => 'https://example.com/acme/private.git#main'],
+        ], $component['externalReferences']);
+        static::assertStringNotContainsString('source-password', $json);
+        static::assertStringNotContainsString('source-token', $json);
+        static::assertStringNotContainsString('dist-token', $json);
     }
 
     public function testGenerateIncludesDevDependenciesWhenRequested(): void
