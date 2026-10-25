@@ -321,12 +321,7 @@ class CycloneDxSbomGenerator
 
         $sourceUrl = isset($source['url']) && \is_string($source['url']) ? $source['url'] : '';
         if ($sourceUrl !== '') {
-            $externalReferences[] = ['type' => 'vcs', 'url' => $sourceUrl];
-        }
-
-        $distUrl = isset($dist['url']) && \is_string($dist['url']) ? $dist['url'] : '';
-        if ($distUrl !== '') {
-            $externalReferences[] = ['type' => 'distribution', 'url' => $distUrl];
+            $externalReferences[] = ['type' => 'vcs', 'url' => $this->sanitizeSourceUrl($sourceUrl)];
         }
 
         if ($externalReferences !== []) {
@@ -334,6 +329,13 @@ class CycloneDxSbomGenerator
         }
 
         return $component;
+    }
+
+    private function sanitizeSourceUrl(string $url): string
+    {
+        $url = preg_replace('~^([a-z][a-z0-9+.-]*://)[^/@]*@~i', '$1', $url) ?? $url;
+
+        return preg_replace('/\?[^#]*/', '', $url) ?? $url;
     }
 
     /**
