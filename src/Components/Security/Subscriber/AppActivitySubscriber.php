@@ -6,7 +6,6 @@ namespace Frosh\Tools\Components\Security\Subscriber;
 
 use Doctrine\DBAL\Connection;
 use Frosh\Tools\Components\Security\Activity\ActivityActorResolver;
-use Frosh\Tools\DependencyInjection\Attribute\WhenClassMissing;
 use Psr\Log\LoggerInterface;
 use Shopware\Core\Framework\App\Event\AppActivatedEvent;
 use Shopware\Core\Framework\App\Event\AppDeactivatedEvent;
@@ -20,7 +19,6 @@ use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 /**
  * @internal
  */
-#[WhenClassMissing('Shopware\Core\Framework\Log\SystemActivitySubscriber')]
 final class AppActivitySubscriber implements EventSubscriberInterface
 {
     public function __construct(

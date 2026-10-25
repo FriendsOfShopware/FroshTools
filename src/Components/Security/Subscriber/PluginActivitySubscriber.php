@@ -5,7 +5,6 @@ declare(strict_types=1);
 namespace Frosh\Tools\Components\Security\Subscriber;
 
 use Frosh\Tools\Components\Security\Activity\ActivityActorResolver;
-use Frosh\Tools\DependencyInjection\Attribute\WhenClassMissing;
 use Psr\Log\LoggerInterface;
 use Shopware\Core\Framework\Plugin\Event\PluginPostActivateEvent;
 use Shopware\Core\Framework\Plugin\Event\PluginPostDeactivateEvent;
@@ -18,7 +17,6 @@ use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 /**
  * @internal
  */
-#[WhenClassMissing('Shopware\Core\Framework\Log\SystemActivitySubscriber')]
 final class PluginActivitySubscriber implements EventSubscriberInterface
 {
     public function __construct(

@@ -10,7 +10,6 @@ use Frosh\Tools\DependencyInjection\CacheCompilerPass;
 use Frosh\Tools\DependencyInjection\DisableElasticsearchCompilerPass;
 use Frosh\Tools\DependencyInjection\FroshToolsExtension;
 use Frosh\Tools\DependencyInjection\SymfonyConfigCompilerPass;
-use Frosh\Tools\DependencyInjection\WhenClassMissingCompilerPass;
 use Shopware\Core\Framework\Api\Acl\Role\AclRoleCollection;
 use Shopware\Core\Framework\Context;
 use Shopware\Core\Framework\DataAbstractionLayer\EntityRepository;
@@ -30,8 +29,6 @@ class FroshTools extends Plugin
         $container->addCompilerPass(new CacheCompilerPass());
         $container->addCompilerPass(new SymfonyConfigCompilerPass());
         $container->addCompilerPass(new DisableElasticsearchCompilerPass());
-        WhenClassMissingCompilerPass::configure($container);
-        $container->addCompilerPass(new WhenClassMissingCompilerPass());
     }
 
     public function install(InstallContext $installContext): void
