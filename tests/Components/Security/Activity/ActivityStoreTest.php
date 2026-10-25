@@ -5,9 +5,7 @@ declare(strict_types=1);
 namespace Frosh\Tools\Tests\Components\Security\Activity;
 
 use Doctrine\DBAL\Connection;
-use Frosh\Tools\Components\Security\Activity\ActivityActorResolver;
 use Frosh\Tools\Components\Security\Activity\ActivityStore;
-use Frosh\Tools\Components\Security\Subscriber\PluginActivitySubscriber;
 use Frosh\Tools\Tests\IntegrationTestCase;
 use PHPUnit\Framework\Attributes\DataProvider;
 use Shopware\Core\Framework\Api\Context\AdminApiSource;
@@ -15,9 +13,6 @@ use Shopware\Core\Framework\Context;
 use Shopware\Core\Framework\DataAbstractionLayer\EntityWriteResult;
 use Shopware\Core\Framework\DataAbstractionLayer\Event\EntityWrittenEvent;
 use Shopware\Core\Framework\Log\Package;
-use Shopware\Core\Framework\Plugin\Context\ActivateContext;
-use Shopware\Core\Framework\Plugin\Event\PluginPostActivateEvent;
-use Shopware\Core\Framework\Plugin\PluginEntity;
 use Shopware\Core\Framework\Uuid\Uuid;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\RequestStack;
@@ -263,22 +258,17 @@ class ActivityStoreTest extends IntegrationTestCase
         ]], Context::createDefaultContext());
         static::getContainer()->get(Connection::class)->executeStatement('DELETE FROM frosh_tools_security_activity');
         $dispatcher = static::getContainer()->get('event_dispatcher');
+        $userId = Uuid::randomHex();
         $dispatcher->dispatch(new EntityWrittenEvent('user', [
-            new EntityWriteResult(Uuid::randomHex(), [], 'user', EntityWriteResult::OPERATION_INSERT),
+            new EntityWriteResult($userId, [], 'user', EntityWriteResult::OPERATION_INSERT),
         ], $context), 'user.written');
-        $plugin = new PluginEntity();
-        $plugin->setName('Example');
-        $activateContext = static::createStub(ActivateContext::class);
-        $activateContext->method('getContext')->willReturn($context);
-        $activateContext->method('getCurrentPluginVersion')->willReturn('1.0.0');
-        (new PluginActivitySubscriber(
-            static::getContainer()->get('monolog.logger.system_activity'),
-            new ActivityActorResolver(static::getContainer()->get(Connection::class)),
-        ))->onPluginLifecycle(new PluginPostActivateEvent($plugin, $activateContext));
+        $dispatcher->dispatch(new EntityWrittenEvent('user', [
+            new EntityWriteResult($userId, ['active' => false], 'user', EntityWriteResult::OPERATION_UPDATE),
+        ], $context), 'user.written');
 
         $result = $this->store->search(1, 25, '', '', null, null, subjectType: 'integrations', subjectId: $integrationId);
         static::assertSame(2, $result['total']);
-        static::assertEqualsCanonicalizing(['user:create', 'plugin:enable'], array_column($result['entries'], 'action'));
+        static::assertEqualsCanonicalizing(['user:create', 'user:update'], array_column($result['entries'], 'action'));
         foreach ($result['entries'] as $entry) {
             static::assertSame($integrationId, $entry['context']['integrationId']);
         }
