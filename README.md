@@ -54,7 +54,8 @@ Dependency advisories, runtime end-of-life checks, configuration risks, file int
 ### Security timeline
 
 Open **Security → Timeline** to review administrator sign-ins, user and role changes,
-integration and API-key changes, extension lifecycle events, and password recovery activity.
+integration and API-key changes, and password recovery activity. Extension lifecycle events
+are captured when Shopware's core activity logging provides them.
 Events are stored in `frosh_tools_security_activity`. Existing log entries are not imported.
 
 Filter by actor, action, client IP, or UTC date range. JSON export includes every matching
