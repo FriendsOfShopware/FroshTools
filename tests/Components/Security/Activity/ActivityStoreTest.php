@@ -260,10 +260,10 @@ class ActivityStoreTest extends IntegrationTestCase
         $dispatcher = static::getContainer()->get('event_dispatcher');
         $userId = Uuid::randomHex();
         $dispatcher->dispatch(new EntityWrittenEvent('user', [
-            new EntityWriteResult($userId, [], 'user', EntityWriteResult::OPERATION_INSERT),
+            new EntityWriteResult($userId, ['id' => $userId], 'user', EntityWriteResult::OPERATION_INSERT),
         ], $context), 'user.written');
         $dispatcher->dispatch(new EntityWrittenEvent('user', [
-            new EntityWriteResult($userId, ['active' => false], 'user', EntityWriteResult::OPERATION_UPDATE),
+            new EntityWriteResult($userId, ['id' => $userId, 'active' => false], 'user', EntityWriteResult::OPERATION_UPDATE),
         ], $context), 'user.written');
 
         $result = $this->store->search(1, 25, '', '', null, null, subjectType: 'integrations', subjectId: $integrationId);
