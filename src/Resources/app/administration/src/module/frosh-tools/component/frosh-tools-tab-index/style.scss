@@ -40,7 +40,6 @@
     }
 
     &__value-label {
-        font-size: 1rem;
         color: var(--ft-text-muted);
     }
 
@@ -51,7 +50,6 @@
     }
 
     &__heading {
-        font-size: 1rem;
         font-weight: 600;
         margin: 0;
         text-transform: none;
@@ -72,7 +70,6 @@
         border: 1px solid var(--ft-border);
         border-radius: var(--ft-radius-sm);
         font-family: var(--ft-mono);
-        font-size: 1rem;
         line-height: 1.5;
         white-space: pre;
         overflow-x: auto;

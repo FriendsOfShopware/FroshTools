@@ -31,7 +31,7 @@
 
     .sw-card__title,
     .mt-card__title {
-        font-size: 1rem;
+        font-size: 0.9375rem;
         font-weight: 600;
         letter-spacing: -0.015em;
         color: var(--ft-text);
@@ -42,13 +42,12 @@
         background: var(--ft-surface);
         color: var(--ft-text);
         border-color: var(--ft-divider);
-        font-size: 1rem;
+        font-size: 0.875rem;
     }
 
     .sw-data-grid__header .sw-data-grid__cell {
         background: var(--ft-surface-2);
         color: var(--ft-text-soft);
-        font-size: 1rem;
         font-weight: 600;
     }
 

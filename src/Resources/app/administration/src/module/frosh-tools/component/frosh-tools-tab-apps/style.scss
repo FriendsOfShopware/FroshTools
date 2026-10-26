@@ -29,12 +29,11 @@
         overflow-wrap: anywhere;
 
         strong {
-            font-size: 1rem;
+            font-size: 0.9375rem;
         }
 
         code {
             font-family: var(--ft-mono);
-            font-size: 1rem;
             color: var(--ft-accent);
         }
     }
@@ -47,7 +46,6 @@
 
     &__connection-label {
         text-align: center;
-        font-size: 1rem;
         font-weight: 600;
         color: var(--ft-text-muted);
     }
@@ -57,7 +55,6 @@
         flex-direction: column;
         gap: 8px;
         text-align: center;
-        font-size: 1rem;
         color: var(--ft-text-soft);
 
         @media (max-width: 900px) {
@@ -111,7 +108,7 @@
 
         h3 {
             margin: 0 0 8px;
-            font-size: 1rem;
+            font-size: 0.875rem;
         }
 
         @media (max-width: 900px) {
@@ -134,7 +131,6 @@
             padding: 8px 12px;
             border: 1px solid var(--ft-border);
             border-radius: var(--ft-radius-sm);
-            font-size: 1rem;
         }
 
         code {
@@ -186,7 +182,6 @@
         gap: 2px;
 
         dt {
-            font-size: 1rem;
             font-weight: 600;
             text-transform: none;
             letter-spacing: 0.04em;
@@ -195,7 +190,6 @@
 
         dd {
             margin: 0;
-            font-size: 1rem;
             color: var(--ft-text);
             overflow-wrap: anywhere;
         }
@@ -207,14 +201,12 @@
         border-radius: var(--ft-radius-sm);
         background: var(--ft-danger-soft);
         color: var(--ft-danger);
-        font-size: 1rem;
         line-height: 1.5;
         overflow-wrap: anywhere;
     }
 
     &__hint {
         margin: 0;
-        font-size: 1rem;
         line-height: 1.55;
         color: var(--ft-text-soft);
     }
@@ -242,18 +234,16 @@
 
     &__account-name {
         font-weight: 600;
-        font-size: 1rem;
+        font-size: 0.875rem;
     }
 
     &__account-mail {
-        font-size: 1rem;
         color: var(--ft-text-muted);
     }
 
     &__shopid-value {
         display: inline-block;
         font-family: var(--ft-mono);
-        font-size: 1rem;
         background: var(--ft-surface-2);
         border: 1px solid var(--ft-border);
         border-radius: var(--ft-radius-sm);
@@ -276,13 +266,12 @@
 
     &__danger-title {
         font-weight: 600;
-        font-size: 1rem;
+        font-size: 0.875rem;
         margin-bottom: 4px;
     }
 
     &__modal-text {
         margin: 0 0 12px;
-        font-size: 1rem;
         line-height: 1.55;
         color: var(--ft-text-soft);
     }
@@ -304,7 +293,6 @@
             display: flex;
             justify-content: space-between;
             gap: 12px;
-            font-size: 1rem;
         }
     }
 

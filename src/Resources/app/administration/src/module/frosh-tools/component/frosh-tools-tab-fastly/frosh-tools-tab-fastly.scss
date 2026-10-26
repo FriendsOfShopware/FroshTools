@@ -13,7 +13,6 @@
         gap: 4px 24px;
 
         dt {
-            font-size: 1rem;
             text-transform: none;
             letter-spacing: 0.01em;
         }
@@ -26,7 +25,6 @@
 
     &__desc {
         margin: 0 0 16px;
-        font-size: 1rem;
         color: var(--ft-text-soft);
     }
 
@@ -54,12 +52,11 @@
 
     &__danger-title {
         font-weight: 600;
-        font-size: 1rem;
+        font-size: 0.875rem;
         margin-bottom: 2px;
     }
 
     &__danger-sub {
-        font-size: 1rem;
         color: var(--ft-text-muted);
     }
 

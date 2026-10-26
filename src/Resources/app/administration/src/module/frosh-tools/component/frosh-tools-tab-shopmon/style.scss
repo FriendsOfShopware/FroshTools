@@ -22,7 +22,7 @@
         background: var(--ft-accent-soft);
         border: 1px solid transparent;
         color: var(--ft-accent);
-        font-size: 1rem;
+        font-size: 0.7812rem;
         font-weight: 500;
         margin-bottom: 28px;
     }
@@ -43,7 +43,7 @@
     &__lead {
         margin: 0 auto 36px;
         max-width: 620px;
-        font-size: 1rem;
+        font-size: 0.9688rem;
         line-height: 1.65;
         color: var(--ft-text-soft);
     }
@@ -65,7 +65,7 @@
         border: none;
         background: var(--ft-accent-fill);
         color: var(--ft-on-accent);
-        font-size: 1rem;
+        font-size: 0.9062rem;
         font-weight: 600;
         cursor: pointer;
         transition:
@@ -99,7 +99,7 @@
         background: var(--ft-surface-2);
         border: 1px solid var(--ft-border);
         color: var(--ft-text);
-        font-size: 1rem;
+        font-size: 0.9062rem;
         font-weight: 600;
         text-decoration: none;
         transition: background var(--ft-transition);
@@ -113,14 +113,13 @@
 
     &__hint {
         margin: 26px 0 0;
-        font-size: 1rem;
         color: var(--ft-text-muted);
     }
 
     // Undo the admin's global a[target="_blank"] inline-link styling on the hero CTA.
     &.ft a.frosh-tab-shopmon__cta-secondary[target='_blank'] {
         display: inline-flex;
-        font-size: 1rem;
+        font-size: 0.9062rem;
         color: var(--ft-text);
         text-decoration: none;
         word-break: normal;
@@ -162,12 +161,11 @@
 
     &__feature-title {
         font-weight: 600;
-        font-size: 1rem;
+        font-size: 0.875rem;
         margin-bottom: 6px;
     }
 
     &__feature-body {
-        font-size: 1rem;
         line-height: 1.55;
         color: var(--ft-text-soft);
     }
@@ -182,7 +180,6 @@
 
     &__setup-hint {
         margin: 0 0 12px;
-        font-size: 1rem;
         line-height: 1.55;
         color: var(--ft-text-soft);
     }
@@ -196,7 +193,6 @@
             flex: 1;
             min-width: 0;
             font-family: var(--ft-mono);
-            font-size: 1rem;
             line-height: 1.6;
             background: var(--ft-surface-2);
             border: 1px solid var(--ft-border);
@@ -237,13 +233,12 @@
         place-items: center;
         background: var(--ft-accent-soft);
         color: var(--ft-accent);
-        font-size: 1rem;
+        font-size: 0.7812rem;
         font-weight: 700;
         font-variant-numeric: tabular-nums;
     }
 
     &__step-text {
-        font-size: 1rem;
         color: var(--ft-text-soft);
         line-height: 1.55;
         padding-top: 4px;
