@@ -1,6 +1,7 @@
 import { describe, expect, it, vi } from 'vitest';
 import { flushPromises } from '@friendsofshopware/vitest-shopware-admin-bridge/test-utils';
 import { mountRegistered } from '../../../../../test/helpers.js';
+import '../../../../mixin/settings-result.js';
 import './index.js';
 import entities from './entities.js';
 
@@ -13,11 +14,15 @@ function createRepositoryFactory(records) {
     };
 }
 
-async function createWrapper(service, repositoryFactory) {
+async function createWrapper(
+    service,
+    repositoryFactory,
+    checkId = 'rule-invalid'
+) {
     const wrapper = await mountRegistered(
         'frosh-tools-data-integrity-affected',
         {
-            props: { checkId: 'rule-invalid' },
+            props: { checkId },
             provide: {
                 froshToolsService: service,
                 repositoryFactory,
@@ -67,12 +72,14 @@ describe('frosh-tools-data-integrity-affected', () => {
                 label: null,
                 detail: null,
                 href: '#/sw.settings.rule.detail/a',
+                related: [],
             },
             {
                 id: 'b',
                 label: 'Second rule',
                 detail: null,
                 href: '#/sw.settings.rule.detail/b',
+                related: [],
             },
         ]);
 
@@ -102,6 +109,7 @@ describe('frosh-tools-data-integrity-affected', () => {
                 label: null,
                 detail: null,
                 href: '#/sw.settings.rule.detail/a',
+                related: [],
             },
         ]);
     });
@@ -122,9 +130,68 @@ describe('frosh-tools-data-integrity-affected', () => {
 
         expect(repository.factory.create).not.toHaveBeenCalled();
         expect(wrapper.vm.rows).toEqual([
-            { id: 'a', label: null, detail: null, href: null },
+            { id: 'a', label: null, detail: null, href: null, related: [] },
         ]);
         expect(wrapper.find('a.ft-affected__link').exists()).toBe(false);
+    });
+
+    it('lists the related records of each affected record', async () => {
+        const repository = createRepositoryFactory([
+            { id: 'a', name: 'Cart >= 0', translated: {} },
+            { id: 'b', name: 'Cart value >= 0', translated: {} },
+            { id: 'c', name: 'Cart value >= 0 (payment)', translated: {} },
+        ]);
+
+        const wrapper = await createWrapper(
+            {
+                dataIntegrityAffected: vi.fn().mockResolvedValue({
+                    entity: 'rule',
+                    total: 3,
+                    ids: ['a'],
+                    related: { a: ['b', 'c'] },
+                }),
+            },
+            repository.factory,
+            'rule-duplicate-conditions'
+        );
+
+        expect(repository.search.mock.calls[0][0].ids).toEqual(['a', 'b', 'c']);
+        expect(wrapper.vm.rows[0].related.map((row) => row.label)).toEqual([
+            'Cart value >= 0',
+            'Cart value >= 0 (payment)',
+        ]);
+
+        const related = wrapper.find('.ft-affected__related');
+        expect(related.text()).toMatch(/^Identical conditions as:/);
+        expect(
+            related
+                .findAll('.ft-affected__related-item')
+                .map((item) => item.text())
+        ).toEqual(['Cart value >= 0', 'Cart value >= 0 (payment)']);
+        expect(
+            related.findAll('a').map((link) => link.attributes('href'))
+        ).toEqual([
+            '#/sw.settings.rule.detail/b',
+            '#/sw.settings.rule.detail/c',
+        ]);
+    });
+
+    it('uses the generic related label for checks without their own', async () => {
+        const wrapper = await createWrapper(
+            {
+                dataIntegrityAffected: vi.fn().mockResolvedValue({
+                    entity: 'rule',
+                    total: 1,
+                    ids: ['a'],
+                    related: { a: ['b'] },
+                }),
+            },
+            createRepositoryFactory([]).factory
+        );
+
+        expect(wrapper.find('.ft-affected__related').text()).toBe(
+            'Related records: b'
+        );
     });
 
     it('marks checks without a list as unavailable', async () => {

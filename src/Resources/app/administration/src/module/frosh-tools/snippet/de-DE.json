@@ -274,7 +274,8 @@
                     "loadError": "Die betroffenen Datensätze konnten nicht geladen werden.",
                     "empty": "Keine betroffenen Datensätze gefunden. Aktualisieren Sie die Prüfungen, um die Anzahl zu aktualisieren.",
                     "unavailable": "Diese Prüfung kann die betroffenen Datensätze nicht auflisten.",
-                    "opensInNewTab": "Öffnet sich in einem neuen Tab"
+                    "opensInNewTab": "Öffnet sich in einem neuen Tab",
+                    "related": "Zugehörige Datensätze:"
                 },
                 "recommendations": {
                     "product-canonical-without-variants": {
@@ -506,6 +507,12 @@
                         "title": "Regelbedingungen, die nur auf gelöschte Datensätze verweisen",
                         "description": "Diese Regelbedingungen verweisen nur auf Zahlungsarten, Versandarten, Kundengruppen, Länder, Bundesländer, Verkaufskanäle, Währungen, Sprachen, Tags, Anreden oder dynamische Produktgruppen, die gelöscht wurden. Shopware entfernt gelöschte Entitäten nicht aus Regelbedingungen, daher trifft eine Bedingung mit ist eine von nie zu und eine Bedingung mit ist keine von immer zu. Preise, Versandarten, Zahlungsarten, Promotionen und Flows, die von diesen Regeln abhängen, verhalten sich anders als vorgesehen.",
                         "solution": "Öffnen Sie die Regeln im Rule Builder und wählen Sie in den Bedingungen vorhandene Entitäten aus, oder entfernen Sie die Bedingungen."
+                    },
+                    "rule-duplicate-conditions": {
+                        "title": "Regeln mit identischen Bedingungen",
+                        "description": "Diese Regeln haben dieselben Bedingungen wie mindestens eine andere Regel. Die Reihenfolge der Bedingungen und der ausgewählten Werte wird ignoriert, Name, Priorität und Zuweisungen werden nicht verglichen. Regeln mit identischen Bedingungen werden direkt nacheinander aufgelistet, und bei jeder Regel stehen die Regeln mit denselben Bedingungen. Duplikate entstehen meist durch kopierte Regeln oder durch Regeln, die neu angelegt wurden, weil die vorhandene nicht gefunden wurde. Sie erschweren es zu erkennen, von welcher Regel ein Preis, eine Versandart, eine Zahlungsart, eine Promotion oder ein Flow abhängt, und Änderungen an einer Kopie wirken sich nicht auf die anderen aus. Ein Duplikat kann gewollt sein, zum Beispiel um Zuweisungen getrennt zu halten.",
+                        "solution": "Behalten Sie eine Regel pro Gruppe, weisen Sie ihr im Tab Zuweisungen des Rule Builders die Preise, Versandarten, Zahlungsarten, Promotionen und Flows zu, und löschen Sie die anderen Regeln.",
+                        "related": "Identische Bedingungen wie:"
                     },
                     "flow-action-deleted-references": {
                         "title": "Aktive Flow-Aktionen, die auf gelöschte Datensätze verweisen",

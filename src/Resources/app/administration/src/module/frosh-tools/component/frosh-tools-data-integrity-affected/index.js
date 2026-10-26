@@ -2,11 +2,12 @@ import template from './template.twig';
 import entities from './entities.js';
 import './style.scss';
 
-const { Component } = Shopware;
+const { Component, Mixin } = Shopware;
 const { Criteria } = Shopware.Data;
 
 Component.register('frosh-tools-data-integrity-affected', {
     inject: ['froshToolsService', 'repositoryFactory'],
+    mixins: [Mixin.getByName('frosh-settings-result')],
     template,
 
     props: {
@@ -28,6 +29,16 @@ Component.register('frosh-tools-data-integrity-affected', {
         };
     },
 
+    computed: {
+        relatedLabel() {
+            const key = `frosh-tools.tabs.data-integrity.recommendations.${this.checkId}.related`;
+
+            return this.snippetExists(key)
+                ? this.$t(key)
+                : this.$t('frosh-tools.tabs.data-integrity.affected.related');
+        },
+    },
+
     created() {
         this.load();
     },
@@ -45,7 +56,11 @@ Component.register('frosh-tools-data-integrity-affected', {
                         this.limit
                     );
                 this.total = result.total;
-                this.rows = await this.resolveRows(result.entity, result.ids);
+                this.rows = await this.resolveRows(
+                    result.entity,
+                    result.ids,
+                    result.related ?? {}
+                );
             } catch (error) {
                 this.rows = [];
                 if (error?.response?.status === 404) {
@@ -59,22 +74,32 @@ Component.register('frosh-tools-data-integrity-affected', {
             }
         },
 
-        async resolveRows(entityName, ids) {
+        async resolveRows(entityName, ids, related) {
             const config = entities[entityName] ?? null;
-            const records = await this.loadRecords(entityName, config, ids);
+            const relatedIds = ids.flatMap((id) => related[id] ?? []);
+            const records = await this.loadRecords(entityName, config, [
+                ...new Set([...ids, ...relatedIds]),
+            ]);
 
-            return ids.map((id) => {
-                const record = records.get(id) ?? null;
+            return ids.map((id) => ({
+                ...this.toRow(id, config, records),
+                related: (related[id] ?? []).map((relatedId) =>
+                    this.toRow(relatedId, config, records)
+                ),
+            }));
+        },
 
-                return {
-                    id,
-                    label: record ? config.label(record) : null,
-                    detail: record ? config.detail(record) : null,
-                    href: config
-                        ? this.$router.resolve(config.route(id, record)).href
-                        : null,
-                };
-            });
+        toRow(id, config, records) {
+            const record = records.get(id) ?? null;
+
+            return {
+                id,
+                label: record ? config.label(record) : null,
+                detail: record ? config.detail(record) : null,
+                href: config
+                    ? this.$router.resolve(config.route(id, record)).href
+                    : null,
+            };
         },
 
         async loadRecords(entityName, config, ids) {

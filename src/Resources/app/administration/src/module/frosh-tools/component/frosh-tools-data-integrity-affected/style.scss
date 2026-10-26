@@ -31,6 +31,21 @@
         overflow-wrap: anywhere;
     }
 
+    &__related {
+        flex-basis: 100%;
+        font-size: 12px;
+        color: var(--ft-text-muted);
+        overflow-wrap: anywhere;
+    }
+
+    &__related-item:not(:last-child) {
+        margin-right: 4px;
+
+        &::after {
+            content: ',';
+        }
+    }
+
     &__detail {
         font-size: 12px;
         color: var(--ft-text-muted);

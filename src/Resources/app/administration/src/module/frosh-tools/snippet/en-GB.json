@@ -274,7 +274,8 @@
                     "loadError": "The affected records could not be loaded.",
                     "empty": "No affected records found. Refresh the checks to update the count.",
                     "unavailable": "This check cannot list the affected records.",
-                    "opensInNewTab": "Opens in a new tab"
+                    "opensInNewTab": "Opens in a new tab",
+                    "related": "Related records:"
                 },
                 "recommendations": {
                     "product-canonical-without-variants": {
@@ -506,6 +507,12 @@
                         "title": "Rule conditions referencing only deleted entities",
                         "description": "These rule conditions only reference payment methods, shipping methods, customer groups, countries, states, sales channels, currencies, languages, tags, salutations or dynamic product groups that were deleted. Shopware does not remove deleted entities from rule conditions, so a condition with is one of never matches and a condition with is none of always matches. Prices, shipping methods, payment methods, promotions and flows that depend on these rules behave differently than intended.",
                         "solution": "Open the rules in the rule builder and select existing entities in the conditions, or remove the conditions."
+                    },
+                    "rule-duplicate-conditions": {
+                        "title": "Rules with identical conditions",
+                        "description": "These rules have the same conditions as at least one other rule. The order of the conditions and of the selected values is ignored, name, priority and assignments are not compared. Rules with identical conditions are listed next to each other, and each rule names the rules it shares its conditions with. Duplicates usually come from copied rules or from rules that were created again because the existing one was not found. They make it hard to see which rule a price, shipping method, payment method, promotion or flow depends on, and changes to one copy do not reach the others. A duplicate can be intended, for example to keep assignments separate.",
+                        "solution": "Keep one rule of each set, assign its prices, shipping methods, payment methods, promotions and flows to it in the Assignments tab of the rule builder, and delete the other rules.",
+                        "related": "Identical conditions as:"
                     },
                     "flow-action-deleted-references": {
                         "title": "Active flow actions referencing deleted entities",

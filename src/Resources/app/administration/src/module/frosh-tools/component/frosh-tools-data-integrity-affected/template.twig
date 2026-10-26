@@ -50,6 +50,30 @@
                     v-if="row.detail"
                     class="ft-affected__detail"
                 >{{ row.detail }}</span>
+                <span
+                    v-if="row.related.length > 0"
+                    class="ft-affected__related"
+                >
+                    {{ relatedLabel }}
+                    <span
+                        v-for="item in row.related"
+                        :key="item.id"
+                        class="ft-affected__related-item"
+                    >
+                        <a
+                            v-if="item.href"
+                            class="ft-link"
+                            :href="item.href"
+                            target="_blank"
+                            rel="noopener"
+                            :title="$t('frosh-tools.tabs.data-integrity.affected.opensInNewTab')"
+                        >{{ item.label || item.id }}</a>
+                        <span
+                            v-else
+                            class="ft-mono"
+                        >{{ item.id }}</span>
+                    </span>
+                </span>
             </li>
         </ul>
         <sw-pagination

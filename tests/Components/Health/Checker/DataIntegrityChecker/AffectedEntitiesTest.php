@@ -22,6 +22,17 @@ class AffectedEntitiesTest extends DataIntegrityCheckerTestCase
         static::assertSame(['entity' => 'rule', 'total' => 3, 'ids' => ['b', 'c']], $affected->jsonSerialize());
     }
 
+    public function testSerializesRelatedIdsOnlyWhenPresent(): void
+    {
+        $affected = new AffectedEntities('rule', 2, ['a', 'b'], ['a' => ['b'], 'b' => ['a']]);
+
+        static::assertSame(
+            ['entity' => 'rule', 'total' => 2, 'ids' => ['a', 'b'], 'related' => ['a' => ['b'], 'b' => ['a']]],
+            $affected->jsonSerialize(),
+        );
+        static::assertArrayNotHasKey('related', (new AffectedEntities('rule', 0, []))->jsonSerialize());
+    }
+
     public function testFromQueryDeduplicatesSortsAndPages(): void
     {
         $ruleIds = [Uuid::randomHex(), Uuid::randomHex(), Uuid::randomHex()];

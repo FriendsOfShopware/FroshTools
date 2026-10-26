@@ -10,11 +10,13 @@ final class AffectedEntities implements \JsonSerializable
 {
     /**
      * @param list<string> $ids
+     * @param array<string, list<string>> $related
      */
     public function __construct(
         public readonly string $entity,
         public readonly int $total,
         public readonly array $ids,
+        public readonly array $related = [],
     ) {
     }
 
@@ -70,14 +72,20 @@ final class AffectedEntities implements \JsonSerializable
     }
 
     /**
-     * @return array{entity: string, total: int, ids: list<string>}
+     * @return array{entity: string, total: int, ids: list<string>, related?: array<string, list<string>>}
      */
     public function jsonSerialize(): array
     {
-        return [
+        $data = [
             'entity' => $this->entity,
             'total' => $this->total,
             'ids' => $this->ids,
         ];
+
+        if ($this->related !== []) {
+            $data['related'] = $this->related;
+        }
+
+        return $data;
     }
 }
