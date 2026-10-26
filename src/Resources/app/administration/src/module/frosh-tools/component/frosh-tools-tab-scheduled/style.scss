@@ -1,6 +1,5 @@
 .frosh-tab-scheduled {
     &__checkpoint {
-        font-size: 0.75rem;
         color: var(--ft-text-muted);
         white-space: nowrap;
     }
@@ -35,7 +34,6 @@
         background: transparent;
         border: none;
         color: var(--ft-text);
-        font-size: 0.8125rem;
         text-align: left;
         cursor: pointer;
         width: 100%;

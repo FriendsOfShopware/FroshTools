@@ -13,7 +13,6 @@
         gap: 4px 24px;
 
         dt {
-            font-size: 0.75rem;
             text-transform: none;
             letter-spacing: 0.01em;
         }
@@ -26,7 +25,6 @@
 
     &__desc {
         margin: 0 0 16px;
-        font-size: 0.8438rem;
         color: var(--ft-text-soft);
     }
 
@@ -59,7 +57,6 @@
     }
 
     &__danger-sub {
-        font-size: 0.7812rem;
         color: var(--ft-text-muted);
     }
 

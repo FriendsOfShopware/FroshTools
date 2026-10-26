@@ -14,7 +14,6 @@
     }
 
     &__status-label {
-        font-size: 0.75rem;
         font-weight: 500;
         color: var(--ft-text-soft);
     }
@@ -43,14 +42,12 @@
         align-items: center;
         flex-wrap: wrap;
         gap: 8px;
-        font-size: 0.8125rem;
         color: var(--ft-text);
     }
 
     &__cleanup-text {
         margin: 0;
         color: var(--ft-text-soft);
-        font-size: 0.8125rem;
         line-height: 1.5;
     }
 
@@ -87,7 +84,6 @@
     }
 
     &__output-label {
-        font-size: 0.6875rem;
         text-transform: none;
         letter-spacing: 0.01em;
         color: var(--ft-text-muted);
@@ -118,7 +114,6 @@
     p {
         margin: 0;
         color: var(--ft-text-soft);
-        font-size: 0.8125rem;
         max-width: 42rem;
     }
 
