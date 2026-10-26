@@ -40,6 +40,11 @@ class SalesChannelDefaultCountryUnavailableChecker implements DataIntegrityCheck
         return self::ID;
     }
 
+    public function getAffectedEntity(): string
+    {
+        return SalesChannelDefinition::ENTITY_NAME;
+    }
+
     public function collect(HealthCollection $collection): void
     {
         $count = AffectedEntities::countRows(

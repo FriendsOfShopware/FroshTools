@@ -39,6 +39,11 @@ class CurrencyRoundingIntervalZeroChecker implements DataIntegrityCheckerInterfa
         return self::ID;
     }
 
+    public function getAffectedEntity(): string
+    {
+        return CurrencyDefinition::ENTITY_NAME;
+    }
+
     public function collect(HealthCollection $collection): void
     {
         $count = (int) $this->connection->fetchOne(

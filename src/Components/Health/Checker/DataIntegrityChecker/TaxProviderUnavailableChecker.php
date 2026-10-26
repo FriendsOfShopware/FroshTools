@@ -25,6 +25,11 @@ class TaxProviderUnavailableChecker implements DataIntegrityCheckerInterface, Ch
         return self::ID;
     }
 
+    public function getAffectedEntity(): string
+    {
+        return TaxProviderDefinition::ENTITY_NAME;
+    }
+
     public function collect(HealthCollection $collection): void
     {
         $collection->add(DataIntegrityCheckResult::fromCount(

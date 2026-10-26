@@ -4,7 +4,12 @@ declare(strict_types=1);
 
 namespace Frosh\Tools\Tests\Controller;
 
+use Frosh\Tools\Components\Health\Checker\CheckerInterface;
+use Frosh\Tools\Components\Health\Checker\DataIntegrityChecker\AffectedEntities;
+use Frosh\Tools\Components\Health\Checker\DataIntegrityChecker\AffectedEntitiesProviderInterface;
+use Frosh\Tools\Components\Health\Checker\DataIntegrityChecker\DataIntegrityCheckerInterface;
 use Frosh\Tools\Components\Health\Checker\DataIntegrityChecker\InvalidRuleChecker;
+use Frosh\Tools\Components\Health\HealthCollection;
 use Frosh\Tools\Components\Health\SettingsResult;
 use Frosh\Tools\Controller\HealthController;
 use Frosh\Tools\Tests\IntegrationTestCase;
@@ -170,6 +175,83 @@ class HealthControllerTest extends IntegrationTestCase
 
         static::assertSame(403, $response->getStatusCode());
         static::assertSame(['error' => 'Missing privilege "rule:read"'], json_decode((string) $response->getContent(), true, 512, \JSON_THROW_ON_ERROR));
+    }
+
+    public function testDataIntegrityAffectedChecksPermissionBeforeQueryingTheRecords(): void
+    {
+        $checker = new class implements AffectedEntitiesProviderInterface, DataIntegrityCheckerInterface, CheckerInterface {
+            public bool $queried = false;
+
+            public function getId(): string
+            {
+                return 'scan-test';
+            }
+
+            public function getAffectedEntity(): string
+            {
+                return 'customer';
+            }
+
+            public function getAffectedEntities(int $limit, int $offset): AffectedEntities
+            {
+                $this->queried = true;
+
+                return new AffectedEntities('customer', 0, []);
+            }
+
+            public function collect(HealthCollection $collection): void
+            {
+            }
+        };
+
+        $controller = new HealthController(
+            [],
+            [],
+            [$checker],
+            static::getContainer()->get('cache.object'),
+            [],
+        );
+
+        $response = $controller->dataIntegrityAffected('scan-test', new Request(), $this->adminContext([]));
+
+        static::assertSame(403, $response->getStatusCode());
+        static::assertFalse($checker->queried);
+    }
+
+    public function testDataIntegrityAffectedRejectsRecordsOfAnotherEntityThanDeclared(): void
+    {
+        $checker = new class implements AffectedEntitiesProviderInterface, DataIntegrityCheckerInterface, CheckerInterface {
+            public function getId(): string
+            {
+                return 'mismatch-test';
+            }
+
+            public function getAffectedEntity(): string
+            {
+                return 'rule';
+            }
+
+            public function getAffectedEntities(int $limit, int $offset): AffectedEntities
+            {
+                return new AffectedEntities('customer', 1, ['0123456789abcdef0123456789abcdef']);
+            }
+
+            public function collect(HealthCollection $collection): void
+            {
+            }
+        };
+
+        $controller = new HealthController(
+            [],
+            [],
+            [$checker],
+            static::getContainer()->get('cache.object'),
+            [],
+        );
+
+        $this->expectException(\LogicException::class);
+
+        $controller->dataIntegrityAffected('mismatch-test', new Request(), $this->adminContext(['rule:read']));
     }
 
     public function testDataIntegrityAffectedListsTheRecordsWithReadPermission(): void

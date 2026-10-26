@@ -29,6 +29,11 @@ class DuplicateRuleConditionsChecker implements DataIntegrityCheckerInterface, C
         return self::ID;
     }
 
+    public function getAffectedEntity(): string
+    {
+        return RuleDefinition::ENTITY_NAME;
+    }
+
     public function collect(HealthCollection $collection): void
     {
         $collection->add(DataIntegrityCheckResult::fromCount(

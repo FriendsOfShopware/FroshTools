@@ -41,6 +41,11 @@ class NumberRangeSalesChannelMissingChecker implements DataIntegrityCheckerInter
         return self::ID;
     }
 
+    public function getAffectedEntity(): string
+    {
+        return SalesChannelDefinition::ENTITY_NAME;
+    }
+
     public function collect(HealthCollection $collection): void
     {
         $count = (int) $this->connection->fetchOne(

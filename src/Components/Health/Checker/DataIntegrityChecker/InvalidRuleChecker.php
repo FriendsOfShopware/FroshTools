@@ -29,6 +29,11 @@ class InvalidRuleChecker implements DataIntegrityCheckerInterface, CheckerInterf
         return self::ID;
     }
 
+    public function getAffectedEntity(): string
+    {
+        return RuleDefinition::ENTITY_NAME;
+    }
+
     public function collect(HealthCollection $collection): void
     {
         $count = AffectedEntities::countRows($this->connection, self::AFFECTED_QUERY);

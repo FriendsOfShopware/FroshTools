@@ -37,6 +37,11 @@ class ProductDescriptionTooLongChecker implements DataIntegrityCheckerInterface,
         return self::ID;
     }
 
+    public function getAffectedEntity(): string
+    {
+        return ProductDefinition::ENTITY_NAME;
+    }
+
     public function collect(HealthCollection $collection): void
     {
         if ($this->isFixedInShopware()) {

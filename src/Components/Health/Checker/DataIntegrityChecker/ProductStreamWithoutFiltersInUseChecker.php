@@ -37,6 +37,11 @@ class ProductStreamWithoutFiltersInUseChecker implements DataIntegrityCheckerInt
         return self::ID;
     }
 
+    public function getAffectedEntity(): string
+    {
+        return ProductStreamDefinition::ENTITY_NAME;
+    }
+
     public function collect(HealthCollection $collection): void
     {
         $collection->add(DataIntegrityCheckResult::fromCount(

@@ -26,6 +26,8 @@ class SalesChannelNavigationCategoryInactiveChecker implements DataIntegrityChec
           AND c.active = 0
         SQL;
 
+    private const AFFECTED_IDS_QUERY = 'SELECT affected.category_id AS id FROM (' . self::AFFECTED_QUERY . ') affected';
+
     public function __construct(
         private readonly Connection $connection,
     ) {
@@ -34,6 +36,11 @@ class SalesChannelNavigationCategoryInactiveChecker implements DataIntegrityChec
     public function getId(): string
     {
         return self::ID;
+    }
+
+    public function getAffectedEntity(): string
+    {
+        return CategoryDefinition::ENTITY_NAME;
     }
 
     public function collect(HealthCollection $collection): void
@@ -56,7 +63,7 @@ class SalesChannelNavigationCategoryInactiveChecker implements DataIntegrityChec
         return AffectedEntities::fromQuery(
             $this->connection,
             CategoryDefinition::ENTITY_NAME,
-            \sprintf('SELECT affected.category_id AS id FROM (%s) affected', self::AFFECTED_QUERY),
+            self::AFFECTED_IDS_QUERY,
             ['storefrontTypeId' => Uuid::fromHexToBytes(Defaults::SALES_CHANNEL_TYPE_STOREFRONT)],
             [],
             $limit,

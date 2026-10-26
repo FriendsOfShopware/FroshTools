@@ -47,6 +47,10 @@ class FlowActionDeletedReferenceChecker implements DataIntegrityCheckerInterface
           AND t.id IS NULL
         SQL;
 
+    private const AFFECTED_IDS_QUERY = 'SELECT broken.flow_id AS id FROM (' . self::BROKEN_SEQUENCES_QUERY . ') broken';
+
+    private const COUNT_QUERY = 'SELECT COUNT(DISTINCT broken.sequence_id) FROM (' . self::BROKEN_SEQUENCES_QUERY . ') broken';
+
     private const PARAMETERS = [
         'sendMailAction' => 'action.mail.send',
         'changeCustomerGroupAction' => 'action.change.customer.group',
@@ -65,10 +69,15 @@ class FlowActionDeletedReferenceChecker implements DataIntegrityCheckerInterface
         return self::ID;
     }
 
+    public function getAffectedEntity(): string
+    {
+        return FlowDefinition::ENTITY_NAME;
+    }
+
     public function collect(HealthCollection $collection): void
     {
         $count = (int) $this->connection->fetchOne(
-            \sprintf('SELECT COUNT(DISTINCT broken.sequence_id) FROM (%s) broken', self::BROKEN_SEQUENCES_QUERY),
+            self::COUNT_QUERY,
             self::PARAMETERS,
             self::TYPES,
         );
@@ -85,7 +94,7 @@ class FlowActionDeletedReferenceChecker implements DataIntegrityCheckerInterface
         return AffectedEntities::fromQuery(
             $this->connection,
             FlowDefinition::ENTITY_NAME,
-            \sprintf('SELECT broken.flow_id AS id FROM (%s) broken', self::BROKEN_SEQUENCES_QUERY),
+            self::AFFECTED_IDS_QUERY,
             self::PARAMETERS,
             self::TYPES,
             $limit,

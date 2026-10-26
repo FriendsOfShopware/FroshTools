@@ -32,6 +32,11 @@ class ShippingMethodWithoutPricesChecker implements DataIntegrityCheckerInterfac
         return self::ID;
     }
 
+    public function getAffectedEntity(): string
+    {
+        return ShippingMethodDefinition::ENTITY_NAME;
+    }
+
     public function collect(HealthCollection $collection): void
     {
         $count = AffectedEntities::countRows($this->connection, self::AFFECTED_QUERY);

@@ -32,6 +32,8 @@ class FlowMailTemplateIncompleteChecker implements DataIntegrityCheckerInterface
               OR CHAR_LENGTH(COALESCE(mtt.content_plain, '')) = 0)
         SQL;
 
+    private const COUNT_QUERY = 'SELECT COUNT(DISTINCT affected.id) FROM (' . self::AFFECTED_QUERY . ') affected';
+
     public function __construct(
         private readonly Connection $connection,
     ) {
@@ -42,10 +44,15 @@ class FlowMailTemplateIncompleteChecker implements DataIntegrityCheckerInterface
         return self::ID;
     }
 
+    public function getAffectedEntity(): string
+    {
+        return MailTemplateDefinition::ENTITY_NAME;
+    }
+
     public function collect(HealthCollection $collection): void
     {
         $count = (int) $this->connection->fetchOne(
-            \sprintf('SELECT COUNT(DISTINCT affected.id) FROM (%s) affected', self::AFFECTED_QUERY),
+            self::COUNT_QUERY,
             $this->queryParameters(),
         );
 

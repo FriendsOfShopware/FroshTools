@@ -8,5 +8,7 @@ interface AffectedEntitiesProviderInterface
 {
     public function getId(): string;
 
+    public function getAffectedEntity(): string;
+
     public function getAffectedEntities(int $limit, int $offset): AffectedEntities;
 }

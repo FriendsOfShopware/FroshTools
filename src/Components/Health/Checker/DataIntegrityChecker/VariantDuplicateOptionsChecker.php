@@ -55,6 +55,11 @@ class VariantDuplicateOptionsChecker implements DataIntegrityCheckerInterface, C
         return self::ID;
     }
 
+    public function getAffectedEntity(): string
+    {
+        return ProductDefinition::ENTITY_NAME;
+    }
+
     public function collect(HealthCollection $collection): void
     {
         $count = AffectedEntities::countRows(

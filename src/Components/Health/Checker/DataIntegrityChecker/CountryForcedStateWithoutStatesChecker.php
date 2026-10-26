@@ -32,6 +32,11 @@ class CountryForcedStateWithoutStatesChecker implements DataIntegrityCheckerInte
         return self::ID;
     }
 
+    public function getAffectedEntity(): string
+    {
+        return CountryDefinition::ENTITY_NAME;
+    }
+
     public function collect(HealthCollection $collection): void
     {
         $count = AffectedEntities::countRows($this->connection, self::AFFECTED_QUERY);

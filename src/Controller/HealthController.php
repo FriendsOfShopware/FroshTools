@@ -110,10 +110,14 @@ class HealthController extends AbstractController
                 continue;
             }
 
-            $affected = $checker->getAffectedEntities($limit, ($page - 1) * $limit);
-            $privilege = $affected->entity . ':' . AclRoleDefinition::PRIVILEGE_READ;
+            $privilege = $checker->getAffectedEntity() . ':' . AclRoleDefinition::PRIVILEGE_READ;
             if (!$context->isAllowed($privilege)) {
                 return new JsonResponse(['error' => \sprintf('Missing privilege "%s"', $privilege)], Response::HTTP_FORBIDDEN);
+            }
+
+            $affected = $checker->getAffectedEntities($limit, ($page - 1) * $limit);
+            if ($affected->entity !== $checker->getAffectedEntity()) {
+                throw new \LogicException(\sprintf('Data integrity check "%s" declares entity "%s" but returned "%s"', $id, $checker->getAffectedEntity(), $affected->entity));
             }
 
             return new JsonResponse([

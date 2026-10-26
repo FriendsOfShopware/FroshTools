@@ -31,6 +31,11 @@ class LanguageTranslationCodeMissingChecker implements DataIntegrityCheckerInter
         return self::ID;
     }
 
+    public function getAffectedEntity(): string
+    {
+        return LanguageDefinition::ENTITY_NAME;
+    }
+
     public function collect(HealthCollection $collection): void
     {
         $count = AffectedEntities::countRows($this->connection, self::AFFECTED_QUERY);

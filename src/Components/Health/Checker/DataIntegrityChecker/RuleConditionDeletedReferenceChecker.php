@@ -41,6 +41,11 @@ class RuleConditionDeletedReferenceChecker implements DataIntegrityCheckerInterf
         return self::ID;
     }
 
+    public function getAffectedEntity(): string
+    {
+        return RuleDefinition::ENTITY_NAME;
+    }
+
     public function collect(HealthCollection $collection): void
     {
         $count = 0;

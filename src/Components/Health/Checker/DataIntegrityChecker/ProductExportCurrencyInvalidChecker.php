@@ -30,6 +30,8 @@ class ProductExportCurrencyInvalidChecker implements DataIntegrityCheckerInterfa
            )
         SQL;
 
+    private const AFFECTED_IDS_QUERY = 'SELECT affected.sales_channel_id AS id FROM (' . self::AFFECTED_QUERY . ') affected';
+
     public function __construct(
         private readonly Connection $connection,
         #[Autowire('%kernel.shopware_version%')]
@@ -40,6 +42,11 @@ class ProductExportCurrencyInvalidChecker implements DataIntegrityCheckerInterfa
     public function getId(): string
     {
         return self::ID;
+    }
+
+    public function getAffectedEntity(): string
+    {
+        return SalesChannelDefinition::ENTITY_NAME;
     }
 
     public function collect(HealthCollection $collection): void
@@ -62,7 +69,7 @@ class ProductExportCurrencyInvalidChecker implements DataIntegrityCheckerInterfa
         return AffectedEntities::fromQuery(
             $this->connection,
             SalesChannelDefinition::ENTITY_NAME,
-            \sprintf('SELECT affected.sales_channel_id AS id FROM (%s) affected', self::AFFECTED_QUERY),
+            self::AFFECTED_IDS_QUERY,
             $this->queryParameters(),
             [],
             $limit,

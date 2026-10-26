@@ -37,6 +37,11 @@ class TaxRuleStatesInvalidChecker implements DataIntegrityCheckerInterface, Chec
         return self::ID;
     }
 
+    public function getAffectedEntity(): string
+    {
+        return TaxDefinition::ENTITY_NAME;
+    }
+
     public function collect(HealthCollection $collection): void
     {
         $count = AffectedEntities::countRows(

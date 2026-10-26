@@ -32,6 +32,11 @@ class MediaFolderConfigurationMissingChecker implements DataIntegrityCheckerInte
         return self::ID;
     }
 
+    public function getAffectedEntity(): string
+    {
+        return MediaFolderDefinition::ENTITY_NAME;
+    }
+
     public function collect(HealthCollection $collection): void
     {
         $count = AffectedEntities::countRows($this->connection, self::AFFECTED_QUERY);

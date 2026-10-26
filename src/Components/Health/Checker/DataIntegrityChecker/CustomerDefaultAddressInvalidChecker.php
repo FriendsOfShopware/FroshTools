@@ -36,6 +36,11 @@ class CustomerDefaultAddressInvalidChecker implements DataIntegrityCheckerInterf
         return self::ID;
     }
 
+    public function getAffectedEntity(): string
+    {
+        return CustomerDefinition::ENTITY_NAME;
+    }
+
     public function collect(HealthCollection $collection): void
     {
         $count = AffectedEntities::countRows($this->connection, self::AFFECTED_QUERY);
