@@ -265,6 +265,79 @@ describe('frosh-tools-data-integrity-affected', () => {
         );
     });
 
+    it('ignores responses of earlier pages that arrive late', async () => {
+        const deferred = [];
+        const service = {
+            dataIntegrityAffected: vi.fn((checkId, page) => {
+                if (page === 1) {
+                    return Promise.resolve({
+                        entity: 'rule',
+                        total: 30,
+                        ids: ['a'],
+                    });
+                }
+
+                return new Promise((resolve) => {
+                    deferred[page] = resolve;
+                });
+            }),
+        };
+
+        const wrapper = await createWrapper(
+            service,
+            createRepositoryFactory([]).factory
+        );
+        const second = wrapper.vm.onPageChange({ page: 2, limit: 10 });
+        const third = wrapper.vm.onPageChange({ page: 3, limit: 10 });
+
+        deferred[3]({ entity: 'rule', total: 30, ids: ['c'] });
+        await third;
+        deferred[2]({ entity: 'rule', total: 30, ids: ['b'] });
+        await second;
+
+        expect(wrapper.vm.page).toBe(3);
+        expect(wrapper.vm.rows.map((row) => row.id)).toEqual(['c']);
+    });
+
+    it('keeps the pagination when the findings shrank below the current page', async () => {
+        const service = {
+            dataIntegrityAffected: vi.fn((checkId, page) =>
+                Promise.resolve(
+                    page === 3
+                        ? { entity: 'rule', total: 15, ids: [] }
+                        : { entity: 'rule', total: 30, ids: ['a'] }
+                )
+            ),
+        };
+
+        const wrapper = await createWrapper(
+            service,
+            createRepositoryFactory([]).factory
+        );
+        await wrapper.vm.onPageChange({ page: 3, limit: 10 });
+        await flushPromises();
+
+        const pagination = wrapper.find('sw-pagination-stub');
+        expect(pagination.exists()).toBe(true);
+        expect(pagination.attributes('total')).toBe('15');
+        expect(pagination.attributes('page')).toBe('3');
+        expect(wrapper.text()).not.toContain('No affected records found');
+    });
+
+    it('shows the empty state when the check has no findings left', async () => {
+        const wrapper = await createWrapper(
+            {
+                dataIntegrityAffected: vi
+                    .fn()
+                    .mockResolvedValue({ entity: 'rule', total: 0, ids: [] }),
+            },
+            createRepositoryFactory([]).factory
+        );
+
+        expect(wrapper.find('sw-pagination-stub').exists()).toBe(false);
+        expect(wrapper.text()).toContain('No affected records found');
+    });
+
     it('builds labels and routes for the entities the checks report', () => {
         expect(
             entities.product.label({

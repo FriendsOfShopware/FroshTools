@@ -103,7 +103,7 @@ class HealthController extends AbstractController
     public function dataIntegrityAffected(string $id, Request $request, Context $context): JsonResponse
     {
         $limit = max(1, min(self::DATA_INTEGRITY_AFFECTED_MAX_LIMIT, $request->query->getInt('limit', 25)));
-        $page = max(1, $request->query->getInt('page', 1));
+        $page = max(1, min(intdiv(\PHP_INT_MAX, $limit), $request->query->getInt('page', 1)));
 
         foreach ($this->dataIntegrityCheckers as $checker) {
             if (!$checker instanceof AffectedEntitiesProviderInterface || $checker->getId() !== $id || \in_array($id, $this->ignoredChecks, true)) {

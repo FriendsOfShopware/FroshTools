@@ -60,32 +60,9 @@ class VariantOptionConfiguratorSettingMissingChecker implements DataIntegrityChe
             return;
         }
 
-        $count = (int) $this->connection->fetchOne(
-            <<<'SQL'
-                SELECT COUNT(*)
-                FROM product variant
-                WHERE variant.version_id = :liveVersionId
-                  AND variant.parent_id IS NOT NULL
-                  AND EXISTS (
-                      SELECT 1
-                      FROM product_configurator_setting pcs
-                      WHERE pcs.product_id = variant.parent_id
-                        AND pcs.product_version_id = variant.version_id
-                  )
-                  AND EXISTS (
-                      SELECT 1
-                      FROM product_option po
-                      WHERE po.product_id = variant.id
-                        AND po.product_version_id = variant.version_id
-                        AND NOT EXISTS (
-                            SELECT 1
-                            FROM product_configurator_setting pcs
-                            WHERE pcs.product_id = variant.parent_id
-                              AND pcs.product_version_id = variant.version_id
-                              AND pcs.property_group_option_id = po.property_group_option_id
-                        )
-                  )
-                SQL,
+        $count = AffectedEntities::countRows(
+            $this->connection,
+            self::AFFECTED_QUERY,
             ['liveVersionId' => Uuid::fromHexToBytes(Defaults::LIVE_VERSION)],
         );
 

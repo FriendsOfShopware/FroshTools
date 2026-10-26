@@ -37,8 +37,9 @@ class CanonicalFromOtherProductChecker implements DataIntegrityCheckerInterface,
 
     public function collect(HealthCollection $collection): void
     {
-        $count = (int) $this->connection->fetchOne(
-            \sprintf('SELECT COUNT(*) FROM (%s) affected', self::AFFECTED_QUERY),
+        $count = AffectedEntities::countRows(
+            $this->connection,
+            self::AFFECTED_QUERY,
             ['liveVersionId' => Uuid::fromHexToBytes(Defaults::LIVE_VERSION)],
         );
 

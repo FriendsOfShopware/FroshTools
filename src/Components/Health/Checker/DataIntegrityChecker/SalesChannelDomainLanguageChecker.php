@@ -34,16 +34,7 @@ class SalesChannelDomainLanguageChecker implements DataIntegrityCheckerInterface
 
     public function collect(HealthCollection $collection): void
     {
-        $count = (int) $this->connection->fetchOne(
-            <<<'SQL'
-                SELECT COUNT(*)
-                FROM sales_channel_domain domain
-                LEFT JOIN sales_channel_language assigned
-                    ON assigned.sales_channel_id = domain.sales_channel_id
-                    AND assigned.language_id = domain.language_id
-                WHERE assigned.sales_channel_id IS NULL
-                SQL,
-        );
+        $count = AffectedEntities::countRows($this->connection, self::AFFECTED_QUERY);
 
         $collection->add(DataIntegrityCheckResult::fromCount(
             self::ID,

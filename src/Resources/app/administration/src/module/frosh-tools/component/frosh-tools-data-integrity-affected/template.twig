@@ -25,7 +25,7 @@
         {{ $t('frosh-tools.tabs.data-integrity.affected.loadError') }}
         <span class="ft-affected__detail">{{ loadError }}</span>    </p>
     <p
-        v-else-if="rows.length === 0"
+        v-else-if="total === 0"
         class="ft-info-modal__text"
     >
         {{ $t('frosh-tools.tabs.data-integrity.affected.empty') }}
@@ -83,7 +83,6 @@
             </li>
         </ul>
         <sw-pagination
-            v-if="total > 10"
             :total="total"
             :limit="limit"
             :page="page"

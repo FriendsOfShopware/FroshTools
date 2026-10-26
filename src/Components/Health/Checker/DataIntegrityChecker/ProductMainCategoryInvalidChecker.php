@@ -60,36 +60,9 @@ class ProductMainCategoryInvalidChecker implements DataIntegrityCheckerInterface
 
     public function collect(HealthCollection $collection): void
     {
-        $count = (int) $this->connection->fetchOne(
-            <<<'SQL'
-                SELECT COUNT(*)
-                FROM main_category mc
-                INNER JOIN product p
-                    ON p.id = mc.product_id
-                    AND p.version_id = mc.product_version_id
-                INNER JOIN category c
-                    ON c.id = mc.category_id
-                    AND c.version_id = mc.category_version_id
-                INNER JOIN sales_channel sc
-                    ON sc.id = mc.sales_channel_id
-                WHERE mc.product_version_id = :liveVersionId
-                  AND (
-                      c.active = 0
-                      OR (:hiddenCategoriesAreIgnored = 1 AND c.visible = 0)
-                      OR NOT EXISTS (
-                          SELECT 1
-                          FROM product_category pc
-                          WHERE pc.product_id = COALESCE(p.categories, p.id)
-                            AND pc.product_version_id = p.version_id
-                            AND pc.category_id = c.id
-                      )
-                      OR (
-                          COALESCE(c.path, '') NOT LIKE CONCAT('%|', LOWER(HEX(sc.navigation_category_id)), '|%')
-                          AND (sc.service_category_id IS NULL OR COALESCE(c.path, '') NOT LIKE CONCAT('%|', LOWER(HEX(sc.service_category_id)), '|%'))
-                          AND (sc.footer_category_id IS NULL OR COALESCE(c.path, '') NOT LIKE CONCAT('%|', LOWER(HEX(sc.footer_category_id)), '|%'))
-                      )
-                  )
-                SQL,
+        $count = AffectedEntities::countRows(
+            $this->connection,
+            self::AFFECTED_QUERY,
             $this->getParameters(),
         );
 

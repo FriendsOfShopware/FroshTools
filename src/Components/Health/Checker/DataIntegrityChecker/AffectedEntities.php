@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Frosh\Tools\Components\Health\Checker\DataIntegrityChecker;
 
 use Doctrine\DBAL\Connection;
+use Doctrine\DBAL\ParameterType;
 
 final class AffectedEntities implements \JsonSerializable
 {
@@ -24,6 +25,15 @@ final class AffectedEntities implements \JsonSerializable
      * @param array<string, mixed> $params
      * @param array<string, mixed> $types
      */
+    public static function countRows(Connection $connection, string $query, array $params = [], array $types = []): int
+    {
+        return (int) $connection->fetchOne('SELECT COUNT(*) FROM (' . $query . ') counted', $params, $types);
+    }
+
+    /**
+     * @param array<string, mixed> $params
+     * @param array<string, mixed> $types
+     */
     public static function fromQuery(
         Connection $connection,
         string $entity,
@@ -33,13 +43,9 @@ final class AffectedEntities implements \JsonSerializable
         int $limit,
         int $offset,
     ): self {
-        $distinctIds = \sprintf('SELECT DISTINCT affected_query.id FROM (%s) affected_query', $idQuery);
+        $distinctIds = 'SELECT DISTINCT affected_query.id FROM (' . $idQuery . ') affected_query';
 
-        $total = (int) $connection->fetchOne(
-            \sprintf('SELECT COUNT(*) FROM (%s) affected', $distinctIds),
-            $params,
-            $types,
-        );
+        $total = self::countRows($connection, $distinctIds, $params, $types);
 
         if ($total === 0 || $offset >= $total) {
             return new self($entity, $total, []);
@@ -47,14 +53,9 @@ final class AffectedEntities implements \JsonSerializable
 
         /** @var list<string> $ids */
         $ids = $connection->fetchFirstColumn(
-            \sprintf(
-                'SELECT LOWER(HEX(affected.id)) FROM (%s) affected ORDER BY affected.id LIMIT %d OFFSET %d',
-                $distinctIds,
-                $limit,
-                $offset,
-            ),
-            $params,
-            $types,
+            'SELECT LOWER(HEX(affected.id)) FROM (' . $distinctIds . ') affected ORDER BY affected.id LIMIT :affectedLimit OFFSET :affectedOffset',
+            [...$params, 'affectedLimit' => $limit, 'affectedOffset' => $offset],
+            [...$types, 'affectedLimit' => ParameterType::INTEGER, 'affectedOffset' => ParameterType::INTEGER],
         );
 
         return new self($entity, $total, $ids);
@@ -66,7 +67,7 @@ final class AffectedEntities implements \JsonSerializable
     public static function fromIds(string $entity, array $ids, int $limit, int $offset): self
     {
         $ids = array_values(array_unique($ids));
-        sort($ids);
+        sort($ids, \SORT_STRING);
 
         return new self($entity, \count($ids), \array_slice($ids, $offset, $limit));
     }

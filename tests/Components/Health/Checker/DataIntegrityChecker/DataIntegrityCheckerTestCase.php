@@ -52,7 +52,7 @@ abstract class DataIntegrityCheckerTestCase extends IntegrationTestCase
     {
         $affected = $checker->getAffectedEntities(100, 0);
         $expectedIds = array_values(array_unique(array_map('strtolower', $expectedIds)));
-        sort($expectedIds);
+        sort($expectedIds, \SORT_STRING);
 
         static::assertSame($entity, $affected->entity);
         static::assertSame(\count($expectedIds), $affected->total);

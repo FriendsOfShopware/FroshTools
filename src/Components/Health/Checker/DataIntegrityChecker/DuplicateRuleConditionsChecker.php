@@ -89,12 +89,12 @@ class DuplicateRuleConditionsChecker implements DataIntegrityCheckerInterface, C
         $groups = [];
         foreach ($rulesByChecksum as $ruleIds) {
             if (\count($ruleIds) > 1) {
-                sort($ruleIds);
+                sort($ruleIds, \SORT_STRING);
                 $groups[] = $ruleIds;
             }
         }
 
-        usort($groups, static fn (array $a, array $b): int => $a[0] <=> $b[0]);
+        usort($groups, static fn (array $a, array $b): int => strcmp($a[0], $b[0]));
 
         return $groups;
     }

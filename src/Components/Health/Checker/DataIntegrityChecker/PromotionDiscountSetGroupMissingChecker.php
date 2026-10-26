@@ -37,19 +37,7 @@ class PromotionDiscountSetGroupMissingChecker implements DataIntegrityCheckerInt
 
     public function collect(HealthCollection $collection): void
     {
-        $count = (int) $this->connection->fetchOne(
-            <<<'SQL'
-                SELECT COUNT(*)
-                FROM promotion_discount pd
-                INNER JOIN promotion p ON p.id = pd.promotion_id
-                WHERE p.active = 1
-                  AND LEFT(CAST(pd.scope AS BINARY), 9) = 'setgroup-'
-                  AND (SUBSTRING(pd.scope, 10) NOT REGEXP '^[1-9][0-9]*$'
-                      OR CAST(SUBSTRING(pd.scope, 10) AS UNSIGNED) > (SELECT COUNT(*)
-                                                                      FROM promotion_setgroup ps
-                                                                      WHERE ps.promotion_id = p.id))
-                SQL,
-        );
+        $count = AffectedEntities::countRows($this->connection, self::AFFECTED_QUERY);
 
         $collection->add(DataIntegrityCheckResult::fromCount(
             self::ID,

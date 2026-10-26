@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Frosh\Tools\Tests\Controller;
 
+use Frosh\Tools\Components\Health\Checker\DataIntegrityChecker\InvalidRuleChecker;
 use Frosh\Tools\Components\Health\SettingsResult;
 use Frosh\Tools\Controller\HealthController;
 use Frosh\Tools\Tests\IntegrationTestCase;
@@ -141,6 +142,28 @@ class HealthControllerTest extends IntegrationTestCase
         static::assertSame(404, $response->getStatusCode());
     }
 
+    public function testDataIntegrityAffectedReturnsAnEmptyPageForHugePageNumbers(): void
+    {
+        $affected = $this->decodeAffected($this->controller->dataIntegrityAffected('rule-invalid', new Request(['limit' => '100', 'page' => (string) \PHP_INT_MAX]), Context::createDefaultContext()));
+
+        static::assertSame([], $affected['ids']);
+    }
+
+    public function testDataIntegrityAffectedReturnsNotFoundForIgnoredChecks(): void
+    {
+        $controller = new HealthController(
+            [],
+            [],
+            [static::getContainer()->get(InvalidRuleChecker::class)],
+            static::getContainer()->get('cache.object'),
+            ['rule-invalid'],
+        );
+
+        $response = $controller->dataIntegrityAffected('rule-invalid', new Request(), Context::createDefaultContext());
+
+        static::assertSame(404, $response->getStatusCode());
+    }
+
     public function testDataIntegrityAffectedRequiresReadPermissionForTheEntity(): void
     {
         $response = $this->controller->dataIntegrityAffected('rule-invalid', new Request(), $this->adminContext([]));
@@ -183,9 +206,6 @@ class HealthControllerTest extends IntegrationTestCase
     }
 
     /**
-     * @return array<string, mixed>
-     */
-    /**
      * @param list<string> $permissions
      */
     private function adminContext(array $permissions): Context
@@ -196,6 +216,9 @@ class HealthControllerTest extends IntegrationTestCase
         return new Context($source);
     }
 
+    /**
+     * @return array<string, mixed>
+     */
     private function decodeAffected(JsonResponse $response): array
     {
         static::assertSame(200, $response->getStatusCode());

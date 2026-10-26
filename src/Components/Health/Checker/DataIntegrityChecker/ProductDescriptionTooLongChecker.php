@@ -43,13 +43,9 @@ class ProductDescriptionTooLongChecker implements DataIntegrityCheckerInterface,
             return;
         }
 
-        $count = (int) $this->connection->fetchOne(
-            <<<'SQL'
-                SELECT COUNT(*)
-                FROM product_translation
-                WHERE product_version_id = :liveVersionId
-                  AND LENGTH(description) > :maxTermBytes
-                SQL,
+        $count = AffectedEntities::countRows(
+            $this->connection,
+            self::AFFECTED_QUERY,
             [
                 'liveVersionId' => Uuid::fromHexToBytes(Defaults::LIVE_VERSION),
                 'maxTermBytes' => self::MAX_TERM_BYTES,

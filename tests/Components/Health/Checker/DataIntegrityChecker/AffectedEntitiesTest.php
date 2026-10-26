@@ -33,6 +33,35 @@ class AffectedEntitiesTest extends DataIntegrityCheckerTestCase
         static::assertArrayNotHasKey('related', (new AffectedEntities('rule', 0, []))->jsonSerialize());
     }
 
+    public function testFromIdsSortsNumericLookingIdsAsStrings(): void
+    {
+        $affected = AffectedEntities::fromIds('rule', ['1e000000000000000000000000000001', '10000000000000000000000000000002'], 10, 0);
+
+        static::assertSame(['10000000000000000000000000000002', '1e000000000000000000000000000001'], $affected->ids);
+    }
+
+    public function testCountRowsCountsEveryRowOfTheQuery(): void
+    {
+        $ruleIds = [Uuid::randomHex(), Uuid::randomHex()];
+        foreach ($ruleIds as $ruleId) {
+            $this->connection->insert('rule', [
+                'id' => Uuid::fromHexToBytes($ruleId),
+                'name' => 'Frosh data integrity check rule',
+                'priority' => 1,
+                'created_at' => self::now(),
+            ]);
+        }
+
+        $count = AffectedEntities::countRows(
+            $this->connection,
+            'SELECT id FROM `rule` WHERE id IN (:ids) UNION ALL SELECT id FROM `rule` WHERE id IN (:ids)',
+            ['ids' => Uuid::fromHexToBytesList($ruleIds)],
+            ['ids' => ArrayParameterType::BINARY],
+        );
+
+        static::assertSame(4, $count);
+    }
+
     public function testFromQueryDeduplicatesSortsAndPages(): void
     {
         $ruleIds = [Uuid::randomHex(), Uuid::randomHex(), Uuid::randomHex()];

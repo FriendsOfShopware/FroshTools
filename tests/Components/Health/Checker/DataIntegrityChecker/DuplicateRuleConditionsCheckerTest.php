@@ -107,6 +107,15 @@ class DuplicateRuleConditionsCheckerTest extends DataIntegrityCheckerTestCase
         static::assertSame([$ids[4] => [$ids[0], $ids[2]], $ids[1] => [$ids[3]]], $page->related);
     }
 
+    public function testSortsNumericLookingRuleIdsAsStrings(): void
+    {
+        $ids = ['1e000000000000000000000000000001', '10000000000000000000000000000002'];
+        $this->createRule([self::andTree([self::cartAmount(100)])], $ids[0]);
+        $this->createRule([self::andTree([self::cartAmount(100)])], $ids[1]);
+
+        static::assertSame([$ids[1], $ids[0]], $this->checker->getAffectedEntities(100, 0)->ids);
+    }
+
     /**
      * @param list<array<mixed>> $children
      *

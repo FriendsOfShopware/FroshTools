@@ -27,6 +27,7 @@ Component.register('frosh-tools-data-integrity-affected', {
             page: 1,
             limit: 10,
             rows: [],
+            latestRequest: 0,
         };
     },
 
@@ -46,6 +47,7 @@ Component.register('frosh-tools-data-integrity-affected', {
 
     methods: {
         async load() {
+            const request = ++this.latestRequest;
             this.isLoading = true;
             this.loadError = null;
 
@@ -56,13 +58,26 @@ Component.register('frosh-tools-data-integrity-affected', {
                         this.page,
                         this.limit
                     );
-                this.total = result.total;
-                this.rows = await this.resolveRows(
+                if (request !== this.latestRequest) {
+                    return;
+                }
+
+                const rows = await this.resolveRows(
                     result.entity,
                     result.ids,
                     result.related ?? {}
                 );
+                if (request !== this.latestRequest) {
+                    return;
+                }
+
+                this.total = result.total;
+                this.rows = rows;
             } catch (error) {
+                if (request !== this.latestRequest) {
+                    return;
+                }
+
                 this.rows = [];
                 if (error?.response?.status === 404) {
                     this.unavailable = true;
@@ -73,7 +88,9 @@ Component.register('frosh-tools-data-integrity-affected', {
                         error?.response?.data?.error ?? error.message;
                 }
             } finally {
-                this.isLoading = false;
+                if (request === this.latestRequest) {
+                    this.isLoading = false;
+                }
             }
         },
 
