@@ -40,23 +40,29 @@ class MediaFolderConfigurationMissingCheckerTest extends DataIntegrityCheckerTes
         $this->createFolder(null);
 
         static::assertAffectedCount($this->collectResult($this->checker, self::ID), 0);
+        static::assertAffectedEntities($this->checker, 'media_folder', []);
     }
 
     public function testCountsFoldersWithADeletedConfiguration(): void
     {
-        $this->createFolder(Uuid::randomBytes());
-        $this->createFolder(Uuid::randomBytes());
+        $first = $this->createFolder(Uuid::randomBytes());
+        $second = $this->createFolder(Uuid::randomBytes());
 
         static::assertAffectedCount($this->collectResult($this->checker, self::ID), 2);
+        static::assertAffectedEntities($this->checker, 'media_folder', [$first, $second]);
     }
 
-    private function createFolder(?string $configurationId): void
+    private function createFolder(?string $configurationId): string
     {
+        $id = Uuid::randomHex();
+
         $this->connection->insert('media_folder', [
-            'id' => Uuid::randomBytes(),
+            'id' => Uuid::fromHexToBytes($id),
             'name' => 'Frosh data integrity check folder',
             'media_folder_configuration_id' => $configurationId,
             'created_at' => self::now(),
         ]);
+
+        return $id;
     }
 }

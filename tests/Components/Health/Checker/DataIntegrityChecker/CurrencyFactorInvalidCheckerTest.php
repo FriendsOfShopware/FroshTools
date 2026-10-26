@@ -33,15 +33,17 @@ class CurrencyFactorInvalidCheckerTest extends DataIntegrityCheckerTestCase
         $this->createCurrency(150.0);
 
         static::assertAffectedCount($this->collectResult($this->checker, self::ID), 0);
+        static::assertAffectedEntities($this->checker, 'currency', []);
     }
 
     public function testCountsNonPositiveFactorsAndDefaultCurrencyFactorOtherThanOne(): void
     {
-        $this->createCurrency(0.0);
-        $this->createCurrency(-1.0);
+        $zero = $this->createCurrency(0.0);
+        $negative = $this->createCurrency(-1.0);
         $this->setDefaultCurrencyFactor(1.2);
 
         static::assertAffectedCount($this->collectResult($this->checker, self::ID), 3);
+        static::assertAffectedEntities($this->checker, 'currency', [$zero, $negative, Defaults::CURRENCY]);
     }
 
     private function setDefaultCurrencyFactor(float $factor): void
@@ -52,10 +54,12 @@ class CurrencyFactorInvalidCheckerTest extends DataIntegrityCheckerTestCase
         );
     }
 
-    private function createCurrency(float $factor): void
+    private function createCurrency(float $factor): string
     {
+        $id = Uuid::randomHex();
+
         $this->connection->insert('currency', [
-            'id' => Uuid::randomBytes(),
+            'id' => Uuid::fromHexToBytes($id),
             'iso_code' => \sprintf('Q%02d', ++$this->currencyCount),
             'factor' => $factor,
             'symbol' => 'X',
@@ -63,5 +67,7 @@ class CurrencyFactorInvalidCheckerTest extends DataIntegrityCheckerTestCase
             'total_rounding' => '{"decimals": 2, "interval": 0.01, "roundForNet": true}',
             'created_at' => self::now(),
         ]);
+
+        return $id;
     }
 }

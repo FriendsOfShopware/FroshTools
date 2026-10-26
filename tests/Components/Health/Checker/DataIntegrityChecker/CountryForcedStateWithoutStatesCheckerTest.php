@@ -34,16 +34,18 @@ class CountryForcedStateWithoutStatesCheckerTest extends DataIntegrityCheckerTes
         $this->createCountry(false, true);
 
         static::assertAffectedCount($this->collectResult($this->checker, self::ID), 0);
+        static::assertAffectedEntities($this->checker, 'country', []);
     }
 
     public function testCountsAssignedActiveCountriesRequiringAStateWithoutActiveStates(): void
     {
-        $this->createCountry(true, true);
+        $withoutStates = $this->createCountry(true, true);
 
         $onlyInactiveStates = $this->createCountry(true, true);
         $this->createState($onlyInactiveStates, false);
 
         static::assertAffectedCount($this->collectResult($this->checker, self::ID), 2);
+        static::assertAffectedEntities($this->checker, 'country', [Uuid::fromBytesToHex($withoutStates), Uuid::fromBytesToHex($onlyInactiveStates)]);
     }
 
     private function createCountry(bool $active, bool $assigned): string

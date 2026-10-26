@@ -11,8 +11,36 @@ use Shopware\Core\Defaults;
 use Shopware\Core\Framework\Uuid\Uuid;
 use Symfony\Component\DependencyInjection\Attribute\Autowire;
 
-class VariantOptionConfiguratorSettingMissingChecker implements DataIntegrityCheckerInterface, CheckerInterface
+class VariantOptionConfiguratorSettingMissingChecker implements DataIntegrityCheckerInterface, CheckerInterface, AffectedEntitiesProviderInterface
 {
+    private const ID = 'variant-option-configurator-setting-missing';
+
+    private const AFFECTED_QUERY = <<<'SQL'
+        SELECT variant.parent_id AS id
+        FROM product variant
+        WHERE variant.version_id = :liveVersionId
+          AND variant.parent_id IS NOT NULL
+          AND EXISTS (
+              SELECT 1
+              FROM product_configurator_setting pcs
+              WHERE pcs.product_id = variant.parent_id
+                AND pcs.product_version_id = variant.version_id
+          )
+          AND EXISTS (
+              SELECT 1
+              FROM product_option po
+              WHERE po.product_id = variant.id
+                AND po.product_version_id = variant.version_id
+                AND NOT EXISTS (
+                    SELECT 1
+                    FROM product_configurator_setting pcs
+                    WHERE pcs.product_id = variant.parent_id
+                      AND pcs.product_version_id = variant.version_id
+                      AND pcs.property_group_option_id = po.property_group_option_id
+                )
+          )
+        SQL;
+
     public function __construct(
         private readonly Connection $connection,
         #[Autowire('%kernel.shopware_version%')]
@@ -20,9 +48,14 @@ class VariantOptionConfiguratorSettingMissingChecker implements DataIntegrityChe
     ) {
     }
 
+    public function getId(): string
+    {
+        return self::ID;
+    }
+
     public function collect(HealthCollection $collection): void
     {
-        if (version_compare($this->shopwareVersion, '6.7.14.0', '>=')) {
+        if ($this->isFixedInShopware()) {
             return;
         }
 
@@ -56,9 +89,31 @@ class VariantOptionConfiguratorSettingMissingChecker implements DataIntegrityChe
         );
 
         $collection->add(DataIntegrityCheckResult::fromCount(
-            'variant-option-configurator-setting-missing',
+            self::ID,
             'Variants with options missing in the configurator settings',
             $count,
         ));
+    }
+
+    public function getAffectedEntities(int $limit, int $offset): AffectedEntities
+    {
+        if ($this->isFixedInShopware()) {
+            return new AffectedEntities('product', 0, []);
+        }
+
+        return AffectedEntities::fromQuery(
+            $this->connection,
+            'product',
+            self::AFFECTED_QUERY,
+            ['liveVersionId' => Uuid::fromHexToBytes(Defaults::LIVE_VERSION)],
+            [],
+            $limit,
+            $offset,
+        );
+    }
+
+    private function isFixedInShopware(): bool
+    {
+        return version_compare($this->shopwareVersion, '6.7.14.0', '>=');
     }
 }

@@ -46,6 +46,7 @@ class ProductMaxPurchaseBelowMinPurchaseCheckerTest extends DataIntegrityChecker
         $this->updateProduct($hiddenProductId, 'purchase_steps', '5');
 
         static::assertAffectedCount($this->collectResult($this->checker, self::ID), 0);
+        static::assertAffectedEntities($this->checker, 'product', []);
     }
 
     public function testCountsBuyableProductsWithMaxPurchaseBelowMinPurchase(): void
@@ -54,15 +55,17 @@ class ProductMaxPurchaseBelowMinPurchaseCheckerTest extends DataIntegrityChecker
         $this->updateProduct($productId, 'min_purchase', '5');
         $this->updateProduct($productId, 'max_purchase', '3');
 
-        $this->updateProduct($this->createProduct(), 'min_purchase', '150');
+        $aboveMaxQuantityId = $this->createProduct();
+        $this->updateProduct($aboveMaxQuantityId, 'min_purchase', '150');
 
         $mainProductId = $this->createProduct();
         $this->updateProduct($mainProductId, 'min_purchase', '10');
         $this->updateProduct($mainProductId, 'max_purchase', '5');
-        $this->createProduct(['parentId' => $mainProductId]);
-        $this->createProduct(['parentId' => $mainProductId]);
+        $firstVariantId = $this->createProduct(['parentId' => $mainProductId]);
+        $secondVariantId = $this->createProduct(['parentId' => $mainProductId]);
         $this->updateProduct($this->createProduct(['parentId' => $mainProductId]), 'max_purchase', '20');
 
         static::assertAffectedCount($this->collectResult($this->checker, self::ID), 4);
+        static::assertAffectedEntities($this->checker, 'product', [$productId, $aboveMaxQuantityId, $firstVariantId, $secondVariantId]);
     }
 }

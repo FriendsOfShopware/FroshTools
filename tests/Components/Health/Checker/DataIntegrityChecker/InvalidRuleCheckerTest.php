@@ -28,25 +28,31 @@ class InvalidRuleCheckerTest extends DataIntegrityCheckerTestCase
         $this->createRule(false);
 
         static::assertAffectedCount($this->collectResult($this->checker, self::ID), 0);
+        static::assertAffectedEntities($this->checker, 'rule', []);
     }
 
     public function testCountsInvalidRules(): void
     {
-        $this->createRule(true);
-        $this->createRule(true);
+        $first = $this->createRule(true);
+        $second = $this->createRule(true);
         $this->createRule(false);
 
         static::assertAffectedCount($this->collectResult($this->checker, self::ID), 2);
+        static::assertAffectedEntities($this->checker, 'rule', [$first, $second]);
     }
 
-    private function createRule(bool $invalid): void
+    private function createRule(bool $invalid): string
     {
+        $id = Uuid::randomHex();
+
         $this->connection->insert('rule', [
-            'id' => Uuid::randomBytes(),
+            'id' => Uuid::fromHexToBytes($id),
             'name' => 'Frosh data integrity check rule',
             'priority' => 1,
             'invalid' => (int) $invalid,
             'created_at' => self::now(),
         ]);
+
+        return $id;
     }
 }

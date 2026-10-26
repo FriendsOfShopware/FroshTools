@@ -35,6 +35,7 @@ class ProductConfiguratorSettingsMissingCheckerTest extends DataIntegrityChecker
         $this->createProduct(['parentId' => $this->createProduct()]);
 
         static::assertAffectedCount($this->collectResult($this->checker, self::ID), 0);
+        static::assertAffectedEntities($this->checker, 'product', []);
     }
 
     public function testCountsMainProductsWithVariantOptionsButNoConfiguratorSettings(): void
@@ -49,5 +50,6 @@ class ProductConfiguratorSettingsMissingCheckerTest extends DataIntegrityChecker
         $this->createProduct(['parentId' => $secondMainProductId, 'options' => [['id' => $firstOptionId]]]);
 
         static::assertAffectedCount($this->collectResult($this->checker, self::ID), 2);
+        static::assertAffectedEntities($this->checker, 'product', [$firstMainProductId, $secondMainProductId]);
     }
 }

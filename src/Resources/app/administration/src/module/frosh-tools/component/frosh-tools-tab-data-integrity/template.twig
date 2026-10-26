@@ -53,7 +53,7 @@
                             style="width: 110px;"
                         >{{ $t('frosh-tools.status') }}</ft-th-sort>
                         <ft-th-sort
-                            sort-key="snippet"
+                            sort-key="title"
                             table="dataIntegrity"
                         >{{ $t('frosh-tools.name') }}</ft-th-sort>
                         <ft-th-sort
@@ -72,14 +72,14 @@
                 </thead>
                 <tbody>
                     <tr
-                        v-for="(item, idx) in sortRows(dataIntegrityStatus, 'dataIntegrity')"
+                        v-for="(item, idx) in sortRows(dataIntegrityRows, 'dataIntegrity')"
                         :key="`d-${idx}`"
                     >
                         <td>
                             <ft-pill :variant="pillVariant(item.state)">{{ stateLabel(item.state) }}</ft-pill>
                         </td>
                         <td class="ft-table__name">
-                            {{ item.snippet }}
+                            {{ item.title }}
                             <button
                                 v-if="hasInfo(item)"
                                 type="button"
@@ -98,7 +98,7 @@
     </ft-panel>
     <ft-modal
         v-if="activeInfo"
-        :title="activeInfo.snippet"
+        :title="titleFor(activeInfo)"
         @close="closeInfo"
     >
         <div class="ft-info-modal">
@@ -151,6 +151,11 @@
                     </p>
                 </section>
             </template>
+            <frosh-tools-data-integrity-affected
+                v-if="activeInfo.current && activeInfo.current !== '0'"
+                :key="activeInfo.id"
+                :check-id="activeInfo.id"
+            />
         </div>
     </ft-modal>
 </div>

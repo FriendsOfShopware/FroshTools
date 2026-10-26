@@ -1,8 +1,10 @@
 import template from './template.twig';
-import recommendations from './recommendations.js';
+import recommendationCode from './recommendation-code.js';
 import './style.scss';
 
 const { Component, Mixin } = Shopware;
+
+const SNIPPET_PREFIX = 'frosh-tools.tabs.index.recommendations';
 
 Component.register('frosh-tools-tab-index', {
     inject: ['froshToolsService'],
@@ -23,11 +25,15 @@ Component.register('frosh-tools-tab-index', {
         };
     },
 
-    created() {
-        this.createdComponent();
-    },
-
     computed: {
+        healthRows() {
+            return this.withTitles(this.health);
+        },
+
+        performanceRows() {
+            return this.withTitles(this.performanceStatus);
+        },
+
         checkSummary() {
             if (this.isLoading || this.loadError) return null;
             const checks = [
@@ -59,9 +65,35 @@ Component.register('frosh-tools-tab-index', {
         },
     },
 
+    created() {
+        this.createdComponent();
+    },
+
     methods: {
         recommendationFor(item) {
-            return (item && recommendations[item.id]) || null;
+            const recommendation = this.resultRecommendation(
+                SNIPPET_PREFIX,
+                item
+            );
+            if (!recommendation) {
+                return null;
+            }
+
+            return {
+                ...recommendation,
+                code: recommendationCode[item.id] ?? null,
+            };
+        },
+
+        titleFor(item) {
+            return this.resultTitle(SNIPPET_PREFIX, item);
+        },
+
+        withTitles(items) {
+            return (items ?? []).map((item) => ({
+                ...item,
+                title: this.titleFor(item),
+            }));
         },
 
         hasInfo(item) {

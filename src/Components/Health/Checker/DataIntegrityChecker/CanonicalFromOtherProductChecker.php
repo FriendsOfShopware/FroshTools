@@ -10,32 +10,54 @@ use Frosh\Tools\Components\Health\HealthCollection;
 use Shopware\Core\Defaults;
 use Shopware\Core\Framework\Uuid\Uuid;
 
-class CanonicalFromOtherProductChecker implements DataIntegrityCheckerInterface, CheckerInterface
+class CanonicalFromOtherProductChecker implements DataIntegrityCheckerInterface, CheckerInterface, AffectedEntitiesProviderInterface
 {
+    private const ID = 'product-canonical-other-family';
+
+    private const AFFECTED_QUERY = <<<'SQL'
+        SELECT p.id
+        FROM product p
+        INNER JOIN product cp
+            ON cp.id = p.canonical_product_id
+            AND cp.version_id = p.canonical_product_version_id
+        WHERE p.version_id = :liveVersionId
+          AND COALESCE(cp.parent_id, cp.id) != COALESCE(p.parent_id, p.id)
+        SQL;
+
     public function __construct(
         private readonly Connection $connection,
     ) {
     }
 
+    public function getId(): string
+    {
+        return self::ID;
+    }
+
     public function collect(HealthCollection $collection): void
     {
         $count = (int) $this->connection->fetchOne(
-            <<<'SQL'
-                SELECT COUNT(*)
-                FROM product p
-                INNER JOIN product cp
-                    ON cp.id = p.canonical_product_id
-                    AND cp.version_id = p.canonical_product_version_id
-                WHERE p.version_id = :liveVersionId
-                  AND COALESCE(cp.parent_id, cp.id) != COALESCE(p.parent_id, p.id)
-                SQL,
+            \sprintf('SELECT COUNT(*) FROM (%s) affected', self::AFFECTED_QUERY),
             ['liveVersionId' => Uuid::fromHexToBytes(Defaults::LIVE_VERSION)],
         );
 
         $collection->add(DataIntegrityCheckResult::fromCount(
-            'product-canonical-other-family',
+            self::ID,
             'Products with a canonical product of another product',
             $count,
         ));
+    }
+
+    public function getAffectedEntities(int $limit, int $offset): AffectedEntities
+    {
+        return AffectedEntities::fromQuery(
+            $this->connection,
+            'product',
+            self::AFFECTED_QUERY,
+            ['liveVersionId' => Uuid::fromHexToBytes(Defaults::LIVE_VERSION)],
+            [],
+            $limit,
+            $offset,
+        );
     }
 }

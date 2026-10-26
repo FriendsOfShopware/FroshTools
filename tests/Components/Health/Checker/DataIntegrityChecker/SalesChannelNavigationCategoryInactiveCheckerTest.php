@@ -36,29 +36,42 @@ class SalesChannelNavigationCategoryInactiveCheckerTest extends DataIntegrityChe
         $this->createSalesChannel(Defaults::SALES_CHANNEL_TYPE_API, true, false);
 
         static::assertAffectedCount($this->collectResult($this->checker, self::ID), 0);
+        static::assertAffectedEntities($this->checker, 'category', []);
     }
 
     public function testCountsActiveStorefrontsWithAnInactiveNavigationCategory(): void
     {
-        $this->createSalesChannel(Defaults::SALES_CHANNEL_TYPE_STOREFRONT, true, false);
-        $this->createSalesChannel(Defaults::SALES_CHANNEL_TYPE_STOREFRONT, true, false);
+        $first = $this->createSalesChannel(Defaults::SALES_CHANNEL_TYPE_STOREFRONT, true, false);
+        $second = $this->createSalesChannel(Defaults::SALES_CHANNEL_TYPE_STOREFRONT, true, false);
         $this->createSalesChannel(Defaults::SALES_CHANNEL_TYPE_STOREFRONT, false, false);
         $this->createSalesChannel(Defaults::SALES_CHANNEL_TYPE_API, true, false);
 
         static::assertAffectedCount($this->collectResult($this->checker, self::ID), 2);
+        static::assertAffectedEntities($this->checker, 'category', [$first, $second]);
     }
 
-    private function createSalesChannel(string $typeId, bool $active, bool $categoryActive): void
+    public function testListsAnInactiveCategoryUsedByTwoStorefrontsOnce(): void
     {
-        $categoryId = Uuid::randomHex();
+        $categoryId = $this->createSalesChannel(Defaults::SALES_CHANNEL_TYPE_STOREFRONT, true, false);
+        $this->createSalesChannel(Defaults::SALES_CHANNEL_TYPE_STOREFRONT, true, false, $categoryId);
 
-        $this->connection->insert('category', [
-            'id' => Uuid::fromHexToBytes($categoryId),
-            'version_id' => Uuid::fromHexToBytes(Defaults::LIVE_VERSION),
-            'type' => 'page',
-            'active' => $categoryActive ? 1 : 0,
-            'created_at' => self::now(),
-        ]);
+        static::assertAffectedCount($this->collectResult($this->checker, self::ID), 2);
+        static::assertAffectedEntities($this->checker, 'category', [$categoryId]);
+    }
+
+    private function createSalesChannel(string $typeId, bool $active, bool $categoryActive, ?string $categoryId = null): string
+    {
+        if ($categoryId === null) {
+            $categoryId = Uuid::randomHex();
+
+            $this->connection->insert('category', [
+                'id' => Uuid::fromHexToBytes($categoryId),
+                'version_id' => Uuid::fromHexToBytes(Defaults::LIVE_VERSION),
+                'type' => 'page',
+                'active' => $categoryActive ? 1 : 0,
+                'created_at' => self::now(),
+            ]);
+        }
 
         /** @var EntityRepository $repository */
         $repository = static::getContainer()->get('sales_channel.repository');
@@ -78,5 +91,7 @@ class SalesChannelNavigationCategoryInactiveCheckerTest extends DataIntegrityChe
             'countryId' => $this->connection->fetchOne('SELECT LOWER(HEX(id)) FROM country LIMIT 1'),
             'navigationCategoryId' => $categoryId,
         ]], Context::createDefaultContext());
+
+        return $categoryId;
     }
 }

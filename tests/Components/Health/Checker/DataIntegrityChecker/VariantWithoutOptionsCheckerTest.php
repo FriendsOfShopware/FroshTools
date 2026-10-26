@@ -40,16 +40,18 @@ class VariantWithoutOptionsCheckerTest extends DataIntegrityCheckerTestCase
         $this->createProduct(['parentId' => $this->createProduct(), 'options' => [['id' => $optionId]]]);
 
         static::assertAffectedCount($this->collectResult($this->checker, self::ID), 0);
+        static::assertAffectedEntities($this->checker, 'product', []);
     }
 
     public function testCountsVariantsWithoutOptions(): void
     {
         $mainProductId = $this->createProduct();
-        $this->createProduct(['parentId' => $mainProductId]);
-        $this->createProduct(['parentId' => $mainProductId]);
+        $firstVariantId = $this->createProduct(['parentId' => $mainProductId]);
+        $secondVariantId = $this->createProduct(['parentId' => $mainProductId]);
 
         $this->createProduct();
 
         static::assertAffectedCount($this->collectResult($this->checker, self::ID), 2);
+        static::assertAffectedEntities($this->checker, 'product', [$firstVariantId, $secondVariantId]);
     }
 }

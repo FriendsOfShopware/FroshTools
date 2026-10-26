@@ -33,6 +33,7 @@ class CategorySortingInvalidCheckerTest extends DataIntegrityCheckerTestCase
         $this->createCategory(null, $this->createCategory());
 
         static::assertAffectedCount($this->collectResult($this->checker, self::ID), 0);
+        static::assertAffectedEntities($this->checker, 'category', []);
     }
 
     public function testCountsCategoriesSortedAfterACategoryOfAnotherParent(): void
@@ -40,10 +41,11 @@ class CategorySortingInvalidCheckerTest extends DataIntegrityCheckerTestCase
         $parentId = $this->createCategory();
         $childId = $this->createCategory($parentId);
 
-        $this->createCategory($this->createCategory(), $childId);
-        $this->createCategory(null, $childId);
+        $first = $this->createCategory($this->createCategory(), $childId);
+        $second = $this->createCategory(null, $childId);
 
         static::assertAffectedCount($this->collectResult($this->checker, self::ID), 2);
+        static::assertAffectedEntities($this->checker, 'category', [Uuid::fromBytesToHex($first), Uuid::fromBytesToHex($second)]);
     }
 
     private function createCategory(?string $parentId = null, ?string $afterCategoryId = null): string

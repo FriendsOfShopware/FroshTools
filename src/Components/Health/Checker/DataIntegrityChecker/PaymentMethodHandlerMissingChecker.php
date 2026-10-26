@@ -9,15 +9,39 @@ use Frosh\Tools\Components\Health\Checker\CheckerInterface;
 use Frosh\Tools\Components\Health\HealthCollection;
 use Shopware\Core\Checkout\Payment\Cart\PaymentHandler\PaymentHandlerRegistry;
 
-class PaymentMethodHandlerMissingChecker implements DataIntegrityCheckerInterface, CheckerInterface
+class PaymentMethodHandlerMissingChecker implements DataIntegrityCheckerInterface, CheckerInterface, AffectedEntitiesProviderInterface
 {
+    private const ID = 'payment-method-handler-missing';
+
     public function __construct(
         private readonly Connection $connection,
         private readonly PaymentHandlerRegistry $paymentHandlerRegistry,
     ) {
     }
 
+    public function getId(): string
+    {
+        return self::ID;
+    }
+
     public function collect(HealthCollection $collection): void
+    {
+        $collection->add(DataIntegrityCheckResult::fromCount(
+            self::ID,
+            'Active payment methods without an available payment handler',
+            \count($this->findAffectedIds()),
+        ));
+    }
+
+    public function getAffectedEntities(int $limit, int $offset): AffectedEntities
+    {
+        return AffectedEntities::fromIds('payment_method', $this->findAffectedIds(), $limit, $offset);
+    }
+
+    /**
+     * @return list<string>
+     */
+    private function findAffectedIds(): array
     {
         /** @var list<array{id: string, app_payment_method_id: string|null, app_id: string|null}> $paymentMethods */
         $paymentMethods = $this->connection->fetchAllAssociative(
@@ -33,23 +57,19 @@ class PaymentMethodHandlerMissingChecker implements DataIntegrityCheckerInterfac
                 SQL,
         );
 
-        $count = 0;
+        $ids = [];
         foreach ($paymentMethods as $paymentMethod) {
             if ($paymentMethod['app_payment_method_id'] !== null && $paymentMethod['app_id'] === null) {
-                ++$count;
+                $ids[] = $paymentMethod['id'];
 
                 continue;
             }
 
             if ($this->paymentHandlerRegistry->getPaymentMethodHandler($paymentMethod['id']) === null) {
-                ++$count;
+                $ids[] = $paymentMethod['id'];
             }
         }
 
-        $collection->add(DataIntegrityCheckResult::fromCount(
-            'payment-method-handler-missing',
-            'Active payment methods without an available payment handler',
-            $count,
-        ));
+        return $ids;
     }
 }

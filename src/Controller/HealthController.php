@@ -6,6 +6,7 @@ namespace Frosh\Tools\Controller;
 
 use Frosh\Tools\Acl\FroshToolsPrivileges;
 use Frosh\Tools\Components\Health\Checker\CheckerInterface;
+use Frosh\Tools\Components\Health\Checker\DataIntegrityChecker\AffectedEntitiesProviderInterface;
 use Frosh\Tools\Components\Health\DataIntegrityCollection;
 use Frosh\Tools\Components\Health\HealthCollection;
 use Frosh\Tools\Components\Health\PerformanceCollection;
@@ -14,6 +15,7 @@ use Symfony\Component\DependencyInjection\Attribute\Autowire;
 use Symfony\Component\DependencyInjection\Attribute\AutowireIterator;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
 use Symfony\Contracts\Cache\CacheInterface;
 use Symfony\Contracts\Cache\ItemInterface;
@@ -24,6 +26,8 @@ class HealthController extends AbstractController
     private const DATA_INTEGRITY_CACHE_KEY = 'frosh-tools-data-integrity-status';
 
     private const DATA_INTEGRITY_CACHE_TTL_SECONDS = 300;
+
+    private const DATA_INTEGRITY_AFFECTED_MAX_LIMIT = 100;
 
     /**
      * @param CheckerInterface[] $healthCheckers
@@ -91,6 +95,27 @@ class HealthController extends AbstractController
 
             return new JsonResponse($collection);
         });
+    }
+
+    #[Route(path: '/data-integrity/{id}/affected', name: 'api.frosh.tools.data-integrity.affected', methods: ['GET'])]
+    public function dataIntegrityAffected(string $id, Request $request): JsonResponse
+    {
+        $limit = max(1, min(self::DATA_INTEGRITY_AFFECTED_MAX_LIMIT, $request->query->getInt('limit', 25)));
+        $page = max(1, $request->query->getInt('page', 1));
+
+        foreach ($this->dataIntegrityCheckers as $checker) {
+            if (!$checker instanceof AffectedEntitiesProviderInterface || $checker->getId() !== $id || \in_array($id, $this->ignoredChecks, true)) {
+                continue;
+            }
+
+            return new JsonResponse([
+                ...$checker->getAffectedEntities($limit, ($page - 1) * $limit)->jsonSerialize(),
+                'page' => $page,
+                'limit' => $limit,
+            ]);
+        }
+
+        return new JsonResponse(['error' => \sprintf('Unknown data integrity check "%s"', $id)], Response::HTTP_NOT_FOUND);
     }
 
     #[Route(path: '/health-ping/status', name: 'api.frosh.tools.health-ping.status', methods: ['GET'])]

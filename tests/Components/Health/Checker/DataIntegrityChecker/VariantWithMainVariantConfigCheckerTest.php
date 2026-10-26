@@ -32,6 +32,7 @@ class VariantWithMainVariantConfigCheckerTest extends DataIntegrityCheckerTestCa
         $this->updateProduct($variantId, 'variant_listing_config', '{"mainVariantId": null}');
 
         static::assertAffectedCount($this->collectResult($this->checker, self::ID), 0);
+        static::assertAffectedEntities($this->checker, 'product', []);
     }
 
     public function testCountsVariantsWithAnOwnMainVariant(): void
@@ -44,5 +45,6 @@ class VariantWithMainVariantConfigCheckerTest extends DataIntegrityCheckerTestCa
         $this->updateProduct($otherVariantId, 'variant_listing_config', json_encode(['mainVariantId' => Uuid::randomHex()], \JSON_THROW_ON_ERROR));
 
         static::assertAffectedCount($this->collectResult($this->checker, self::ID), 2);
+        static::assertAffectedEntities($this->checker, 'product', [$variantId, $otherVariantId]);
     }
 }

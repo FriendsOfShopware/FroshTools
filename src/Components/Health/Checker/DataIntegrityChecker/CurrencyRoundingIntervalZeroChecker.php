@@ -8,11 +8,34 @@ use Doctrine\DBAL\Connection;
 use Frosh\Tools\Components\Health\Checker\CheckerInterface;
 use Frosh\Tools\Components\Health\HealthCollection;
 
-class CurrencyRoundingIntervalZeroChecker implements DataIntegrityCheckerInterface, CheckerInterface
+class CurrencyRoundingIntervalZeroChecker implements DataIntegrityCheckerInterface, CheckerInterface, AffectedEntitiesProviderInterface
 {
+    private const ID = 'currency-rounding-interval-zero';
+
+    private const AFFECTED_QUERY = <<<'SQL'
+        SELECT rounding.currency_id AS id
+        FROM (
+            SELECT id AS currency_id, item_rounding AS config FROM currency
+            UNION ALL
+            SELECT id AS currency_id, total_rounding AS config FROM currency
+            UNION ALL
+            SELECT currency_id, item_rounding AS config FROM currency_country_rounding
+            UNION ALL
+            SELECT currency_id, total_rounding AS config FROM currency_country_rounding
+        ) rounding
+        WHERE rounding.config IS NOT NULL
+          AND COALESCE(CAST(JSON_UNQUOTE(JSON_EXTRACT(rounding.config, '$.decimals')) AS SIGNED), 0) <= 2
+          AND COALESCE(CAST(JSON_UNQUOTE(JSON_EXTRACT(rounding.config, '$.interval')) AS DECIMAL(30, 10)), 0) = 0
+        SQL;
+
     public function __construct(
         private readonly Connection $connection,
     ) {
+    }
+
+    public function getId(): string
+    {
+        return self::ID;
     }
 
     public function collect(HealthCollection $collection): void
@@ -36,9 +59,14 @@ class CurrencyRoundingIntervalZeroChecker implements DataIntegrityCheckerInterfa
         );
 
         $collection->add(DataIntegrityCheckResult::fromCount(
-            'currency-rounding-interval-zero',
+            self::ID,
             'Currency roundings with an interval of zero',
             $count,
         ));
+    }
+
+    public function getAffectedEntities(int $limit, int $offset): AffectedEntities
+    {
+        return AffectedEntities::fromQuery($this->connection, 'currency', self::AFFECTED_QUERY, [], [], $limit, $offset);
     }
 }

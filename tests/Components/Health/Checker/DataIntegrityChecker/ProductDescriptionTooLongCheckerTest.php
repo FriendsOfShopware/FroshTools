@@ -28,14 +28,28 @@ class ProductDescriptionTooLongCheckerTest extends DataIntegrityCheckerTestCase
         $this->setDescription($this->createProduct(), str_repeat('a', 32766));
 
         static::assertAffectedCount($this->collectResult($this->createChecker('6.6.5.0'), self::ID), 0);
+        static::assertAffectedEntities($this->createChecker('6.6.5.0'), 'product', []);
     }
 
     public function testCountsDescriptionsAboveTheLimitInBytes(): void
     {
-        $this->setDescription($this->createProduct(), str_repeat('a', 32767));
-        $this->setDescription($this->createProduct(), str_repeat('ä', 16384));
+        $asciiProductId = $this->createProduct();
+        $this->setDescription($asciiProductId, str_repeat('a', 32767));
+        $multibyteProductId = $this->createProduct();
+        $this->setDescription($multibyteProductId, str_repeat('ä', 16384));
 
         static::assertAffectedCount($this->collectResult($this->createChecker('6.6.5.0'), self::ID), 2);
+        static::assertAffectedEntities($this->createChecker('6.6.5.0'), 'product', [$asciiProductId, $multibyteProductId]);
+    }
+
+    public function testListsAProductWithLongDescriptionsInSeveralLanguagesOnce(): void
+    {
+        $productId = $this->createProduct();
+        $this->setDescription($productId, str_repeat('a', 32767));
+        $this->addTranslation($productId, $this->createLanguage(), str_repeat('b', 32767));
+
+        static::assertAffectedCount($this->collectResult($this->createChecker('6.6.5.0'), self::ID), 2);
+        static::assertAffectedEntities($this->createChecker('6.6.5.0'), 'product', [$productId]);
     }
 
     #[DataProvider('fixedVersions')]
@@ -47,6 +61,7 @@ class ProductDescriptionTooLongCheckerTest extends DataIntegrityCheckerTestCase
         $this->createChecker($version)->collect($collection);
 
         static::assertCount(0, $collection);
+        static::assertAffectedEntities($this->createChecker($version), 'product', []);
     }
 
     /**
@@ -61,6 +76,31 @@ class ProductDescriptionTooLongCheckerTest extends DataIntegrityCheckerTestCase
     private function createChecker(string $version): ProductDescriptionTooLongChecker
     {
         return new ProductDescriptionTooLongChecker($this->connection, $version);
+    }
+
+    private function createLanguage(): string
+    {
+        $id = Uuid::randomBytes();
+
+        $this->connection->insert('language', [
+            'id' => $id,
+            'name' => 'Frosh data integrity check language',
+            'locale_id' => $this->connection->fetchOne('SELECT id FROM locale LIMIT 1'),
+            'created_at' => self::now(),
+        ]);
+
+        return $id;
+    }
+
+    private function addTranslation(string $productId, string $languageId, string $description): void
+    {
+        $this->connection->insert('product_translation', [
+            'product_id' => Uuid::fromHexToBytes($productId),
+            'product_version_id' => Uuid::fromHexToBytes(Defaults::LIVE_VERSION),
+            'language_id' => $languageId,
+            'description' => $description,
+            'created_at' => self::now(),
+        ]);
     }
 
     private function setDescription(string $productId, string $description): void

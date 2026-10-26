@@ -68,6 +68,7 @@ class NumberRangeSalesChannelMissingCheckerTest extends DataIntegrityCheckerTest
         );
 
         static::assertAffectedCount($this->collectResult($this->checker, self::ID), 0);
+        static::assertAffectedEntities($this->checker, 'sales_channel', []);
     }
 
     public function testCountsActiveSalesChannelsWithoutNumberRangeForAType(): void
@@ -80,6 +81,19 @@ class NumberRangeSalesChannelMissingCheckerTest extends DataIntegrityCheckerTest
         $salesChannelCount = \count($this->salesChannelIds);
 
         static::assertAffectedCount($this->collectResult($this->checker, self::ID), ($salesChannelCount - 1) + $salesChannelCount);
+        static::assertAffectedEntities($this->checker, 'sales_channel', array_map(Uuid::fromBytesToHex(...), $this->salesChannelIds));
+    }
+
+    public function testListsEverySalesChannelMissingSeveralTypesOnce(): void
+    {
+        foreach ([$this->createType(false), $this->createType(false)] as $typeId) {
+            $this->createNumberRange($typeId, false, \array_slice($this->salesChannelIds, 0, 1));
+        }
+
+        $missingSalesChannelIds = \array_slice($this->salesChannelIds, 1);
+
+        static::assertAffectedCount($this->collectResult($this->checker, self::ID), 2 * \count($missingSalesChannelIds));
+        static::assertAffectedEntities($this->checker, 'sales_channel', array_map(Uuid::fromBytesToHex(...), $missingSalesChannelIds));
     }
 
     private function createType(bool $global, bool $withTechnicalName = true): string

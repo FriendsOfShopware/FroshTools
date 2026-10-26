@@ -31,6 +31,7 @@ class LanguageTranslationCodeMissingCheckerTest extends DataIntegrityCheckerTest
         $this->createLanguage(null, $parentId);
 
         static::assertAffectedCount($this->collectResult($this->checker, self::ID), 0);
+        static::assertAffectedEntities($this->checker, 'language', []);
     }
 
     public function testCountsLanguagesWithoutOwnOrInheritedTranslationCode(): void
@@ -39,10 +40,11 @@ class LanguageTranslationCodeMissingCheckerTest extends DataIntegrityCheckerTest
         $this->createLanguage(null, $parentId);
 
         $parentWithoutCodeId = $this->createLanguage(null);
-        $this->createLanguage(null, $parentWithoutCodeId);
+        $childWithoutCodeId = $this->createLanguage(null, $parentWithoutCodeId);
         $this->createLanguage($this->localeId(), $parentWithoutCodeId);
 
         static::assertAffectedCount($this->collectResult($this->checker, self::ID), 2);
+        static::assertAffectedEntities($this->checker, 'language', [Uuid::fromBytesToHex($parentWithoutCodeId), Uuid::fromBytesToHex($childWithoutCodeId)]);
     }
 
     public function testResolvingTheLocaleOfALanguageWithoutTranslationCodeFails(): void

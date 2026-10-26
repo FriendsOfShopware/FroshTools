@@ -33,26 +33,34 @@ class DeliveryTimeInvalidCheckerTest extends DataIntegrityCheckerTestCase
         }
 
         static::assertAffectedCount($this->collectResult($this->checker, self::ID), 0);
+        static::assertAffectedEntities($this->checker, 'delivery_time', []);
     }
 
     public function testCountsUnsupportedUnitsAndNegativeDurations(): void
     {
-        $this->createDeliveryTime('Day', 1, 3);
-        $this->createDeliveryTime('days', 1, 3);
-        $this->createDeliveryTime('week', -1, 2);
-        $this->createDeliveryTime('day', 1, -2);
+        $ids = [
+            $this->createDeliveryTime('Day', 1, 3),
+            $this->createDeliveryTime('days', 1, 3),
+            $this->createDeliveryTime('week', -1, 2),
+            $this->createDeliveryTime('day', 1, -2),
+        ];
 
         static::assertAffectedCount($this->collectResult($this->checker, self::ID), 4);
+        static::assertAffectedEntities($this->checker, 'delivery_time', $ids);
     }
 
-    private function createDeliveryTime(string $unit, int $min, int $max): void
+    private function createDeliveryTime(string $unit, int $min, int $max): string
     {
+        $id = Uuid::randomHex();
+
         $this->connection->insert('delivery_time', [
-            'id' => Uuid::randomBytes(),
+            'id' => Uuid::fromHexToBytes($id),
             'unit' => $unit,
             'min' => $min,
             'max' => $max,
             'created_at' => self::now(),
         ]);
+
+        return $id;
     }
 }

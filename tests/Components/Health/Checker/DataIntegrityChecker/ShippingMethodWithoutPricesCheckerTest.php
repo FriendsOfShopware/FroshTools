@@ -40,13 +40,15 @@ class ShippingMethodWithoutPricesCheckerTest extends DataIntegrityCheckerTestCas
         $this->createShippingMethod(false);
 
         static::assertAffectedCount($this->collectResult($this->checker, self::ID), 0);
+        static::assertAffectedEntities($this->checker, 'shipping_method', []);
     }
 
     public function testCountsActiveShippingMethodsWithoutPrices(): void
     {
-        $this->createShippingMethod(true);
+        $shippingMethodId = $this->createShippingMethod(true);
 
         static::assertAffectedCount($this->collectResult($this->checker, self::ID), 1);
+        static::assertAffectedEntities($this->checker, 'shipping_method', [Uuid::fromBytesToHex($shippingMethodId)]);
     }
 
     private function createShippingMethod(bool $active): string

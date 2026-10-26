@@ -10,6 +10,8 @@ use Frosh\Tools\Tests\IntegrationTestCase;
 use PHPUnit\Framework\Attributes\CoversClass;
 use Doctrine\DBAL\Connection;
 use Psr\Cache\CacheItemPoolInterface;
+use Shopware\Core\Defaults;
+use Shopware\Core\Framework\Uuid\Uuid;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 
@@ -98,6 +100,45 @@ class HealthControllerTest extends IntegrationTestCase
         );
     }
 
+    public function testDataIntegrityAffectedListsTheRecordsOfACheck(): void
+    {
+        $connection = static::getContainer()->get(Connection::class);
+        $connection->executeStatement('UPDATE `rule` SET invalid = 0');
+        $ruleIds = [];
+        for ($i = 0; $i < 3; ++$i) {
+            $ruleIds[] = Uuid::randomHex();
+            $connection->insert('rule', [
+                'id' => Uuid::fromHexToBytes($ruleIds[$i]),
+                'name' => 'Frosh data integrity check rule',
+                'priority' => 1,
+                'invalid' => 1,
+                'created_at' => (new \DateTimeImmutable())->format(Defaults::STORAGE_DATE_TIME_FORMAT),
+            ]);
+        }
+        sort($ruleIds);
+
+        $firstPage = $this->decodeAffected($this->controller->dataIntegrityAffected('rule-invalid', new Request(['limit' => '2'])));
+        $secondPage = $this->decodeAffected($this->controller->dataIntegrityAffected('rule-invalid', new Request(['limit' => '2', 'page' => '2'])));
+
+        static::assertSame(['entity' => 'rule', 'total' => 3, 'ids' => \array_slice($ruleIds, 0, 2), 'page' => 1, 'limit' => 2], $firstPage);
+        static::assertSame(['entity' => 'rule', 'total' => 3, 'ids' => [$ruleIds[2]], 'page' => 2, 'limit' => 2], $secondPage);
+    }
+
+    public function testDataIntegrityAffectedClampsPaging(): void
+    {
+        $affected = $this->decodeAffected($this->controller->dataIntegrityAffected('rule-invalid', new Request(['limit' => '1000', 'page' => '-3'])));
+
+        static::assertSame(100, $affected['limit']);
+        static::assertSame(1, $affected['page']);
+    }
+
+    public function testDataIntegrityAffectedReturnsNotFoundForUnknownChecks(): void
+    {
+        $response = $this->controller->dataIntegrityAffected('unknown-check', new Request());
+
+        static::assertSame(404, $response->getStatusCode());
+    }
+
     public function testPingStatusReturnsCachedResponse(): void
     {
         $cachePool = static::getContainer()->get('cache.object');
@@ -121,6 +162,19 @@ class HealthControllerTest extends IntegrationTestCase
         static::assertIsString($entry['current']);
 
         return $entry['current'];
+    }
+
+    /**
+     * @return array<string, mixed>
+     */
+    private function decodeAffected(JsonResponse $response): array
+    {
+        static::assertSame(200, $response->getStatusCode());
+
+        $affected = json_decode((string) $response->getContent(), true, 512, \JSON_THROW_ON_ERROR);
+        static::assertIsArray($affected);
+
+        return $affected;
     }
 
     private function invalidateRule(): void

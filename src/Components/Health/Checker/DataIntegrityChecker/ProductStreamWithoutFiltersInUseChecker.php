@@ -12,8 +12,10 @@ use Shopware\Core\Defaults;
 use Shopware\Core\Framework\Uuid\Uuid;
 use Symfony\Component\DependencyInjection\Attribute\Autowire;
 
-class ProductStreamWithoutFiltersInUseChecker implements DataIntegrityCheckerInterface, CheckerInterface
+class ProductStreamWithoutFiltersInUseChecker implements DataIntegrityCheckerInterface, CheckerInterface, AffectedEntitiesProviderInterface
 {
+    private const ID = 'product-stream-without-filters-in-use';
+
     private const SLOT_CONFIG_COLUMNS = [
         ['cms_slot_translation', 'config', 'cms_slot_version_id'],
         ['category_translation', 'slot_config', 'category_version_id'],
@@ -29,7 +31,29 @@ class ProductStreamWithoutFiltersInUseChecker implements DataIntegrityCheckerInt
     ) {
     }
 
+    public function getId(): string
+    {
+        return self::ID;
+    }
+
     public function collect(HealthCollection $collection): void
+    {
+        $collection->add(DataIntegrityCheckResult::fromCount(
+            self::ID,
+            'Dynamic product groups without filters that are still in use',
+            \count($this->findAffectedIds()),
+        ));
+    }
+
+    public function getAffectedEntities(int $limit, int $offset): AffectedEntities
+    {
+        return AffectedEntities::fromIds('product_stream', $this->findAffectedIds(), $limit, $offset);
+    }
+
+    /**
+     * @return list<string>
+     */
+    private function findAffectedIds(): array
     {
         /** @var array<string, int|string> $streams */
         $streams = $this->connection->fetchAllKeyValue(
@@ -40,11 +64,11 @@ class ProductStreamWithoutFiltersInUseChecker implements DataIntegrityCheckerInt
                 SQL,
         );
 
-        $collection->add(DataIntegrityCheckResult::fromCount(
-            'product-stream-without-filters-in-use',
-            'Dynamic product groups without filters that are still in use',
-            $streams === [] ? 0 : \count($this->findUsedStreams($streams)),
-        ));
+        if ($streams === []) {
+            return [];
+        }
+
+        return array_keys($this->findUsedStreams($streams));
     }
 
     /**

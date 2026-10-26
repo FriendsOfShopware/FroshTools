@@ -29,24 +29,30 @@ class InvalidFlowCheckerTest extends DataIntegrityCheckerTestCase
         $this->createFlow(active: false, invalid: true);
 
         static::assertAffectedCount($this->collectResult($this->checker, self::ID), 0);
+        static::assertAffectedEntities($this->checker, 'flow', []);
     }
 
     public function testCountsActiveInvalidFlows(): void
     {
-        $this->createFlow(active: true, invalid: true);
+        $flowId = $this->createFlow(active: true, invalid: true);
 
         static::assertAffectedCount($this->collectResult($this->checker, self::ID), 1);
+        static::assertAffectedEntities($this->checker, 'flow', [$flowId]);
     }
 
-    private function createFlow(bool $active, bool $invalid): void
+    private function createFlow(bool $active, bool $invalid): string
     {
+        $id = Uuid::randomHex();
+
         $this->connection->insert('flow', [
-            'id' => Uuid::randomBytes(),
+            'id' => Uuid::fromHexToBytes($id),
             'name' => 'Frosh data integrity check flow',
             'event_name' => 'checkout.order.placed',
             'active' => (int) $active,
             'invalid' => (int) $invalid,
             'created_at' => self::now(),
         ]);
+
+        return $id;
     }
 }

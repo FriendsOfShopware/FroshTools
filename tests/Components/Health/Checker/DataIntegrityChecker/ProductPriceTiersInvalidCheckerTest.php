@@ -38,6 +38,7 @@ class ProductPriceTiersInvalidCheckerTest extends DataIntegrityCheckerTestCase
         $this->addPrice($this->createProduct(), $ruleId, 1, 10);
 
         static::assertAffectedCount($this->collectResult($this->checker, self::ID), 0);
+        static::assertAffectedEntities($this->checker, 'product', []);
     }
 
     public function testCountsProductsWithMisplacedGappedOrOverlappingTiers(): void
@@ -45,7 +46,8 @@ class ProductPriceTiersInvalidCheckerTest extends DataIntegrityCheckerTestCase
         $ruleId = $this->createRule();
         $otherRuleId = $this->createRule();
 
-        $this->addPrice($this->createProduct(), $ruleId, 2, null);
+        $misplaced = $this->createProduct();
+        $this->addPrice($misplaced, $ruleId, 2, null);
 
         $gap = $this->createProduct();
         $this->addPrice($gap, $ruleId, 1, 5);
@@ -59,7 +61,8 @@ class ProductPriceTiersInvalidCheckerTest extends DataIntegrityCheckerTestCase
         $this->addPrice($openTierInBetween, $ruleId, 1, null);
         $this->addPrice($openTierInBetween, $ruleId, 5, null);
 
-        $this->addPrice($this->createProduct(), $ruleId, 1, 0);
+        $endBeforeStart = $this->createProduct();
+        $this->addPrice($endBeforeStart, $ruleId, 1, 0);
 
         $twoInvalidRules = $this->createProduct();
         $this->addPrice($twoInvalidRules, $ruleId, 3, null);
@@ -67,6 +70,7 @@ class ProductPriceTiersInvalidCheckerTest extends DataIntegrityCheckerTestCase
         $this->addPrice($twoInvalidRules, $otherRuleId, 4, null);
 
         static::assertAffectedCount($this->collectResult($this->checker, self::ID), 6);
+        static::assertAffectedEntities($this->checker, 'product', [$misplaced, $gap, $overlap, $openTierInBetween, $endBeforeStart, $twoInvalidRules]);
     }
 
     private function createRule(): string

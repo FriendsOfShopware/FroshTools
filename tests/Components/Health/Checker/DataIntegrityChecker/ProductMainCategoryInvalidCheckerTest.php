@@ -8,6 +8,9 @@ use Frosh\Tools\Components\Health\Checker\DataIntegrityChecker\ProductMainCatego
 use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\Attributes\DataProvider;
 use Shopware\Core\Defaults;
+use Shopware\Core\Framework\Api\Util\AccessKeyHelper;
+use Shopware\Core\Framework\Context;
+use Shopware\Core\Framework\DataAbstractionLayer\EntityRepository;
 use Shopware\Core\Framework\Uuid\Uuid;
 
 #[CoversClass(ProductMainCategoryInvalidChecker::class)]
@@ -44,24 +47,37 @@ class ProductMainCategoryInvalidCheckerTest extends DataIntegrityCheckerTestCase
         $this->setMainCategory($variantId, $categoryId);
 
         static::assertAffectedCount($this->collectResult($this->checker, self::ID), 0);
+        static::assertAffectedEntities($this->checker, 'product', []);
     }
 
     public function testCountsMainCategoriesThatAreUnassignedInactiveOrOutsideTheTree(): void
     {
         $assignedCategoryId = $this->createCategory($this->navigationCategoryId, true);
 
-        $this->setMainCategory(
-            $this->createProduct(['categories' => [['id' => $assignedCategoryId]]]),
-            $this->createCategory($this->navigationCategoryId, true),
-        );
+        $unassignedProductId = $this->createProduct(['categories' => [['id' => $assignedCategoryId]]]);
+        $this->setMainCategory($unassignedProductId, $this->createCategory($this->navigationCategoryId, true));
 
         $inactiveCategoryId = $this->createCategory($this->navigationCategoryId, false);
-        $this->setMainCategory($this->createProduct(['categories' => [['id' => $inactiveCategoryId]]]), $inactiveCategoryId);
+        $inactiveProductId = $this->createProduct(['categories' => [['id' => $inactiveCategoryId]]]);
+        $this->setMainCategory($inactiveProductId, $inactiveCategoryId);
 
         $foreignCategoryId = $this->createCategory($this->createCategory(null, true), true);
-        $this->setMainCategory($this->createProduct(['categories' => [['id' => $foreignCategoryId]]]), $foreignCategoryId);
+        $foreignProductId = $this->createProduct(['categories' => [['id' => $foreignCategoryId]]]);
+        $this->setMainCategory($foreignProductId, $foreignCategoryId);
 
         static::assertAffectedCount($this->collectResult($this->checker, self::ID), 3);
+        static::assertAffectedEntities($this->checker, 'product', [$unassignedProductId, $inactiveProductId, $foreignProductId]);
+    }
+
+    public function testListsAProductWithInvalidMainCategoriesInSeveralSalesChannelsOnce(): void
+    {
+        $inactiveCategoryId = $this->createCategory($this->navigationCategoryId, false);
+        $productId = $this->createProduct(['categories' => [['id' => $inactiveCategoryId]]]);
+        $this->setMainCategory($productId, $inactiveCategoryId);
+        $this->setMainCategory($productId, $inactiveCategoryId, $this->createSalesChannel());
+
+        static::assertAffectedCount($this->collectResult($this->checker, self::ID), 2);
+        static::assertAffectedEntities($this->checker, 'product', [$productId]);
     }
 
     #[DataProvider('hiddenCategoryVersions')]
@@ -69,9 +85,12 @@ class ProductMainCategoryInvalidCheckerTest extends DataIntegrityCheckerTestCase
     {
         $hiddenCategoryId = $this->createCategory($this->navigationCategoryId, true);
         $this->connection->executeStatement('UPDATE category SET visible = 0 WHERE id = :id', ['id' => Uuid::fromHexToBytes($hiddenCategoryId)]);
-        $this->setMainCategory($this->createProduct(['categories' => [['id' => $hiddenCategoryId]]]), $hiddenCategoryId);
+        $productId = $this->createProduct(['categories' => [['id' => $hiddenCategoryId]]]);
+        $this->setMainCategory($productId, $hiddenCategoryId);
 
-        static::assertAffectedCount($this->collectResult(new ProductMainCategoryInvalidChecker($this->connection, $version), self::ID), $expected);
+        $checker = new ProductMainCategoryInvalidChecker($this->connection, $version);
+        static::assertAffectedCount($this->collectResult($checker, self::ID), $expected);
+        static::assertAffectedEntities($checker, 'product', $expected === 0 ? [] : [$productId]);
     }
 
     /**
@@ -105,7 +124,32 @@ class ProductMainCategoryInvalidCheckerTest extends DataIntegrityCheckerTestCase
         return $id;
     }
 
-    private function setMainCategory(string $productId, string $categoryId): void
+    private function createSalesChannel(): string
+    {
+        $id = Uuid::randomHex();
+
+        /** @var EntityRepository $repository */
+        $repository = static::getContainer()->get('sales_channel.repository');
+        $repository->create([[
+            'id' => $id,
+            'typeId' => Defaults::SALES_CHANNEL_TYPE_STOREFRONT,
+            'name' => 'Frosh data integrity check sales channel',
+            'accessKey' => AccessKeyHelper::generateAccessKey('sales-channel'),
+            'languageId' => Defaults::LANGUAGE_SYSTEM,
+            'currencyId' => Defaults::CURRENCY,
+            'languages' => [['id' => Defaults::LANGUAGE_SYSTEM]],
+            'currencies' => [['id' => Defaults::CURRENCY]],
+            'customerGroupId' => $this->connection->fetchOne('SELECT LOWER(HEX(id)) FROM customer_group LIMIT 1'),
+            'paymentMethodId' => $this->connection->fetchOne('SELECT LOWER(HEX(id)) FROM payment_method LIMIT 1'),
+            'shippingMethodId' => $this->connection->fetchOne('SELECT LOWER(HEX(id)) FROM shipping_method LIMIT 1'),
+            'countryId' => $this->connection->fetchOne('SELECT LOWER(HEX(id)) FROM country LIMIT 1'),
+            'navigationCategoryId' => $this->navigationCategoryId,
+        ]], Context::createDefaultContext());
+
+        return Uuid::fromHexToBytes($id);
+    }
+
+    private function setMainCategory(string $productId, string $categoryId, ?string $salesChannelId = null): void
     {
         $this->connection->insert('main_category', [
             'id' => Uuid::randomBytes(),
@@ -113,7 +157,7 @@ class ProductMainCategoryInvalidCheckerTest extends DataIntegrityCheckerTestCase
             'product_version_id' => Uuid::fromHexToBytes(Defaults::LIVE_VERSION),
             'category_id' => Uuid::fromHexToBytes($categoryId),
             'category_version_id' => Uuid::fromHexToBytes(Defaults::LIVE_VERSION),
-            'sales_channel_id' => $this->salesChannelId,
+            'sales_channel_id' => $salesChannelId ?? $this->salesChannelId,
             'created_at' => self::now(),
         ]);
     }

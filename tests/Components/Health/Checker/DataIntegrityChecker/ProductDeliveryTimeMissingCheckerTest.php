@@ -31,12 +31,15 @@ class ProductDeliveryTimeMissingCheckerTest extends DataIntegrityCheckerTestCase
         $this->updateProduct($this->createProduct(), 'delivery_time_id', $deliveryTimeId);
 
         static::assertAffectedCount($this->collectResult($this->checker, self::ID), 0);
+        static::assertAffectedEntities($this->checker, 'product', []);
     }
 
     public function testCountsProductsWithADeletedDeliveryTime(): void
     {
-        $this->updateProduct($this->createProduct(), 'delivery_time_id', Uuid::randomBytes());
+        $productId = $this->createProduct();
+        $this->updateProduct($productId, 'delivery_time_id', Uuid::randomBytes());
 
         static::assertAffectedCount($this->collectResult($this->checker, self::ID), 1);
+        static::assertAffectedEntities($this->checker, 'product', [$productId]);
     }
 }

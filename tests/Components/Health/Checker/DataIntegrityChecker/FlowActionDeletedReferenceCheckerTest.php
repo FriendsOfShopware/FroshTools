@@ -44,6 +44,7 @@ class FlowActionDeletedReferenceCheckerTest extends DataIntegrityCheckerTestCase
         $this->createSequence($invalidFlowId, 'action.change.customer.group', ['customerGroupId' => Uuid::randomHex()]);
 
         static::assertAffectedCount($this->collectResult($this->checker, self::ID), 0);
+        static::assertAffectedEntities($this->checker, 'flow', []);
     }
 
     public function testCountsActionsOfActiveFlowsReferencingDeletedEntities(): void
@@ -56,6 +57,22 @@ class FlowActionDeletedReferenceCheckerTest extends DataIntegrityCheckerTestCase
         $this->createSequence($flowId, 'action.change.customer.group', ['customerGroupId' => Uuid::randomHex()]);
 
         static::assertAffectedCount($this->collectResult($this->checker, self::ID), 4);
+        static::assertAffectedEntities($this->checker, 'flow', [Uuid::fromBytesToHex($flowId)]);
+    }
+
+    public function testListsEveryFlowWithABrokenActionOnce(): void
+    {
+        $flowId = $this->createFlow(true);
+        $this->createSequence($flowId, 'action.mail.send', ['mailTemplateId' => Uuid::randomHex()]);
+        $this->createSequence($flowId, 'action.add.order.tag', ['tagIds' => [Uuid::randomHex() => 'Deleted', Uuid::randomHex() => 'Deleted']]);
+
+        $otherFlowId = $this->createFlow(true);
+        $this->createSequence($otherFlowId, 'action.change.customer.group', ['customerGroupId' => Uuid::randomHex()]);
+
+        $this->createSequence($this->createFlow(true), 'action.stop.flow', []);
+
+        static::assertAffectedCount($this->collectResult($this->checker, self::ID), 3);
+        static::assertAffectedEntities($this->checker, 'flow', [Uuid::fromBytesToHex($flowId), Uuid::fromBytesToHex($otherFlowId)]);
     }
 
     private function fetchHexId(string $table): string

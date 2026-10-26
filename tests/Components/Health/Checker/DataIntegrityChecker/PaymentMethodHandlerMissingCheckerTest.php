@@ -36,28 +36,34 @@ class PaymentMethodHandlerMissingCheckerTest extends DataIntegrityCheckerTestCas
         $this->createAppPaymentMethod($this->createApp(false));
 
         static::assertAffectedCount($this->collectResult($this->checker, self::ID), 0);
+        static::assertAffectedEntities($this->checker, 'payment_method', []);
     }
 
     public function testCountsActiveAssignedMethodsWithoutHandlerOrApp(): void
     {
-        $this->createPaymentMethod('Frosh\\Tools\\Tests\\RemovedPaymentHandler', true, true);
+        $withoutHandler = $this->createPaymentMethod('Frosh\\Tools\\Tests\\RemovedPaymentHandler', true, true);
 
-        $this->createAppPaymentMethod(null);
+        $withoutApp = $this->createAppPaymentMethod(null);
 
         static::assertAffectedCount($this->collectResult($this->checker, self::ID), 2);
+        static::assertAffectedEntities($this->checker, 'payment_method', [Uuid::fromBytesToHex($withoutHandler), Uuid::fromBytesToHex($withoutApp)]);
     }
 
-    private function createAppPaymentMethod(?string $appId): void
+    private function createAppPaymentMethod(?string $appId): string
     {
+        $paymentMethodId = $this->createPaymentMethod('app\\FroshApp_payment', true, true);
+
         $this->connection->insert('app_payment_method', [
             'id' => Uuid::randomBytes(),
             'app_id' => $appId,
-            'payment_method_id' => $this->createPaymentMethod('app\\FroshApp_payment', true, true),
+            'payment_method_id' => $paymentMethodId,
             'app_name' => 'FroshApp',
             'identifier' => 'payment',
             'pay_url' => 'https://example.com/pay',
             'created_at' => self::now(),
         ]);
+
+        return $paymentMethodId;
     }
 
     private function createPaymentMethod(string $handlerIdentifier, bool $active, bool $assigned): string

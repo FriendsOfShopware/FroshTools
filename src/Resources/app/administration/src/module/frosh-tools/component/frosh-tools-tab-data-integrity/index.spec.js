@@ -12,6 +12,9 @@ async function createWrapper(service) {
         provide: {
             froshToolsService: service,
         },
+        stubs: {
+            'frosh-tools-data-integrity-affected': true,
+        },
     });
 }
 
@@ -79,8 +82,70 @@ describe('frosh-tools-tab-data-integrity', () => {
 
         expect(Object.keys(german)).toEqual(Object.keys(english));
         for (const [id, texts] of Object.entries(german)) {
+            expect(Object.keys(texts), id).toEqual(Object.keys(english[id]));
+            expect(texts.title, id).not.toBe(english[id].title);
             expect(texts.description, id).not.toBe(english[id].description);
             expect(texts.solution, id).not.toBe(english[id].solution);
         }
+    });
+
+    it('shows the translated check title instead of the backend label', async () => {
+        const wrapper = await createWrapper({
+            dataIntegrityStatus: vi.fn().mockResolvedValue([
+                {
+                    id: 'rule-invalid',
+                    snippet: 'Backend label',
+                    state: 'STATE_INFO',
+                    current: '2',
+                    recommended: '0',
+                },
+                {
+                    id: 'third-party-check',
+                    snippet: 'Third party label',
+                    state: 'STATE_OK',
+                    current: '0',
+                    recommended: '0',
+                },
+            ]),
+        });
+        await flushPromises();
+
+        expect(wrapper.vm.dataIntegrityRows.map((row) => row.title)).toEqual([
+            'Rules with invalid conditions',
+            'Third party label',
+        ]);
+        expect(wrapper.text()).toContain('Rules with invalid conditions');
+        expect(wrapper.text()).not.toContain('Backend label');
+    });
+
+    it('lists the affected records only for checks with findings', async () => {
+        const wrapper = await createWrapper({
+            dataIntegrityStatus: vi.fn().mockResolvedValue([]),
+        });
+        await flushPromises();
+
+        wrapper.vm.openInfo({
+            id: 'rule-invalid',
+            state: 'STATE_OK',
+            current: '0',
+            recommended: '0',
+        });
+        await wrapper.vm.$nextTick();
+        expect(
+            wrapper.find('frosh-tools-data-integrity-affected-stub').exists()
+        ).toBe(false);
+
+        wrapper.vm.openInfo({
+            id: 'rule-invalid',
+            state: 'STATE_INFO',
+            current: '2',
+            recommended: '0',
+        });
+        await wrapper.vm.$nextTick();
+        const affected = wrapper.find(
+            'frosh-tools-data-integrity-affected-stub'
+        );
+        expect(affected.exists()).toBe(true);
+        expect(affected.attributes('check-id')).toBe('rule-invalid');
     });
 });

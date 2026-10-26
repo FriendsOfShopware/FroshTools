@@ -9,8 +9,10 @@ use Doctrine\DBAL\Connection;
 use Frosh\Tools\Components\Health\Checker\CheckerInterface;
 use Frosh\Tools\Components\Health\HealthCollection;
 
-class RuleConditionDeletedReferenceChecker implements DataIntegrityCheckerInterface, CheckerInterface
+class RuleConditionDeletedReferenceChecker implements DataIntegrityCheckerInterface, CheckerInterface, AffectedEntitiesProviderInterface
 {
+    private const ID = 'rule-condition-deleted-references';
+
     /**
      * @var list<array{types: list<string>, property: string, table: string}>
      */
@@ -33,37 +35,63 @@ class RuleConditionDeletedReferenceChecker implements DataIntegrityCheckerInterf
     ) {
     }
 
+    public function getId(): string
+    {
+        return self::ID;
+    }
+
     public function collect(HealthCollection $collection): void
     {
         $count = 0;
         foreach (self::REFERENCES as $reference) {
             $count += (int) $this->connection->fetchOne(
-                \sprintf(
-                    <<<'SQL'
-                        SELECT COUNT(*)
-                        FROM (
-                            SELECT rc.id
-                            FROM rule_condition rc
-                            CROSS JOIN JSON_TABLE(rc.value, '$.%s[*]' COLUMNS (reference_id VARCHAR(255) PATH '$')) reference
-                            LEFT JOIN `%s` target ON target.id = UNHEX(reference.reference_id)
-                            WHERE rc.type IN (:types)
-                              AND COALESCE(JSON_UNQUOTE(JSON_EXTRACT(rc.value, '$.operator')), '=') IN ('=', '!=')
-                            GROUP BY rc.id
-                            HAVING COUNT(target.id) = 0
-                        ) dead_condition
-                        SQL,
-                    $reference['property'],
-                    $reference['table'],
-                ),
+                \sprintf('SELECT COUNT(*) FROM (%s) dead_condition', $this->deadConditionQuery($reference)),
                 ['types' => $reference['types']],
                 ['types' => ArrayParameterType::STRING],
             );
         }
 
         $collection->add(DataIntegrityCheckResult::fromCount(
-            'rule-condition-deleted-references',
+            self::ID,
             'Rule conditions referencing only deleted entities',
             $count,
         ));
+    }
+
+    public function getAffectedEntities(int $limit, int $offset): AffectedEntities
+    {
+        $ruleIds = [];
+        foreach (self::REFERENCES as $reference) {
+            /** @var list<string> $ids */
+            $ids = $this->connection->fetchFirstColumn(
+                \sprintf('SELECT LOWER(HEX(dead_condition.rule_id)) FROM (%s) dead_condition', $this->deadConditionQuery($reference)),
+                ['types' => $reference['types']],
+                ['types' => ArrayParameterType::STRING],
+            );
+            $ruleIds = [...$ruleIds, ...$ids];
+        }
+
+        return AffectedEntities::fromIds('rule', $ruleIds, $limit, $offset);
+    }
+
+    /**
+     * @param array{types: list<string>, property: string, table: string} $reference
+     */
+    private function deadConditionQuery(array $reference): string
+    {
+        return \sprintf(
+            <<<'SQL'
+                SELECT rc.id, rc.rule_id
+                FROM rule_condition rc
+                CROSS JOIN JSON_TABLE(rc.value, '$.%s[*]' COLUMNS (reference_id VARCHAR(255) PATH '$')) reference
+                LEFT JOIN `%s` target ON target.id = UNHEX(reference.reference_id)
+                WHERE rc.type IN (:types)
+                  AND COALESCE(JSON_UNQUOTE(JSON_EXTRACT(rc.value, '$.operator')), '=') IN ('=', '!=')
+                GROUP BY rc.id, rc.rule_id
+                HAVING COUNT(target.id) = 0
+                SQL,
+            $reference['property'],
+            $reference['table'],
+        );
     }
 }

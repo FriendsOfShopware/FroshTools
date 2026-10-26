@@ -30,28 +30,36 @@ class DuplicateDeliveryTimesCheckerTest extends DataIntegrityCheckerTestCase
         $this->createDeliveryTime(2, 3, 'day');
 
         static::assertAffectedCount($this->collectResult($this->checker, self::ID), 0);
+        static::assertAffectedEntities($this->checker, 'delivery_time', []);
     }
 
     public function testCountsEveryDeliveryTimeOfADuplicateRange(): void
     {
-        $this->createDeliveryTime(1, 3, 'day');
-        $this->createDeliveryTime(1, 3, 'day');
-        $this->createDeliveryTime(1, 3, 'day');
-        $this->createDeliveryTime(2, 4, 'week');
-        $this->createDeliveryTime(2, 4, 'week');
+        $ids = [
+            $this->createDeliveryTime(1, 3, 'day'),
+            $this->createDeliveryTime(1, 3, 'day'),
+            $this->createDeliveryTime(1, 3, 'day'),
+            $this->createDeliveryTime(2, 4, 'week'),
+            $this->createDeliveryTime(2, 4, 'week'),
+        ];
         $this->createDeliveryTime(2, 4, 'day');
 
         static::assertAffectedCount($this->collectResult($this->checker, self::ID), 5);
+        static::assertAffectedEntities($this->checker, 'delivery_time', $ids);
     }
 
-    private function createDeliveryTime(int $min, int $max, string $unit): void
+    private function createDeliveryTime(int $min, int $max, string $unit): string
     {
+        $id = Uuid::randomHex();
+
         $this->connection->insert('delivery_time', [
-            'id' => Uuid::randomBytes(),
+            'id' => Uuid::fromHexToBytes($id),
             'min' => $min,
             'max' => $max,
             'unit' => $unit,
             'created_at' => (new \DateTimeImmutable())->format('Y-m-d H:i:s.v'),
         ]);
+
+        return $id;
     }
 }

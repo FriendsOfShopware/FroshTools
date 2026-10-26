@@ -41,33 +41,55 @@ class ProductStreamWithoutFiltersInUseCheckerTest extends DataIntegrityCheckerTe
         $this->useInCategory($this->createStream(null, true), true, 'folder');
 
         static::assertAffectedCount($this->collectResult($this->createChecker('6.7.14.0'), self::ID), 0);
+        static::assertAffectedEntities($this->createChecker('6.7.14.0'), 'product_stream', []);
     }
 
     public function testCountsStreamsWithoutFiltersThatAreStillInUse(): void
     {
-        $this->useInCategory($this->createStream(null, true));
-        $this->useInCrossSelling($this->createStream('[]', false), true);
-        $this->useInCmsSlot($this->createStream(null, true));
-        $this->useInProductExport($this->createStream(null, true));
+        $inCategory = $this->createStream(null, true);
+        $this->useInCategory($inCategory);
+        $inCrossSelling = $this->createStream('[]', false);
+        $this->useInCrossSelling($inCrossSelling, true);
+        $inCmsSlot = $this->createStream(null, true);
+        $this->useInCmsSlot($inCmsSlot);
+        $inProductExport = $this->createStream(null, true);
+        $this->useInProductExport($inProductExport);
         $this->useInProductExport($this->createStream('[]', false));
 
         $usedTwice = $this->createStream('[]', true);
         $this->useInCategory($usedTwice);
         $this->useInProductExport($usedTwice);
 
-        $this->useInCategorySlotConfig($this->createStream(null, true));
-        $this->useInProductSlotConfig($this->createStream(null, true));
-        $this->useInLandingPageSlotConfig($this->createStream(null, true));
-        $this->useInHomeSlotConfig($this->createStream(null, true));
+        $inCategorySlotConfig = $this->createStream(null, true);
+        $this->useInCategorySlotConfig($inCategorySlotConfig);
+        $inProductSlotConfig = $this->createStream(null, true);
+        $this->useInProductSlotConfig($inProductSlotConfig);
+        $inLandingPageSlotConfig = $this->createStream(null, true);
+        $this->useInLandingPageSlotConfig($inLandingPageSlotConfig);
+        $inHomeSlotConfig = $this->createStream(null, true);
+        $this->useInHomeSlotConfig($inHomeSlotConfig);
 
         static::assertAffectedCount($this->collectResult($this->createChecker('6.7.14.0'), self::ID), 9);
+        static::assertAffectedEntities($this->createChecker('6.7.14.0'), 'product_stream', array_map(Uuid::fromBytesToHex(...), [
+            $inCategory,
+            $inCrossSelling,
+            $inCmsSlot,
+            $inProductExport,
+            $usedTwice,
+            $inCategorySlotConfig,
+            $inProductSlotConfig,
+            $inLandingPageSlotConfig,
+            $inHomeSlotConfig,
+        ]));
     }
 
     public function testCountsEmptyStreamsOfProductExportsBefore6_7_14(): void
     {
-        $this->useInProductExport($this->createStream('[]', false));
+        $streamId = $this->createStream('[]', false);
+        $this->useInProductExport($streamId);
 
         static::assertAffectedCount($this->collectResult($this->createChecker('6.7.13.0'), self::ID), 1);
+        static::assertAffectedEntities($this->createChecker('6.7.13.0'), 'product_stream', [Uuid::fromBytesToHex($streamId)]);
     }
 
     private function createChecker(string $version): ProductStreamWithoutFiltersInUseChecker

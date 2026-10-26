@@ -33,6 +33,7 @@ class VariantOptionConfiguratorSettingMissingCheckerTest extends DataIntegrityCh
         $this->createProduct(['parentId' => $this->createProduct(), 'options' => [['id' => $firstOptionId]]]);
 
         static::assertAffectedCount($this->collectResult($this->createChecker('6.7.13.0'), self::ID), 0);
+        static::assertAffectedEntities($this->createChecker('6.7.13.0'), 'product', []);
     }
 
     public function testCountsVariantsWithOptionsMissingInTheSettings(): void
@@ -45,6 +46,22 @@ class VariantOptionConfiguratorSettingMissingCheckerTest extends DataIntegrityCh
         $this->createProduct(['parentId' => $mainProductId, 'options' => [['id' => $firstOptionId], ['id' => $thirdOptionId]]]);
 
         static::assertAffectedCount($this->collectResult($this->createChecker('6.6.10.0'), self::ID), 2);
+        static::assertAffectedEntities($this->createChecker('6.6.10.0'), 'product', [$mainProductId]);
+    }
+
+    public function testListsEveryMainProductOfAffectedVariantsOnce(): void
+    {
+        [$firstOptionId, $secondOptionId, $thirdOptionId] = $this->createPropertyOptions(3);
+
+        $firstMainProductId = $this->createProduct(['configuratorSettings' => [['optionId' => $firstOptionId]]]);
+        $this->createProduct(['parentId' => $firstMainProductId, 'options' => [['id' => $secondOptionId]]]);
+        $this->createProduct(['parentId' => $firstMainProductId, 'options' => [['id' => $thirdOptionId]]]);
+
+        $secondMainProductId = $this->createProduct(['configuratorSettings' => [['optionId' => $firstOptionId]]]);
+        $this->createProduct(['parentId' => $secondMainProductId, 'options' => [['id' => $secondOptionId]]]);
+
+        static::assertAffectedCount($this->collectResult($this->createChecker('6.7.13.0'), self::ID), 3);
+        static::assertAffectedEntities($this->createChecker('6.7.13.0'), 'product', [$firstMainProductId, $secondMainProductId]);
     }
 
     public function testIsSkippedOnVersionsThatShowOptionsWithoutSetting(): void
@@ -58,6 +75,7 @@ class VariantOptionConfiguratorSettingMissingCheckerTest extends DataIntegrityCh
         $this->createChecker('6.7.14.0')->collect($collection);
 
         static::assertCount(0, $collection);
+        static::assertAffectedEntities($this->createChecker('6.7.14.0'), 'product', []);
     }
 
     private function createChecker(string $version): VariantOptionConfiguratorSettingMissingChecker

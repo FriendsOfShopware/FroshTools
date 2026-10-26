@@ -37,6 +37,7 @@ class PromotionDiscountSetGroupMissingCheckerTest extends DataIntegrityCheckerTe
         $this->createDiscount($inactivePromotionId, 'setgroup-3');
 
         static::assertAffectedCount($this->collectResult($this->checker, self::ID), 0);
+        static::assertAffectedEntities($this->checker, 'promotion', []);
     }
 
     public function testCountsDiscountsOfActivePromotionsReferencingMissingSetGroups(): void
@@ -51,6 +52,7 @@ class PromotionDiscountSetGroupMissingCheckerTest extends DataIntegrityCheckerTe
         $this->createDiscount($withoutGroupsId, 'setgroup-1');
 
         static::assertAffectedCount($this->collectResult($this->checker, self::ID), 4);
+        static::assertAffectedEntities($this->checker, 'promotion', [Uuid::fromBytesToHex($promotionId), Uuid::fromBytesToHex($withoutGroupsId)]);
     }
 
     private function createPromotion(bool $active, int $setGroupCount): string

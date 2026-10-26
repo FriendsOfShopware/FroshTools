@@ -31,6 +31,7 @@ class CanonicalFromOtherProductCheckerTest extends DataIntegrityCheckerTestCase
         $this->setCanonical($mainProductId, $variantId);
 
         static::assertAffectedCount($this->collectResult($this->checker, self::ID), 0);
+        static::assertAffectedEntities($this->checker, 'product', []);
     }
 
     public function testCountsProductsWithACanonicalProductOfAnotherProduct(): void
@@ -45,6 +46,7 @@ class CanonicalFromOtherProductCheckerTest extends DataIntegrityCheckerTestCase
         $this->setCanonical($variantId, $otherMainProductId);
 
         static::assertAffectedCount($this->collectResult($this->checker, self::ID), 2);
+        static::assertAffectedEntities($this->checker, 'product', [$mainProductId, $variantId]);
     }
 
     private function setCanonical(string $productId, string $canonicalProductId): void

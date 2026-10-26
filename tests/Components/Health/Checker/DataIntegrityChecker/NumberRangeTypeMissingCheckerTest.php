@@ -30,24 +30,30 @@ class NumberRangeTypeMissingCheckerTest extends DataIntegrityCheckerTestCase
         $this->createNumberRange((string) $this->connection->fetchOne('SELECT id FROM number_range_type LIMIT 1'));
 
         static::assertAffectedCount($this->collectResult($this->checker, self::ID), 0);
+        static::assertAffectedEntities($this->checker, 'number_range', []);
     }
 
     public function testCountsNumberRangesWithDeletedType(): void
     {
-        $this->createNumberRange(Uuid::randomBytes());
+        $id = $this->createNumberRange(Uuid::randomBytes());
 
         static::assertAffectedCount($this->collectResult($this->checker, self::ID), 1);
+        static::assertAffectedEntities($this->checker, 'number_range', [$id]);
     }
 
-    private function createNumberRange(string $typeId): void
+    private function createNumberRange(string $typeId): string
     {
+        $id = Uuid::randomHex();
+
         $this->connection->insert('number_range', [
-            'id' => Uuid::randomBytes(),
+            'id' => Uuid::fromHexToBytes($id),
             'type_id' => $typeId,
             'global' => 1,
             'pattern' => '{n}',
             'start' => 10000,
             'created_at' => self::now(),
         ]);
+
+        return $id;
     }
 }

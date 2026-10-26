@@ -11,48 +11,78 @@ use Shopware\Core\Defaults;
 use Shopware\Core\Framework\Uuid\Uuid;
 use Shopware\Core\System\SystemConfig\SystemConfigService;
 
-class ProductMaxPurchaseBelowMinPurchaseChecker implements DataIntegrityCheckerInterface, CheckerInterface
+class ProductMaxPurchaseBelowMinPurchaseChecker implements DataIntegrityCheckerInterface, CheckerInterface, AffectedEntitiesProviderInterface
 {
+    private const ID = 'product-max-purchase-below-min-purchase';
+
+    private const AFFECTED_QUERY = <<<'SQL'
+        SELECT p.id
+        FROM (SELECT p.id,
+                     p.version_id,
+                     COALESCE(p.max_purchase, parent.max_purchase, :maxQuantity) AS max_purchase,
+                     COALESCE(p.min_purchase, parent.min_purchase, 1) AS min_purchase,
+                     COALESCE(p.purchase_steps, parent.purchase_steps, 1) AS purchase_steps
+              FROM product p
+              LEFT JOIN product parent
+                  ON parent.id = p.parent_id
+                  AND parent.version_id = p.version_id
+              WHERE p.version_id = :liveVersionId) p
+        WHERE p.max_purchase < p.min_purchase
+          AND FLOOR((p.max_purchase - p.min_purchase) / p.purchase_steps) * p.purchase_steps + p.min_purchase > 0
+          AND NOT EXISTS (
+              SELECT 1
+              FROM product child
+              WHERE child.parent_id = p.id
+                AND child.version_id = p.version_id
+          )
+        SQL;
+
     public function __construct(
         private readonly Connection $connection,
         private readonly SystemConfigService $systemConfigService,
     ) {
     }
 
+    public function getId(): string
+    {
+        return self::ID;
+    }
+
     public function collect(HealthCollection $collection): void
     {
         $count = (int) $this->connection->fetchOne(
-            <<<'SQL'
-                SELECT COUNT(*)
-                FROM (SELECT p.id,
-                             p.version_id,
-                             COALESCE(p.max_purchase, parent.max_purchase, :maxQuantity) AS max_purchase,
-                             COALESCE(p.min_purchase, parent.min_purchase, 1) AS min_purchase,
-                             COALESCE(p.purchase_steps, parent.purchase_steps, 1) AS purchase_steps
-                      FROM product p
-                      LEFT JOIN product parent
-                          ON parent.id = p.parent_id
-                          AND parent.version_id = p.version_id
-                      WHERE p.version_id = :liveVersionId) p
-                WHERE p.max_purchase < p.min_purchase
-                  AND FLOOR((p.max_purchase - p.min_purchase) / p.purchase_steps) * p.purchase_steps + p.min_purchase > 0
-                  AND NOT EXISTS (
-                      SELECT 1
-                      FROM product child
-                      WHERE child.parent_id = p.id
-                        AND child.version_id = p.version_id
-                  )
-                SQL,
-            [
-                'liveVersionId' => Uuid::fromHexToBytes(Defaults::LIVE_VERSION),
-                'maxQuantity' => $this->systemConfigService->getInt('core.cart.maxQuantity'),
-            ],
+            \sprintf('SELECT COUNT(*) FROM (%s) affected', self::AFFECTED_QUERY),
+            $this->getParameters(),
         );
 
         $collection->add(DataIntegrityCheckResult::fromCount(
-            'product-max-purchase-below-min-purchase',
+            self::ID,
             'Products with a maximum order quantity below the minimum order quantity',
             $count,
         ));
+    }
+
+    public function getAffectedEntities(int $limit, int $offset): AffectedEntities
+    {
+        return AffectedEntities::fromQuery(
+            $this->connection,
+            'product',
+            self::AFFECTED_QUERY,
+            $this->getParameters(),
+            [],
+            $limit,
+            $offset,
+        );
+    }
+
+    /**
+     * @return array{liveVersionId: string, maxQuantity: int}
+     */
+    private function getParameters(): array
+    {
+        return [
+            'liveVersionId' => Uuid::fromHexToBytes(Defaults::LIVE_VERSION),
+            'maxQuantity' => $this->systemConfigService->getInt('core.cart.maxQuantity'),
+        ];
     }
 }

@@ -31,16 +31,20 @@ class ProductCoverInvalidCheckerTest extends DataIntegrityCheckerTestCase
         $this->updateProduct($variantId, 'product_media_id', $this->coverOf($mainProductId));
 
         static::assertAffectedCount($this->collectResult($this->checker, self::ID), 0);
+        static::assertAffectedEntities($this->checker, 'product', []);
     }
 
     public function testCountsMissingCoversAndCoversOfOtherProducts(): void
     {
         $otherProductId = $this->createProductWithCover();
 
-        $this->updateProduct($this->createProduct(), 'product_media_id', $this->coverOf($otherProductId));
-        $this->updateProduct($this->createProduct(), 'product_media_id', Uuid::randomBytes());
+        $foreignCoverId = $this->createProduct();
+        $this->updateProduct($foreignCoverId, 'product_media_id', $this->coverOf($otherProductId));
+        $missingCoverId = $this->createProduct();
+        $this->updateProduct($missingCoverId, 'product_media_id', Uuid::randomBytes());
 
         static::assertAffectedCount($this->collectResult($this->checker, self::ID), 2);
+        static::assertAffectedEntities($this->checker, 'product', [$foreignCoverId, $missingCoverId]);
     }
 
     private function createProductWithCover(): string

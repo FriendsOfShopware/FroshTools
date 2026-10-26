@@ -35,28 +35,34 @@ class SystemConfigCmsPageMissingCheckerTest extends DataIntegrityCheckerTestCase
         $this->setConfig('core.cms.default_category_cms_page', $this->createCmsPage('product_list'));
 
         static::assertAffectedCount($this->collectResult($this->checker, self::ID), 0);
+        static::assertAffectedEntities($this->checker, 'system_config', []);
     }
 
     public function testCountsConfiguredPagesThatDoNotExist(): void
     {
-        $this->setConfig('core.basicInformation.tosPage', Uuid::randomHex());
-        $this->setConfig('core.basicInformation.http404Page', Uuid::randomHex(), $this->salesChannelId());
+        $tosPage = $this->setConfig('core.basicInformation.tosPage', Uuid::randomHex());
+        $http404Page = $this->setConfig('core.basicInformation.http404Page', Uuid::randomHex(), $this->salesChannelId());
         $this->setConfig('core.basicInformation.maintenancePage', $this->createCmsPage('page'));
-        $this->setConfig('core.cms.default_product_cms_page', Uuid::randomHex());
+        $defaultProductPage = $this->setConfig('core.cms.default_product_cms_page', Uuid::randomHex());
         $this->setConfig('core.basicInformation.shopName', Uuid::randomHex());
 
         static::assertAffectedCount($this->collectResult($this->checker, self::ID), 3);
+        static::assertAffectedEntities($this->checker, 'system_config', [$tosPage, $http404Page, $defaultProductPage]);
     }
 
-    private function setConfig(string $key, ?string $value, ?string $salesChannelId = null): void
+    private function setConfig(string $key, ?string $value, ?string $salesChannelId = null): string
     {
+        $id = Uuid::randomHex();
+
         $this->connection->insert('system_config', [
-            'id' => Uuid::randomBytes(),
+            'id' => Uuid::fromHexToBytes($id),
             'configuration_key' => $key,
             'configuration_value' => json_encode(['_value' => $value], \JSON_THROW_ON_ERROR),
             'sales_channel_id' => $salesChannelId,
             'created_at' => self::now(),
         ]);
+
+        return $id;
     }
 
     private function salesChannelId(): string

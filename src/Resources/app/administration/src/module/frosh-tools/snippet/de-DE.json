@@ -15,6 +15,245 @@
                     "reviewed": "Dein System auf einen Blick",
                     "detail": "Prüfungen: {total} · Fehler: {errors} · Warnungen: {warnings}"
                 },
+                "recommendations": {
+                    "composer-audit": {
+                        "title": "Composer-Sicherheitshinweise"
+                    },
+                    "webprofiler": {
+                        "title": "WebProfilerBundle"
+                    },
+                    "kerneldebug": {
+                        "title": "Kernel-Debug-Modus"
+                    },
+                    "mysql": {
+                        "title": "Datenbankversion"
+                    },
+                    "php-version": {
+                        "title": "PHP-Version"
+                    },
+                    "php-max-execution": {
+                        "title": "Maximale Ausführungszeit"
+                    },
+                    "php-memory-limit": {
+                        "title": "Speicherlimit"
+                    },
+                    "zend-opcache": {
+                        "title": "Zend Opcache"
+                    },
+                    "pcre-jit": {
+                        "title": "PCRE-Jit"
+                    },
+                    "app": {
+                        "env": {
+                            "title": "Shop-Modus"
+                        }
+                    },
+                    "installation-path": {
+                        "title": "Installationspfad"
+                    },
+                    "database-info": {
+                        "title": "Datenbank"
+                    },
+                    "scheduled_task": {
+                        "title": "Geplante Aufgaben überfällig"
+                    },
+                    "ioncube-loader": {
+                        "title": "ionCube Loader kann die Leistung drastisch verringern"
+                    },
+                    "multiple-autoloaders": {
+                        "title": "Composer-Autoloader",
+                        "description": "Im laufenden Prozess ist mehr als ein Composer-Autoloader registriert. Das passiert meist, wenn ein Plugin ein eigenes \"vendor/\"-Verzeichnis mitliefert: Seine Abhängigkeiten werden ein zweites Mal geladen, Composer kann die installierten Versionen nicht mehr zuverlässig nachverfolgen, und es kann zu schwer zu diagnostizierenden Fehlern durch doppelte Klassen oder falsche Versionen kommen.",
+                        "solution": "Entfernen Sie die mitgelieferten \"vendor/\"-Verzeichnisse, damit nur der Autoloader des Projekts verwendet wird. Benötigt ein Plugin eigene Abhängigkeiten, bitten Sie den Autor, diese als Composer-Abhängigkeiten zu deklarieren, statt einen vendor-Ordner mitzuliefern."
+                    },
+                    "queue": {
+                        "title": "Offene Warteschlangen",
+                        "description": "Nachrichten warten in einer überwachten Messenger-Queue länger als die konfigurierte Toleranzzeit. Das bedeutet fast immer, dass kein Worker diese Queue abarbeitet, sodass sich asynchrone Aufgaben (Mails, Indexierung, \u2026) stauen. Fehler-Queues (Namen, die \"failed\" enthalten) werden standardmäßig ignoriert, da sie in der Regel manuell geleert werden.",
+                        "solution": "Stellen Sie sicher, dass ein CLI-Worker läuft und überwacht wird (z. B. über systemd oder Supervisor), damit die Queue kontinuierlich abgearbeitet wird. Passen Sie die überwachten Queues und die Toleranzzeiten pro Queue bei Bedarf unter Einstellungen → Erweiterungen → Frosh Tools an.",
+                        "adapter": {
+                            "title": "Warteschlangen-Transport",
+                            "description": "Die Message-Queue verwendet einen Transport, der nicht für den Produktivbetrieb geeignet ist. Der Datenbank-Transport (doctrine) skaliert schlecht, sobald mehrere Worker ihn abarbeiten, und der Transport \"sync\" führt Jobs innerhalb der Web-Anfrage statt im Hintergrund aus.",
+                            "solution": "Verwenden Sie für den Messenger-Transport ein eigenes Queue-Backend wie Redis oder RabbitMQ."
+                        }
+                    },
+                    "symfony_scheduler": {
+                        "title": "Symfony Scheduler überfällig",
+                        "description": "Ein symfony/scheduler-Schedule hat eine bereits fällige Nachricht nicht versendet oder noch nie etwas versendet. Jeder Schedule wird über einen eigenen Messenger-Transport namens \"scheduler_<name>\" abgearbeitet, der von den regulären Queues getrennt ist – ein Worker, der nur \"async\" abarbeitet, führt ihn nicht aus. Die Prüfung vergleicht den gespeicherten Checkpoint des Schedules mit der ersten danach fälligen Nachricht, sodass eine Aufgabe, die einfach nur wöchentlich läuft, nicht gemeldet wird.",
+                        "solution": "Betreiben Sie für den Scheduler-Transport jedes Schedules einen überwachten CLI-Worker. Die Toleranzzeit ist dieselbe wie für die Prüfung der geplanten Aufgaben und lässt sich unter Einstellungen → Erweiterungen → Frosh Tools anpassen."
+                    },
+                    "mysql-timezone": {
+                        "title": "MySQL-Zeitzonenunterstützung",
+                        "description": "Die MySQL-Zeitzonentabellen sind nicht geladen, daher funktionieren CONVERT_TZ() und benannte Zeitzonen (z. B. \"Europe/Berlin\") nicht. Funktionen, die auf eine Zeitzonenumrechnung angewiesen sind, können unbemerkt falsche Ergebnisse liefern.",
+                        "solution": "Importieren Sie die zoneinfo-Daten einmalig auf dem Datenbankserver in MySQL:"
+                    },
+                    "security-eol-shopware": {
+                        "title": "Sicherheitsupdates",
+                        "description": "Ihre Shopware-Version erreicht bald das Ende des Sicherheitssupports oder hat es bereits überschritten. Danach erhalten Sie keine Sicherheitsupdates mehr, was für einen Produktivshop ein echtes Risiko ist.",
+                        "solution": "Planen Sie ein Update auf eine noch unterstützte Version, idealerweise auf das neueste LTS-Release."
+                    },
+                    "system-time": {
+                        "title": "Abweichung der Systemzeit",
+                        "description": "Die Serveruhr weicht deutlich von der tatsächlichen Zeit ab. Eine falsch gehende Uhr führt zu Fehlern bei zeitkritischen Funktionen wie TOTP/2FA, OAuth-Tokens, geplanten Aufgaben und signierten Anfragen.",
+                        "solution": "Aktivieren Sie auf dem Host die automatische Zeitsynchronisation (NTP/chrony), damit die Systemuhr genau bleibt."
+                    },
+                    "php-fpm-max-listen-queue": {
+                        "title": "PHP-FPM: maximale Listen-Queue",
+                        "description": "Anfragen mussten in der Listen-Queue von PHP-FPM warten, weil kein Worker frei war. Ein Wert über 0 zeigt, dass der Pool für Ihre Lastspitzen zeitweise zu klein ist.",
+                        "solution": "Erhöhen Sie die Anzahl der PHP-FPM-Worker des Pools (pm.max_children und die zugehörigen pm.*-Einstellungen) und stellen Sie sicher, dass der Host genug Arbeitsspeicher für die zusätzlichen Worker hat."
+                    },
+                    "php-fpm-max-children-reached": {
+                        "title": "PHP-FPM: Limit der Kindprozesse erreicht",
+                        "description": "PHP-FPM hat das Limit pm.max_children erreicht, d. h. alle Worker waren ausgelastet und weitere Anfragen mussten warten. Ein Wert über 0 deutet auf einen Pool hin, der für Lastspitzen zu klein ist.",
+                        "solution": "Erhöhen Sie pm.max_children für den FPM-Pool (und prüfen Sie, ob der Host genug RAM für die zusätzlichen Worker hat)."
+                    },
+                    "php-fpm-memory-peak": {
+                        "title": "PHP-FPM: maximaler Speicherverbrauch",
+                        "description": "Der höchste Arbeitsspeicherverbrauch eines einzelnen PHP-FPM-Workers. Dieser Wert dient nur zur Information – nutzen Sie ihn, um memory_limit zu bemessen und zu entscheiden, wie viele Worker (pm.max_children) in den verfügbaren RAM passen."
+                    },
+                    "shopware-installer": {
+                        "title": "Shopware-Installer",
+                        "description": "Der Shopware-Web-Installer (shopware-installer.phar.php) liegt noch im public-Verzeichnis. Jeder, der diese URL aufrufen kann, kann eine Neuinstallation starten und den Shop überschreiben. Ihn nach der Installation dort zu belassen, ist daher ein Sicherheitsrisiko.",
+                        "solution": "Löschen Sie public/shopware-installer.phar.php aus dem Shop. Der Installer wird nur bei der Ersteinrichtung benötigt und darf nicht öffentlich erreichbar bleiben."
+                    },
+                    "composer-conflicts-repository": {
+                        "title": "Composer-Konflikt-Repository",
+                        "description": "Das Shopware-Conflicts-Repository (https://shopware.github.io/conflicts/) ist nicht im Abschnitt \"repositories\" Ihrer Root-composer.json eingetragen. Dieses Repository legt Kombinationen von Paketen und Versionen fest, die bekanntermaßen inkompatibel sind. Ist es eingetragen, verweigert Composer die Installation oder das Update auf eine fehlerhafte Kombination, bevor diese in die Produktion gelangt. Ohne das Repository fehlt dieser Schutz.",
+                        "solution": "Fügen Sie das Conflicts-Repository dem Abschnitt \"repositories\" Ihrer Root-composer.json hinzu (bearbeiten Sie die Datei direkt oder führen Sie den unten stehenden Composer-Befehl aus) und führen Sie anschließend \"composer update\" aus, damit Composer Ihre Abhängigkeiten erneut dagegen prüft."
+                    },
+                    "admin-watcher": {
+                        "title": "Admin-Worker",
+                        "description": "Der Admin-Worker verarbeitet die Message-Queue aus der Administration heraus im Browser und hält für jeden angemeldeten Admin-Benutzer eine Anfrage offen. Er skaliert nicht und konkurriert mit dem regulären Traffic.",
+                        "solution": "Deaktivieren Sie den Admin-Worker und arbeiten Sie die Queue stattdessen mit überwachten CLI-Workern ab."
+                    },
+                    "cache-compression-method": {
+                        "description": "Cache-Einträge werden mit gzip komprimiert. zstd komprimiert schneller und erzeugt kleinere Daten, was sowohl die CPU-Last als auch den Speicherbedarf im Cache-Backend senkt.",
+                        "solution": "Stellen Sie die Komprimierungsmethode des Caches auf zstd um (erfordert die PHP-Erweiterung \"zstd\")."
+                    },
+                    "cart-compression-method": {
+                        "description": "Der Warenkorb wird mit gzip komprimiert. zstd komprimiert schneller und erzeugt kleinere Daten, was die CPU-Last und den Speicherbedarf gespeicherter Warenkörbe senkt.",
+                        "solution": "Stellen Sie die Komprimierungsmethode des Warenkorbs auf zstd um (erfordert die PHP-Erweiterung \"zstd\")."
+                    },
+                    "cache-compression-method-extension-zstd": {
+                        "description": "Als Komprimierungsmethode des Caches ist zstd eingestellt, die PHP-Erweiterung \"zstd\" ist aber nicht installiert. Die Komprimierung schlägt fehl, bis die Erweiterung verfügbar ist.",
+                        "solution": "Installieren und aktivieren Sie die PHP-Erweiterung zstd oder stellen Sie die Komprimierungsmethode wieder auf gzip um."
+                    },
+                    "cart-compression-method-extension-zstd": {
+                        "description": "Als Komprimierungsmethode des Warenkorbs ist zstd eingestellt, die PHP-Erweiterung \"zstd\" ist aber nicht installiert. Die Komprimierung schlägt fehl, bis die Erweiterung verfügbar ist.",
+                        "solution": "Installieren und aktivieren Sie die PHP-Erweiterung zstd oder stellen Sie die Komprimierungsmethode wieder auf gzip um."
+                    },
+                    "app-url-check-disabled": {
+                        "title": "Externe Prüfung der App-URL",
+                        "description": "Bei jeder Anfrage prüft Shopware, ob die konfigurierte APP_URL zur eingehenden Anfrage passt. Auf einem korrekt konfigurierten Host ist diese Prüfung überflüssig und verursacht nur zusätzlichen Aufwand.",
+                        "solution": "Deaktivieren Sie die externe APP_URL-Prüfung über eine Umgebungsvariable, sobald Sie sicher sind, dass APP_URL korrekt konfiguriert ist."
+                    },
+                    "symfony-secrets": {
+                        "title": "Symfony Secrets deaktivieren",
+                        "description": "Der Secrets-Vault von Symfony wird bei jeder Anfrage initialisiert. Wenn Sie keine verschlüsselten Symfony-Secrets verwenden, entfällt dieser Aufwand pro Anfrage, sobald Sie den Vault deaktivieren.",
+                        "solution": "Deaktivieren Sie den Secrets-Vault, wenn Sie ihn nicht benötigen."
+                    },
+                    "mail_variables": {
+                        "title": "Aktualisierung der Mail-Variablen",
+                        "description": "Standardmäßig schreibt Shopware nach jeder versendeten Mail die Variablen des E-Mail-Templates zurück in die Datenbank. In Shops, die viele Mails versenden, verursacht das spürbar zusätzliche Schreiblast.",
+                        "solution": "Deaktivieren Sie das Aktualisieren der Mail-Variablen beim Versand."
+                    },
+                    "elasticsearch": {
+                        "title": "Elasticsearch",
+                        "description": "Elasticsearch/OpenSearch ist nicht aktiviert. Bei größeren Katalogen übernimmt es Such- und Listing-Abfragen von MySQL, was die Antwortzeiten deutlich verbessert und die Datenbank entlastet.",
+                        "solution": "Richten Sie einen Elasticsearch-/OpenSearch-Server ein, aktivieren Sie ihn über Umgebungsvariablen und bauen Sie anschließend den Index auf."
+                    },
+                    "fine-grained-caching": {
+                        "title": "Feingranulares Caching bei Redis, Varnish usw.",
+                        "description": "Feingranulares Cache-Tagging erzeugt für jeden Konfigurationswert, jedes Snippet und jeden Theme-Konfigurationswert ein eigenes Cache-Tag. Mit Redis oder Varnish bläht das den Tag-Speicher auf und macht die Invalidierung aufwendiger.",
+                        "solution": "Deaktivieren Sie das feingranulare Caching."
+                    },
+                    "cache-id": {
+                        "title": "Feste Cache-ID",
+                        "description": "Es ist keine feste Cache-ID gesetzt. Ohne sie ändert sich der Cache-Namespace bei jedem Deployment oder Leeren des Caches, sodass Caches weder über Deployments hinweg wiederverwendet noch zwischen Cluster-Knoten geteilt werden können.",
+                        "solution": "Setzen Sie eine feste SHOPWARE_CACHE_ID (auf allen Knoten eines Clusters identisch). Hinweis: Diese Einstellung wurde in Shopware 6.7 entfernt."
+                    },
+                    "increment-storage": {
+                        "title": "Increment-Speicher",
+                        "description": "Der Increment-Speicher (Benutzeraktivität und Message-Queue-Statistiken) liegt in MySQL, was sehr viele kleine Schreibvorgänge erzeugt. \"array\" oder Redis skalieren deutlich besser.",
+                        "solution": "Verlagern Sie den Increment-Speicher nach Redis (oder auf \"array\", wenn er nicht dauerhaft gespeichert werden muss)."
+                    },
+                    "business_logger": {
+                        "title": "Logging des BusinessEventHandler",
+                        "description": "Der Business-Event-Handler protokolliert unterhalb des Levels WARNING. In einem stark frequentierten Shop entstehen so viele wenig aussagekräftige Log-Einträge, die zusätzliche I/O-Last und Speicherbedarf verursachen.",
+                        "solution": "Erhöhen Sie das Log-Level des Business-Event-Handlers in Ihrer Monolog-Konfiguration auf mindestens WARNING."
+                    },
+                    "mail": {
+                        "title": "Mailversand über die Warteschlange",
+                        "description": "Mails werden synchron während der Anfrage versendet. Der Kunde muss dann auf die Antwort des SMTP-Servers warten. Wird der Mailversand über die Message-Queue geleitet, erfolgt er im Hintergrund.",
+                        "solution": "Leiten Sie die SendEmailMessage auf den asynchronen Transport um, damit die Mails vom Worker zugestellt werden."
+                    },
+                    "messenger-auto-setup": {
+                        "title": "Messenger-Option auto_setup",
+                        "description": "Beim Messenger-Transport ist auto_setup aktiviert, daher prüft (und erstellt ggf.) er bei jedem Verbindungsaufbau seine Queue bzw. Tabelle. Im Produktivbetrieb ist das unnötiger Aufwand.",
+                        "solution": "Hängen Sie \"auto_setup=false\" an die Transport-DSN(s) an und legen Sie die Transporte einmalig über die Konsole an."
+                    },
+                    "sql_group_concat_max_len": {
+                        "title": "MySQL-Wert group_concat_max_len",
+                        "description": "Der MySQL-Wert group_concat_max_len ist zu niedrig. Shopware fasst Daten mit GROUP_CONCAT zusammen, und ein niedriges Limit kürzt das Ergebnis unbemerkt, was zu fehlerhaften Daten oder Fehlern führt.",
+                        "solution": "Erhöhen Sie group_concat_max_len auf dem MySQL-Server."
+                    },
+                    "sql_mode": {
+                        "title": "MySQL-Wert sql_mode",
+                        "description": "Der sql_mode von MySQL enthält ONLY_FULL_GROUP_BY. Damit werden einige gruppierte Abfragen abgelehnt, auf die Shopware angewiesen ist, was zu Laufzeitfehlern führen kann.",
+                        "solution": "Entfernen Sie ONLY_FULL_GROUP_BY aus dem sql_mode des Servers."
+                    },
+                    "sql_time_zone": {
+                        "title": "MySQL-Wert time_zone",
+                        "description": "Die Datenbank läuft nicht in UTC. Shopware speichert Zeitstempel in UTC, daher führt eine abweichende Zeitzone der Datenbank zu falschen Datums- und Zeitangaben. (Relevant vor Shopware 6.7.)",
+                        "solution": "Setzen Sie time_zone in MySQL auf UTC."
+                    },
+                    "sql_set_default_session_variables": {
+                        "title": "MySQL-Sitzungsvariablen werden bei jeder Verbindung gesetzt",
+                        "description": "Shopware setzt bei jeder neuen Datenbankverbindung Standard-Session-Variablen, was pro Verbindungsaufbau einen zusätzlichen Roundtrip kostet. Werden die entsprechenden Werte auf dem Server konfiguriert, entfällt das. (Relevant vor Shopware 6.7.)",
+                        "solution": "Deaktivieren Sie das Setzen der Session-Variablen pro Verbindung und hinterlegen Sie die entsprechenden Einstellungen stattdessen in der Konfiguration Ihres MySQL-Servers."
+                    },
+                    "php": {
+                        "opcache": {
+                            "enable_file_override": {
+                                "title": "PHP-Wert opcache.enable_file_override",
+                                "description": "Mit opcache.enable_file_override beantwortet OPcache file_exists()/is_file()/is_readable() aus dem Cache, was die Dateisystemzugriffe bei jeder Anfrage reduziert.",
+                                "solution": "Aktivieren Sie die Option in Ihrer PHP-Konfiguration."
+                            },
+                            "interned_strings_buffer": {
+                                "title": "PHP-Wert opcache.interned_strings_buffer",
+                                "description": "Der Interned-Strings-Puffer von OPcache ist klein. Shopware verwendet sehr viele Strings, daher verringert ein kleiner Puffer die Effizienz von OPcache und erhöht die Speicherbelastung.",
+                                "solution": "Vergrößern Sie den Interned-Strings-Puffer in Ihrer PHP-Konfiguration."
+                            }
+                        },
+                        "zend": {
+                            "detect_unicode": {
+                                "title": "PHP-Wert zend.detect_unicode",
+                                "description": "Mit zend.detect_unicode durchsucht PHP den Anfang jeder Datei nach einem BOM. Wenn Sie die Option deaktivieren, entfällt dieser unnötige Aufwand.",
+                                "solution": "Deaktivieren Sie die Option in Ihrer PHP-Konfiguration."
+                            },
+                            "realpath_cache_ttl": {
+                                "title": "PHP-Wert realpath_cache_ttl",
+                                "description": "Bei einem niedrigen realpath_cache_ttl muss PHP Dateipfade häufig erneut auflösen und per stat prüfen, was die Dateisystemlast bei jeder Anfrage erhöht.",
+                                "solution": "Erhöhen Sie die TTL des Realpath-Caches in Ihrer PHP-Konfiguration."
+                            }
+                        }
+                    },
+                    "zend": {
+                        "assertions": {
+                            "title": "PHP-Wert zend.assertions",
+                            "description": "Im Produktivbetrieb sollten Assertions nicht mitkompiliert werden. Jeder Wert außer -1 bedeutet, dass Assertion-Code weiterhin kompiliert und ausgeführt wird und unnötig CPU-Zeit verbraucht.",
+                            "solution": "Deaktivieren Sie Assertions in der PHP-Konfiguration Ihrer Produktivumgebung."
+                        }
+                    },
+                    "product-stream-indexing": {
+                        "title": "Indexierung dynamischer Produktgruppen",
+                        "description": "Die Indexierung der Dynamischen Produktgruppen hält eine vorberechnete Zuordnung von Produkten zu Dynamischen Produktgruppen aktuell. In vielen Shops ist diese Hintergrundarbeit unnötig und kann deaktiviert werden.",
+                        "solution": "Deaktivieren Sie die Indexierung der Dynamischen Produktgruppen, wenn Sie nicht auf die vorberechnete Zuordnung angewiesen sind."
+                    },
+                    "redis-tag-aware": {
+                        "title": "Redis-Adapter des HTTP-Caches (cache.http) sollte TagAware sein",
+                        "description": "Diese Prüfung betrachtet nur den HTTP-Cache-Pool (cache.http) – nicht cache.object oder andere Pools. Der einfache Redis-Adapter speichert Cache-Tags ineffizient. RedisTagAware ist für die tag-basierte Invalidierung des HTTP-Caches in Shopware optimiert. Wird für cache.object bewusst der einfache Redis-Adapter verwendet, ist das in Ordnung und löst diese Warnung nicht aus.",
+                        "solution": "Konfigurieren Sie den HTTP-Cache-Pool (oder den Standard-app-Adapter, den cache.http erbt) so, dass er den TagAware-Redis-Adapter verwendet."
+                    }
+                },
                 "recommendation": {
                     "what": "Worum es geht",
                     "how": "So wird es behoben"
@@ -30,208 +269,266 @@
                     "what": "Worum es geht",
                     "how": "So wird es behoben"
                 },
+                "affected": {
+                    "title": "Betroffene Datensätze",
+                    "loadError": "Die betroffenen Datensätze konnten nicht geladen werden.",
+                    "empty": "Keine betroffenen Datensätze gefunden. Aktualisieren Sie die Prüfungen, um die Anzahl zu aktualisieren.",
+                    "unavailable": "Diese Prüfung kann die betroffenen Datensätze nicht auflisten.",
+                    "opensInNewTab": "Öffnet sich in einem neuen Tab"
+                },
                 "recommendations": {
                     "product-canonical-without-variants": {
+                        "title": "Produkte ohne Varianten, die ein kanonisches Produkt haben",
                         "description": "Ein Produkt ohne Varianten hat ein kanonisches Produkt. Das kanonische Produkt legt fest, welche Variante eines Produkts als kanonische URL verwendet wird. Bei einem Produkt ohne Varianten ist es daher ein Überbleibsel, zum Beispiel von später gelöschten Varianten. Es kann Suchmaschinen auf eine URL verweisen, die nicht mehr zu diesem Produkt gehört.",
                         "solution": "Der SEO-Tab der Administration bietet das kanonische Produkt nur bei Produkten mit Varianten an. Entfernen Sie es daher über die Admin-API, indem Sie \"canonicalProductId\" auf null setzen, zum Beispiel per Import."
                     },
                     "product-canonical-other-family": {
+                        "title": "Produkte mit einem kanonischen Produkt eines anderen Produkts",
                         "description": "Das kanonische Produkt dieser Produkte ist keine ihrer eigenen Varianten, sondern gehört zu einem anderen Produkt. Suchmaschinen erhalten so die Information, dass die Seite ein Duplikat eines anderen Produkts ist, und die Produktseite kann aus dem Suchindex fallen.",
                         "solution": "Öffnen Sie das Produkt in der Administration und wählen Sie im SEO-Tab eine seiner eigenen Varianten als kanonisches Produkt, oder entfernen Sie das kanonische Produkt."
                     },
                     "product-main-variant-invalid": {
+                        "title": "Produkte mit fehlender Hauptvariante oder der Hauptvariante eines anderen Produkts",
                         "description": "Die für das Listing konfigurierte Hauptvariante existiert nicht mehr oder ist keine Variante dieses Produkts. Das Listing kann dann nicht die vorgesehene Variante des Produkts anzeigen.",
                         "solution": "Öffnen Sie das Produkt in der Administration und wählen Sie im Varianten-Tab unter \"Darstellung in der Storefront\" eine seiner eigenen Varianten als Hauptvariante."
                     },
                     "variant-main-variant-config": {
+                        "title": "Varianten mit eigener Hauptvarianten-Konfiguration",
                         "description": "Eine Variante hat eine eigene Hauptvarianten-Konfiguration. Die Hauptvariante wird am Hauptprodukt konfiguriert und gilt für alle seine Varianten. Ein Wert an einer Variante ist ein Überbleibsel, zum Beispiel von einem Produkt, das in eine Variante umgewandelt wurde.",
                         "solution": "Entfernen Sie die Hauptvarianten-Konfiguration von diesen Varianten, damit sie die Konfiguration ihres Hauptprodukts erben."
                     },
                     "product-description-too-long": {
+                        "title": "Produktbeschreibungen länger als 32766 Bytes",
                         "description": "Elasticsearch lehnt einzelne Terme ab, die größer als 32766 Bytes sind. Vor Shopware 6.6.6.0 wurde die Produktbeschreibung als ein solcher Term indexiert. Produkte mit einer längeren Beschreibung werden daher nicht indexiert und fehlen in Suche und Listings.",
                         "solution": "Kürzen Sie die Beschreibungen oder aktualisieren Sie Shopware auf 6.6.6.0 oder neuer. Ab dieser Version werden lange Werte nicht mehr als einzelner Term indexiert."
                     },
                     "duplicate-delivery-times": {
+                        "title": "Lieferzeiten mit gleichem Zeitraum und gleicher Einheit",
                         "description": "Mehrere Lieferzeiten haben dasselbe Minimum, dasselbe Maximum und dieselbe Einheit. In der Storefront werden sie identisch angezeigt, aber Regeln, Filter und Importe, die sich auf eine davon beziehen, erfassen die Produkte mit den anderen nicht.",
                         "solution": "Weisen Sie die Produkte und Versandarten der Duplikate einer der Lieferzeiten zu und löschen Sie die anderen."
                     },
                     "duplicate-customer-emails": {
+                        "title": "Kunden mit derselben E-Mail-Adresse",
                         "description": "Mehrere registrierte Kunden teilen sich eine E-Mail-Adresse. Shopware verlangt, dass sie pro Verkaufskanal eindeutig ist, wenn Kunden an ihren Verkaufskanal gebunden sind, und sonst über alle Verkaufskanäle hinweg. Die Anmeldung verwendet immer das neueste dieser Konten, daher können sich die Kunden der älteren Konten nicht mehr anmelden.",
                         "solution": "Führen Sie die doppelten Kundenkonten zusammen, löschen Sie sie oder ändern Sie ihre E-Mail-Adressen. Gastkonten werden nicht gezählt."
                     },
                     "product-cover-invalid": {
+                        "title": "Produkte mit fehlendem Vorschaubild oder dem Vorschaubild eines anderen Produkts",
                         "description": "Das Coverbild dieser Produkte verweist auf ein Bild, das gelöscht wurde oder zu einem anderen Produkt gehört. \"product.product_media_id\" hat keinen Fremdschlüssel, daher bleibt der Verweis beim Löschen des Bildes bestehen. Listings und Produktseite zeigen dann kein Bild oder das Bild eines anderen Produkts.",
                         "solution": "Öffnen Sie das Produkt in der Administration und wählen Sie im Medien-Tab ein Coverbild."
                     },
                     "variant-duplicate-options": {
+                        "title": "Varianten mit denselben Optionen wie eine andere Variante",
                         "description": "Mehrere Varianten eines Produkts haben genau dieselben Optionen. Die Variantenauswahl in der Storefront erreicht nur eine davon, daher können die anderen nicht ausgewählt und ihr Bestand nicht verkauft werden.",
                         "solution": "Übertragen Sie Bestand, Preise und Medien der überzähligen Varianten auf die verbleibende Variante und löschen Sie die überzähligen dann im Varianten-Tab des Hauptprodukts."
                     },
                     "variant-without-options": {
+                        "title": "Varianten ohne Optionen",
                         "description": "Diese Varianten haben gar keine Optionen, meist weil sie ohne Optionen importiert oder die Optionen gelöscht wurden. Die Variantenauswahl kann sie nicht auswählen.",
                         "solution": "Löschen Sie diese Varianten und generieren Sie sie im Varianten-Tab des Hauptprodukts neu, oder weisen Sie ihre Optionen über die Admin-API zu."
                     },
                     "product-delivery-time-missing": {
+                        "title": "Produkte mit einer Lieferzeit, die nicht existiert",
                         "description": "Diese Produkte verweisen auf eine gelöschte Lieferzeit. \"product.delivery_time_id\" hat keinen Fremdschlüssel, daher bleibt der Verweis bestehen und für das Produkt wird keine Lieferzeit angezeigt.",
                         "solution": "Wählen Sie im Bereich Lieferbarkeit des Produkts eine vorhandene Lieferzeit."
                     },
                     "product-layout-wrong-type": {
+                        "title": "Produkte mit einem Layout, das kein Produktseiten-Layout ist",
                         "description": "Diese Produkte verwenden ein Layout, das kein Produktseiten-Layout ist, zum Beispiel ein Listing- oder Landingpage-Layout. Solchen Layouts fehlen die produktspezifischen Elemente wie die Buy-Box.",
                         "solution": "Weisen Sie im Layout-Tab des Produkts ein Produktseiten-Layout zu, oder entfernen Sie das Layout, um das Standard-Layout zu verwenden."
                     },
                     "category-layout-wrong-type": {
+                        "title": "Kategorien mit einem Produktseiten-Layout",
                         "description": "Diese Kategorien verwenden ein Produktseiten-Layout. Es erwartet ein Produkt und kann keine Kategorieseite darstellen.",
                         "solution": "Weisen Sie im Layout-Tab der Kategorie ein Listing-, Landingpage- oder Shopseiten-Layout zu."
                     },
                     "rule-invalid": {
+                        "title": "Regeln mit ungültigen Bedingungen",
                         "description": "Shopware markiert eine Regel als ungültig, wenn eine ihrer Bedingungen nicht mehr geladen werden kann, meist weil die Erweiterung entfernt wurde, die sie bereitgestellt hat. Ungültige Regeln werden nie in den Warenkorb geladen, daher funktionieren Preise, Versandarten, Zahlungsarten und Promotionen, die von ihnen abhängen, nicht mehr.",
                         "solution": "Öffnen Sie die Regeln im Rule Builder und ersetzen Sie die fehlenden Bedingungen, oder installieren Sie die Erweiterung erneut, die sie bereitgestellt hat."
                     },
                     "flow-invalid": {
+                        "title": "Aktive Flows mit ungültigen Aktionen",
                         "description": "Shopware markiert einen Flow als ungültig, wenn eine seiner Aktionen nicht mehr geladen werden kann, meist weil die Erweiterung entfernt wurde, die sie bereitgestellt hat. Ungültige Flows werden übersprungen, daher werden ihre Mails und anderen Aktionen nicht ausgeführt, obwohl der Flow aktiv ist.",
                         "solution": "Öffnen Sie die Flows im Flow Builder und ersetzen Sie die fehlenden Aktionen, oder installieren Sie die Erweiterung erneut, die sie bereitgestellt hat."
                     },
                     "product-stream-invalid": {
+                        "title": "Dynamische Produktgruppen mit ungültigen Filtern",
                         "description": "Shopware markiert eine dynamische Produktgruppe als ungültig, wenn ihre Filter nicht in eine Suche umgewandelt werden können, zum Beispiel weil ein gefiltertes Feld oder Zusatzfeld nicht mehr existiert. Der Core wirft für eine solche Gruppe einen Fehler, daher schlagen Kategorie-Listings, Cross-Selling, Produkt-Slider und Produktexporte fehl, die sie verwenden.",
                         "solution": "Öffnen Sie die dynamischen Produktgruppen und korrigieren oder entfernen Sie die fehlerhaften Filter."
                     },
                     "sales-channel-default-payment-unassigned": {
+                        "title": "Verkaufskanäle, deren Standardzahlungsart nicht zugewiesen ist",
                         "description": "Die Standard-Zahlungsart dieser Verkaufskanäle ist keine ihrer zugewiesenen Zahlungsarten. Neue Warenkörbe starten trotzdem mit der Standard-Zahlungsart, die der Verkaufskanal nicht anbietet, daher meldet der Warenkorb sie als gesperrt: Die Storefront wechselt zu einer anderen Zahlungsart und zeigt einen Hinweis, Headless-Clients müssen selbst wechseln. Die Administration verhindert das, daher stammt es meist aus Importen oder API-Schreibzugriffen.",
                         "solution": "Weisen Sie die Standard-Zahlungsart dem Verkaufskanal zu oder wählen Sie eine der zugewiesenen Zahlungsarten als Standard."
                     },
                     "sales-channel-default-shipping-unassigned": {
+                        "title": "Verkaufskanäle, deren Standardversandart nicht zugewiesen ist",
                         "description": "Die Standard-Versandart dieser Verkaufskanäle ist keine ihrer zugewiesenen Versandarten. Neue Warenkörbe starten trotzdem mit der Standard-Versandart, die der Verkaufskanal nicht anbietet, daher meldet der Warenkorb sie als gesperrt: Die Storefront wechselt zu einer anderen Versandart und zeigt einen Hinweis, Headless-Clients müssen selbst wechseln. Die Administration verhindert das, daher stammt es meist aus Importen oder API-Schreibzugriffen.",
                         "solution": "Weisen Sie die Standard-Versandart dem Verkaufskanal zu oder wählen Sie eine der zugewiesenen Versandarten als Standard."
                     },
                     "sales-channel-domain-language-unassigned": {
+                        "title": "Domains mit einer Sprache, die ihrem Verkaufskanal nicht zugewiesen ist",
                         "description": "Diese Domains verwenden eine Sprache, die ihrem Verkaufskanal nicht zugewiesen ist. Funktionen, die auf den zugewiesenen Sprachen basieren, wie die Sprachauswahl, berücksichtigen die Domain nicht. Die Administration bietet nur zugewiesene Sprachen an, daher stammt es meist aus Importen oder API-Schreibzugriffen.",
                         "solution": "Weisen Sie die Sprache dem Verkaufskanal zu oder ändern Sie die Sprache der Domain."
                     },
                     "sales-channel-domain-currency-unassigned": {
+                        "title": "Domains mit einer Währung, die ihrem Verkaufskanal nicht zugewiesen ist",
                         "description": "Diese Domains verwenden eine Währung, die ihrem Verkaufskanal nicht zugewiesen ist. Funktionen, die auf den zugewiesenen Währungen basieren, wie die Währungsauswahl, berücksichtigen die Domain nicht. Die Administration bietet nur zugewiesene Währungen an, daher stammt es meist aus Importen oder API-Schreibzugriffen.",
                         "solution": "Weisen Sie die Währung dem Verkaufskanal zu oder ändern Sie die Währung der Domain."
                     },
                     "shipping-method-without-prices": {
+                        "title": "Aktive Versandarten ohne Preise",
                         "description": "Diese Versandarten sind aktiv, haben aber keine Preismatrix. Ihre Versandkosten können nicht berechnet werden, daher sind sie im Checkout nicht nutzbar.",
                         "solution": "Hinterlegen Sie Preise für die Versandarten oder deaktivieren Sie sie."
                     },
                     "customer-default-address-invalid": {
+                        "title": "Kunden mit fehlender Standardadresse oder der Adresse eines anderen Kunden",
                         "description": "Die Standard-Rechnungs- oder -Lieferadresse dieser Kunden existiert nicht oder gehört zu einem anderen Kunden. Die Spalten der Standardadressen haben keine Fremdschlüssel, daher bleiben gelöschte oder umgehängte Adressen referenziert. Checkout und Kundenkonto erwarten beide Adressen und können für diese Kunden fehlschlagen.",
                         "solution": "Wählen Sie auf der Kundendetailseite vorhandene Adressen des Kunden als Standard-Rechnungs- und -Lieferadresse."
                     },
                     "category-sorting-invalid": {
+                        "title": "Kategorien, die nach einer Kategorie eines anderen Elternelements sortiert sind",
                         "description": "Diese Kategorien sind nach einer Kategorie mit einem anderen Elternelement einsortiert. Die Position einer Kategorie wird als die Geschwisterkategorie gespeichert, der sie folgt, daher ist die Sortierung des Kategoriebaums für sie fehlerhaft.",
                         "solution": "Ziehen Sie die Kategorien im Kategoriebaum der Administration an die gewünschte Position. Dabei wird eine gültige Geschwisterkategorie gespeichert."
                     },
                     "sales-channel-navigation-category-inactive": {
+                        "title": "Storefronts mit inaktiver Hauptnavigationskategorie",
                         "description": "Die Hauptnavigation dieser aktiven Storefront-Verkaufskanäle ist eine inaktive Kategorie. Die Storefront lädt diese Kategorie als Startseite und antwortet mit einem 404-Fehler, wenn sie inaktiv ist. Die Startseite des Shops ist dadurch nicht erreichbar.",
                         "solution": "Aktivieren Sie die Kategorie im Kategoriebaum der Administration oder wählen Sie in den Einstellungen des Verkaufskanals eine aktive Kategorie als Hauptnavigation aus."
                     },
                     "system-config-cms-page-missing": {
+                        "title": "Shopseiten und Standardlayouts, die auf gelöschte Layouts verweisen",
                         "description": "Eine in den Stammdaten ausgewählte Shopseite, zum Beispiel AGB, Datenschutz, Impressum, 404- oder Wartungsseite, oder ein Standard-Layout für Produkte oder Kategorien verweist auf ein Layout, das nicht mehr existiert. Links auf diese Shopseiten führen auf eine Fehlerseite, fehlt die 404-Seite, wird jeder 404-Fehler zu einem Serverfehler mit Status 500, und fehlt die Wartungsseite, funktioniert der Wartungsmodus nicht. Ohne Standard-Layout für Produkte werden Produktseiten ohne eigenes Layout ganz ohne Layout dargestellt, und ohne Standard-Layout für Kategorien können Kategorieseiten ohne eigenes Layout unter Shopware 6.6 fehlschlagen.",
                         "solution": "Wählen Sie in den Stammdaten für diese Seiten ein vorhandenes Layout aus, global und in jedem Verkaufskanal, der sie überschreibt, und legen Sie in den Erlebniswelten ein vorhandenes Layout als Standard für Produkte und Kategorien fest."
                     },
                     "product-stream-without-filters-in-use": {
+                        "title": "Dynamische Produktgruppen ohne Filter, die noch verwendet werden",
                         "description": "Diese dynamischen Produktgruppen haben keine gültigen Filter, weil alle Filter entfernt wurden oder die Filter ungültig sind, werden aber noch von einer Kategorie, einem aktiven Cross-Selling, einem Produktvergleich oder einem Produkt-Slider in einem Layout verwendet. Shopware wirft dann einen Fehler, statt Produkte anzuzeigen, sodass die Kategorie-, Produkt- oder Layoutseite nicht lädt und der Produktvergleich nicht erzeugt werden kann.",
                         "solution": "Fügen Sie den dynamischen Produktgruppen gültige Filter hinzu und speichern Sie sie, oder entfernen Sie sie aus den Kategorien, Cross-Sellings, Produktvergleichen und Layouts, die sie verwenden."
                     },
                     "product-display-group-missing": {
+                        "title": "Produkte, die wegen fehlender Anzeigegruppe in Listings fehlen",
                         "description": "Diese Produkte oder Varianten haben keine Anzeigegruppe. Listings, Suche und Produkt-Slider zeigen nur Produkte mit Anzeigegruppe, daher fehlen diese Produkte dort, obwohl sie aktiv und sichtbar sind. Das passiert, wenn Produkte direkt in die Datenbank importiert und danach nicht indexiert werden, oder wenn einer Variante eine Ausprägung einer Eigenschaftsgruppe fehlt, die in der Varianten-Listing-Konfiguration ihres Hauptprodukts aufgeklappt wird.",
                         "solution": "Weisen Sie der Variante bei Bedarf die fehlende Ausprägung zu oder ändern Sie die Varianten-Listing-Konfiguration des Hauptprodukts, und bauen Sie den Produktindex anschließend mit \"bin/console dal:refresh:index --only=product.indexer\" oder in der Administration unter Einstellungen, System, Caches und Indizes neu auf."
                     },
                     "payment-method-handler-missing": {
+                        "title": "Aktive Zahlungsarten ohne verfügbaren Zahlungs-Handler",
                         "description": "Diese Zahlungsarten sind aktiv und einem Verkaufskanal zugewiesen, aber ihr Payment-Handler existiert nicht mehr, meist weil das Plugin, das ihn bereitgestellt hat, deaktiviert oder entfernt oder die App gelöscht wurde. Kunden können sie weiterhin auswählen. Bei Zahlungsarten von Plugins schlägt das Abschließen der Bestellung mit einem Fehler zur unbekannten Zahlungsart fehl. Bei Zahlungsarten gelöschter Apps wird die Bestellung angelegt, aber die Zahlung schlägt fehl.",
                         "solution": "Aktivieren oder installieren Sie das Plugin oder die App erneut, die die Zahlungsarten bereitstellt, oder deaktivieren Sie die Zahlungsarten und entfernen Sie sie aus den Verkaufskanälen."
                     },
                     "delivery-time-invalid": {
+                        "title": "Lieferzeiten mit nicht unterstützter Einheit oder negativer Dauer",
                         "description": "Diese Lieferzeiten verwenden eine Einheit, die Shopware nicht unterstützt, gültig sind nur hour, day, week, month und year in Kleinbuchstaben, oder sie haben ein negatives Minimum oder Maximum. Shopware kann daraus kein Lieferdatum berechnen, daher schlägt die Warenkorbberechnung mit einem Fehler fehl, für Positionen mit einer solchen Lieferzeit und für Positionen ohne eigene Lieferzeit, wenn die gewählte Versandart eine solche hat. Die Administration bietet nur gültige Werte an, daher stammen sie meist aus Importen oder API-Schreibzugriffen.",
                         "solution": "Öffnen Sie die Lieferzeiten in den Einstellungen der Administration und wählen Sie eine gültige Einheit sowie nicht negative Werte für Minimum und Maximum."
                     },
                     "currency-rounding-interval-zero": {
+                        "title": "Währungsrundungen mit einem Intervall von null",
                         "description": "Die Positions- oder Gesamtrundung dieser Währungen oder länderspezifischen Währungsrundungen hat ein Intervall von null oder kein Intervall, bei höchstens zwei Nachkommastellen. Shopware teilt beim Runden von Preisen durch das Intervall, daher schlägt jede Warenkorbberechnung in dieser Währung mit einem Fehler wegen Division durch null fehl, bei einer länderspezifischen Rundung nur für Kunden aus diesem Land.",
                         "solution": "Öffnen Sie die Währung in der Administration und hinterlegen Sie für die Positions- und die Gesamtrundung ein Rundungsintervall größer als null, zum Beispiel 0.01, auch in den länderspezifischen Rundungen der Währung."
                     },
                     "currency-factor-invalid": {
+                        "title": "Währungen mit einem ungültigen Umrechnungsfaktor",
                         "description": "Diese Währungen haben einen Umrechnungsfaktor von null oder kleiner, oder sie sind die Standardwährung und ihr Faktor ist nicht 1. Preise ohne eigenen Wert in einer Währung werden mit deren Faktor umgerechnet, daher führt ein Faktor von null oder kleiner zu kostenlosen oder negativen Preisen. Shopware erwartet für die Standardwährung den Faktor 1, sonst werden zum Beispiel Versandkosten in der Standardwährung mit dem Faktor multipliziert und falsch berechnet.",
                         "solution": "Öffnen Sie die Währungen in der Administration und tragen Sie einen positiven Faktor ein, und setzen Sie den Faktor der Standardwährung auf 1."
                     },
                     "tax-provider-unavailable": {
+                        "title": "Aktive Steueranbieter, die nicht verfügbar sind",
                         "description": "Diese Steueranbieter sind aktiv, aber kein Steueranbieter mit ihrer Kennung ist registriert und sie werden nicht von einer App verarbeitet, meist weil das Plugin, das sie bereitgestellt hat, deaktiviert oder entfernt wurde. Shopware meldet dann einen Fehler für den fehlenden Steueranbieter, daher schlägt die Warenkorbberechnung fehl, sofern nicht ein Steueranbieter mit höherer Priorität die Steuern bereits geliefert hat.",
                         "solution": "Aktivieren oder installieren Sie das Plugin erneut, das die Steueranbieter bereitstellt, oder deaktivieren Sie die Steueranbieter in den Steuereinstellungen der Administration."
                     },
                     "country-forced-state-without-states": {
+                        "title": "Länder, die ein Bundesland verlangen, aber keine aktiven Bundesländer haben",
                         "description": "Diese Länder sind aktiv, einem Verkaufskanal zugewiesen und verlangen ein Bundesland für Adressen, haben aber kein aktives Bundesland. Kunden können für eine Adresse in diesem Land kein Bundesland auswählen, und der Warenkorb sperrt Bestellungen, deren Rechnungs- oder Lieferadresse in diesem Land liegt, weil das Bundesland fehlt.",
                         "solution": "Legen Sie die Bundesländer des Landes in der Administration an oder aktivieren Sie sie, oder deaktivieren Sie die Einstellung, die für dieses Land ein Bundesland verlangt."
                     },
                     "sales-channel-default-country-unavailable": {
+                        "title": "Verkaufskanäle, deren Standardland nicht für den Versand verfügbar ist",
                         "description": "Das Standardland dieser aktiven Storefront- oder Headless-Verkaufskanäle ist inaktiv, nicht für den Versand verfügbar oder dem Verkaufskanal nicht zugewiesen. Warenkörbe von nicht angemeldeten Besuchern verwenden das Standardland als Lieferort, daher meldet der Warenkorb den Versand in dieses Land als gesperrt, und Bestellungen sind erst möglich, wenn der Kunde eine Adresse in einem belieferbaren Land verwendet.",
                         "solution": "Wählen Sie ein aktives, belieferbares Land, das dem Verkaufskanal zugewiesen ist, als Standardland, oder aktivieren Sie das Land, erlauben Sie den Versand dorthin und weisen Sie es dem Verkaufskanal zu."
                     },
                     "promotion-discount-setgroup-missing": {
+                        "title": "Promotion-Rabatte, die auf eine fehlende Set-Gruppe verweisen",
                         "description": "Diese Rabatte aktiver Promotionen gelten für eine Set-Gruppe anhand ihrer Position, aber die Promotion hat an dieser Position keine Set-Gruppe, meist weil Set-Gruppen gelöscht wurden, nachdem der Rabatt eingerichtet wurde. Sobald der Warenkorb alle Set-Gruppen der Promotion erfüllt, schlägt die Warenkorbberechnung mit einem Fehler fehl, weil die Set-Gruppe nicht gefunden wird. Eine Promotion ohne Set-Gruppen wendet einen solchen Rabatt nie an.",
                         "solution": "Öffnen Sie die Promotion in der Administration und wählen Sie eine der vorhandenen Set-Gruppen als Geltungsbereich des Rabatts, oder legen Sie die fehlende Set-Gruppe erneut an."
                     },
                     "customer-requested-group-missing": {
+                        "title": "Kunden, die eine nicht existierende Kundengruppe angefragt haben",
                         "description": "Diese Kunden haben eine Kundengruppe angefragt, die gelöscht wurde. Die Spalte hat keinen Fremdschlüssel, daher wird die Anfrage beim Löschen der Gruppe nicht zurückgesetzt. Die Benachrichtigung über offene Kundengruppen-Anfragen in der Administration schlägt bei der Anmeldung fehl, und das Annehmen oder Ablehnen der Anfrage schlägt mit einem Fehler fehl.",
                         "solution": "Entfernen Sie die angefragte Kundengruppe bei diesen Kunden in der Datenbank oder legen Sie die Kundengruppe erneut an und bearbeiten Sie die Anfragen."
                     },
                     "language-translation-code-missing": {
+                        "title": "Sprachen ohne eigenen oder geerbten Übersetzungscode",
                         "description": "Diese Sprachen haben keinen Übersetzungscode, und ihre übergeordnete Sprache auch nicht. Shopware ermittelt über den Übersetzungscode das Gebietsschema einer Sprache, zum Beispiel für Mails, Textbausteine und Produktexporte, und schlägt bei diesen Sprachen mit einem Fehler fehl.",
                         "solution": "Wählen Sie in den Spracheinstellungen einen Übersetzungscode für diese Sprachen oder ihre übergeordnete Sprache."
                     },
                     "product-price-tiers-invalid": {
+                        "title": "Produkte mit Lücken oder Überschneidungen in ihren erweiterten Preisen",
                         "description": "Die erweiterten Preise dieser Produkte bilden für mindestens eine Regel keine lückenlose Staffel: Die erste Staffel beginnt nicht bei Menge 1, eine Staffel endet vor ihrem Beginn, oder Staffeln lassen eine Lücke oder überschneiden sich. Der Warenkorb wählt die Staffel nur anhand der Endmenge der sortierten Staffeln aus, daher zahlen Kunden unter Umständen einen anderen Preis, als die Staffelpreistabelle auf der Produktseite anzeigt.",
                         "solution": "Öffnen Sie das Produkt in der Administration und passen Sie die erweiterten Preise im Tab Preise so an, dass die erste Staffel bei 1 beginnt und jede weitere Staffel direkt nach dem Ende der vorherigen."
                     },
                     "product-max-purchase-below-min-purchase": {
+                        "title": "Produkte mit einer Maximalabnahme unter der Mindestabnahme",
                         "description": "Die Maximalabnahme dieser Produkte, auch wenn sie vom Hauptprodukt geerbt ist oder ohne eigenen Wert aus der maximalen Menge pro Produkt in den Warenkorb-Einstellungen stammt, liegt unter ihrer Mindestabnahme. Die Produktseite zeigt weiterhin den Kaufen-Button, aber der Warenkorb entfernt das Produkt sofort mit dem Hinweis, dass es nicht verfügbar ist, sodass es nicht bestellt werden kann.",
                         "solution": "Öffnen Sie das Produkt in der Administration und setzen Sie eine Maximalabnahme, die mindestens der Mindestabnahme entspricht, oder entfernen Sie die Maximalabnahme."
                     },
                     "media-folder-configuration-missing": {
+                        "title": "Medienordner mit gelöschter Ordnerkonfiguration",
                         "description": "Diese Medienordner verweisen auf eine Ordnerkonfiguration, die nicht mehr existiert. Der Verweis hat keinen Fremdschlüssel und bleibt daher beim Löschen der Konfiguration zurück. Shopware erzeugt für neue Medien in diesen Ordnern dann keine Thumbnails, und das erneute Erzeugen von Thumbnails, zum Beispiel mit \"bin/console media:generate-thumbnails\", löscht die vorhandenen, sodass die Storefront die Bilder in voller Größe lädt.",
                         "solution": "Weisen Sie dem Medienordner über die Admin-API mit \"configurationId\" eine vorhandene Ordnerkonfiguration zu, bevor Sie Thumbnails neu erzeugen, und erzeugen Sie die Thumbnails anschließend mit \"bin/console media:generate-thumbnails\" neu."
                     },
                     "category-link-target-invalid": {
+                        "title": "Link-Kategorien ohne gültiges Linkziel",
                         "description": "Diese Kategorien vom Typ Link haben kein gültiges Ziel: Das verlinkte Produkt, die verlinkte Kategorie oder Landingpage wurde gelöscht, es ist kein internes Ziel ausgewählt, oder ein externer Link hat keine URL. Interne Linkziele haben keinen Fremdschlüssel, daher bleibt der Verweis beim Löschen des Ziels zurück. Der Menüeintrag führt auf eine 404-Seite oder auf gar keine Seite.",
                         "solution": "Öffnen Sie die Kategorie in der Administration und wählen Sie ein vorhandenes Linkziel aus oder geben Sie eine URL ein, oder ändern Sie den Kategorietyp."
                     },
                     "product-export-currency-invalid": {
+                        "title": "Produktvergleiche mit fehlender oder nicht zugewiesener Währung",
                         "description": "Die Währung dieser Produktvergleiche wurde gelöscht oder ist seit Shopware 6.7.15.0 nicht dem Storefront-Verkaufskanal zugewiesen, auf dem der Produktvergleich basiert. Der Verweis auf die Währung hat keinen Fremdschlüssel und bleibt daher beim Löschen der Währung zurück. Das Erzeugen des Produktvergleichs schlägt fehl, weil die Währung nicht gefunden wird, und der Feed wird nicht mehr aktualisiert.",
                         "solution": "Öffnen Sie den Produktvergleich-Verkaufskanal in der Administration und wählen Sie eine Währung aus, die seinem Storefront-Verkaufskanal zugewiesen ist, oder weisen Sie die Währung dem Storefront-Verkaufskanal zu."
                     },
                     "product-configurator-settings-missing": {
+                        "title": "Produkte mit Varianten, aber ohne Variantenkonfigurator-Einstellungen",
                         "description": "Diese Hauptprodukte haben Varianten mit Ausprägungen, aber keine Konfigurator-Einstellungen, daher zeigt die Produktseite keine Variantenauswahl und Kunden können nicht zwischen den Varianten wechseln. Das kann gewollt sein, zum Beispiel wenn die Varianten als eigene Produkte gelistet werden. Andernfalls passiert es meist, wenn Varianten ohne Konfigurator-Einstellungen importiert werden.",
                         "solution": "Legen Sie die Konfigurator-Einstellungen über die Admin-API an, indem Sie dem Hauptprodukt unter \"configuratorSettings\" die Ausprägungen seiner Varianten hinzufügen. Werden die Varianten absichtlich ohne Variantenauswahl verkauft, deaktivieren Sie diese Prüfung mit der Kennung \"product-configurator-settings-missing\" in \"frosh_tools.checker.disabled_checks\"."
                     },
                     "variant-option-configurator-setting-missing": {
+                        "title": "Varianten mit Optionen, die in den Konfigurator-Einstellungen fehlen",
                         "description": "Diese Varianten haben Ausprägungen, die in den Konfigurator-Einstellungen ihres Hauptprodukts fehlen. Vor Shopware 6.7.14.0 bietet die Variantenauswahl auf der Produktseite nur konfigurierte Ausprägungen an, daher können diese Varianten nicht ausgewählt werden und andere Ausprägungen können als nicht verfügbar erscheinen.",
                         "solution": "Fügen Sie die fehlenden Ausprägungen über die Admin-API unter \"configuratorSettings\" des Hauptprodukts hinzu oder aktualisieren Sie Shopware auf 6.7.14.0 oder neuer, das auch Ausprägungen ohne Konfigurator-Einstellung anbietet."
                     },
                     "product-main-category-invalid": {
+                        "title": "Hauptkategorien, die für das Produkt nicht verwendet werden können",
                         "description": "Die für diese Produkte in einem Verkaufskanal gewählte Hauptkategorie ist dem Produkt nicht zugewiesen, inaktiv, unter Shopware 6.7.9 bis 6.7.14 ausgeblendet oder liegt nicht im Navigations-, Service- oder Footer-Kategoriebaum dieses Verkaufskanals. Der Breadcrumb ignoriert eine solche Hauptkategorie und verwendet eine andere Kategorie, während SEO-URL-Templates, die die Hauptkategorie verwenden, sie weiterhin verwenden, sodass URL und Breadcrumb voneinander abweichen können. Vor Shopware 6.7.9 wird eine inaktive Hauptkategorie weiterhin verwendet, sodass der Breadcrumb auf eine Kategorieseite verlinkt, die nicht aufgerufen werden kann.",
                         "solution": "Öffnen Sie das Produkt in der Administration und wählen Sie im SEO-Tab eine zugewiesene, aktive Kategorie des Verkaufskanals als Hauptkategorie aus, oder weisen Sie die Kategorie zu und aktivieren Sie sie."
                     },
                     "rule-condition-deleted-references": {
+                        "title": "Regelbedingungen, die nur auf gelöschte Datensätze verweisen",
                         "description": "Diese Regelbedingungen verweisen nur auf Zahlungsarten, Versandarten, Kundengruppen, Länder, Bundesländer, Verkaufskanäle, Währungen, Sprachen, Tags, Anreden oder dynamische Produktgruppen, die gelöscht wurden. Shopware entfernt gelöschte Entitäten nicht aus Regelbedingungen, daher trifft eine Bedingung mit ist eine von nie zu und eine Bedingung mit ist keine von immer zu. Preise, Versandarten, Zahlungsarten, Promotionen und Flows, die von diesen Regeln abhängen, verhalten sich anders als vorgesehen.",
                         "solution": "Öffnen Sie die Regeln im Rule Builder und wählen Sie in den Bedingungen vorhandene Entitäten aus, oder entfernen Sie die Bedingungen."
                     },
                     "flow-action-deleted-references": {
+                        "title": "Aktive Flow-Aktionen, die auf gelöschte Datensätze verweisen",
                         "description": "Diese Aktionen aktiver Flows verweisen auf ein E-Mail-Template, einen Tag oder eine Kundengruppe, die gelöscht wurden. Eine Aktion zum E-Mail-Versand mit gelöschtem E-Mail-Template wird ohne Fehler übersprungen, daher wird die E-Mail nie versendet. Das Hinzufügen eines gelöschten Tags oder der Wechsel zu einer gelöschten Kundengruppe schlägt mit einem Fehler fehl, und die übrigen Aktionen des Flows werden nicht ausgeführt.",
                         "solution": "Öffnen Sie die Flows im Flow Builder und wählen Sie in diesen Aktionen ein vorhandenes E-Mail-Template, einen vorhandenen Tag oder eine vorhandene Kundengruppe aus, oder entfernen Sie die Aktionen."
                     },
                     "tax-rule-states-invalid": {
+                        "title": "Steuerregeln für einzelne Bundesländer, die kein Bundesland ihres Landes treffen",
                         "description": "Diese Steuerregeln vom Typ einzelne Bundesländer enthalten kein Bundesland ihres eigenen Landes, zum Beispiel weil die Bundesländer gelöscht wurden, die Kennungen der Bundesländer in Großbuchstaben gespeichert sind oder die Regel in ein anderes Land kopiert wurde. Eine solche Regel greift nie, daher wird Kunden aus den vorgesehenen Bundesländern stillschweigend der Standardsteuersatz berechnet. Vor Shopware 6.6.7 lässt eine Regel ganz ohne Bundesländer sogar die Warenkorbberechnung mit einem Fehler fehlschlagen.",
                         "solution": "Öffnen Sie die Steuer in der Administration und wählen Sie in der Steuerregel die vorgesehenen Bundesländer des Landes aus, oder löschen Sie die Steuerregel."
                     },
                     "flow-mail-template-incomplete": {
+                        "title": "E-Mail-Templates aktiver Flows ohne vollständige Standardübersetzung",
                         "description": "Diese E-Mail-Templates werden von aktiven Flows versendet, aber ihre Übersetzung in der Standardsprache fehlt oder hat einen leeren Betreff, HTML-Inhalt oder Text-Inhalt. E-Mails in Sprachen ohne eigene vollständige Übersetzung greifen auf die Standardsprache zurück, scheitern an der Validierung des Mail-Service und werden nicht versendet. Der Fehler wird nur protokolliert.",
                         "solution": "Öffnen Sie die E-Mail-Templates in der Administration und füllen Sie Betreff, HTML-Inhalt und Text-Inhalt in der Standardsprache aus."
                     },
                     "number-range-type-missing": {
+                        "title": "Nummernkreise ohne Nummernkreistyp",
                         "description": "Diese Nummernkreise gehören zu einem Nummernkreistyp, der nicht mehr existiert, meist weil eine Erweiterung ihren Nummernkreistyp entfernt, ihre Nummernkreise aber zurückgelassen hat. Shopware verwendet diese Nummernkreise nie, es sind Überbleibsel.",
                         "solution": "Löschen Sie die Nummernkreise, zum Beispiel über die Admin-API, oder installieren Sie die Erweiterung erneut, die den Nummernkreistyp bereitgestellt hat."
                     },
                     "number-range-sales-channel-missing": {
+                        "title": "Nummernkreistypen ohne Nummernkreis für einen Verkaufskanal",
                         "description": "Für diese Kombinationen aus aktivem Storefront- oder Headless-Verkaufskanal und Nummernkreistyp gibt es keinen Nummernkreis: Keiner ist dem Verkaufskanal zugewiesen, und weder der Typ noch einer seiner Nummernkreise ist global. Shopware kann für den Verkaufskanal keine Nummer dieses Typs erzeugen, daher schlägt zum Beispiel das Abschließen einer Bestellung, die Registrierung eines Kunden oder das Erstellen eines Dokuments mit einem Fehler fehl.",
                         "solution": "Öffnen Sie die Nummernkreise in der Administration und weisen Sie dem Verkaufskanal einen Nummernkreis dieses Typs zu, oder legen Sie einen globalen Nummernkreis für den Typ an."
                     }

@@ -3,6 +3,8 @@ import '../frosh-tools-tab-index/style.scss';
 
 const { Component, Mixin } = Shopware;
 
+const SNIPPET_PREFIX = 'frosh-tools.tabs.data-integrity.recommendations';
+
 Component.register('frosh-tools-tab-data-integrity', {
     inject: ['froshToolsService'],
     mixins: [
@@ -21,23 +23,26 @@ Component.register('frosh-tools-tab-data-integrity', {
         };
     },
 
+    computed: {
+        dataIntegrityRows() {
+            return (this.dataIntegrityStatus ?? []).map((item) => ({
+                ...item,
+                title: this.titleFor(item),
+            }));
+        },
+    },
+
     created() {
         this.createdComponent();
     },
 
     methods: {
         recommendationFor(item) {
-            const key = `frosh-tools.tabs.data-integrity.recommendations.${item?.id}`;
-            if (!item || !this.$te(`${key}.description`, 'en-GB')) {
-                return null;
-            }
+            return this.resultRecommendation(SNIPPET_PREFIX, item);
+        },
 
-            return {
-                description: this.$t(`${key}.description`),
-                solution: this.$te(`${key}.solution`, 'en-GB')
-                    ? this.$t(`${key}.solution`)
-                    : null,
-            };
+        titleFor(item) {
+            return this.resultTitle(SNIPPET_PREFIX, item);
         },
 
         hasInfo(item) {

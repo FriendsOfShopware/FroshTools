@@ -28,21 +28,27 @@ class InvalidProductStreamCheckerTest extends DataIntegrityCheckerTestCase
         $this->createProductStream(false);
 
         static::assertAffectedCount($this->collectResult($this->checker, self::ID), 0);
+        static::assertAffectedEntities($this->checker, 'product_stream', []);
     }
 
     public function testCountsInvalidProductStreams(): void
     {
-        $this->createProductStream(true);
+        $streamId = $this->createProductStream(true);
 
         static::assertAffectedCount($this->collectResult($this->checker, self::ID), 1);
+        static::assertAffectedEntities($this->checker, 'product_stream', [$streamId]);
     }
 
-    private function createProductStream(bool $invalid): void
+    private function createProductStream(bool $invalid): string
     {
+        $id = Uuid::randomHex();
+
         $this->connection->insert('product_stream', [
-            'id' => Uuid::randomBytes(),
+            'id' => Uuid::fromHexToBytes($id),
             'invalid' => (int) $invalid,
             'created_at' => self::now(),
         ]);
+
+        return $id;
     }
 }

@@ -72,6 +72,7 @@ class AclRouteTest extends TestCase
         yield 'health.performance' => [HealthController::class, 'performanceStatus', FroshToolsPrivileges::READ];
         yield 'health.ping' => [HealthController::class, 'pingStatus', FroshToolsPrivileges::READ];
         yield 'health.data-integrity' => [HealthController::class, 'dataIntegrityStatus', FroshToolsPrivileges::READ];
+        yield 'health.data-integrity.affected' => [HealthController::class, 'dataIntegrityAffected', FroshToolsPrivileges::READ];
         yield 'statistics.cache' => [StatisticsController::class, 'cacheStatistics', FroshToolsPrivileges::READ];
         yield 'statistics.database' => [StatisticsController::class, 'databaseStatistics', FroshToolsPrivileges::READ];
         yield 'feature-flags.list' => [FeatureFlagController::class, 'list', FroshToolsPrivileges::READ];

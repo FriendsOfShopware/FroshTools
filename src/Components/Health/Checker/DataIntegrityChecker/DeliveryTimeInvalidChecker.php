@@ -10,8 +10,10 @@ use Frosh\Tools\Components\Health\Checker\CheckerInterface;
 use Frosh\Tools\Components\Health\HealthCollection;
 use Shopware\Core\System\DeliveryTime\DeliveryTimeEntity;
 
-class DeliveryTimeInvalidChecker implements DataIntegrityCheckerInterface, CheckerInterface
+class DeliveryTimeInvalidChecker implements DataIntegrityCheckerInterface, CheckerInterface, AffectedEntitiesProviderInterface
 {
+    private const ID = 'delivery-time-invalid';
+
     private const SUPPORTED_UNITS = [
         DeliveryTimeEntity::DELIVERY_TIME_HOUR,
         DeliveryTimeEntity::DELIVERY_TIME_DAY,
@@ -20,29 +22,49 @@ class DeliveryTimeInvalidChecker implements DataIntegrityCheckerInterface, Check
         DeliveryTimeEntity::DELIVERY_TIME_YEAR,
     ];
 
+    private const AFFECTED_QUERY = <<<'SQL'
+        SELECT id
+        FROM delivery_time
+        WHERE CAST(unit AS BINARY) NOT IN (:supportedUnits)
+           OR `min` < 0
+           OR `max` < 0
+        SQL;
+
     public function __construct(
         private readonly Connection $connection,
     ) {
     }
 
+    public function getId(): string
+    {
+        return self::ID;
+    }
+
     public function collect(HealthCollection $collection): void
     {
         $count = (int) $this->connection->fetchOne(
-            <<<'SQL'
-                SELECT COUNT(*)
-                FROM delivery_time
-                WHERE CAST(unit AS BINARY) NOT IN (:supportedUnits)
-                   OR `min` < 0
-                   OR `max` < 0
-                SQL,
+            \sprintf('SELECT COUNT(*) FROM (%s) affected', self::AFFECTED_QUERY),
             ['supportedUnits' => self::SUPPORTED_UNITS],
             ['supportedUnits' => ArrayParameterType::STRING],
         );
 
         $collection->add(DataIntegrityCheckResult::fromCount(
-            'delivery-time-invalid',
+            self::ID,
             'Delivery times with an unsupported unit or a negative duration',
             $count,
         ));
+    }
+
+    public function getAffectedEntities(int $limit, int $offset): AffectedEntities
+    {
+        return AffectedEntities::fromQuery(
+            $this->connection,
+            'delivery_time',
+            self::AFFECTED_QUERY,
+            ['supportedUnits' => self::SUPPORTED_UNITS],
+            ['supportedUnits' => ArrayParameterType::STRING],
+            $limit,
+            $offset,
+        );
     }
 }

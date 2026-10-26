@@ -8,27 +8,39 @@ use Doctrine\DBAL\Connection;
 use Frosh\Tools\Components\Health\Checker\CheckerInterface;
 use Frosh\Tools\Components\Health\HealthCollection;
 
-class InvalidRuleChecker implements DataIntegrityCheckerInterface, CheckerInterface
+class InvalidRuleChecker implements DataIntegrityCheckerInterface, CheckerInterface, AffectedEntitiesProviderInterface
 {
+    private const ID = 'rule-invalid';
+
+    private const AFFECTED_QUERY = <<<'SQL'
+        SELECT id
+        FROM `rule`
+        WHERE invalid = 1
+        SQL;
+
     public function __construct(
         private readonly Connection $connection,
     ) {
     }
 
+    public function getId(): string
+    {
+        return self::ID;
+    }
+
     public function collect(HealthCollection $collection): void
     {
-        $count = (int) $this->connection->fetchOne(
-            <<<'SQL'
-                SELECT COUNT(*)
-                FROM `rule`
-                WHERE invalid = 1
-                SQL,
-        );
+        $count = (int) $this->connection->fetchOne(\sprintf('SELECT COUNT(*) FROM (%s) affected', self::AFFECTED_QUERY));
 
         $collection->add(DataIntegrityCheckResult::fromCount(
-            'rule-invalid',
+            self::ID,
             'Rules with invalid conditions',
             $count,
         ));
+    }
+
+    public function getAffectedEntities(int $limit, int $offset): AffectedEntities
+    {
+        return AffectedEntities::fromQuery($this->connection, 'rule', self::AFFECTED_QUERY, [], [], $limit, $offset);
     }
 }
