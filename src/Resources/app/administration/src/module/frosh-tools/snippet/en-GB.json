@@ -274,6 +274,7 @@
                     "loadError": "The affected records could not be loaded.",
                     "empty": "No affected records found. Refresh the checks to update the count.",
                     "unavailable": "This check cannot list the affected records.",
+                    "forbidden": "You are not allowed to view these records.",
                     "opensInNewTab": "Opens in a new tab",
                     "related": "Related records:"
                 },

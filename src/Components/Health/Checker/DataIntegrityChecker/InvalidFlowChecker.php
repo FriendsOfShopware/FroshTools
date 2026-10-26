@@ -7,6 +7,7 @@ namespace Frosh\Tools\Components\Health\Checker\DataIntegrityChecker;
 use Doctrine\DBAL\Connection;
 use Frosh\Tools\Components\Health\Checker\CheckerInterface;
 use Frosh\Tools\Components\Health\HealthCollection;
+use Shopware\Core\Content\Flow\FlowDefinition;
 
 class InvalidFlowChecker implements DataIntegrityCheckerInterface, CheckerInterface, AffectedEntitiesProviderInterface
 {
@@ -42,6 +43,6 @@ class InvalidFlowChecker implements DataIntegrityCheckerInterface, CheckerInterf
 
     public function getAffectedEntities(int $limit, int $offset): AffectedEntities
     {
-        return AffectedEntities::fromQuery($this->connection, 'flow', self::AFFECTED_QUERY, [], [], $limit, $offset);
+        return AffectedEntities::fromQuery($this->connection, FlowDefinition::ENTITY_NAME, self::AFFECTED_QUERY, [], [], $limit, $offset);
     }
 }

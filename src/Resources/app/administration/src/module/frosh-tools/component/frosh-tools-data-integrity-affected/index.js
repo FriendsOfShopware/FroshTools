@@ -22,6 +22,7 @@ Component.register('frosh-tools-data-integrity-affected', {
             isLoading: true,
             loadError: null,
             unavailable: false,
+            forbidden: false,
             total: 0,
             page: 1,
             limit: 10,
@@ -65,6 +66,8 @@ Component.register('frosh-tools-data-integrity-affected', {
                 this.rows = [];
                 if (error?.response?.status === 404) {
                     this.unavailable = true;
+                } else if (error?.response?.status === 403) {
+                    this.forbidden = true;
                 } else {
                     this.loadError =
                         error?.response?.data?.error ?? error.message;

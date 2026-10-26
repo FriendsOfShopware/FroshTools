@@ -8,6 +8,7 @@ use Doctrine\DBAL\Connection;
 use Frosh\Tools\Components\Health\Checker\CheckerInterface;
 use Frosh\Tools\Components\Health\HealthCollection;
 use Shopware\Core\Checkout\Cart\TaxProvider\TaxProviderRegistry;
+use Shopware\Core\System\TaxProvider\TaxProviderDefinition;
 
 class TaxProviderUnavailableChecker implements DataIntegrityCheckerInterface, CheckerInterface, AffectedEntitiesProviderInterface
 {
@@ -35,7 +36,7 @@ class TaxProviderUnavailableChecker implements DataIntegrityCheckerInterface, Ch
 
     public function getAffectedEntities(int $limit, int $offset): AffectedEntities
     {
-        return AffectedEntities::fromIds('tax_provider', $this->findAffectedIds(), $limit, $offset);
+        return AffectedEntities::fromIds(TaxProviderDefinition::ENTITY_NAME, $this->findAffectedIds(), $limit, $offset);
     }
 
     /**

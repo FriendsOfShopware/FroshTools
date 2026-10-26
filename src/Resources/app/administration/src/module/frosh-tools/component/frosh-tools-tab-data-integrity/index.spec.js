@@ -148,4 +148,25 @@ describe('frosh-tools-tab-data-integrity', () => {
         expect(affected.exists()).toBe(true);
         expect(affected.attributes('check-id')).toBe('rule-invalid');
     });
+
+    it('opens the info of checks with findings that have no texts of their own', async () => {
+        const wrapper = await createWrapper({
+            dataIntegrityStatus: vi.fn().mockResolvedValue([]),
+        });
+        await flushPromises();
+
+        const pluginCheck = {
+            id: 'third-party-check',
+            state: 'STATE_INFO',
+            recommended: '0',
+        };
+
+        expect(wrapper.vm.hasInfo({ ...pluginCheck, current: '3' })).toBe(true);
+        expect(wrapper.vm.hasInfo({ ...pluginCheck, current: '0' })).toBe(
+            false
+        );
+        expect(wrapper.vm.hasInfo({ id: 'rule-invalid', current: '0' })).toBe(
+            true
+        );
+    });
 });

@@ -7,6 +7,7 @@ namespace Frosh\Tools\Components\Health\Checker\DataIntegrityChecker;
 use Doctrine\DBAL\Connection;
 use Frosh\Tools\Components\Health\Checker\CheckerInterface;
 use Frosh\Tools\Components\Health\HealthCollection;
+use Shopware\Core\System\Country\CountryDefinition;
 
 class CountryForcedStateWithoutStatesChecker implements DataIntegrityCheckerInterface, CheckerInterface, AffectedEntitiesProviderInterface
 {
@@ -44,6 +45,6 @@ class CountryForcedStateWithoutStatesChecker implements DataIntegrityCheckerInte
 
     public function getAffectedEntities(int $limit, int $offset): AffectedEntities
     {
-        return AffectedEntities::fromQuery($this->connection, 'country', self::AFFECTED_QUERY, [], [], $limit, $offset);
+        return AffectedEntities::fromQuery($this->connection, CountryDefinition::ENTITY_NAME, self::AFFECTED_QUERY, [], [], $limit, $offset);
     }
 }

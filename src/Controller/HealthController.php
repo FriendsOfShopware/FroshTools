@@ -10,6 +10,8 @@ use Frosh\Tools\Components\Health\Checker\DataIntegrityChecker\AffectedEntitiesP
 use Frosh\Tools\Components\Health\DataIntegrityCollection;
 use Frosh\Tools\Components\Health\HealthCollection;
 use Frosh\Tools\Components\Health\PerformanceCollection;
+use Shopware\Core\Framework\Api\Acl\Role\AclRoleDefinition;
+use Shopware\Core\Framework\Context;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\DependencyInjection\Attribute\Autowire;
 use Symfony\Component\DependencyInjection\Attribute\AutowireIterator;
@@ -98,7 +100,7 @@ class HealthController extends AbstractController
     }
 
     #[Route(path: '/data-integrity/{id}/affected', name: 'api.frosh.tools.data-integrity.affected', methods: ['GET'])]
-    public function dataIntegrityAffected(string $id, Request $request): JsonResponse
+    public function dataIntegrityAffected(string $id, Request $request, Context $context): JsonResponse
     {
         $limit = max(1, min(self::DATA_INTEGRITY_AFFECTED_MAX_LIMIT, $request->query->getInt('limit', 25)));
         $page = max(1, $request->query->getInt('page', 1));
@@ -108,8 +110,14 @@ class HealthController extends AbstractController
                 continue;
             }
 
+            $affected = $checker->getAffectedEntities($limit, ($page - 1) * $limit);
+            $privilege = $affected->entity . ':' . AclRoleDefinition::PRIVILEGE_READ;
+            if (!$context->isAllowed($privilege)) {
+                return new JsonResponse(['error' => \sprintf('Missing privilege "%s"', $privilege)], Response::HTTP_FORBIDDEN);
+            }
+
             return new JsonResponse([
-                ...$checker->getAffectedEntities($limit, ($page - 1) * $limit)->jsonSerialize(),
+                ...$affected->jsonSerialize(),
                 'page' => $page,
                 'limit' => $limit,
             ]);

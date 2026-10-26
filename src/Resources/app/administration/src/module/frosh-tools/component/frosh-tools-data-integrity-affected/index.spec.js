@@ -210,6 +210,25 @@ describe('frosh-tools-data-integrity-affected', () => {
         );
     });
 
+    it('explains a missing read permission for the records', async () => {
+        const error = new Error('Forbidden');
+        error.response = {
+            status: 403,
+            data: { error: 'Missing privilege "customer:read"' },
+        };
+
+        const wrapper = await createWrapper(
+            { dataIntegrityAffected: vi.fn().mockRejectedValue(error) },
+            createRepositoryFactory([]).factory
+        );
+
+        expect(wrapper.vm.forbidden).toBe(true);
+        expect(wrapper.vm.loadError).toBeNull();
+        expect(wrapper.text()).toContain(
+            'You are not allowed to view these records.'
+        );
+    });
+
     it('shows the load error', async () => {
         const wrapper = await createWrapper(
             {

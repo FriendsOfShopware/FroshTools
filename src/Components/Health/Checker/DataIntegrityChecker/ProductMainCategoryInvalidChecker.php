@@ -7,6 +7,7 @@ namespace Frosh\Tools\Components\Health\Checker\DataIntegrityChecker;
 use Doctrine\DBAL\Connection;
 use Frosh\Tools\Components\Health\Checker\CheckerInterface;
 use Frosh\Tools\Components\Health\HealthCollection;
+use Shopware\Core\Content\Product\ProductDefinition;
 use Shopware\Core\Defaults;
 use Shopware\Core\Framework\Uuid\Uuid;
 use Symfony\Component\DependencyInjection\Attribute\Autowire;
@@ -103,7 +104,7 @@ class ProductMainCategoryInvalidChecker implements DataIntegrityCheckerInterface
     {
         return AffectedEntities::fromQuery(
             $this->connection,
-            'product',
+            ProductDefinition::ENTITY_NAME,
             self::AFFECTED_QUERY,
             $this->getParameters(),
             [],

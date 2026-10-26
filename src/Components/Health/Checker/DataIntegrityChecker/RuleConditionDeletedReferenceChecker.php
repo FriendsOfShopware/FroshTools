@@ -8,6 +8,7 @@ use Doctrine\DBAL\ArrayParameterType;
 use Doctrine\DBAL\Connection;
 use Frosh\Tools\Components\Health\Checker\CheckerInterface;
 use Frosh\Tools\Components\Health\HealthCollection;
+use Shopware\Core\Content\Rule\RuleDefinition;
 
 class RuleConditionDeletedReferenceChecker implements DataIntegrityCheckerInterface, CheckerInterface, AffectedEntitiesProviderInterface
 {
@@ -71,7 +72,7 @@ class RuleConditionDeletedReferenceChecker implements DataIntegrityCheckerInterf
             $ruleIds = [...$ruleIds, ...$ids];
         }
 
-        return AffectedEntities::fromIds('rule', $ruleIds, $limit, $offset);
+        return AffectedEntities::fromIds(RuleDefinition::ENTITY_NAME, $ruleIds, $limit, $offset);
     }
 
     /**

@@ -8,6 +8,7 @@ use Doctrine\DBAL\Connection;
 use Frosh\Tools\Components\Health\Checker\CheckerInterface;
 use Frosh\Tools\Components\Health\HealthCollection;
 use Shopware\Core\Checkout\Payment\Cart\PaymentHandler\PaymentHandlerRegistry;
+use Shopware\Core\Checkout\Payment\PaymentMethodDefinition;
 
 class PaymentMethodHandlerMissingChecker implements DataIntegrityCheckerInterface, CheckerInterface, AffectedEntitiesProviderInterface
 {
@@ -35,7 +36,7 @@ class PaymentMethodHandlerMissingChecker implements DataIntegrityCheckerInterfac
 
     public function getAffectedEntities(int $limit, int $offset): AffectedEntities
     {
-        return AffectedEntities::fromIds('payment_method', $this->findAffectedIds(), $limit, $offset);
+        return AffectedEntities::fromIds(PaymentMethodDefinition::ENTITY_NAME, $this->findAffectedIds(), $limit, $offset);
     }
 
     /**

@@ -11,6 +11,8 @@ use PHPUnit\Framework\Attributes\CoversClass;
 use Doctrine\DBAL\Connection;
 use Psr\Cache\CacheItemPoolInterface;
 use Shopware\Core\Defaults;
+use Shopware\Core\Framework\Api\Context\AdminApiSource;
+use Shopware\Core\Framework\Context;
 use Shopware\Core\Framework\Uuid\Uuid;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
@@ -117,8 +119,8 @@ class HealthControllerTest extends IntegrationTestCase
         }
         sort($ruleIds);
 
-        $firstPage = $this->decodeAffected($this->controller->dataIntegrityAffected('rule-invalid', new Request(['limit' => '2'])));
-        $secondPage = $this->decodeAffected($this->controller->dataIntegrityAffected('rule-invalid', new Request(['limit' => '2', 'page' => '2'])));
+        $firstPage = $this->decodeAffected($this->controller->dataIntegrityAffected('rule-invalid', new Request(['limit' => '2']), Context::createDefaultContext()));
+        $secondPage = $this->decodeAffected($this->controller->dataIntegrityAffected('rule-invalid', new Request(['limit' => '2', 'page' => '2']), Context::createDefaultContext()));
 
         static::assertSame(['entity' => 'rule', 'total' => 3, 'ids' => \array_slice($ruleIds, 0, 2), 'page' => 1, 'limit' => 2], $firstPage);
         static::assertSame(['entity' => 'rule', 'total' => 3, 'ids' => [$ruleIds[2]], 'page' => 2, 'limit' => 2], $secondPage);
@@ -126,7 +128,7 @@ class HealthControllerTest extends IntegrationTestCase
 
     public function testDataIntegrityAffectedClampsPaging(): void
     {
-        $affected = $this->decodeAffected($this->controller->dataIntegrityAffected('rule-invalid', new Request(['limit' => '1000', 'page' => '-3'])));
+        $affected = $this->decodeAffected($this->controller->dataIntegrityAffected('rule-invalid', new Request(['limit' => '1000', 'page' => '-3']), Context::createDefaultContext()));
 
         static::assertSame(100, $affected['limit']);
         static::assertSame(1, $affected['page']);
@@ -134,9 +136,25 @@ class HealthControllerTest extends IntegrationTestCase
 
     public function testDataIntegrityAffectedReturnsNotFoundForUnknownChecks(): void
     {
-        $response = $this->controller->dataIntegrityAffected('unknown-check', new Request());
+        $response = $this->controller->dataIntegrityAffected('unknown-check', new Request(), Context::createDefaultContext());
 
         static::assertSame(404, $response->getStatusCode());
+    }
+
+    public function testDataIntegrityAffectedRequiresReadPermissionForTheEntity(): void
+    {
+        $response = $this->controller->dataIntegrityAffected('rule-invalid', new Request(), $this->adminContext([]));
+
+        static::assertSame(403, $response->getStatusCode());
+        static::assertSame(['error' => 'Missing privilege "rule:read"'], json_decode((string) $response->getContent(), true, 512, \JSON_THROW_ON_ERROR));
+    }
+
+    public function testDataIntegrityAffectedListsTheRecordsWithReadPermission(): void
+    {
+        $response = $this->controller->dataIntegrityAffected('rule-invalid', new Request(), $this->adminContext(['rule:read']));
+
+        static::assertSame(200, $response->getStatusCode());
+        static::assertSame('rule', $this->decodeAffected($response)['entity']);
     }
 
     public function testPingStatusReturnsCachedResponse(): void
@@ -167,6 +185,17 @@ class HealthControllerTest extends IntegrationTestCase
     /**
      * @return array<string, mixed>
      */
+    /**
+     * @param list<string> $permissions
+     */
+    private function adminContext(array $permissions): Context
+    {
+        $source = new AdminApiSource(null);
+        $source->setPermissions($permissions);
+
+        return new Context($source);
+    }
+
     private function decodeAffected(JsonResponse $response): array
     {
         static::assertSame(200, $response->getStatusCode());

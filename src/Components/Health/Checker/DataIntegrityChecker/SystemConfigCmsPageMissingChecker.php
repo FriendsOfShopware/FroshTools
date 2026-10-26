@@ -10,6 +10,7 @@ use Frosh\Tools\Components\Health\Checker\CheckerInterface;
 use Frosh\Tools\Components\Health\HealthCollection;
 use Shopware\Core\Defaults;
 use Shopware\Core\Framework\Uuid\Uuid;
+use Shopware\Core\System\SystemConfig\SystemConfigDefinition;
 
 class SystemConfigCmsPageMissingChecker implements DataIntegrityCheckerInterface, CheckerInterface, AffectedEntitiesProviderInterface
 {
@@ -73,7 +74,7 @@ class SystemConfigCmsPageMissingChecker implements DataIntegrityCheckerInterface
     {
         return AffectedEntities::fromQuery(
             $this->connection,
-            'system_config',
+            SystemConfigDefinition::ENTITY_NAME,
             self::AFFECTED_QUERY,
             $this->queryParameters(),
             ['configKeys' => ArrayParameterType::STRING],

@@ -7,6 +7,7 @@ namespace Frosh\Tools\Components\Health\Checker\DataIntegrityChecker;
 use Doctrine\DBAL\Connection;
 use Frosh\Tools\Components\Health\Checker\CheckerInterface;
 use Frosh\Tools\Components\Health\HealthCollection;
+use Shopware\Core\System\SalesChannel\SalesChannelDefinition;
 use Symfony\Component\DependencyInjection\Attribute\Autowire;
 
 class ProductExportCurrencyInvalidChecker implements DataIntegrityCheckerInterface, CheckerInterface, AffectedEntitiesProviderInterface
@@ -59,7 +60,7 @@ class ProductExportCurrencyInvalidChecker implements DataIntegrityCheckerInterfa
     {
         return AffectedEntities::fromQuery(
             $this->connection,
-            'sales_channel',
+            SalesChannelDefinition::ENTITY_NAME,
             \sprintf('SELECT affected.sales_channel_id AS id FROM (%s) affected', self::AFFECTED_QUERY),
             $this->queryParameters(),
             [],

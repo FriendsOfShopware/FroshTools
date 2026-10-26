@@ -8,6 +8,7 @@ use Doctrine\DBAL\ArrayParameterType;
 use Doctrine\DBAL\Connection;
 use Frosh\Tools\Components\Health\Checker\CheckerInterface;
 use Frosh\Tools\Components\Health\HealthCollection;
+use Shopware\Core\System\DeliveryTime\DeliveryTimeDefinition;
 use Shopware\Core\System\DeliveryTime\DeliveryTimeEntity;
 
 class DeliveryTimeInvalidChecker implements DataIntegrityCheckerInterface, CheckerInterface, AffectedEntitiesProviderInterface
@@ -59,7 +60,7 @@ class DeliveryTimeInvalidChecker implements DataIntegrityCheckerInterface, Check
     {
         return AffectedEntities::fromQuery(
             $this->connection,
-            'delivery_time',
+            DeliveryTimeDefinition::ENTITY_NAME,
             self::AFFECTED_QUERY,
             ['supportedUnits' => self::SUPPORTED_UNITS],
             ['supportedUnits' => ArrayParameterType::STRING],

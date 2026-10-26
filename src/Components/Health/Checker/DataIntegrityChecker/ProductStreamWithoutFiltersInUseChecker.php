@@ -8,6 +8,7 @@ use Doctrine\DBAL\ArrayParameterType;
 use Doctrine\DBAL\Connection;
 use Frosh\Tools\Components\Health\Checker\CheckerInterface;
 use Frosh\Tools\Components\Health\HealthCollection;
+use Shopware\Core\Content\ProductStream\ProductStreamDefinition;
 use Shopware\Core\Defaults;
 use Shopware\Core\Framework\Uuid\Uuid;
 use Symfony\Component\DependencyInjection\Attribute\Autowire;
@@ -47,7 +48,7 @@ class ProductStreamWithoutFiltersInUseChecker implements DataIntegrityCheckerInt
 
     public function getAffectedEntities(int $limit, int $offset): AffectedEntities
     {
-        return AffectedEntities::fromIds('product_stream', $this->findAffectedIds(), $limit, $offset);
+        return AffectedEntities::fromIds(ProductStreamDefinition::ENTITY_NAME, $this->findAffectedIds(), $limit, $offset);
     }
 
     /**

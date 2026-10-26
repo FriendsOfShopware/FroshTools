@@ -10,6 +10,7 @@ use Frosh\Tools\Components\Health\Checker\CheckerInterface;
 use Frosh\Tools\Components\Health\HealthCollection;
 use Shopware\Core\Defaults;
 use Shopware\Core\Framework\Uuid\Uuid;
+use Shopware\Core\System\SalesChannel\SalesChannelDefinition;
 
 class NumberRangeSalesChannelMissingChecker implements DataIntegrityCheckerInterface, CheckerInterface, AffectedEntitiesProviderInterface
 {
@@ -71,7 +72,7 @@ class NumberRangeSalesChannelMissingChecker implements DataIntegrityCheckerInter
     {
         return AffectedEntities::fromQuery(
             $this->connection,
-            'sales_channel',
+            SalesChannelDefinition::ENTITY_NAME,
             self::AFFECTED_QUERY,
             ['typeIds' => $this->getSalesChannelTypeIds()],
             ['typeIds' => ArrayParameterType::BINARY],

@@ -7,6 +7,7 @@ namespace Frosh\Tools\Components\Health\Checker\DataIntegrityChecker;
 use Doctrine\DBAL\Connection;
 use Frosh\Tools\Components\Health\Checker\CheckerInterface;
 use Frosh\Tools\Components\Health\HealthCollection;
+use Shopware\Core\Content\Category\CategoryDefinition;
 use Shopware\Core\Defaults;
 use Shopware\Core\Framework\Uuid\Uuid;
 
@@ -52,7 +53,7 @@ class CategorySortingInvalidChecker implements DataIntegrityCheckerInterface, Ch
     {
         return AffectedEntities::fromQuery(
             $this->connection,
-            'category',
+            CategoryDefinition::ENTITY_NAME,
             self::AFFECTED_QUERY,
             ['liveVersionId' => Uuid::fromHexToBytes(Defaults::LIVE_VERSION)],
             [],

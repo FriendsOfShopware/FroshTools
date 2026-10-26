@@ -7,6 +7,7 @@ namespace Frosh\Tools\Components\Health\Checker\DataIntegrityChecker;
 use Doctrine\DBAL\Connection;
 use Frosh\Tools\Components\Health\Checker\CheckerInterface;
 use Frosh\Tools\Components\Health\HealthCollection;
+use Shopware\Core\System\Currency\CurrencyDefinition;
 
 class CurrencyRoundingIntervalZeroChecker implements DataIntegrityCheckerInterface, CheckerInterface, AffectedEntitiesProviderInterface
 {
@@ -67,6 +68,6 @@ class CurrencyRoundingIntervalZeroChecker implements DataIntegrityCheckerInterfa
 
     public function getAffectedEntities(int $limit, int $offset): AffectedEntities
     {
-        return AffectedEntities::fromQuery($this->connection, 'currency', self::AFFECTED_QUERY, [], [], $limit, $offset);
+        return AffectedEntities::fromQuery($this->connection, CurrencyDefinition::ENTITY_NAME, self::AFFECTED_QUERY, [], [], $limit, $offset);
     }
 }

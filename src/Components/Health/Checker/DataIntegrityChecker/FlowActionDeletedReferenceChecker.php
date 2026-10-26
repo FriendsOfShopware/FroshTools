@@ -8,6 +8,7 @@ use Doctrine\DBAL\ArrayParameterType;
 use Doctrine\DBAL\Connection;
 use Frosh\Tools\Components\Health\Checker\CheckerInterface;
 use Frosh\Tools\Components\Health\HealthCollection;
+use Shopware\Core\Content\Flow\FlowDefinition;
 
 class FlowActionDeletedReferenceChecker implements DataIntegrityCheckerInterface, CheckerInterface, AffectedEntitiesProviderInterface
 {
@@ -83,7 +84,7 @@ class FlowActionDeletedReferenceChecker implements DataIntegrityCheckerInterface
     {
         return AffectedEntities::fromQuery(
             $this->connection,
-            'flow',
+            FlowDefinition::ENTITY_NAME,
             \sprintf('SELECT broken.flow_id AS id FROM (%s) broken', self::BROKEN_SEQUENCES_QUERY),
             self::PARAMETERS,
             self::TYPES,

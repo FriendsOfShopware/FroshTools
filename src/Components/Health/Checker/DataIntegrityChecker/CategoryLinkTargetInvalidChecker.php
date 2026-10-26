@@ -7,6 +7,7 @@ namespace Frosh\Tools\Components\Health\Checker\DataIntegrityChecker;
 use Doctrine\DBAL\Connection;
 use Frosh\Tools\Components\Health\Checker\CheckerInterface;
 use Frosh\Tools\Components\Health\HealthCollection;
+use Shopware\Core\Content\Category\CategoryDefinition;
 use Shopware\Core\Defaults;
 use Shopware\Core\Framework\Uuid\Uuid;
 
@@ -96,7 +97,7 @@ class CategoryLinkTargetInvalidChecker implements DataIntegrityCheckerInterface,
 
     public function getAffectedEntities(int $limit, int $offset): AffectedEntities
     {
-        return AffectedEntities::fromQuery($this->connection, 'category', self::AFFECTED_QUERY, $this->queryParameters(), [], $limit, $offset);
+        return AffectedEntities::fromQuery($this->connection, CategoryDefinition::ENTITY_NAME, self::AFFECTED_QUERY, $this->queryParameters(), [], $limit, $offset);
     }
 
     /**

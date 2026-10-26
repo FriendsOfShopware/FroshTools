@@ -10,6 +10,7 @@ use Frosh\Tools\Components\Health\Checker\CheckerInterface;
 use Frosh\Tools\Components\Health\HealthCollection;
 use Shopware\Core\Defaults;
 use Shopware\Core\Framework\Uuid\Uuid;
+use Shopware\Core\System\SalesChannel\SalesChannelDefinition;
 
 class SalesChannelDefaultCountryUnavailableChecker implements DataIntegrityCheckerInterface, CheckerInterface, AffectedEntitiesProviderInterface
 {
@@ -58,7 +59,7 @@ class SalesChannelDefaultCountryUnavailableChecker implements DataIntegrityCheck
     {
         return AffectedEntities::fromQuery(
             $this->connection,
-            'sales_channel',
+            SalesChannelDefinition::ENTITY_NAME,
             self::AFFECTED_QUERY,
             $this->getParams(),
             $this->getTypes(),

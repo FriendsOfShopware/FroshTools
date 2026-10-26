@@ -7,6 +7,7 @@ namespace Frosh\Tools\Components\Health\Checker\DataIntegrityChecker;
 use Doctrine\DBAL\Connection;
 use Frosh\Tools\Components\Health\Checker\CheckerInterface;
 use Frosh\Tools\Components\Health\HealthCollection;
+use Shopware\Core\Content\Product\ProductDefinition;
 use Shopware\Core\Defaults;
 use Shopware\Core\Framework\Uuid\Uuid;
 use Symfony\Component\DependencyInjection\Attribute\Autowire;
@@ -98,12 +99,12 @@ class VariantOptionConfiguratorSettingMissingChecker implements DataIntegrityChe
     public function getAffectedEntities(int $limit, int $offset): AffectedEntities
     {
         if ($this->isFixedInShopware()) {
-            return new AffectedEntities('product', 0, []);
+            return new AffectedEntities(ProductDefinition::ENTITY_NAME, 0, []);
         }
 
         return AffectedEntities::fromQuery(
             $this->connection,
-            'product',
+            ProductDefinition::ENTITY_NAME,
             self::AFFECTED_QUERY,
             ['liveVersionId' => Uuid::fromHexToBytes(Defaults::LIVE_VERSION)],
             [],

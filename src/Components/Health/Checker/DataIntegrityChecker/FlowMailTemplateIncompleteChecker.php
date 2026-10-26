@@ -7,6 +7,7 @@ namespace Frosh\Tools\Components\Health\Checker\DataIntegrityChecker;
 use Doctrine\DBAL\Connection;
 use Frosh\Tools\Components\Health\Checker\CheckerInterface;
 use Frosh\Tools\Components\Health\HealthCollection;
+use Shopware\Core\Content\MailTemplate\MailTemplateDefinition;
 use Shopware\Core\Defaults;
 use Shopware\Core\Framework\Uuid\Uuid;
 
@@ -57,7 +58,7 @@ class FlowMailTemplateIncompleteChecker implements DataIntegrityCheckerInterface
 
     public function getAffectedEntities(int $limit, int $offset): AffectedEntities
     {
-        return AffectedEntities::fromQuery($this->connection, 'mail_template', self::AFFECTED_QUERY, $this->queryParameters(), [], $limit, $offset);
+        return AffectedEntities::fromQuery($this->connection, MailTemplateDefinition::ENTITY_NAME, self::AFFECTED_QUERY, $this->queryParameters(), [], $limit, $offset);
     }
 
     /**

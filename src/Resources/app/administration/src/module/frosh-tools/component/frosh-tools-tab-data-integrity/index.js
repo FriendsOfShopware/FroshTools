@@ -46,7 +46,10 @@ Component.register('frosh-tools-tab-data-integrity', {
         },
 
         hasInfo(item) {
-            return Boolean(this.recommendationFor(item));
+            return (
+                Boolean(this.recommendationFor(item)) ||
+                Boolean(item?.current && item.current !== '0')
+            );
         },
 
         openInfo(item) {

@@ -13,6 +13,12 @@
         {{ $t('frosh-tools.tabs.data-integrity.affected.unavailable') }}
     </p>
     <p
+        v-else-if="forbidden"
+        class="ft-info-modal__text"
+    >
+        {{ $t('frosh-tools.tabs.data-integrity.affected.forbidden') }}
+    </p>
+    <p
         v-else-if="loadError"
         class="ft-info-modal__text"
     >

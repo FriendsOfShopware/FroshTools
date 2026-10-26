@@ -9,6 +9,7 @@ use Frosh\Tools\Components\Health\Checker\CheckerInterface;
 use Frosh\Tools\Components\Health\HealthCollection;
 use Shopware\Core\Defaults;
 use Shopware\Core\Framework\Uuid\Uuid;
+use Shopware\Core\System\Currency\CurrencyDefinition;
 
 class CurrencyFactorInvalidChecker implements DataIntegrityCheckerInterface, CheckerInterface, AffectedEntitiesProviderInterface
 {
@@ -49,7 +50,7 @@ class CurrencyFactorInvalidChecker implements DataIntegrityCheckerInterface, Che
     {
         return AffectedEntities::fromQuery(
             $this->connection,
-            'currency',
+            CurrencyDefinition::ENTITY_NAME,
             self::AFFECTED_QUERY,
             ['defaultCurrencyId' => Uuid::fromHexToBytes(Defaults::CURRENCY)],
             [],

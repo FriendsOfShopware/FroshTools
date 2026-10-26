@@ -7,6 +7,7 @@ namespace Frosh\Tools\Components\Health\Checker\DataIntegrityChecker;
 use Doctrine\DBAL\Connection;
 use Frosh\Tools\Components\Health\Checker\CheckerInterface;
 use Frosh\Tools\Components\Health\HealthCollection;
+use Shopware\Core\Content\Rule\RuleDefinition;
 use Shopware\Core\Framework\Rule\Collector\RuleConditionRegistry;
 use Shopware\Core\Framework\Rule\Container\ContainerInterface;
 
@@ -51,7 +52,7 @@ class DuplicateRuleConditionsChecker implements DataIntegrityCheckerInterface, C
             }
         }
 
-        return new AffectedEntities('rule', \count($ids), $pageIds, $related);
+        return new AffectedEntities(RuleDefinition::ENTITY_NAME, \count($ids), $pageIds, $related);
     }
 
     /**

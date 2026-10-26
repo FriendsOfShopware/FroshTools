@@ -7,6 +7,7 @@ namespace Frosh\Tools\Components\Health\Checker\DataIntegrityChecker;
 use Doctrine\DBAL\Connection;
 use Frosh\Tools\Components\Health\Checker\CheckerInterface;
 use Frosh\Tools\Components\Health\HealthCollection;
+use Shopware\Core\System\Tax\TaxDefinition;
 use Shopware\Core\System\Tax\TaxRuleType\IndividualStatesRuleTypeFilter;
 
 class TaxRuleStatesInvalidChecker implements DataIntegrityCheckerInterface, CheckerInterface, AffectedEntitiesProviderInterface
@@ -65,7 +66,7 @@ class TaxRuleStatesInvalidChecker implements DataIntegrityCheckerInterface, Chec
     {
         return AffectedEntities::fromQuery(
             $this->connection,
-            'tax',
+            TaxDefinition::ENTITY_NAME,
             self::AFFECTED_QUERY,
             ['technicalName' => IndividualStatesRuleTypeFilter::TECHNICAL_NAME],
             [],

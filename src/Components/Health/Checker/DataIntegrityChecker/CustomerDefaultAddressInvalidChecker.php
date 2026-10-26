@@ -7,6 +7,7 @@ namespace Frosh\Tools\Components\Health\Checker\DataIntegrityChecker;
 use Doctrine\DBAL\Connection;
 use Frosh\Tools\Components\Health\Checker\CheckerInterface;
 use Frosh\Tools\Components\Health\HealthCollection;
+use Shopware\Core\Checkout\Customer\CustomerDefinition;
 
 class CustomerDefaultAddressInvalidChecker implements DataIntegrityCheckerInterface, CheckerInterface, AffectedEntitiesProviderInterface
 {
@@ -48,6 +49,6 @@ class CustomerDefaultAddressInvalidChecker implements DataIntegrityCheckerInterf
 
     public function getAffectedEntities(int $limit, int $offset): AffectedEntities
     {
-        return AffectedEntities::fromQuery($this->connection, 'customer', self::AFFECTED_QUERY, [], [], $limit, $offset);
+        return AffectedEntities::fromQuery($this->connection, CustomerDefinition::ENTITY_NAME, self::AFFECTED_QUERY, [], [], $limit, $offset);
     }
 }

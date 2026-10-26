@@ -7,6 +7,7 @@ namespace Frosh\Tools\Components\Health\Checker\DataIntegrityChecker;
 use Doctrine\DBAL\Connection;
 use Frosh\Tools\Components\Health\Checker\CheckerInterface;
 use Frosh\Tools\Components\Health\HealthCollection;
+use Shopware\Core\System\NumberRange\NumberRangeDefinition;
 
 class NumberRangeTypeMissingChecker implements DataIntegrityCheckerInterface, CheckerInterface, AffectedEntitiesProviderInterface
 {
@@ -41,6 +42,6 @@ class NumberRangeTypeMissingChecker implements DataIntegrityCheckerInterface, Ch
 
     public function getAffectedEntities(int $limit, int $offset): AffectedEntities
     {
-        return AffectedEntities::fromQuery($this->connection, 'number_range', self::AFFECTED_QUERY, [], [], $limit, $offset);
+        return AffectedEntities::fromQuery($this->connection, NumberRangeDefinition::ENTITY_NAME, self::AFFECTED_QUERY, [], [], $limit, $offset);
     }
 }

@@ -274,6 +274,7 @@
                     "loadError": "Die betroffenen Datensätze konnten nicht geladen werden.",
                     "empty": "Keine betroffenen Datensätze gefunden. Aktualisieren Sie die Prüfungen, um die Anzahl zu aktualisieren.",
                     "unavailable": "Diese Prüfung kann die betroffenen Datensätze nicht auflisten.",
+                    "forbidden": "Sie sind nicht berechtigt, diese Datensätze anzusehen.",
                     "opensInNewTab": "Öffnet sich in einem neuen Tab",
                     "related": "Zugehörige Datensätze:"
                 },

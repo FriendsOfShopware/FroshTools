@@ -7,6 +7,7 @@ namespace Frosh\Tools\Components\Health\Checker\DataIntegrityChecker;
 use Doctrine\DBAL\Connection;
 use Frosh\Tools\Components\Health\Checker\CheckerInterface;
 use Frosh\Tools\Components\Health\HealthCollection;
+use Shopware\Core\Content\Category\CategoryDefinition;
 use Shopware\Core\Defaults;
 use Shopware\Core\Framework\Uuid\Uuid;
 
@@ -53,7 +54,7 @@ class SalesChannelNavigationCategoryInactiveChecker implements DataIntegrityChec
     {
         return AffectedEntities::fromQuery(
             $this->connection,
-            'category',
+            CategoryDefinition::ENTITY_NAME,
             \sprintf('SELECT affected.category_id AS id FROM (%s) affected', self::AFFECTED_QUERY),
             ['storefrontTypeId' => Uuid::fromHexToBytes(Defaults::SALES_CHANNEL_TYPE_STOREFRONT)],
             [],
