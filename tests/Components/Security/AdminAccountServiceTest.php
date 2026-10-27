@@ -4,11 +4,19 @@ declare(strict_types=1);
 
 namespace Frosh\Tools\Tests\Components\Security;
 
-use Doctrine\DBAL\Connection;
 use Frosh\Tools\Components\Security\AdminAccountService;
 use Frosh\Tools\Tests\IntegrationTestCase;
 use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\Attributes\DataProvider;
+use Shopware\Core\Framework\Api\Acl\Role\AclRoleCollection;
+use Shopware\Core\Framework\Api\Acl\Role\AclRoleDefinition;
+use Shopware\Core\Framework\App\AppCollection;
+use Shopware\Core\Framework\App\AppDefinition;
+use Shopware\Core\Framework\Context;
+use Shopware\Core\Framework\DataAbstractionLayer\EntityRepository;
+use Shopware\Core\System\Integration\IntegrationCollection;
+use Shopware\Core\System\Integration\IntegrationDefinition;
+use Shopware\Core\Test\Stub\Framework\IdsCollection;
 
 #[CoversClass(AdminAccountService::class)]
 class AdminAccountServiceTest extends IntegrationTestCase
@@ -100,7 +108,13 @@ class AdminAccountServiceTest extends IntegrationTestCase
 
     public function testIntegrationsExposeNoCredentials(): void
     {
+        $context = Context::createDefaultContext();
+        $ids = new IdsCollection();
+
+        $this->createIntegration($ids->get('integration'), 'frosh_tools_credentials_test', $context);
+
         $integrations = $this->accounts->getIntegrations();
+        static::assertNotEmpty($integrations, 'The fixture integration must be returned');
 
         foreach ($integrations as $integration) {
             foreach (self::FORBIDDEN_KEYS as $key) {
@@ -118,70 +132,53 @@ class AdminAccountServiceTest extends IntegrationTestCase
 
     public function testAppIntegrationReportsItsAppAclRole(): void
     {
-        $connection = static::getContainer()->get(Connection::class);
+        $context = Context::createDefaultContext();
+        $ids = new IdsCollection();
 
-        $integrationId = hex2bin(str_repeat('c1', 16));
-        $appRoleId = hex2bin(str_repeat('c2', 16));
-        $otherRoleId = hex2bin(str_repeat('c3', 16));
-
-        $connection->insert('integration', [
-            'id' => $integrationId,
-            'label' => 'frosh_tools_app_test',
-            'access_key' => 'frosh_tools_app_test_key',
-            'secret_access_key' => 'frosh_tools_app_test_secret',
-            'admin' => 0,
-            'created_at' => '2024-01-01 00:00:00.000',
-        ]);
-
-        foreach ([$appRoleId => 'frosh_tools_app_role', $otherRoleId => 'frosh_tools_other_role'] as $id => $name) {
-            $connection->insert('acl_role', [
-                'id' => $id,
-                'name' => $name,
-                'privileges' => json_encode(['app:read'], \JSON_THROW_ON_ERROR),
-                'created_at' => '2024-01-01 00:00:00.000',
-            ]);
-        }
+        $this->createIntegration($ids->get('integration'), 'frosh_tools_app_test', $context);
+        $this->createAclRoles([
+            'appRole' => 'frosh_tools_app_role',
+            'otherRole' => 'frosh_tools_other_role',
+        ], $context, $ids);
 
         // Attached the way Shopware wires an app: through integration_role, which the
         // service must not mistake for the app's own role.
-        $connection->insert('integration_role', [
-            'integration_id' => $integrationId,
-            'acl_role_id' => $otherRoleId,
-        ]);
+        $this->getRepository(IntegrationDefinition::ENTITY_NAME, IntegrationCollection::class)->update([[
+            'id' => $ids->get('integration'),
+            'aclRoles' => [['id' => $ids->get('otherRole')]],
+        ]], $context);
 
-        $connection->insert('app', [
-            'id' => hex2bin(str_repeat('c4', 16)),
+        $this->getRepository(AppDefinition::ENTITY_NAME, AppCollection::class)->create([[
+            'id' => $ids->get('app'),
             'name' => 'FroshToolsAppTest',
+            'label' => 'FroshToolsAppTest',
             'path' => 'custom/apps/FroshToolsAppTest',
             'version' => '1.0.0',
-            'active' => 1,
-            'configurable' => 0,
-            'allow_disable' => 1,
-            'integration_id' => $integrationId,
-            'acl_role_id' => $appRoleId,
-            'created_at' => '2024-01-01 00:00:00.000',
-        ]);
+            'active' => true,
+            'integrationId' => $ids->get('integration'),
+            'aclRoleId' => $ids->get('appRole'),
+        ]], $context);
 
-        $integration = null;
-        foreach ($this->accounts->getIntegrations() as $candidate) {
-            if ($candidate['label'] === 'frosh_tools_app_test') {
-                $integration = $candidate;
-            }
-        }
+        $integration = $this->findIntegration('frosh_tools_app_test');
 
-        static::assertNotNull($integration, 'App integration fixture not returned');
         static::assertTrue($integration['managedByApp']);
         static::assertSame('FroshToolsAppTest', $integration['appName']);
 
         // Apps grant permissions via app.acl_role_id, which Shopware resolves with
         // precedence over integration_role - that role must not go missing here.
-        static::assertContains(bin2hex($appRoleId), $integration['aclRoleIds']);
-        static::assertContains(bin2hex($otherRoleId), $integration['aclRoleIds']);
+        static::assertContains($ids->get('appRole'), $integration['aclRoleIds']);
+        static::assertContains($ids->get('otherRole'), $integration['aclRoleIds']);
     }
 
     public function testAclRolesAreHashedInsteadOfListed(): void
     {
+        $context = Context::createDefaultContext();
+        $ids = new IdsCollection();
+
+        $this->createAclRoles(['role' => 'frosh_tools_hash_test'], $context, $ids, ['order:read']);
+
         $roles = $this->accounts->getAclRoles();
+        static::assertNotEmpty($roles, 'The fixture role must be returned');
 
         foreach ($roles as $role) {
             static::assertArrayNotHasKey('privileges', $role);
@@ -194,36 +191,85 @@ class AdminAccountServiceTest extends IntegrationTestCase
 
     public function testPrivilegeHashIsStableAndOrderIndependent(): void
     {
-        $connection = static::getContainer()->get(Connection::class);
-        $id = hex2bin(str_repeat('ab', 16));
+        $context = Context::createDefaultContext();
+        $ids = new IdsCollection();
 
-        $connection->insert('acl_role', [
-            'id' => $id,
-            'name' => 'frosh_tools_account_test',
-            'privileges' => json_encode(['b:read', 'a:read'], \JSON_THROW_ON_ERROR),
-            'created_at' => '2024-01-01 00:00:00.000',
-        ]);
+        $this->createAclRoles(['role' => 'frosh_tools_account_test'], $context, $ids, ['b:read', 'a:read']);
 
         $before = $this->findRole('frosh_tools_account_test');
 
-        $connection->update(
-            'acl_role',
-            ['privileges' => json_encode(['a:read', 'b:read'], \JSON_THROW_ON_ERROR)],
-            ['id' => $id],
-        );
+        $aclRoles = $this->getRepository(AclRoleDefinition::ENTITY_NAME, AclRoleCollection::class);
+        $aclRoles->update([[
+            'id' => $ids->get('role'),
+            'privileges' => ['a:read', 'b:read'],
+        ]], $context);
 
         $reordered = $this->findRole('frosh_tools_account_test');
         static::assertSame($before['privilegesHash'], $reordered['privilegesHash'], 'Reordering privileges must not look like a change');
 
-        $connection->update(
-            'acl_role',
-            ['privileges' => json_encode(['a:read', 'b:read', 'c:write'], \JSON_THROW_ON_ERROR)],
-            ['id' => $id],
-        );
+        $aclRoles->update([[
+            'id' => $ids->get('role'),
+            'privileges' => ['a:read', 'b:read', 'c:write'],
+        ]], $context);
 
         $escalated = $this->findRole('frosh_tools_account_test');
         static::assertNotSame($before['privilegesHash'], $escalated['privilegesHash'], 'An added privilege must be detectable');
         static::assertSame(3, $escalated['privilegeCount']);
+    }
+
+    private function createIntegration(string $id, string $label, Context $context): void
+    {
+        $this->getRepository(IntegrationDefinition::ENTITY_NAME, IntegrationCollection::class)->create([[
+            'id' => $id,
+            'label' => $label,
+            'accessKey' => $id,
+            'secretAccessKey' => 'frosh_tools_test_secret',
+        ]], $context);
+    }
+
+    /**
+     * @param array<string, string> $names keyed by IdsCollection key
+     * @param list<string> $privileges
+     */
+    private function createAclRoles(array $names, Context $context, IdsCollection $ids, array $privileges = ['app:read']): void
+    {
+        $payload = [];
+        foreach ($names as $key => $name) {
+            $payload[] = [
+                'id' => $ids->get($key),
+                'name' => $name,
+                'privileges' => $privileges,
+            ];
+        }
+
+        $this->getRepository(AclRoleDefinition::ENTITY_NAME, AclRoleCollection::class)->create($payload, $context);
+    }
+
+    /**
+     * @param class-string<EntityCollection<Entity>> $collectionClass documents the repository's entity type
+     *
+     * @return EntityRepository<EntityCollection<Entity>>
+     */
+    private function getRepository(string $entity, string $collectionClass): EntityRepository
+    {
+        $repository = static::getContainer()->get($entity . '.repository');
+        static::assertInstanceOf(EntityRepository::class, $repository);
+
+        return $repository;
+    }
+
+    /**
+     * @return array<string, mixed>
+     */
+    private function findIntegration(string $label): array
+    {
+        foreach ($this->accounts->getIntegrations() as $integration) {
+            if ($integration['label'] === $label) {
+                return $integration;
+            }
+        }
+
+        static::fail(\sprintf('Integration "%s" not found', $label));
     }
 
     /**
