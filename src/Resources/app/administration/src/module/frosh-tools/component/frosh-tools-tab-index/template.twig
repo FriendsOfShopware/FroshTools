@@ -229,9 +229,8 @@
                     <pre
                         class="ft-info-modal__code"
                         v-if="recommendationFor(activeInfo).code"
-                    >
-                        {{ recommendationFor(activeInfo).code }}
-                    </pre>
+                        v-text="recommendationFor(activeInfo).code"
+                    />
                 </section>
             </template>
         </div>
