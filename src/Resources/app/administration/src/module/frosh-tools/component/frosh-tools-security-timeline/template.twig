@@ -29,13 +29,14 @@
             <frosh-tools-security-activity-select
                 v-model:value="actor"
                 searchable
+                :search-term="actorSearchTerm"
                 :label="$t('frosh-tools.tabs.security.timeline.actor')"
                 :placeholder="$t('frosh-tools.tabs.security.timeline.allActors')"
                 :options="actorOptions"
                 @update:value="clearUser"
                 :is-loading="optionsLoading.actor"
                 show-clearable-button
-                @search="loadOptions('actor', $event)"
+                @search="searchActors"
             />
             <small v-if="moreActors">
                 {{ $t('frosh-tools.tabs.security.timeline.moreActors') }}

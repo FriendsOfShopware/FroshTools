@@ -12,6 +12,7 @@ Shopware.Component.register('frosh-tools-security-activity-select', {
         isLoading: { type: Boolean, default: false },
         showClearableButton: { type: Boolean, default: false },
         searchable: { type: Boolean, default: false },
+        searchTerm: { type: String, default: '' },
     },
     emits: ['update:value', 'search'],
     computed: {
@@ -20,8 +21,5 @@ Shopware.Component.register('frosh-tools-security-activity-select', {
                 (option: { hidden?: boolean }) => !option.hidden
             );
         },
-    },
-    data() {
-        return { searchTerm: '' };
     },
 });

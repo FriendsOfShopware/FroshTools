@@ -2,9 +2,9 @@
     <label v-if="searchable">
         {{ $t('frosh-tools.tabs.security.timeline.searchActor') }}
         <input
-            v-model="searchTerm"
+            :value="searchTerm"
             type="search"
-            @input="$emit('search', searchTerm)"
+            @input="$emit('search', $event.target.value)"
         />
     </label>
     <label>
