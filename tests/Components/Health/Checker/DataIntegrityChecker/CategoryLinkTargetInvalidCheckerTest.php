@@ -40,31 +40,47 @@ class CategoryLinkTargetInvalidCheckerTest extends DataIntegrityCheckerTestCase
         $this->createCategory('page', [Defaults::LANGUAGE_SYSTEM => ['product', Uuid::randomBytes(), null]]);
 
         static::assertAffectedCount($this->collectResult($this->checker, self::ID), 0);
+        static::assertAffectedEntities($this->checker, 'category', []);
     }
 
     public function testCountsLinksWithMissingTargets(): void
     {
         $languageId = $this->createLanguage();
 
-        $this->createCategory('link', [Defaults::LANGUAGE_SYSTEM => ['product', Uuid::randomBytes(), null]]);
-        $this->createCategory('link', [Defaults::LANGUAGE_SYSTEM => ['landing_page', Uuid::randomBytes(), null]]);
-        $this->createCategory('link', [Defaults::LANGUAGE_SYSTEM => ['category', null, null]]);
-        $this->createCategory('link', [Defaults::LANGUAGE_SYSTEM => ['external', null, '']]);
-        $this->createCategory('link', [
-            Defaults::LANGUAGE_SYSTEM => ['external', null, 'https://example.com'],
-            $languageId => ['category', Uuid::randomBytes(), null],
-        ]);
-        $this->createCategory('link', [$languageId => ['external', null, 'https://example.com']]);
-        $this->createCategory('link', [
-            Defaults::LANGUAGE_SYSTEM => ['external', null, 'https://example.com'],
-            $languageId => ['external', null, ''],
-        ]);
-        $this->createCategory('link', [
-            Defaults::LANGUAGE_SYSTEM => ['external', null, 'https://example.com'],
-            $languageId => ['product', null, null],
-        ]);
+        $categoryIds = [
+            $this->createCategory('link', [Defaults::LANGUAGE_SYSTEM => ['product', Uuid::randomBytes(), null]]),
+            $this->createCategory('link', [Defaults::LANGUAGE_SYSTEM => ['landing_page', Uuid::randomBytes(), null]]),
+            $this->createCategory('link', [Defaults::LANGUAGE_SYSTEM => ['category', null, null]]),
+            $this->createCategory('link', [Defaults::LANGUAGE_SYSTEM => ['external', null, '']]),
+            $this->createCategory('link', [
+                Defaults::LANGUAGE_SYSTEM => ['external', null, 'https://example.com'],
+                $languageId => ['category', Uuid::randomBytes(), null],
+            ]),
+            $this->createCategory('link', [$languageId => ['external', null, 'https://example.com']]),
+            $this->createCategory('link', [
+                Defaults::LANGUAGE_SYSTEM => ['external', null, 'https://example.com'],
+                $languageId => ['external', null, ''],
+            ]),
+            $this->createCategory('link', [
+                Defaults::LANGUAGE_SYSTEM => ['external', null, 'https://example.com'],
+                $languageId => ['product', null, null],
+            ]),
+        ];
 
         static::assertAffectedCount($this->collectResult($this->checker, self::ID), 8);
+        static::assertAffectedEntities($this->checker, 'category', array_map(Uuid::fromBytesToHex(...), $categoryIds));
+    }
+
+    public function testListsACategoryWithSeveralInvalidTranslationsOnce(): void
+    {
+        $categoryId = $this->createCategory('link', [
+            Defaults::LANGUAGE_SYSTEM => ['product', Uuid::randomBytes(), null],
+            $this->createLanguage() => ['category', Uuid::randomBytes(), null],
+            $this->createLanguage() => ['external', null, ''],
+        ]);
+
+        static::assertAffectedCount($this->collectResult($this->checker, self::ID), 1);
+        static::assertAffectedEntities($this->checker, 'category', [Uuid::fromBytesToHex($categoryId)]);
     }
 
     /**

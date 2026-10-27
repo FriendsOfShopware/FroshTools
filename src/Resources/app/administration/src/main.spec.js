@@ -17,6 +17,7 @@ const REGISTERED_COMPONENTS = [
     'frosh-tools-health-status',
     'frosh-tools-tab-index',
     'frosh-tools-tab-data-integrity',
+    'frosh-tools-data-integrity-affected',
     'frosh-tools-tab-cache',
     'frosh-tools-tab-queue',
     'frosh-tools-tab-scheduled',

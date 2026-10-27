@@ -9,30 +9,59 @@ use Frosh\Tools\Components\Health\Checker\CheckerInterface;
 use Frosh\Tools\Components\Health\HealthCollection;
 use Shopware\Core\Defaults;
 use Shopware\Core\Framework\Uuid\Uuid;
+use Shopware\Core\System\Currency\CurrencyDefinition;
 
-class CurrencyFactorInvalidChecker implements DataIntegrityCheckerInterface, CheckerInterface
+class CurrencyFactorInvalidChecker implements DataIntegrityCheckerInterface, CheckerInterface, AffectedEntitiesProviderInterface
 {
+    private const ID = 'currency-factor-invalid';
+
+    private const AFFECTED_QUERY = <<<'SQL'
+        SELECT id
+        FROM currency
+        WHERE factor <= 0
+           OR (id = :defaultCurrencyId AND factor <> 1)
+        SQL;
+
     public function __construct(
         private readonly Connection $connection,
     ) {
     }
 
+    public function getId(): string
+    {
+        return self::ID;
+    }
+
+    public function getAffectedEntity(): string
+    {
+        return CurrencyDefinition::ENTITY_NAME;
+    }
+
     public function collect(HealthCollection $collection): void
     {
-        $count = (int) $this->connection->fetchOne(
-            <<<'SQL'
-                SELECT COUNT(*)
-                FROM currency
-                WHERE factor <= 0
-                   OR (id = :defaultCurrencyId AND factor <> 1)
-                SQL,
+        $count = AffectedEntities::countRows(
+            $this->connection,
+            self::AFFECTED_QUERY,
             ['defaultCurrencyId' => Uuid::fromHexToBytes(Defaults::CURRENCY)],
         );
 
         $collection->add(DataIntegrityCheckResult::fromCount(
-            'currency-factor-invalid',
+            self::ID,
             'Currencies with an invalid exchange rate factor',
             $count,
         ));
+    }
+
+    public function getAffectedEntities(int $limit, int $offset): AffectedEntities
+    {
+        return AffectedEntities::fromQuery(
+            $this->connection,
+            CurrencyDefinition::ENTITY_NAME,
+            self::AFFECTED_QUERY,
+            ['defaultCurrencyId' => Uuid::fromHexToBytes(Defaults::CURRENCY)],
+            [],
+            $limit,
+            $offset,
+        );
     }
 }

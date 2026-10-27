@@ -7,36 +7,67 @@ namespace Frosh\Tools\Components\Health\Checker\DataIntegrityChecker;
 use Doctrine\DBAL\Connection;
 use Frosh\Tools\Components\Health\Checker\CheckerInterface;
 use Frosh\Tools\Components\Health\HealthCollection;
+use Shopware\Core\Content\Category\CategoryDefinition;
 use Shopware\Core\Defaults;
 use Shopware\Core\Framework\Uuid\Uuid;
 
-class SalesChannelNavigationCategoryInactiveChecker implements DataIntegrityCheckerInterface, CheckerInterface
+class SalesChannelNavigationCategoryInactiveChecker implements DataIntegrityCheckerInterface, CheckerInterface, AffectedEntitiesProviderInterface
 {
+    private const ID = 'sales-channel-navigation-category-inactive';
+
+    private const AFFECTED_QUERY = <<<'SQL'
+        SELECT sc.id AS sales_channel_id, c.id AS category_id
+        FROM sales_channel sc
+        INNER JOIN category c
+            ON c.id = sc.navigation_category_id
+            AND c.version_id = sc.navigation_category_version_id
+        WHERE sc.type_id = :storefrontTypeId
+          AND sc.active = 1
+          AND c.active = 0
+        SQL;
+
+    private const AFFECTED_IDS_QUERY = 'SELECT affected.category_id AS id FROM (' . self::AFFECTED_QUERY . ') affected';
+
     public function __construct(
         private readonly Connection $connection,
     ) {
     }
 
+    public function getId(): string
+    {
+        return self::ID;
+    }
+
+    public function getAffectedEntity(): string
+    {
+        return CategoryDefinition::ENTITY_NAME;
+    }
+
     public function collect(HealthCollection $collection): void
     {
-        $count = (int) $this->connection->fetchOne(
-            <<<'SQL'
-                SELECT COUNT(*)
-                FROM sales_channel sc
-                INNER JOIN category c
-                    ON c.id = sc.navigation_category_id
-                    AND c.version_id = sc.navigation_category_version_id
-                WHERE sc.type_id = :storefrontTypeId
-                  AND sc.active = 1
-                  AND c.active = 0
-                SQL,
+        $count = AffectedEntities::countRows(
+            $this->connection,
+            self::AFFECTED_QUERY,
             ['storefrontTypeId' => Uuid::fromHexToBytes(Defaults::SALES_CHANNEL_TYPE_STOREFRONT)],
         );
 
         $collection->add(DataIntegrityCheckResult::fromCount(
-            'sales-channel-navigation-category-inactive',
+            self::ID,
             'Storefronts with an inactive main navigation category',
             $count,
         ));
+    }
+
+    public function getAffectedEntities(int $limit, int $offset): AffectedEntities
+    {
+        return AffectedEntities::fromQuery(
+            $this->connection,
+            CategoryDefinition::ENTITY_NAME,
+            self::AFFECTED_IDS_QUERY,
+            ['storefrontTypeId' => Uuid::fromHexToBytes(Defaults::SALES_CHANNEL_TYPE_STOREFRONT)],
+            [],
+            $limit,
+            $offset,
+        );
     }
 }

@@ -7,6 +7,9 @@ namespace Frosh\Tools\Tests\Components\Health\Checker\DataIntegrityChecker;
 use Frosh\Tools\Components\Health\Checker\DataIntegrityChecker\ProductExportCurrencyInvalidChecker;
 use PHPUnit\Framework\Attributes\CoversClass;
 use Shopware\Core\Defaults;
+use Shopware\Core\Framework\Api\Util\AccessKeyHelper;
+use Shopware\Core\Framework\Context;
+use Shopware\Core\Framework\DataAbstractionLayer\EntityRepository;
 use Shopware\Core\Framework\Uuid\Uuid;
 
 #[CoversClass(ProductExportCurrencyInvalidChecker::class)]
@@ -37,6 +40,7 @@ class ProductExportCurrencyInvalidCheckerTest extends DataIntegrityCheckerTestCa
         $this->createExport(Uuid::fromHexToBytes(Defaults::CURRENCY));
 
         static::assertAffectedCount($this->collectResult($this->createChecker('6.7.15.0'), self::ID), 0);
+        static::assertAffectedEntities($this->createChecker('6.7.15.0'), 'sales_channel', []);
     }
 
     public function testCountsExportsWithAMissingOrUnassignedCurrency(): void
@@ -46,6 +50,7 @@ class ProductExportCurrencyInvalidCheckerTest extends DataIntegrityCheckerTestCa
         $this->createExport(Uuid::randomBytes());
 
         static::assertAffectedCount($this->collectResult($this->createChecker('6.7.15.0'), self::ID), 2);
+        static::assertAffectedEntities($this->createChecker('6.7.15.0'), 'sales_channel', [Uuid::fromBytesToHex($this->salesChannelId)]);
     }
 
     public function testCountsOnlyMissingCurrenciesBefore6_7_15(): void
@@ -54,6 +59,23 @@ class ProductExportCurrencyInvalidCheckerTest extends DataIntegrityCheckerTestCa
         $this->createExport(Uuid::randomBytes());
 
         static::assertAffectedCount($this->collectResult($this->createChecker('6.7.14.1'), self::ID), 1);
+        static::assertAffectedEntities($this->createChecker('6.7.14.1'), 'sales_channel', [Uuid::fromBytesToHex($this->salesChannelId)]);
+    }
+
+    public function testListsEveryComparisonSalesChannelWithAnInvalidExportOnce(): void
+    {
+        $otherSalesChannelId = $this->createComparisonSalesChannel();
+
+        $this->createExport(Uuid::randomBytes());
+        $this->createExport($this->createCurrency());
+        $this->createExport(Uuid::randomBytes(), $otherSalesChannelId);
+        $this->createExport(Uuid::fromHexToBytes(Defaults::CURRENCY), $this->createComparisonSalesChannel());
+
+        static::assertAffectedCount($this->collectResult($this->createChecker('6.7.15.0'), self::ID), 3);
+        static::assertAffectedEntities($this->createChecker('6.7.15.0'), 'sales_channel', [
+            Uuid::fromBytesToHex($this->salesChannelId),
+            Uuid::fromBytesToHex($otherSalesChannelId),
+        ]);
     }
 
     private function createChecker(string $version): ProductExportCurrencyInvalidChecker
@@ -61,7 +83,7 @@ class ProductExportCurrencyInvalidCheckerTest extends DataIntegrityCheckerTestCa
         return new ProductExportCurrencyInvalidChecker($this->connection, $version);
     }
 
-    private function createExport(string $currencyId): void
+    private function createExport(string $currencyId, ?string $salesChannelId = null): void
     {
         $streamId = Uuid::randomBytes();
         $this->connection->insert('product_stream', [
@@ -73,7 +95,7 @@ class ProductExportCurrencyInvalidCheckerTest extends DataIntegrityCheckerTestCa
             'id' => Uuid::randomBytes(),
             'product_stream_id' => $streamId,
             'storefront_sales_channel_id' => $this->salesChannelId,
-            'sales_channel_id' => $this->salesChannelId,
+            'sales_channel_id' => $salesChannelId ?? $this->salesChannelId,
             'file_name' => Uuid::randomHex() . '.csv',
             'access_key' => Uuid::randomHex(),
             'encoding' => 'UTF-8',
@@ -82,6 +104,31 @@ class ProductExportCurrencyInvalidCheckerTest extends DataIntegrityCheckerTestCa
             'currency_id' => $currencyId,
             'created_at' => self::now(),
         ]);
+    }
+
+    private function createComparisonSalesChannel(): string
+    {
+        $id = Uuid::randomHex();
+
+        /** @var EntityRepository $repository */
+        $repository = static::getContainer()->get('sales_channel.repository');
+        $repository->create([[
+            'id' => $id,
+            'typeId' => Defaults::SALES_CHANNEL_TYPE_PRODUCT_COMPARISON,
+            'name' => 'Frosh data integrity check product comparison',
+            'accessKey' => AccessKeyHelper::generateAccessKey('sales-channel'),
+            'languageId' => Defaults::LANGUAGE_SYSTEM,
+            'currencyId' => Defaults::CURRENCY,
+            'languages' => [['id' => Defaults::LANGUAGE_SYSTEM]],
+            'currencies' => [['id' => Defaults::CURRENCY]],
+            'customerGroupId' => $this->connection->fetchOne('SELECT LOWER(HEX(id)) FROM customer_group LIMIT 1'),
+            'paymentMethodId' => $this->connection->fetchOne('SELECT LOWER(HEX(id)) FROM payment_method LIMIT 1'),
+            'shippingMethodId' => $this->connection->fetchOne('SELECT LOWER(HEX(id)) FROM shipping_method LIMIT 1'),
+            'countryId' => $this->connection->fetchOne('SELECT LOWER(HEX(id)) FROM country LIMIT 1'),
+            'navigationCategoryId' => $this->connection->fetchOne('SELECT LOWER(HEX(navigation_category_id)) FROM sales_channel WHERE id = :id', ['id' => $this->salesChannelId]),
+        ]], Context::createDefaultContext());
+
+        return Uuid::fromHexToBytes($id);
     }
 
     private function createCurrency(): string

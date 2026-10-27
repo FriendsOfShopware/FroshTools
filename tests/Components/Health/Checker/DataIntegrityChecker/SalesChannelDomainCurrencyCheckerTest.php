@@ -34,13 +34,33 @@ class SalesChannelDomainCurrencyCheckerTest extends DataIntegrityCheckerTestCase
         );
 
         static::assertAffectedCount($this->collectResult($this->checker, self::ID), 0);
+        static::assertAffectedEntities($this->checker, 'sales_channel', []);
     }
 
     public function testCountsDomainsWithAnUnassignedCurrency(): void
     {
-        $currencyId = Uuid::randomBytes();
+        $salesChannelId = $this->createDomain($this->createCurrency());
+
+        static::assertAffectedCount($this->collectResult($this->checker, self::ID), 1);
+        static::assertAffectedEntities($this->checker, 'sales_channel', [$salesChannelId]);
+    }
+
+    public function testListsASalesChannelWithSeveralBrokenDomainsOnce(): void
+    {
+        $currencyId = $this->createCurrency();
+        $salesChannelId = $this->createDomain($currencyId);
+        $this->createDomain($currencyId);
+
+        static::assertAffectedCount($this->collectResult($this->checker, self::ID), 2);
+        static::assertAffectedEntities($this->checker, 'sales_channel', [$salesChannelId]);
+    }
+
+    private function createCurrency(): string
+    {
+        $id = Uuid::randomBytes();
+
         $this->connection->insert('currency', [
-            'id' => $currencyId,
+            'id' => $id,
             'iso_code' => 'XTS',
             'factor' => 1,
             'symbol' => 'X',
@@ -49,21 +69,23 @@ class SalesChannelDomainCurrencyCheckerTest extends DataIntegrityCheckerTestCase
             'created_at' => self::now(),
         ]);
 
-        $this->createDomain($currencyId);
-
-        static::assertAffectedCount($this->collectResult($this->checker, self::ID), 1);
+        return $id;
     }
 
-    private function createDomain(string $currencyId): void
+    private function createDomain(string $currencyId): string
     {
+        $salesChannelId = (string) $this->connection->fetchOne('SELECT id FROM sales_channel ORDER BY id LIMIT 1');
+
         $this->connection->insert('sales_channel_domain', [
             'id' => Uuid::randomBytes(),
-            'sales_channel_id' => $this->connection->fetchOne('SELECT id FROM sales_channel LIMIT 1'),
+            'sales_channel_id' => $salesChannelId,
             'language_id' => Uuid::fromHexToBytes(Defaults::LANGUAGE_SYSTEM),
             'url' => 'https://frosh-data-integrity-check-' . Uuid::randomHex() . '.test',
             'currency_id' => $currencyId,
             'snippet_set_id' => $this->connection->fetchOne('SELECT id FROM snippet_set LIMIT 1'),
             'created_at' => self::now(),
         ]);
+
+        return Uuid::fromBytesToHex($salesChannelId);
     }
 }

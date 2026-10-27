@@ -32,6 +32,7 @@ class ProductDisplayGroupMissingCheckerTest extends DataIntegrityCheckerTestCase
         $this->updateProduct($mainProductId, 'display_group', null);
 
         static::assertAffectedCount($this->collectResult($this->checker, self::ID), 0);
+        static::assertAffectedEntities($this->checker, 'product', []);
     }
 
     public function testCountsProductsAndVariantsWithoutDisplayGroup(): void
@@ -47,6 +48,7 @@ class ProductDisplayGroupMissingCheckerTest extends DataIntegrityCheckerTestCase
         $this->updateProduct($mainProductId, 'display_group', null);
 
         static::assertAffectedCount($this->collectResult($this->checker, self::ID), 2);
+        static::assertAffectedEntities($this->checker, 'product', [$productId, $variantId]);
     }
 
     private function fillDisplayGroups(): void

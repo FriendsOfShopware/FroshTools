@@ -1,0 +1,93 @@
+<section class="ft-info-modal__section ft-affected">
+    <h3 class="ft-info-modal__heading">
+        {{ $t('frosh-tools.tabs.data-integrity.affected.title') }}
+    </h3>
+    <ft-empty
+        v-if="isLoading && rows.length === 0"
+        loading
+    />
+    <p
+        v-else-if="unavailable"
+        class="ft-info-modal__text"
+    >
+        {{ $t('frosh-tools.tabs.data-integrity.affected.unavailable') }}
+    </p>
+    <p
+        v-else-if="forbidden"
+        class="ft-info-modal__text"
+    >
+        {{ $t('frosh-tools.tabs.data-integrity.affected.forbidden') }}
+    </p>
+    <p
+        v-else-if="loadError"
+        class="ft-info-modal__text"
+    >
+        {{ $t('frosh-tools.tabs.data-integrity.affected.loadError') }}
+        <span class="ft-affected__detail">{{ loadError }}</span>    </p>
+    <p
+        v-else-if="total === 0"
+        class="ft-info-modal__text"
+    >
+        {{ $t('frosh-tools.tabs.data-integrity.affected.empty') }}
+    </p>
+    <template v-else>
+        <ul
+            class="ft-affected__list"
+            :class="{ 'is--loading': isLoading }"
+        >
+            <li
+                v-for="row in rows"
+                :key="row.id"
+                class="ft-affected__item"
+            >
+                <a
+                    v-if="row.href"
+                    class="ft-link ft-affected__link"
+                    :href="row.href"
+                    target="_blank"
+                    rel="noopener"
+                    :title="$t('frosh-tools.tabs.data-integrity.affected.opensInNewTab')"
+                >{{ row.label || row.id }}</a>
+                <span
+                    v-else
+                    class="ft-mono"
+                >{{ row.id }}</span>
+                <span
+                    v-if="row.detail"
+                    class="ft-affected__detail"
+                >{{ row.detail }}</span>
+                <span
+                    v-if="row.related.length > 0"
+                    class="ft-affected__related"
+                >
+                    {{ relatedLabel }}
+                    <span
+                        v-for="item in row.related"
+                        :key="item.id"
+                        class="ft-affected__related-item"
+                    >
+                        <a
+                            v-if="item.href"
+                            class="ft-link"
+                            :href="item.href"
+                            target="_blank"
+                            rel="noopener"
+                            :title="$t('frosh-tools.tabs.data-integrity.affected.opensInNewTab')"
+                        >{{ item.label || item.id }}</a>
+                        <span
+                            v-else
+                            class="ft-mono"
+                        >{{ item.id }}</span>
+                    </span>
+                </span>
+            </li>
+        </ul>
+        <sw-pagination
+            :total="total"
+            :limit="limit"
+            :page="page"
+            :steps="[10, 25, 50, 100]"
+            @page-change="onPageChange"
+        />
+    </template>
+</section>

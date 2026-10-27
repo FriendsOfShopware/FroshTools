@@ -37,6 +37,7 @@ class CustomerDefaultAddressInvalidCheckerTest extends DataIntegrityCheckerTestC
         $this->setDefaultAddresses($customerId, $addressId, $addressId);
 
         static::assertAffectedCount($this->collectResult($this->checker, self::ID), 0);
+        static::assertAffectedEntities($this->checker, 'customer', []);
     }
 
     public function testCountsMissingDefaultAddressesAndAddressesOfOtherCustomers(): void
@@ -45,12 +46,14 @@ class CustomerDefaultAddressInvalidCheckerTest extends DataIntegrityCheckerTestC
         $addressId = $this->createAddress($customerId);
         $this->setDefaultAddresses($customerId, $addressId, $addressId);
 
-        $this->setDefaultAddresses($this->createCustomer(), $this->createAddress($customerId), Uuid::randomBytes());
+        $missingAddressCustomerId = $this->createCustomer();
+        $this->setDefaultAddresses($missingAddressCustomerId, $this->createAddress($customerId), Uuid::randomBytes());
 
         $otherCustomerId = $this->createCustomer();
         $this->setDefaultAddresses($otherCustomerId, $addressId, $this->createAddress($otherCustomerId));
 
         static::assertAffectedCount($this->collectResult($this->checker, self::ID), 2);
+        static::assertAffectedEntities($this->checker, 'customer', [Uuid::fromBytesToHex($missingAddressCustomerId), Uuid::fromBytesToHex($otherCustomerId)]);
     }
 
     private function createAddress(string $customerId): string

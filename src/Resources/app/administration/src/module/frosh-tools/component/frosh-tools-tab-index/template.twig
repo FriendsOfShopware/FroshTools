@@ -61,7 +61,7 @@
                                 style="width: 110px;"
                             >{{ $t('frosh-tools.status') }}</ft-th-sort>
                             <ft-th-sort
-                                sort-key="snippet"
+                                sort-key="title"
                                 table="health"
                             >{{ $t('frosh-tools.name') }}</ft-th-sort>
                             <ft-th-sort
@@ -80,14 +80,14 @@
                     </thead>
                     <tbody>
                         <tr
-                            v-for="(item, idx) in sortRows(health, 'health')"
+                            v-for="(item, idx) in sortRows(healthRows, 'health')"
                             :key="`h-${idx}`"
                         >
                             <td>
                                 <ft-pill :variant="pillVariant(item.state)">{{ stateLabel(item.state) }}</ft-pill>
                             </td>
                             <td class="ft-table__name">
-                                {{ item.snippet }}
+                                {{ item.title }}
                                 <button
                                     v-if="hasInfo(item)"
                                     type="button"
@@ -129,7 +129,7 @@
                                 style="width: 110px;"
                             >{{ $t('frosh-tools.status') }}</ft-th-sort>
                             <ft-th-sort
-                                sort-key="snippet"
+                                sort-key="title"
                                 table="performance"
                             >{{ $t('frosh-tools.name') }}</ft-th-sort>
                             <ft-th-sort
@@ -148,14 +148,14 @@
                     </thead>
                     <tbody>
                         <tr
-                            v-for="(item, idx) in sortRows(performanceStatus, 'performance')"
+                            v-for="(item, idx) in sortRows(performanceRows, 'performance')"
                             :key="`p-${idx}`"
                         >
                             <td>
                                 <ft-pill :variant="pillVariant(item.state)">{{ stateLabel(item.state) }}</ft-pill>
                             </td>
                             <td class="ft-table__name">
-                                {{ item.snippet }}
+                                {{ item.title }}
                                 <button
                                     v-if="hasInfo(item)"
                                     type="button"
@@ -175,7 +175,7 @@
     </template>
     <ft-modal
         v-if="activeInfo"
-        :title="activeInfo.snippet"
+        :title="titleFor(activeInfo)"
         @close="closeInfo"
     >
         <div class="ft-info-modal">

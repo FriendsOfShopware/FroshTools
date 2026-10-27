@@ -33,6 +33,7 @@ class MainVariantInvalidCheckerTest extends DataIntegrityCheckerTestCase
         $this->updateProduct($otherMainProductId, 'variant_listing_config', '{"mainVariantId": null, "displayParent": true}');
 
         static::assertAffectedCount($this->collectResult($this->checker, self::ID), 0);
+        static::assertAffectedEntities($this->checker, 'product', []);
     }
 
     public function testCountsMissingAndForeignMainVariants(): void
@@ -47,9 +48,11 @@ class MainVariantInvalidCheckerTest extends DataIntegrityCheckerTestCase
 
         $this->setMainVariant($otherMainProductId, $mainProductId);
 
-        $this->setMainVariant($this->createProduct(), Uuid::randomHex());
+        $productId = $this->createProduct();
+        $this->setMainVariant($productId, Uuid::randomHex());
 
         static::assertAffectedCount($this->collectResult($this->checker, self::ID), 3);
+        static::assertAffectedEntities($this->checker, 'product', [$mainProductId, $otherMainProductId, $productId]);
     }
 
     private function setMainVariant(string $productId, string $mainVariantId): void

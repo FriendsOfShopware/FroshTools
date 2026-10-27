@@ -11,6 +11,7 @@ import './component/ft-refresh-button/index.js';
 import './component/ft-th-sort/index.js';
 import './component/frosh-tools-tab-index/index.js';
 import './component/frosh-tools-tab-data-integrity/index.js';
+import './component/frosh-tools-data-integrity-affected/index.js';
 import './component/frosh-tools-tab-cache/index.js';
 import './component/frosh-tools-tab-queue/index.js';
 import './component/frosh-tools-tab-scheduled/index.js';

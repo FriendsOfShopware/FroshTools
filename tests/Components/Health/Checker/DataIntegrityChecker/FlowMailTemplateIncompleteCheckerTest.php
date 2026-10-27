@@ -35,6 +35,7 @@ class FlowMailTemplateIncompleteCheckerTest extends DataIntegrityCheckerTestCase
         $this->createMailSequence($this->createFlow(true, true), $this->createMailTemplate(null));
 
         static::assertAffectedCount($this->collectResult($this->checker, self::ID), 0);
+        static::assertAffectedEntities($this->checker, 'mail_template', []);
     }
 
     public function testCountsTemplatesOfActiveFlowsWithoutCompleteSystemLanguageTranslation(): void
@@ -46,10 +47,13 @@ class FlowMailTemplateIncompleteCheckerTest extends DataIntegrityCheckerTestCase
         $this->createMailSequence($flowId, $withoutTranslation);
         $this->createMailSequence($otherFlowId, $withoutTranslation);
 
-        $this->createMailSequence($flowId, $this->createMailTemplate(['subject' => 'Subject', 'content_html' => '<p>Html</p>', 'content_plain' => '']));
-        $this->createMailSequence($flowId, $this->createMailTemplate(['subject' => null, 'content_html' => '<p>Html</p>', 'content_plain' => 'Plain']));
+        $withoutPlainContent = $this->createMailTemplate(['subject' => 'Subject', 'content_html' => '<p>Html</p>', 'content_plain' => '']);
+        $this->createMailSequence($flowId, $withoutPlainContent);
+        $withoutSubject = $this->createMailTemplate(['subject' => null, 'content_html' => '<p>Html</p>', 'content_plain' => 'Plain']);
+        $this->createMailSequence($flowId, $withoutSubject);
 
         static::assertAffectedCount($this->collectResult($this->checker, self::ID), 3);
+        static::assertAffectedEntities($this->checker, 'mail_template', [$withoutTranslation, $withoutPlainContent, $withoutSubject]);
     }
 
     /**

@@ -29,14 +29,18 @@ class ProductLayoutTypeCheckerTest extends DataIntegrityCheckerTestCase
         $this->setLayout($this->createProduct(), $this->createCmsPage('product_detail'));
 
         static::assertAffectedCount($this->collectResult($this->checker, self::ID), 0);
+        static::assertAffectedEntities($this->checker, 'product', []);
     }
 
     public function testCountsProductsWithOtherLayouts(): void
     {
-        $this->setLayout($this->createProduct(), $this->createCmsPage('product_list'));
-        $this->setLayout($this->createProduct(), $this->createCmsPage('landingpage'));
+        $listingLayoutProductId = $this->createProduct();
+        $this->setLayout($listingLayoutProductId, $this->createCmsPage('product_list'));
+        $landingpageLayoutProductId = $this->createProduct();
+        $this->setLayout($landingpageLayoutProductId, $this->createCmsPage('landingpage'));
 
         static::assertAffectedCount($this->collectResult($this->checker, self::ID), 2);
+        static::assertAffectedEntities($this->checker, 'product', [$listingLayoutProductId, $landingpageLayoutProductId]);
     }
 
     private function setLayout(string $productId, string $cmsPageId): void

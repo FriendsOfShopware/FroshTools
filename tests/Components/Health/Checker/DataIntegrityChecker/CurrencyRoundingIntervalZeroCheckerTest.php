@@ -37,16 +37,32 @@ class CurrencyRoundingIntervalZeroCheckerTest extends DataIntegrityCheckerTestCa
         $this->createCountryRounding($currencyId, self::VALID, '{"decimals": 2, "interval": 0.05, "roundForNet": true}');
 
         static::assertAffectedCount($this->collectResult($this->checker, self::ID), 0);
+        static::assertAffectedEntities($this->checker, 'currency', []);
     }
 
     public function testCountsCurrenciesAndCountryRoundingsWithZeroInterval(): void
     {
-        $this->createCurrency('{"decimals": 2, "interval": 0, "roundForNet": true}', self::VALID);
-        $this->createCurrency('{"decimals": 2, "interval": 0.0, "roundForNet": true}', '{"decimals": 1, "interval": 0, "roundForNet": true}');
+        $itemRoundingCurrencyId = $this->createCurrency('{"decimals": 2, "interval": 0, "roundForNet": true}', self::VALID);
+        $bothRoundingsCurrencyId = $this->createCurrency('{"decimals": 2, "interval": 0.0, "roundForNet": true}', '{"decimals": 1, "interval": 0, "roundForNet": true}');
         $currencyId = $this->createCurrency(self::VALID, self::VALID);
         $this->createCountryRounding($currencyId, self::VALID, '{"decimals": 2, "roundForNet": true}');
 
         static::assertAffectedCount($this->collectResult($this->checker, self::ID), 3);
+        static::assertAffectedEntities($this->checker, 'currency', [
+            Uuid::fromBytesToHex($itemRoundingCurrencyId),
+            Uuid::fromBytesToHex($bothRoundingsCurrencyId),
+            Uuid::fromBytesToHex($currencyId),
+        ]);
+    }
+
+    public function testListsACurrencyWithSeveralBrokenRoundingsOnce(): void
+    {
+        $currencyId = $this->createCurrency('{"decimals": 2, "interval": 0, "roundForNet": true}', self::VALID);
+        $this->createCountryRounding($currencyId, '{"decimals": 2, "interval": 0, "roundForNet": true}', self::VALID);
+        $this->createCountryRounding($currencyId, self::VALID, '{"decimals": 2, "interval": 0, "roundForNet": true}');
+
+        static::assertAffectedCount($this->collectResult($this->checker, self::ID), 3);
+        static::assertAffectedEntities($this->checker, 'currency', [Uuid::fromBytesToHex($currencyId)]);
     }
 
     private function createCurrency(string $itemRounding, string $totalRounding): string

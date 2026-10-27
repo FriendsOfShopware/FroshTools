@@ -34,6 +34,7 @@ class VariantDuplicateOptionsCheckerTest extends DataIntegrityCheckerTestCase
         $this->createVariant($this->createProduct(), [$red, $small]);
 
         static::assertAffectedCount($this->collectResult($this->checker, self::ID), 0);
+        static::assertAffectedEntities($this->checker, 'product', []);
     }
 
     public function testDoesNotReportDifferentOptionSetsWithACommonPrefix(): void
@@ -56,6 +57,7 @@ class VariantDuplicateOptionsCheckerTest extends DataIntegrityCheckerTestCase
         }
 
         static::assertAffectedCount($result, 0);
+        static::assertAffectedEntities($this->checker, 'product', []);
     }
 
     public function testCountsEveryVariantOfADuplicateOptionSet(): void
@@ -63,21 +65,35 @@ class VariantDuplicateOptionsCheckerTest extends DataIntegrityCheckerTestCase
         [$red, $blue, $small] = $this->createPropertyOptions(3);
 
         $mainProductId = $this->createProduct();
-        $this->createVariant($mainProductId, [$red, $small]);
-        $this->createVariant($mainProductId, [$small, $red]);
+        $redSmallId = $this->createVariant($mainProductId, [$red, $small]);
+        $smallRedId = $this->createVariant($mainProductId, [$small, $red]);
         $this->createVariant($mainProductId, [$blue, $small]);
-        $this->createVariant($mainProductId, [$blue]);
-        $this->createVariant($mainProductId, [$blue]);
+        $firstBlueId = $this->createVariant($mainProductId, [$blue]);
+        $secondBlueId = $this->createVariant($mainProductId, [$blue]);
 
         static::assertAffectedCount($this->collectResult($this->checker, self::ID), 4);
+        static::assertAffectedEntities($this->checker, 'product', [$redSmallId, $smallRedId, $firstBlueId, $secondBlueId]);
+    }
+
+    public function testListsAVariantWithSeveralDuplicatesOnce(): void
+    {
+        [$red] = $this->createPropertyOptions(1);
+
+        $mainProductId = $this->createProduct();
+        $firstId = $this->createVariant($mainProductId, [$red]);
+        $secondId = $this->createVariant($mainProductId, [$red]);
+        $thirdId = $this->createVariant($mainProductId, [$red]);
+
+        static::assertAffectedCount($this->collectResult($this->checker, self::ID), 3);
+        static::assertAffectedEntities($this->checker, 'product', [$firstId, $secondId, $thirdId]);
     }
 
     /**
      * @param list<string> $optionIds
      */
-    private function createVariant(string $mainProductId, array $optionIds): void
+    private function createVariant(string $mainProductId, array $optionIds): string
     {
-        $this->createProduct([
+        return $this->createProduct([
             'parentId' => $mainProductId,
             'options' => array_map(static fn (string $id) => ['id' => $id], $optionIds),
         ]);

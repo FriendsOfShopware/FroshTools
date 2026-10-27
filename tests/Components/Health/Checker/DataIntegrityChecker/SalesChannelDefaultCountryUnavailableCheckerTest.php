@@ -54,6 +54,7 @@ class SalesChannelDefaultCountryUnavailableCheckerTest extends DataIntegrityChec
         $this->setDefaultCountry($this->headlessSalesChannelId, $this->createCountry(false, false), false);
 
         static::assertAffectedCount($this->collectResult($this->checker, self::ID), 0);
+        static::assertAffectedEntities($this->checker, 'sales_channel', []);
     }
 
     public function testCountsSalesChannelsWithUnassignedInactiveOrNonShippingDefaultCountry(): void
@@ -62,6 +63,7 @@ class SalesChannelDefaultCountryUnavailableCheckerTest extends DataIntegrityChec
         $this->setDefaultCountry($this->headlessSalesChannelId, $this->createCountry(true, false), true);
 
         static::assertAffectedCount($this->collectResult($this->checker, self::ID), 2);
+        static::assertAffectedEntities($this->checker, 'sales_channel', [Uuid::fromBytesToHex($this->storefrontSalesChannelId), Uuid::fromBytesToHex($this->headlessSalesChannelId)]);
     }
 
     public function testCountsSalesChannelWithInactiveDefaultCountry(): void
@@ -69,6 +71,7 @@ class SalesChannelDefaultCountryUnavailableCheckerTest extends DataIntegrityChec
         $this->setDefaultCountry($this->storefrontSalesChannelId, $this->createCountry(false, true), true);
 
         static::assertAffectedCount($this->collectResult($this->checker, self::ID), 1);
+        static::assertAffectedEntities($this->checker, 'sales_channel', [Uuid::fromBytesToHex($this->storefrontSalesChannelId)]);
     }
 
     private function fetchSalesChannelId(string $typeId): ?string

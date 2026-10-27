@@ -35,14 +35,16 @@ class CustomerRequestedGroupMissingCheckerTest extends DataIntegrityCheckerTestC
         $this->createCustomer(['requested_customer_group_id' => null]);
 
         static::assertAffectedCount($this->collectResult($this->checker, self::ID), 0);
+        static::assertAffectedEntities($this->checker, 'customer', []);
     }
 
     public function testCountsCustomersRequestingADeletedGroup(): void
     {
         $this->createCustomer(['requested_customer_group_id' => $this->connection->fetchOne('SELECT id FROM customer_group LIMIT 1')]);
-        $this->createCustomer(['requested_customer_group_id' => Uuid::randomBytes()]);
-        $this->createCustomer(['requested_customer_group_id' => Uuid::randomBytes()]);
+        $first = $this->createCustomer(['requested_customer_group_id' => Uuid::randomBytes()]);
+        $second = $this->createCustomer(['requested_customer_group_id' => Uuid::randomBytes()]);
 
         static::assertAffectedCount($this->collectResult($this->checker, self::ID), 2);
+        static::assertAffectedEntities($this->checker, 'customer', [Uuid::fromBytesToHex($first), Uuid::fromBytesToHex($second)]);
     }
 }

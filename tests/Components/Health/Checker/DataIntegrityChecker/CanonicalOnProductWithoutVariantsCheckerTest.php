@@ -28,6 +28,7 @@ class CanonicalOnProductWithoutVariantsCheckerTest extends DataIntegrityCheckerT
         $this->createProduct();
 
         static::assertAffectedCount($this->collectResult($this->checker, self::ID), 0);
+        static::assertAffectedEntities($this->checker, 'product', []);
     }
 
     public function testCountsMainProductsWithoutVariantsThatHaveACanonicalProduct(): void
@@ -45,5 +46,6 @@ class CanonicalOnProductWithoutVariantsCheckerTest extends DataIntegrityCheckerT
         $this->updateProduct($variantId, 'canonical_product_id', Uuid::fromHexToBytes($variantId));
 
         static::assertAffectedCount($this->collectResult($this->checker, self::ID), 1);
+        static::assertAffectedEntities($this->checker, 'product', [$simpleProductId]);
     }
 }

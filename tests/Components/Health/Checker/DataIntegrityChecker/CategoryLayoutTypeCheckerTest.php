@@ -31,24 +31,30 @@ class CategoryLayoutTypeCheckerTest extends DataIntegrityCheckerTestCase
         $this->createCategory($this->createCmsPage('page'));
 
         static::assertAffectedCount($this->collectResult($this->checker, self::ID), 0);
+        static::assertAffectedEntities($this->checker, 'category', []);
     }
 
     public function testCountsCategoriesWithAProductPageLayout(): void
     {
-        $this->createCategory($this->createCmsPage('product_detail'));
+        $categoryId = $this->createCategory($this->createCmsPage('product_detail'));
 
         static::assertAffectedCount($this->collectResult($this->checker, self::ID), 1);
+        static::assertAffectedEntities($this->checker, 'category', [$categoryId]);
     }
 
-    private function createCategory(string $cmsPageId): void
+    private function createCategory(string $cmsPageId): string
     {
+        $id = Uuid::randomHex();
+
         $this->connection->insert('category', [
-            'id' => Uuid::randomBytes(),
+            'id' => Uuid::fromHexToBytes($id),
             'version_id' => Uuid::fromHexToBytes(Defaults::LIVE_VERSION),
             'type' => 'page',
             'cms_page_id' => Uuid::fromHexToBytes($cmsPageId),
             'cms_page_version_id' => Uuid::fromHexToBytes(Defaults::LIVE_VERSION),
             'created_at' => self::now(),
         ]);
+
+        return $id;
     }
 }

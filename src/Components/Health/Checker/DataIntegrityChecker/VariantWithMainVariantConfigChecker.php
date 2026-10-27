@@ -7,33 +7,62 @@ namespace Frosh\Tools\Components\Health\Checker\DataIntegrityChecker;
 use Doctrine\DBAL\Connection;
 use Frosh\Tools\Components\Health\Checker\CheckerInterface;
 use Frosh\Tools\Components\Health\HealthCollection;
+use Shopware\Core\Content\Product\ProductDefinition;
 use Shopware\Core\Defaults;
 use Shopware\Core\Framework\Uuid\Uuid;
 
-class VariantWithMainVariantConfigChecker implements DataIntegrityCheckerInterface, CheckerInterface
+class VariantWithMainVariantConfigChecker implements DataIntegrityCheckerInterface, CheckerInterface, AffectedEntitiesProviderInterface
 {
+    private const ID = 'variant-main-variant-config';
+
+    private const AFFECTED_QUERY = <<<'SQL'
+        SELECT id
+        FROM product
+        WHERE version_id = :liveVersionId
+          AND parent_id IS NOT NULL
+          AND JSON_TYPE(JSON_EXTRACT(variant_listing_config, '$.mainVariantId')) = 'STRING'
+        SQL;
+
     public function __construct(
         private readonly Connection $connection,
     ) {
     }
 
+    public function getId(): string
+    {
+        return self::ID;
+    }
+
+    public function getAffectedEntity(): string
+    {
+        return ProductDefinition::ENTITY_NAME;
+    }
+
     public function collect(HealthCollection $collection): void
     {
-        $count = (int) $this->connection->fetchOne(
-            <<<'SQL'
-                SELECT COUNT(*)
-                FROM product
-                WHERE version_id = :liveVersionId
-                  AND parent_id IS NOT NULL
-                  AND JSON_TYPE(JSON_EXTRACT(variant_listing_config, '$.mainVariantId')) = 'STRING'
-                SQL,
+        $count = AffectedEntities::countRows(
+            $this->connection,
+            self::AFFECTED_QUERY,
             ['liveVersionId' => Uuid::fromHexToBytes(Defaults::LIVE_VERSION)],
         );
 
         $collection->add(DataIntegrityCheckResult::fromCount(
-            'variant-main-variant-config',
+            self::ID,
             'Variants with their own main variant configuration',
             $count,
         ));
+    }
+
+    public function getAffectedEntities(int $limit, int $offset): AffectedEntities
+    {
+        return AffectedEntities::fromQuery(
+            $this->connection,
+            ProductDefinition::ENTITY_NAME,
+            self::AFFECTED_QUERY,
+            ['liveVersionId' => Uuid::fromHexToBytes(Defaults::LIVE_VERSION)],
+            [],
+            $limit,
+            $offset,
+        );
     }
 }

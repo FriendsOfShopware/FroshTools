@@ -45,6 +45,7 @@ class RuleConditionDeletedReferenceCheckerTest extends DataIntegrityCheckerTestC
         $this->createCondition('customerOrderCount', ['operator' => '=', 'count' => 1]);
 
         static::assertAffectedCount($this->collectResult($this->checker, self::ID), 0);
+        static::assertAffectedEntities($this->checker, 'rule', []);
     }
 
     public function testCountsConditionsReferencingOnlyDeletedEntities(): void
@@ -56,6 +57,25 @@ class RuleConditionDeletedReferenceCheckerTest extends DataIntegrityCheckerTestC
         $this->createCondition('cartLineItemInProductStream', ['operator' => '=', 'streamIds' => [Uuid::randomHex()]]);
 
         static::assertAffectedCount($this->collectResult($this->checker, self::ID), 5);
+        static::assertAffectedEntities($this->checker, 'rule', [Uuid::fromBytesToHex($this->ruleId)]);
+    }
+
+    public function testListsEveryRuleWithADeadConditionOnce(): void
+    {
+        $otherRuleId = Uuid::randomBytes();
+        $this->connection->insert('rule', [
+            'id' => $otherRuleId,
+            'name' => 'Frosh data integrity check rule',
+            'priority' => 1,
+            'created_at' => self::now(),
+        ]);
+
+        $this->createCondition('paymentMethod', ['operator' => '=', 'paymentMethodIds' => [Uuid::randomHex()]]);
+        $this->createCondition('currency', ['currencyIds' => [Uuid::randomHex()]]);
+        $this->createCondition('currency', ['currencyIds' => [Uuid::randomHex()]], $otherRuleId);
+
+        static::assertAffectedCount($this->collectResult($this->checker, self::ID), 3);
+        static::assertAffectedEntities($this->checker, 'rule', [Uuid::fromBytesToHex($this->ruleId), Uuid::fromBytesToHex($otherRuleId)]);
     }
 
     private function fetchHexId(string $table): string
@@ -66,12 +86,12 @@ class RuleConditionDeletedReferenceCheckerTest extends DataIntegrityCheckerTestC
     /**
      * @param array<string, mixed> $value
      */
-    private function createCondition(string $type, array $value): void
+    private function createCondition(string $type, array $value, ?string $ruleId = null): void
     {
         $this->connection->insert('rule_condition', [
             'id' => Uuid::randomBytes(),
             'type' => $type,
-            'rule_id' => $this->ruleId,
+            'rule_id' => $ruleId ?? $this->ruleId,
             'value' => json_encode($value, \JSON_THROW_ON_ERROR),
             'position' => 0,
             'created_at' => self::now(),

@@ -6,6 +6,7 @@ namespace Frosh\Tools\Tests\Components\Health\Checker\DataIntegrityChecker;
 
 use Doctrine\DBAL\Connection;
 use Frosh\Tools\Components\Health\Checker\CheckerInterface;
+use Frosh\Tools\Components\Health\Checker\DataIntegrityChecker\AffectedEntitiesProviderInterface;
 use Frosh\Tools\Components\Health\DataIntegrityCollection;
 use Frosh\Tools\Components\Health\SettingsResult;
 use Frosh\Tools\Tests\IntegrationTestCase;
@@ -42,6 +43,36 @@ abstract class DataIntegrityCheckerTestCase extends IntegrationTestCase
         static::assertSame($expected === 0 ? SettingsResult::GREEN : SettingsResult::INFO, $result->state);
         static::assertSame((string) $expected, $result->current);
         static::assertSame('0', $result->recommended);
+    }
+
+    /**
+     * @param list<string> $expectedIds
+     */
+    protected static function assertAffectedEntities(AffectedEntitiesProviderInterface $checker, string $entity, array $expectedIds): void
+    {
+        $affected = $checker->getAffectedEntities(100, 0);
+        $expectedIds = array_values(array_unique(array_map('strtolower', $expectedIds)));
+        sort($expectedIds, \SORT_STRING);
+
+        static::assertSame($entity, $checker->getAffectedEntity());
+        static::assertSame($entity, $affected->entity);
+        static::assertSame(\count($expectedIds), $affected->total);
+        static::assertSame($expectedIds, $affected->ids);
+
+        foreach ($affected->ids as $id) {
+            static::assertMatchesRegularExpression('/^[0-9a-f]{32}$/', $id);
+        }
+
+        static::assertCount(min(100, $affected->total), $affected->ids);
+
+        if ($affected->total > 1) {
+            $firstPage = $checker->getAffectedEntities(1, 0);
+            $secondPage = $checker->getAffectedEntities(1, 1);
+
+            static::assertSame($affected->total, $firstPage->total);
+            static::assertSame([$affected->ids[0]], $firstPage->ids);
+            static::assertSame([$affected->ids[1]], $secondPage->ids);
+        }
     }
 
     /**

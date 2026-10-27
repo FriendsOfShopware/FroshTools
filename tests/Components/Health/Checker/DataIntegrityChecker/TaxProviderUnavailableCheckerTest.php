@@ -29,20 +29,24 @@ class TaxProviderUnavailableCheckerTest extends DataIntegrityCheckerTestCase
         $this->createTaxProvider('app\\FroshApp_tax', true, $this->createApp(true));
 
         static::assertAffectedCount($this->collectResult($this->checker, self::ID), 0);
+        static::assertAffectedEntities($this->checker, 'tax_provider', []);
     }
 
     public function testCountsActiveProvidersWithoutRegisteredHandler(): void
     {
-        $this->createTaxProvider('Frosh\\Tools\\Tests\\RemovedTaxProvider', true);
+        $taxProviderId = $this->createTaxProvider('Frosh\\Tools\\Tests\\RemovedTaxProvider', true);
         $this->createTaxProvider('Frosh\\Tools\\Tests\\OtherRemovedTaxProvider', false);
 
         static::assertAffectedCount($this->collectResult($this->checker, self::ID), 1);
+        static::assertAffectedEntities($this->checker, 'tax_provider', [$taxProviderId]);
     }
 
-    private function createTaxProvider(string $identifier, bool $active, ?string $appId = null): void
+    private function createTaxProvider(string $identifier, bool $active, ?string $appId = null): string
     {
+        $id = Uuid::randomHex();
+
         $this->connection->insert('tax_provider', [
-            'id' => Uuid::randomBytes(),
+            'id' => Uuid::fromHexToBytes($id),
             'identifier' => $identifier,
             'active' => (int) $active,
             'priority' => 1,
@@ -50,5 +54,7 @@ class TaxProviderUnavailableCheckerTest extends DataIntegrityCheckerTestCase
             'process_url' => $appId === null ? null : 'https://example.com/tax',
             'created_at' => self::now(),
         ]);
+
+        return $id;
     }
 }
