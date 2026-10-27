@@ -30,14 +30,8 @@ class SecurityControllerTest extends IntegrationTestCase
 
         static::assertIsArray($data);
         static::assertArrayHasKey('generatedAt', $data);
-
-        foreach (['users', 'adminUsers', 'activeUsers', 'integrations', 'adminIntegrations', 'manualIntegrations', 'aclRoles'] as $key) {
-            static::assertArrayHasKey($key, $data['summary']);
-            static::assertIsInt($data['summary'][$key]);
-        }
-
+        static::assertArrayNotHasKey('summary', $data);
         static::assertNotEmpty($data['users']);
-        static::assertSame(\count($data['users']), $data['summary']['users']);
 
         // Exact keys, not substrings: accessKeyCount legitimately contains "accessKey".
         foreach (['users', 'integrations'] as $section) {

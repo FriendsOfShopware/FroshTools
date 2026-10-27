@@ -58,30 +58,19 @@ class SecurityController extends AbstractController
      * accounts or privilege escalation.
      *
      * Contains no personal data by design - see {@see AdminAccountService}.
+     *
+     * Deliberately no aggregated counts: consumers diff the full lists against
+     * the previous snapshot anyway, so counters would only duplicate what they
+     * can derive and risk drifting from the lists.
      */
     #[Route(path: '/security/accounts', name: 'api.frosh.tools.security.accounts', methods: ['GET'])]
     public function accounts(): JsonResponse
     {
-        $users = $this->adminAccountService->getUsers();
-        $integrations = $this->adminAccountService->getIntegrations();
-        $aclRoles = $this->adminAccountService->getAclRoles();
-
-        $activeIntegrations = array_filter($integrations, static fn (array $i): bool => $i['deletedAt'] === null);
-
         return new JsonResponse([
             'generatedAt' => $this->clock->now()->format(\DATE_ATOM),
-            'summary' => [
-                'users' => \count($users),
-                'adminUsers' => \count(array_filter($users, static fn (array $u): bool => $u['admin'] === true)),
-                'activeUsers' => \count(array_filter($users, static fn (array $u): bool => $u['active'] === true)),
-                'integrations' => \count($activeIntegrations),
-                'adminIntegrations' => \count(array_filter($activeIntegrations, static fn (array $i): bool => $i['admin'] === true)),
-                'manualIntegrations' => \count(array_filter($activeIntegrations, static fn (array $i): bool => $i['managedByApp'] === false)),
-                'aclRoles' => \count($aclRoles),
-            ],
-            'users' => $users,
-            'integrations' => $integrations,
-            'aclRoles' => $aclRoles,
+            'users' => $this->adminAccountService->getUsers(),
+            'integrations' => $this->adminAccountService->getIntegrations(),
+            'aclRoles' => $this->adminAccountService->getAclRoles(),
         ]);
     }
 
