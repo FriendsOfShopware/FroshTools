@@ -49,6 +49,11 @@
         flex-shrink: 0;
     }
 
+    &__heading {
+        flex: 1;
+        min-width: 0;
+    }
+
     &__title {
         font-size: 0.9375rem;
         font-weight: 600;

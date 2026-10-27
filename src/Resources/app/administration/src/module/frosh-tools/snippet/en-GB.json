@@ -767,6 +767,7 @@
                     "ok": "OK"
                 },
                 "timeline": {
+                    "searchActor": "Search actors",
                     "export": "Export filtered activity (JSON)",
                     "exportError": "Export failed. Try again.",
                     "description": "Review security activity by actor, action, and date. Date filters use UTC. Failed login names are submitted identities, not verified users.",

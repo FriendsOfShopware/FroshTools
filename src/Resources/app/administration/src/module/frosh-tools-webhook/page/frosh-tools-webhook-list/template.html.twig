@@ -8,13 +8,13 @@
     </template>
 
     <template #smart-bar-header>
-        <h2>
+        <h1>
             {{ $tc('frosh-tools-webhook.list.title') }}
             <span
                 v-if="!isLoading"
                 class="sw-page__smart-bar-amount"
             >({{ total }})</span>
-        </h2>
+        </h1>
     </template>
 
     <template #smart-bar-actions>
@@ -104,7 +104,9 @@
                         @page-change="onPageChange"
                     >
                         <template #column-active="{ item }">
+                            <span class="ft-sr-only">{{ $t(item.active ? 'global.default.yes' : 'global.default.no') }}</span>
                             <sw-icon
+                                aria-hidden="true"
                                 size="12px"
                                 :color="item.active ? '#37d046' : '#de294c'"
                                 :name="item.active ? 'regular-checkmark-xs' : 'regular-times-s'"

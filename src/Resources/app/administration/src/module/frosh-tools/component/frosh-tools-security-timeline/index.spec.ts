@@ -401,11 +401,9 @@ describe('security timeline', () => {
         );
         await wrapper.get('form .ft-btn[type="button"]').trigger('click');
         await flushPromises();
-        wrapper
-            .findAllComponents({
-                name: 'frosh-tools-security-activity-select',
-            })[1]
-            .vm.$emit('paginate');
+        await wrapper
+            .get('.frosh-security-timeline__select .ft-btn')
+            .trigger('click');
         await flushPromises();
         expect(service.getSecurityActivityOptions).toHaveBeenLastCalledWith(
             'action',

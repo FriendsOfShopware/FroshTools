@@ -87,6 +87,24 @@ async function createWrapper({
 }
 
 describe('frosh-tools-tab-scheduled search', () => {
+    it('names each task action disclosure and exposes its open state', async () => {
+        const wrapper = await createWrapper();
+        await flushPromises();
+        document.body.appendChild(wrapper.element);
+        const button = wrapper.find('.frosh-tab-scheduled__menu-wrap button');
+        expect(button.attributes('aria-label')).toContain(TASKS[0].name);
+        expect(button.attributes('aria-expanded')).toBe('false');
+        await button.trigger('click');
+        expect(button.attributes('aria-expanded')).toBe('true');
+        expect(wrapper.find('.frosh-tab-scheduled__menu').exists()).toBe(true);
+        wrapper.find('.frosh-tab-scheduled__menu-item').element.focus();
+        document.dispatchEvent(new KeyboardEvent('keydown', { key: 'Escape' }));
+        await wrapper.vm.$nextTick();
+        expect(document.activeElement).toBe(button.element);
+        expect(button.attributes('aria-expanded')).toBe('false');
+        wrapper.unmount();
+    });
+
     it('shows all tasks without a search term', async () => {
         const wrapper = await createWrapper();
         await flushPromises();

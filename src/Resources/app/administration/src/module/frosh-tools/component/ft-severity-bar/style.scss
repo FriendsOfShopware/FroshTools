@@ -5,7 +5,9 @@
     transition: opacity 0.2s ease;
 
     &--loading {
-        opacity: 0.55;
+        .ft-severity-bar__track {
+            opacity: 0.55;
+        }
     }
 }
 

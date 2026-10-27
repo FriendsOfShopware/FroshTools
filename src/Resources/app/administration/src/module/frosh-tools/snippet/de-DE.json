@@ -767,6 +767,7 @@
                     "ok": "OK"
                 },
                 "timeline": {
+                    "searchActor": "Akteure suchen",
                     "export": "Gefilterte Aktivitäten exportieren (JSON)",
                     "exportError": "Export fehlgeschlagen. Versuche es erneut.",
                     "description": "Prüfe Sicherheitsaktivitäten nach Akteur, Aktion und Datum. Datumsfilter verwenden UTC. Anmeldenamen bei fehlgeschlagenen Versuchen sind eingegebene Angaben, keine bestätigten Benutzer.",

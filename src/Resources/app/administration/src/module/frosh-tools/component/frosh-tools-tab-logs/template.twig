@@ -33,15 +33,15 @@
     >
         <template #actions>
             <div class="frosh-tab-logs__select">
-                <sw-single-select
-                    :options="logFiles"
-                    :isLoading="isLoading"
-                    :placeholder="$t('frosh-tools.tabs.logs.logFileSelect.placeholder')"
-                    labelProperty="name"
-                    valueProperty="name"
-                    v-model:value="selectedLogFile"
-                    @update:value="onFileSelected"
-                />
+                <select
+                    class="ft-select"
+                    v-model="selectedLogFile"
+                    :aria-label="$t('frosh-tools.tabs.logs.logFileSelect.placeholder')"
+                    @change="onFileSelected"
+                >
+                    <option :value="null" disabled>{{ $t('frosh-tools.tabs.logs.logFileSelect.placeholder') }}</option>
+                    <option v-for="option in logFiles" :key="option.name" :value="option.name">{{ option.name }}</option>
+                </select>
             </div>
         </template>
         <ft-empty

@@ -1,0 +1,26 @@
+<div class="frosh-security-activity-select">
+    <label v-if="searchable">
+        {{ $t('frosh-tools.tabs.security.timeline.searchActor') }}
+        <input
+            v-model="searchTerm"
+            type="search"
+            @input="$emit('search', searchTerm)"
+        />
+    </label>
+    <label>
+        {{ label }}
+        <select
+            class="ft-select"
+            :value="value ?? ''"
+            :aria-busy="isLoading"
+            @change="$emit('update:value', $event.target.value || null)"
+        >
+            <option v-if="showClearableButton || placeholder" value="">{{ placeholder }}</option>
+            <option
+                v-for="option in visibleOptions"
+                :key="option.value"
+                :value="option.value"
+            >{{ option.label }}</option>
+        </select>
+    </label>
+</div>

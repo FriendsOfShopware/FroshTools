@@ -35,8 +35,9 @@ describe('frosh-tools-tab-logs', () => {
 
         expect(wrapper.vm.logFiles).toHaveLength(2);
 
-        wrapper.vm.selectedLogFile = 'prod.log';
-        await wrapper.vm.onFileSelected();
+        const select = wrapper.find('select');
+        expect(select.attributes('aria-label')).toBeTruthy();
+        await select.setValue('prod.log');
         await flushPromises();
 
         expect(service.getLogFile).toHaveBeenCalledWith('prod.log', 0, 25);

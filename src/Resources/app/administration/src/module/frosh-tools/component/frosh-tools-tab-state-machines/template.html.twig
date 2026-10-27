@@ -25,14 +25,15 @@
     >
         <template #actions>
             <div class="frosh-tab-sm__select">
-                <sw-single-select
-                    v-model:value="selectedStateMachine"
-                    :options="stateMachineOptions"
-                    :aside="true"
-                    :disable-search-function="true"
-                    @update:value="onStateMachineChange"
-                    :placeholder="$t('frosh-tools.chooseStateMachine')"
-                />
+                <select
+                    class="ft-select"
+                    v-model="selectedStateMachine"
+                    :aria-label="$t('frosh-tools.chooseStateMachine')"
+                    @change="onStateMachineChange(selectedStateMachine)"
+                >
+                    <option :value="null" disabled>{{ $t('frosh-tools.chooseStateMachine') }}</option>
+                    <option v-for="option in stateMachineOptions" :key="option.value" :value="option.value">{{ option.label }}</option>
+                </select>
             </div>
         </template>
         <div class="frosh-tab-sm__body">

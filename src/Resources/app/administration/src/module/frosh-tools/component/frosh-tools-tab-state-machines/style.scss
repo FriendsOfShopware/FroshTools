@@ -1,6 +1,8 @@
 .frosh-tab-sm {
     &__select {
-        min-width: 280px;
+        width: 280px;
+        min-width: 0;
+        max-width: 100%;
 
         .sw-single-select {
             margin: 0;

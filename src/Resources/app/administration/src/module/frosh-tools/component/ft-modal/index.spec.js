@@ -24,6 +24,17 @@ async function createWrapper({ props = {}, slots = {} } = {}) {
 }
 
 describe('ft-modal', () => {
+    it('labels dialogs from custom header content', async () => {
+        const wrapper = await createWrapper({
+            slots: { header: '<h2>Queue messages</h2>' },
+        });
+        const id = wrapper
+            .find('[role="dialog"]')
+            .attributes('aria-labelledby');
+        expect(wrapper.find(`#${id}`).text()).toBe('Queue messages');
+        wrapper.unmount();
+    });
+
     afterEach(() => {
         document.body.innerHTML = '';
     });

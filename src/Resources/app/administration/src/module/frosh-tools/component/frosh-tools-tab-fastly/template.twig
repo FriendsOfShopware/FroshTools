@@ -34,14 +34,15 @@
     >
         <template #actions>
             <div class="frosh-tab-fastly__select">
-                <sw-single-select
-                    v-model:value="timeframe"
-                    :placeholder="$t('frosh-tools.tabs.fastly.timeframeLabel')"
-                    :options="timeframeOptions"
-                    :show-search="false"
-                    size="small"
-                    @update:value="loadStats"
-                />
+                <select
+                    class="ft-select"
+                    v-model="timeframe"
+                    :aria-label="$t('frosh-tools.tabs.fastly.timeframeLabel')"
+                    @change="loadStats"
+                >
+
+                    <option v-for="option in timeframeOptions" :key="option.value" :value="option.value">{{ option.label }}</option>
+                </select>
             </div>
         </template>
         <ft-empty v-if="statsLoading" loading />

@@ -28,6 +28,7 @@
         <div class="frosh-security-timeline__select">
             <frosh-tools-security-activity-select
                 v-model:value="actor"
+                searchable
                 :label="$t('frosh-tools.tabs.security.timeline.actor')"
                 :placeholder="$t('frosh-tools.tabs.security.timeline.allActors')"
                 :options="actorOptions"
@@ -46,7 +47,6 @@
                 :label="$t('frosh-tools.tabs.security.timeline.action')"
                 :placeholder="$t('frosh-tools.tabs.security.timeline.allActions')"
                 :options="actionOptions"
-                @paginate="loadMoreActions"
                 :is-loading="optionsLoading.action"
                 show-clearable-button
             />

@@ -1,34 +1,27 @@
-// Keep asynchronously loaded choices reactive while the dropdown is open.
-Shopware.Component.extend(
-    'frosh-tools-security-activity-select',
-    'sw-single-select',
-    {
-        data() {
-            return { hasSearchInput: false };
+import template from './select.html.twig';
+
+// Native selection keeps keyboard and screen-reader behavior consistent.
+// Actor search remains a separate field so remote results can update in place.
+Shopware.Component.register('frosh-tools-security-activity-select', {
+    template,
+    props: {
+        value: { type: String, default: null },
+        options: { type: Array, default: () => [] },
+        label: { type: String, required: true },
+        placeholder: { type: String, default: '' },
+        isLoading: { type: Boolean, default: false },
+        showClearableButton: { type: Boolean, default: false },
+        searchable: { type: Boolean, default: false },
+    },
+    emits: ['update:value', 'search'],
+    computed: {
+        visibleOptions() {
+            return this.options.filter(
+                (option: { hidden?: boolean }) => !option.hidden
+            );
         },
-        methods: {
-            onSelectExpanded() {
-                this.hasSearchInput = false;
-                this.$super('onSelectExpanded');
-            },
-            search() {
-                this.hasSearchInput = true;
-                this.$super('search');
-            },
-        },
-        computed: {
-            visibleResults() {
-                return this.searchFunction({
-                    options: this.options,
-                    labelProperty: this.labelProperty,
-                    valueProperty: this.valueProperty,
-                    // Core prefills the selected label on open without filtering.
-                    searchTerm:
-                        this.hasSearchInput && !this.disableSearchFunction
-                            ? this.searchTerm
-                            : '',
-                }).filter((option: { hidden?: boolean }) => !option.hidden);
-            },
-        },
-    }
-);
+    },
+    data() {
+        return { searchTerm: '' };
+    },
+});
