@@ -95,7 +95,7 @@ class ShopmonIntegrationServiceTest extends IntegrationTestCase
 
         $role = static::getContainer()->get('acl_role.repository')->search(new Criteria([self::LEGACY_ID]), $context)->getEntities()->first();
         static::assertNotNull($role);
-        foreach ([FroshToolsPrivileges::APPS_READ, FroshToolsPrivileges::CACHE_UPDATE, FroshToolsPrivileges::SCHEDULED_TASK_UPDATE, FroshToolsPrivileges::SECURITY_READ, 'scheduled_task:update'] as $privilege) {
+        foreach ([FroshToolsPrivileges::APPS_READ, FroshToolsPrivileges::CACHE_UPDATE, FroshToolsPrivileges::SCHEDULED_TASK_UPDATE, FroshToolsPrivileges::SECURITY_READ, 'scheduled_task:update', 'message_queue_stats:read'] as $privilege) {
             static::assertContains($privilege, $role->getPrivileges());
         }
 

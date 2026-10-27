@@ -27,6 +27,7 @@ class ShopmonIntegrationService
         'plugin:read',
         'scheduled_task:read',
         'scheduled_task:update',
+        'message_queue_stats:read',
         FroshToolsPrivileges::READ,
         FroshToolsPrivileges::APPS_READ,
         FroshToolsPrivileges::CACHE_READ,
