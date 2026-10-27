@@ -312,6 +312,11 @@ shopware-cli extension build custom/plugins/FroshTools
 bin/build-administration.sh
 ```
 
+Before tagging a release, rebuild and commit `src/Resources/public/administration`,
+including its `.vite` manifests. Composer installations from Packagist use the
+tagged repository archive, so building only the Shopware Store ZIP does not
+include these assets in the Composer package.
+
 ---
 
 ## Links
