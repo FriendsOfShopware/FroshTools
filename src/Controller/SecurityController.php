@@ -6,8 +6,10 @@ namespace Frosh\Tools\Controller;
 
 use Frosh\Tools\Acl\FroshToolsPrivileges;
 use Frosh\Tools\Components\Sbom\CycloneDxSbomGenerator;
+use Frosh\Tools\Components\Security\AdminAccountService;
 use Frosh\Tools\Components\Security\Checker\SecurityCheckerInterface;
 use Frosh\Tools\Components\Security\SecurityCollection;
+use Psr\Clock\ClockInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\DependencyInjection\Attribute\Autowire;
 use Symfony\Component\DependencyInjection\Attribute\AutowireIterator;
@@ -28,6 +30,8 @@ class SecurityController extends AbstractController
         #[Autowire(param: 'frosh_tools.checker.disabled_checks')]
         private readonly array $ignoredChecks,
         private readonly CycloneDxSbomGenerator $sbomGenerator,
+        private readonly AdminAccountService $adminAccountService,
+        private readonly ClockInterface $clock,
     ) {
     }
 
@@ -45,6 +49,28 @@ class SecurityController extends AbstractController
         return new JsonResponse([
             'summary' => $collection->countBySeverity(),
             'findings' => $collection,
+        ]);
+    }
+
+    /**
+     * Inventory of everything that can authenticate against the Admin API, for
+     * external monitoring to diff against the previous snapshot and alert on new
+     * accounts or privilege escalation.
+     *
+     * Contains no personal data by design - see {@see AdminAccountService}.
+     *
+     * Deliberately no aggregated counts: consumers diff the full lists against
+     * the previous snapshot anyway, so counters would only duplicate what they
+     * can derive and risk drifting from the lists.
+     */
+    #[Route(path: '/security/accounts', name: 'api.frosh.tools.security.accounts', methods: ['GET'])]
+    public function accounts(): JsonResponse
+    {
+        return new JsonResponse([
+            'generatedAt' => $this->clock->now()->format(\DATE_ATOM),
+            'users' => $this->adminAccountService->getUsers(),
+            'integrations' => $this->adminAccountService->getIntegrations(),
+            'aclRoles' => $this->adminAccountService->getAclRoles(),
         ]);
     }
 
