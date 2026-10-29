@@ -323,7 +323,7 @@
                     "variant-duplicate-options": {
                         "title": "Varianten mit denselben Optionen wie eine andere Variante",
                         "description": "Mehrere Varianten eines Produkts haben genau dieselben Optionen. Die Variantenauswahl in der Storefront erreicht nur eine davon, daher können die anderen nicht ausgewählt und ihr Bestand nicht verkauft werden.",
-                        "solution": "Übertragen Sie Bestand, Preise und Medien der überzähligen Varianten auf die verbleibende Variante und löschen Sie die überzähligen dann im Varianten-Tab des Hauptprodukts."
+                        "solution": "Übertragen Sie Bestand, Preise und Medien der überzähligen Varianten auf die verbleibende Variante und löschen Sie die überzähligen dann im Varianten-Tab des Hauptprodukts. Inaktive Varianten werden nicht gezählt, da die Variantenauswahl sie nicht anbietet."
                     },
                     "variant-without-options": {
                         "title": "Varianten ohne Optionen",

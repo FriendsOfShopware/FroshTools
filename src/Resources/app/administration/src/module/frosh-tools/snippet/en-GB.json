@@ -323,7 +323,7 @@
                     "variant-duplicate-options": {
                         "title": "Variants with the same options as another variant",
                         "description": "Several variants of a product have exactly the same options. The variant switcher in the storefront can only reach one of them, so the others cannot be selected and their stock is not sold.",
-                        "solution": "Delete the surplus variants in the variants tab of the main product, after moving their stock, prices and media to the variant that remains."
+                        "solution": "Delete the surplus variants in the variants tab of the main product, after moving their stock, prices and media to the variant that remains. Inactive variants are not counted, because the variant selection does not offer them."
                     },
                     "variant-without-options": {
                         "title": "Variants without options",

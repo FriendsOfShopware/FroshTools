@@ -21,11 +21,15 @@ class VariantDuplicateOptionsChecker implements DataIntegrityCheckerInterface, C
                                         COUNT(*) AS option_count,
                                         SUM(CRC32(po.property_group_option_id)) AS checksum
                                  FROM product p
+                                 INNER JOIN product parent
+                                     ON parent.id = p.parent_id
+                                     AND parent.version_id = p.version_id
                                  INNER JOIN product_option po
                                      ON po.product_id = p.id
                                      AND po.product_version_id = p.version_id
                                  WHERE p.version_id = :liveVersionId
                                    AND p.parent_id IS NOT NULL
+                                   AND COALESCE(p.active, parent.active) = 1
                                  GROUP BY p.id, p.parent_id)
         SELECT DISTINCT variant.id
         FROM variant_options variant
