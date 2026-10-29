@@ -317,7 +317,7 @@
                     },
                     "product-cover-invalid": {
                         "title": "Products with a missing cover or the cover of another product",
-                        "description": "The cover of these products points to an image that was deleted or that belongs to another product. \"product.product_media_id\" has no foreign key, so deleting the image leaves the reference behind. Listings and the product page then show no image or the image of another product.",
+                        "description": "The cover of these products points to an image that was deleted or that belongs to another product. \"product.product_media_id\" has no foreign key, so deleting the image leaves the reference behind. Listings and the product page then show no image or the image of another product. A cover of another product that shows the same image as one of the product's own images is not counted, because it displays correctly.",
                         "solution": "Open the product in the administration and select a cover in the media tab."
                     },
                     "variant-duplicate-options": {

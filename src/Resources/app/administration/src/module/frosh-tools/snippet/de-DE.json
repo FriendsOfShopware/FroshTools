@@ -317,7 +317,7 @@
                     },
                     "product-cover-invalid": {
                         "title": "Produkte mit fehlendem Vorschaubild oder dem Vorschaubild eines anderen Produkts",
-                        "description": "Das Coverbild dieser Produkte verweist auf ein Bild, das gelöscht wurde oder zu einem anderen Produkt gehört. \"product.product_media_id\" hat keinen Fremdschlüssel, daher bleibt der Verweis beim Löschen des Bildes bestehen. Listings und Produktseite zeigen dann kein Bild oder das Bild eines anderen Produkts.",
+                        "description": "Das Coverbild dieser Produkte verweist auf ein Bild, das gelöscht wurde oder zu einem anderen Produkt gehört. \"product.product_media_id\" hat keinen Fremdschlüssel, daher bleibt der Verweis beim Löschen des Bildes bestehen. Listings und Produktseite zeigen dann kein Bild oder das Bild eines anderen Produkts. Ein Coverbild eines anderen Produkts, das dasselbe Bild wie eines der eigenen Bilder des Produkts zeigt, wird nicht gezählt, da es korrekt angezeigt wird.",
                         "solution": "Öffnen Sie das Produkt in der Administration und wählen Sie im Medien-Tab ein Coverbild."
                     },
                     "variant-duplicate-options": {
