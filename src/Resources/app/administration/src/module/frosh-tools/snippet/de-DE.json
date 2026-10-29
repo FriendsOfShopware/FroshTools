@@ -312,7 +312,8 @@
                     "duplicate-customer-emails": {
                         "title": "Kunden mit derselben E-Mail-Adresse",
                         "description": "Mehrere registrierte Kunden teilen sich eine E-Mail-Adresse. Shopware verlangt, dass sie pro Verkaufskanal eindeutig ist, wenn Kunden an ihren Verkaufskanal gebunden sind, und sonst über alle Verkaufskanäle hinweg. Die Anmeldung verwendet immer das neueste dieser Konten, daher können sich die Kunden der älteren Konten nicht mehr anmelden.",
-                        "solution": "Führen Sie die doppelten Kundenkonten zusammen, löschen Sie sie oder ändern Sie ihre E-Mail-Adressen. Gastkonten werden nicht gezählt."
+                        "solution": "Führen Sie die doppelten Kundenkonten zusammen, löschen Sie sie oder ändern Sie ihre E-Mail-Adressen. Gastkonten werden nicht gezählt.",
+                        "related": "Dieselbe E-Mail-Adresse wie:"
                     },
                     "product-cover-invalid": {
                         "title": "Produkte mit fehlendem Vorschaubild oder dem Vorschaubild eines anderen Produkts",

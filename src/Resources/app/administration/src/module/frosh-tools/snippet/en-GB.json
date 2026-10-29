@@ -312,7 +312,8 @@
                     "duplicate-customer-emails": {
                         "title": "Customers sharing an email address",
                         "description": "Several registered customers share an email address, although Shopware requires it to be unique per sales channel when customers are bound to their sales channel, and unique across all sales channels otherwise. The login always uses the newest of these accounts, so the customers of the older accounts cannot log in anymore.",
-                        "solution": "Merge or delete the duplicate customer accounts, or change their email addresses. Guest accounts are not counted."
+                        "solution": "Merge or delete the duplicate customer accounts, or change their email addresses. Guest accounts are not counted.",
+                        "related": "Same email address as:"
                     },
                     "product-cover-invalid": {
                         "title": "Products with a missing cover or the cover of another product",
