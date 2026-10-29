@@ -538,7 +538,7 @@
                     "number-range-sales-channel-missing": {
                         "title": "Number range types without a number range for a sales channel",
                         "description": "For these combinations of an active storefront or headless sales channel and a number range type, there is no number range: none is assigned to the sales channel, and neither the type nor one of its number ranges is global. Shopware cannot generate a number of this type for the sales channel, so for example placing an order, registering a customer or creating a document fails with an error.",
-                        "solution": "Open the number ranges in the administration and assign a number range of this type to the sales channel, or create a global number range for the type."
+                        "solution": "Open the number ranges in the administration and assign a number range of this type to the sales channel, or create a global number range for the type. Types whose number ranges are neither global nor assigned to a sales channel are not counted, because an extension that looks up its number range itself does not resolve them per sales channel. Orders, customers, products and documents are always counted, because Shopware looks up their number ranges by type."
                     }
                 }
             },

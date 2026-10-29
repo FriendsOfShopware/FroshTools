@@ -538,7 +538,7 @@
                     "number-range-sales-channel-missing": {
                         "title": "Nummernkreistypen ohne Nummernkreis für einen Verkaufskanal",
                         "description": "Für diese Kombinationen aus aktivem Storefront- oder Headless-Verkaufskanal und Nummernkreistyp gibt es keinen Nummernkreis: Keiner ist dem Verkaufskanal zugewiesen, und weder der Typ noch einer seiner Nummernkreise ist global. Shopware kann für den Verkaufskanal keine Nummer dieses Typs erzeugen, daher schlägt zum Beispiel das Abschließen einer Bestellung, die Registrierung eines Kunden oder das Erstellen eines Dokuments mit einem Fehler fehl.",
-                        "solution": "Öffnen Sie die Nummernkreise in der Administration und weisen Sie dem Verkaufskanal einen Nummernkreis dieses Typs zu, oder legen Sie einen globalen Nummernkreis für den Typ an."
+                        "solution": "Öffnen Sie die Nummernkreise in der Administration und weisen Sie dem Verkaufskanal einen Nummernkreis dieses Typs zu, oder legen Sie einen globalen Nummernkreis für den Typ an. Typen, deren Nummernkreise weder global noch einem Verkaufskanal zugewiesen sind, werden nicht gezählt, da eine Erweiterung, die ihren Nummernkreis selbst ermittelt, sie nicht pro Verkaufskanal auflöst. Bestellungen, Kunden, Produkte und Dokumente werden immer gezählt, da Shopware ihre Nummernkreise über den Typ ermittelt."
                     }
                 }
             },
