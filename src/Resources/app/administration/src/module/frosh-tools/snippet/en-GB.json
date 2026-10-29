@@ -387,7 +387,7 @@
                     "customer-default-address-invalid": {
                         "title": "Customers with a missing default address or the address of another customer",
                         "description": "The default billing or shipping address of these customers does not exist or belongs to another customer. The default address columns have no foreign keys, so deleted or reassigned addresses stay referenced. Checkout and account pages expect both addresses and can fail for these customers.",
-                        "solution": "Select existing addresses of the customer as default billing and shipping address in the customer detail page."
+                        "solution": "Select existing addresses of the customer as default billing and shipping address in the customer detail page. Guest accounts are not counted."
                     },
                     "category-sorting-invalid": {
                         "title": "Categories sorted after a category of another parent",

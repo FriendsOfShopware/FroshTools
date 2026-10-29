@@ -387,7 +387,7 @@
                     "customer-default-address-invalid": {
                         "title": "Kunden mit fehlender Standardadresse oder der Adresse eines anderen Kunden",
                         "description": "Die Standard-Rechnungs- oder -Lieferadresse dieser Kunden existiert nicht oder gehört zu einem anderen Kunden. Die Spalten der Standardadressen haben keine Fremdschlüssel, daher bleiben gelöschte oder umgehängte Adressen referenziert. Checkout und Kundenkonto erwarten beide Adressen und können für diese Kunden fehlschlagen.",
-                        "solution": "Wählen Sie auf der Kundendetailseite vorhandene Adressen des Kunden als Standard-Rechnungs- und -Lieferadresse."
+                        "solution": "Wählen Sie auf der Kundendetailseite vorhandene Adressen des Kunden als Standard-Rechnungs- und -Lieferadresse. Gastkonten werden nicht gezählt."
                     },
                     "category-sorting-invalid": {
                         "title": "Kategorien, die nach einer Kategorie eines anderen Elternelements sortiert sind",

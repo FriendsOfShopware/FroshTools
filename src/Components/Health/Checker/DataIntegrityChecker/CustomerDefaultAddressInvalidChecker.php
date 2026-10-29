@@ -22,8 +22,8 @@ class CustomerDefaultAddressInvalidChecker implements DataIntegrityCheckerInterf
         LEFT JOIN customer_address shipping
             ON shipping.id = c.default_shipping_address_id
             AND shipping.customer_id = c.id
-        WHERE billing.id IS NULL
-           OR shipping.id IS NULL
+        WHERE c.guest = 0
+          AND (billing.id IS NULL OR shipping.id IS NULL)
         SQL;
 
     public function __construct(

@@ -56,6 +56,15 @@ class CustomerDefaultAddressInvalidCheckerTest extends DataIntegrityCheckerTestC
         static::assertAffectedEntities($this->checker, 'customer', [Uuid::fromBytesToHex($missingAddressCustomerId), Uuid::fromBytesToHex($otherCustomerId)]);
     }
 
+    public function testIgnoresGuestCustomers(): void
+    {
+        $guestCustomerId = $this->createCustomer(['guest' => 1]);
+        $this->setDefaultAddresses($guestCustomerId, Uuid::randomBytes(), Uuid::randomBytes());
+
+        static::assertAffectedCount($this->collectResult($this->checker, self::ID), 0);
+        static::assertAffectedEntities($this->checker, 'customer', []);
+    }
+
     private function createAddress(string $customerId): string
     {
         $id = Uuid::randomBytes();
