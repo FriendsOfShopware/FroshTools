@@ -81,6 +81,20 @@ class ProductWithoutVisibleCategoryCheckerTest extends DataIntegrityCheckerTestC
         static::assertAffectedEntities($this->checker, 'product', []);
     }
 
+    public function testIgnoresVisibilitiesInInactiveSalesChannels(): void
+    {
+        $this->createVisibleProduct([
+            'categories' => [['id' => $this->createCategory($this->createCategory(null, true, true), true, true)]],
+        ]);
+        $this->connection->executeStatement(
+            'UPDATE sales_channel SET active = 0 WHERE id = :id',
+            ['id' => Uuid::fromHexToBytes($this->salesChannelId)],
+        );
+
+        static::assertAffectedCount($this->collectResult($this->checker, self::ID), 0);
+        static::assertAffectedEntities($this->checker, 'product', []);
+    }
+
     public function testReportsActiveVariantsAsTheProductHoldingTheirCategories(): void
     {
         $parentId = $this->createVisibleProduct(['active' => false]);

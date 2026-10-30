@@ -32,6 +32,7 @@ class ProductWithoutVisibleCategoryChecker implements DataIntegrityCheckerInterf
         WHERE p.version_id = :liveVersionId
           AND COALESCE(p.active, parent.active) = 1
           AND pv.visibility = :visibilityAll
+          AND sc.active = 1
           AND NOT EXISTS (
               SELECT 1
               FROM product_category pc
