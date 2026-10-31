@@ -88,14 +88,45 @@ class VariantDuplicateOptionsCheckerTest extends DataIntegrityCheckerTestCase
         static::assertAffectedEntities($this->checker, 'product', [$firstId, $secondId, $thirdId]);
     }
 
+    public function testIgnoresInactiveVariants(): void
+    {
+        [$red, $blue] = $this->createPropertyOptions(2);
+
+        $inactiveMainProductId = $this->createProduct(['active' => false]);
+        $this->createVariant($inactiveMainProductId, [$red]);
+        $this->createVariant($inactiveMainProductId, [$red]);
+        $this->createVariant($inactiveMainProductId, [$blue], ['active' => true]);
+
+        $mainProductId = $this->createProduct(['active' => true]);
+        $this->createVariant($mainProductId, [$red]);
+        $this->createVariant($mainProductId, [$red], ['active' => false]);
+
+        static::assertAffectedCount($this->collectResult($this->checker, self::ID), 0);
+        static::assertAffectedEntities($this->checker, 'product', []);
+    }
+
+    public function testCountsActiveVariantsOfAnInactiveMainProduct(): void
+    {
+        [$red] = $this->createPropertyOptions(1);
+
+        $mainProductId = $this->createProduct(['active' => false]);
+        $firstId = $this->createVariant($mainProductId, [$red], ['active' => true]);
+        $secondId = $this->createVariant($mainProductId, [$red], ['active' => true]);
+
+        static::assertAffectedCount($this->collectResult($this->checker, self::ID), 2);
+        static::assertAffectedEntities($this->checker, 'product', [$firstId, $secondId]);
+    }
+
     /**
      * @param list<string> $optionIds
+     * @param array<string, mixed> $data
      */
-    private function createVariant(string $mainProductId, array $optionIds): string
+    private function createVariant(string $mainProductId, array $optionIds, array $data = []): string
     {
         return $this->createProduct([
             'parentId' => $mainProductId,
             'options' => array_map(static fn (string $id) => ['id' => $id], $optionIds),
+            ...$data,
         ]);
     }
 }

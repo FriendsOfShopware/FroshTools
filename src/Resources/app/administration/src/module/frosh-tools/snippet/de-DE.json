@@ -312,17 +312,18 @@
                     "duplicate-customer-emails": {
                         "title": "Kunden mit derselben E-Mail-Adresse",
                         "description": "Mehrere registrierte Kunden teilen sich eine E-Mail-Adresse. Shopware verlangt, dass sie pro Verkaufskanal eindeutig ist, wenn Kunden an ihren Verkaufskanal gebunden sind, und sonst über alle Verkaufskanäle hinweg. Die Anmeldung verwendet immer das neueste dieser Konten, daher können sich die Kunden der älteren Konten nicht mehr anmelden.",
-                        "solution": "Führen Sie die doppelten Kundenkonten zusammen, löschen Sie sie oder ändern Sie ihre E-Mail-Adressen. Gastkonten werden nicht gezählt."
+                        "solution": "Führen Sie die doppelten Kundenkonten zusammen, löschen Sie sie oder ändern Sie ihre E-Mail-Adressen. Gastkonten werden nicht gezählt.",
+                        "related": "Dieselbe E-Mail-Adresse wie:"
                     },
                     "product-cover-invalid": {
                         "title": "Produkte mit fehlendem Vorschaubild oder dem Vorschaubild eines anderen Produkts",
-                        "description": "Das Coverbild dieser Produkte verweist auf ein Bild, das gelöscht wurde oder zu einem anderen Produkt gehört. \"product.product_media_id\" hat keinen Fremdschlüssel, daher bleibt der Verweis beim Löschen des Bildes bestehen. Listings und Produktseite zeigen dann kein Bild oder das Bild eines anderen Produkts.",
+                        "description": "Das Coverbild dieser Produkte verweist auf ein Bild, das gelöscht wurde oder zu einem anderen Produkt gehört. \"product.product_media_id\" hat keinen Fremdschlüssel, daher bleibt der Verweis beim Löschen des Bildes bestehen. Listings und Produktseite zeigen dann kein Bild oder das Bild eines anderen Produkts. Ein Coverbild eines anderen Produkts, das dasselbe Bild wie eines der eigenen Bilder des Produkts zeigt, wird nicht gezählt, da es korrekt angezeigt wird.",
                         "solution": "Öffnen Sie das Produkt in der Administration und wählen Sie im Medien-Tab ein Coverbild."
                     },
                     "variant-duplicate-options": {
                         "title": "Varianten mit denselben Optionen wie eine andere Variante",
                         "description": "Mehrere Varianten eines Produkts haben genau dieselben Optionen. Die Variantenauswahl in der Storefront erreicht nur eine davon, daher können die anderen nicht ausgewählt und ihr Bestand nicht verkauft werden.",
-                        "solution": "Übertragen Sie Bestand, Preise und Medien der überzähligen Varianten auf die verbleibende Variante und löschen Sie die überzähligen dann im Varianten-Tab des Hauptprodukts."
+                        "solution": "Übertragen Sie Bestand, Preise und Medien der überzähligen Varianten auf die verbleibende Variante und löschen Sie die überzähligen dann im Varianten-Tab des Hauptprodukts. Inaktive Varianten werden nicht gezählt, da die Variantenauswahl sie nicht anbietet."
                     },
                     "variant-without-options": {
                         "title": "Varianten ohne Optionen",
@@ -387,7 +388,7 @@
                     "customer-default-address-invalid": {
                         "title": "Kunden mit fehlender Standardadresse oder der Adresse eines anderen Kunden",
                         "description": "Die Standard-Rechnungs- oder -Lieferadresse dieser Kunden existiert nicht oder gehört zu einem anderen Kunden. Die Spalten der Standardadressen haben keine Fremdschlüssel, daher bleiben gelöschte oder umgehängte Adressen referenziert. Checkout und Kundenkonto erwarten beide Adressen und können für diese Kunden fehlschlagen.",
-                        "solution": "Wählen Sie auf der Kundendetailseite vorhandene Adressen des Kunden als Standard-Rechnungs- und -Lieferadresse."
+                        "solution": "Wählen Sie auf der Kundendetailseite vorhandene Adressen des Kunden als Standard-Rechnungs- und -Lieferadresse. Gastkonten werden nicht gezählt."
                     },
                     "category-sorting-invalid": {
                         "title": "Kategorien, die nach einer Kategorie eines anderen Elternelements sortiert sind",
@@ -504,6 +505,11 @@
                         "description": "Die für diese Produkte in einem Verkaufskanal gewählte Hauptkategorie ist dem Produkt nicht zugewiesen, inaktiv, unter Shopware 6.7.9 bis 6.7.14 ausgeblendet oder liegt nicht im Navigations-, Service- oder Footer-Kategoriebaum dieses Verkaufskanals. Der Breadcrumb ignoriert eine solche Hauptkategorie und verwendet eine andere Kategorie, während SEO-URL-Templates, die die Hauptkategorie verwenden, sie weiterhin verwenden, sodass URL und Breadcrumb voneinander abweichen können. Vor Shopware 6.7.9 wird eine inaktive Hauptkategorie weiterhin verwendet, sodass der Breadcrumb auf eine Kategorieseite verlinkt, die nicht aufgerufen werden kann.",
                         "solution": "Öffnen Sie das Produkt in der Administration und wählen Sie im SEO-Tab eine zugewiesene, aktive Kategorie des Verkaufskanals als Hauptkategorie aus, oder weisen Sie die Kategorie zu und aktivieren Sie sie."
                     },
+                    "product-without-visible-category": {
+                        "title": "Aktive Produkte ohne aktive und sichtbare Kategorie im Verkaufskanal",
+                        "description": "Diese Produkte sind aktiv und in Listings und Suche eines Verkaufskanals sichtbar, aber keine ihrer Kategorien ist aktiv, in der Navigation sichtbar und Teil des Navigations-, Service- oder Footer-Kategoriebaums dieses Verkaufskanals. Kunden finden sie weiterhin über die Suche oder einen direkten Link, aber keine Kategorieseite listet sie, und Breadcrumb und SEO-URLs haben keine Kategorie, die sie verwenden können. Kategorien, die das Produkt über eine dynamische Produktgruppe anzeigen, werden nicht berücksichtigt.",
+                        "solution": "Öffnen Sie das Produkt in der Administration und weisen Sie eine aktive, sichtbare Kategorie des Verkaufskanals zu, aktivieren Sie eine seiner Kategorien oder blenden Sie sie ein, oder verbergen Sie das Produkt in den Sichtbarkeitseinstellungen in Listings und Suche des Verkaufskanals."
+                    },
                     "rule-condition-deleted-references": {
                         "title": "Regelbedingungen, die nur auf gelöschte Datensätze verweisen",
                         "description": "Diese Regelbedingungen verweisen nur auf Zahlungsarten, Versandarten, Kundengruppen, Länder, Bundesländer, Verkaufskanäle, Währungen, Sprachen, Tags, Anreden oder dynamische Produktgruppen, die gelöscht wurden. Shopware entfernt gelöschte Entitäten nicht aus Regelbedingungen, daher trifft eine Bedingung mit ist eine von nie zu und eine Bedingung mit ist keine von immer zu. Preise, Versandarten, Zahlungsarten, Promotionen und Flows, die von diesen Regeln abhängen, verhalten sich anders als vorgesehen.",
@@ -538,7 +544,7 @@
                     "number-range-sales-channel-missing": {
                         "title": "Nummernkreistypen ohne Nummernkreis für einen Verkaufskanal",
                         "description": "Für diese Kombinationen aus aktivem Storefront- oder Headless-Verkaufskanal und Nummernkreistyp gibt es keinen Nummernkreis: Keiner ist dem Verkaufskanal zugewiesen, und weder der Typ noch einer seiner Nummernkreise ist global. Shopware kann für den Verkaufskanal keine Nummer dieses Typs erzeugen, daher schlägt zum Beispiel das Abschließen einer Bestellung, die Registrierung eines Kunden oder das Erstellen eines Dokuments mit einem Fehler fehl.",
-                        "solution": "Öffnen Sie die Nummernkreise in der Administration und weisen Sie dem Verkaufskanal einen Nummernkreis dieses Typs zu, oder legen Sie einen globalen Nummernkreis für den Typ an."
+                        "solution": "Öffnen Sie die Nummernkreise in der Administration und weisen Sie dem Verkaufskanal einen Nummernkreis dieses Typs zu, oder legen Sie einen globalen Nummernkreis für den Typ an. Typen, deren Nummernkreise weder global noch einem Verkaufskanal zugewiesen sind, werden nicht gezählt, da eine Erweiterung, die ihren Nummernkreis selbst ermittelt, sie nicht pro Verkaufskanal auflöst. Bestellungen, Kunden, Produkte und Dokumente werden immer gezählt, da Shopware ihre Nummernkreise über den Typ ermittelt."
                     }
                 }
             },

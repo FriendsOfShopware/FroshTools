@@ -312,17 +312,18 @@
                     "duplicate-customer-emails": {
                         "title": "Customers sharing an email address",
                         "description": "Several registered customers share an email address, although Shopware requires it to be unique per sales channel when customers are bound to their sales channel, and unique across all sales channels otherwise. The login always uses the newest of these accounts, so the customers of the older accounts cannot log in anymore.",
-                        "solution": "Merge or delete the duplicate customer accounts, or change their email addresses. Guest accounts are not counted."
+                        "solution": "Merge or delete the duplicate customer accounts, or change their email addresses. Guest accounts are not counted.",
+                        "related": "Same email address as:"
                     },
                     "product-cover-invalid": {
                         "title": "Products with a missing cover or the cover of another product",
-                        "description": "The cover of these products points to an image that was deleted or that belongs to another product. \"product.product_media_id\" has no foreign key, so deleting the image leaves the reference behind. Listings and the product page then show no image or the image of another product.",
+                        "description": "The cover of these products points to an image that was deleted or that belongs to another product. \"product.product_media_id\" has no foreign key, so deleting the image leaves the reference behind. Listings and the product page then show no image or the image of another product. A cover of another product that shows the same image as one of the product's own images is not counted, because it displays correctly.",
                         "solution": "Open the product in the administration and select a cover in the media tab."
                     },
                     "variant-duplicate-options": {
                         "title": "Variants with the same options as another variant",
                         "description": "Several variants of a product have exactly the same options. The variant switcher in the storefront can only reach one of them, so the others cannot be selected and their stock is not sold.",
-                        "solution": "Delete the surplus variants in the variants tab of the main product, after moving their stock, prices and media to the variant that remains."
+                        "solution": "Delete the surplus variants in the variants tab of the main product, after moving their stock, prices and media to the variant that remains. Inactive variants are not counted, because the variant selection does not offer them."
                     },
                     "variant-without-options": {
                         "title": "Variants without options",
@@ -387,7 +388,7 @@
                     "customer-default-address-invalid": {
                         "title": "Customers with a missing default address or the address of another customer",
                         "description": "The default billing or shipping address of these customers does not exist or belongs to another customer. The default address columns have no foreign keys, so deleted or reassigned addresses stay referenced. Checkout and account pages expect both addresses and can fail for these customers.",
-                        "solution": "Select existing addresses of the customer as default billing and shipping address in the customer detail page."
+                        "solution": "Select existing addresses of the customer as default billing and shipping address in the customer detail page. Guest accounts are not counted."
                     },
                     "category-sorting-invalid": {
                         "title": "Categories sorted after a category of another parent",
@@ -504,6 +505,11 @@
                         "description": "The main category selected for these products in a sales channel is not assigned to the product, is inactive, hidden on Shopware 6.7.9 to 6.7.14, or is not part of the navigation, service or footer category tree of that sales channel. The breadcrumb ignores such a main category and falls back to another category, while SEO URL templates that use the main category still use it, so URL and breadcrumb can disagree. Before Shopware 6.7.9 an inactive main category is still used, so the breadcrumb links to a category page that cannot be opened.",
                         "solution": "Open the product in the administration and select an assigned, active category of the sales channel as main category in the SEO tab, or assign and activate the category."
                     },
+                    "product-without-visible-category": {
+                        "title": "Active products without an active and visible category in the sales channel",
+                        "description": "These products are active and visible in listings and search of a sales channel, but none of their categories is active, visible in the navigation and part of the navigation, service or footer category tree of that sales channel. Customers can still find them through the search or a direct link, but no category page lists them, and the breadcrumb and SEO URLs have no category to use. Categories that show the product through a dynamic product group are not considered.",
+                        "solution": "Open the product in the administration and assign an active, visible category of the sales channel, activate or show one of its categories, or hide the product in listings and search of the sales channel in the visibility settings."
+                    },
                     "rule-condition-deleted-references": {
                         "title": "Rule conditions referencing only deleted entities",
                         "description": "These rule conditions only reference payment methods, shipping methods, customer groups, countries, states, sales channels, currencies, languages, tags, salutations or dynamic product groups that were deleted. Shopware does not remove deleted entities from rule conditions, so a condition with is one of never matches and a condition with is none of always matches. Prices, shipping methods, payment methods, promotions and flows that depend on these rules behave differently than intended.",
@@ -538,7 +544,7 @@
                     "number-range-sales-channel-missing": {
                         "title": "Number range types without a number range for a sales channel",
                         "description": "For these combinations of an active storefront or headless sales channel and a number range type, there is no number range: none is assigned to the sales channel, and neither the type nor one of its number ranges is global. Shopware cannot generate a number of this type for the sales channel, so for example placing an order, registering a customer or creating a document fails with an error.",
-                        "solution": "Open the number ranges in the administration and assign a number range of this type to the sales channel, or create a global number range for the type."
+                        "solution": "Open the number ranges in the administration and assign a number range of this type to the sales channel, or create a global number range for the type. Types whose number ranges are neither global nor assigned to a sales channel are not counted, because an extension that looks up its number range itself does not resolve them per sales channel. Orders, customers, products and documents are always counted, because Shopware looks up their number ranges by type."
                     }
                 }
             },

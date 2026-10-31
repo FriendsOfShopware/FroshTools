@@ -96,6 +96,52 @@ class DuplicateCustomerEmailsCheckerTest extends DataIntegrityCheckerTestCase
         static::assertAffectedEntities($this->checker, 'customer', [$sameFirst, $sameSecond, $boundCustomer, $unboundCustomer]);
     }
 
+    public function testListsTheDuplicatesOfEachAffectedCustomer(): void
+    {
+        $this->systemConfigService->set(self::CONFIG_KEY, true);
+
+        $groupIds = [
+            $this->createCustomerWithEmail('group@example.com', $this->salesChannelId),
+            $this->createCustomerWithEmail('GROUP@example.com', $this->salesChannelId),
+            $this->createCustomerWithEmail('group@example.com', $this->salesChannelId),
+        ];
+        $this->createCustomerWithEmail('group@example.com', $this->salesChannelId, guest: true);
+
+        $boundCustomer = $this->createCustomerWithEmail('unbound@example.com', $this->salesChannelId);
+        $otherBoundCustomer = $this->createCustomerWithEmail('unbound@example.com', $this->otherSalesChannelId);
+        $unboundCustomer = $this->createCustomerWithEmail('unbound@example.com');
+
+        $expected = [];
+        foreach ($groupIds as $id) {
+            $expected[$id] = $this->sorted(array_diff($groupIds, [$id]));
+        }
+        $expected[$boundCustomer] = [$unboundCustomer];
+        $expected[$otherBoundCustomer] = [$unboundCustomer];
+        $expected[$unboundCustomer] = $this->sorted([$boundCustomer, $otherBoundCustomer]);
+
+        $affected = $this->checker->getAffectedEntities(100, 0);
+        $related = $affected->related;
+        ksort($related, \SORT_STRING);
+        ksort($expected, \SORT_STRING);
+        static::assertSame($expected, $related);
+
+        $page = $this->checker->getAffectedEntities(2, 1);
+        static::assertSame(array_slice($affected->ids, 1, 2), array_keys($page->related));
+    }
+
+    /**
+     * @param array<string> $ids
+     *
+     * @return list<string>
+     */
+    private function sorted(array $ids): array
+    {
+        $ids = array_values($ids);
+        sort($ids, \SORT_STRING);
+
+        return $ids;
+    }
+
     private function createCustomerWithEmail(string $email, ?string $boundSalesChannelId = null, bool $guest = false): string
     {
         return Uuid::fromBytesToHex($this->createCustomer([

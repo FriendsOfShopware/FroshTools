@@ -96,13 +96,49 @@ class NumberRangeSalesChannelMissingCheckerTest extends DataIntegrityCheckerTest
         static::assertAffectedEntities($this->checker, 'sales_channel', array_map(Uuid::fromBytesToHex(...), $missingSalesChannelIds));
     }
 
-    private function createType(bool $global, bool $withTechnicalName = true): string
+    public function testIgnoresTypesWhoseNumberRangesAreAssignedToNoSalesChannel(): void
+    {
+        $typeId = $this->createType(false);
+        $this->createNumberRange($typeId, false, []);
+
+        static::assertAffectedCount($this->collectResult($this->checker, self::ID), 0);
+        static::assertAffectedEntities($this->checker, 'sales_channel', []);
+    }
+
+    public function testCountsTypesTheCoreLooksUpByNameEvenIfTheirNumberRangesAreAssignedToNoSalesChannel(): void
+    {
+        $this->connection->executeStatement(
+            <<<'SQL'
+                UPDATE number_range nr
+                INNER JOIN number_range_type nrt ON nrt.id = nr.type_id
+                SET nr.global = 0, nrt.global = 0
+                WHERE nrt.technical_name = 'order'
+                SQL
+        );
+        $this->connection->executeStatement(
+            'DELETE nrsc FROM number_range_sales_channel nrsc INNER JOIN number_range_type nrt ON nrt.id = nrsc.number_range_type_id WHERE nrt.technical_name = \'order\''
+        );
+
+        $documentTypeName = 'frosh_' . Uuid::randomHex();
+        $this->connection->insert('document_type', [
+            'id' => Uuid::randomBytes(),
+            'technical_name' => $documentTypeName,
+            'created_at' => self::now(),
+        ]);
+        $documentTypeId = $this->createType(false, technicalName: 'document_' . $documentTypeName);
+        $this->createNumberRange($documentTypeId, false, []);
+
+        static::assertAffectedCount($this->collectResult($this->checker, self::ID), 2 * \count($this->salesChannelIds));
+        static::assertAffectedEntities($this->checker, 'sales_channel', array_map(Uuid::fromBytesToHex(...), $this->salesChannelIds));
+    }
+
+    private function createType(bool $global, bool $withTechnicalName = true, ?string $technicalName = null): string
     {
         $id = Uuid::randomBytes();
 
         $this->connection->insert('number_range_type', [
             'id' => $id,
-            'technical_name' => $withTechnicalName ? 'frosh_' . Uuid::randomHex() : null,
+            'technical_name' => $withTechnicalName ? ($technicalName ?? 'frosh_' . Uuid::randomHex()) : null,
             'global' => (int) $global,
             'created_at' => self::now(),
         ]);

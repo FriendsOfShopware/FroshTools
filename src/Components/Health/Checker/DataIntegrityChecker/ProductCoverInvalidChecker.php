@@ -23,7 +23,14 @@ class ProductCoverInvalidChecker implements DataIntegrityCheckerInterface, Check
             AND pm.version_id = p.version_id
         WHERE p.version_id = :liveVersionId
           AND p.product_media_id IS NOT NULL
-          AND (pm.id IS NULL OR NOT (pm.product_id = p.id OR pm.product_id <=> p.parent_id))
+          AND (pm.id IS NULL
+            OR NOT (pm.product_id = p.id
+                OR pm.product_id <=> p.parent_id
+                OR EXISTS (SELECT 1
+                           FROM product_media own
+                           WHERE own.product_id IN (p.id, p.parent_id)
+                             AND own.product_version_id = p.version_id
+                             AND own.media_id = pm.media_id)))
         SQL;
 
     public function __construct(

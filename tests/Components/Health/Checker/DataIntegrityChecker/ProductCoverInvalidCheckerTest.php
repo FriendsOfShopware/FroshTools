@@ -47,12 +47,46 @@ class ProductCoverInvalidCheckerTest extends DataIntegrityCheckerTestCase
         static::assertAffectedEntities($this->checker, 'product', [$foreignCoverId, $missingCoverId]);
     }
 
-    private function createProductWithCover(): string
+    public function testReportsOkForCoversOfOtherProductsWithTheSameImageAsAnOwnImage(): void
+    {
+        $mediaId = Uuid::randomHex();
+        $otherProductId = $this->createProductWithCover($mediaId);
+
+        $productId = $this->createProduct(['media' => [['mediaId' => $mediaId]]]);
+        $this->updateProduct($productId, 'product_media_id', $this->coverOf($otherProductId));
+
+        $mainProductId = $this->createProduct(['media' => [['mediaId' => $mediaId]]]);
+        $variantId = $this->createProduct(['parentId' => $mainProductId]);
+        $this->updateProduct($variantId, 'product_media_id', $this->coverOf($otherProductId));
+
+        static::assertAffectedCount($this->collectResult($this->checker, self::ID), 0);
+        static::assertAffectedEntities($this->checker, 'product', []);
+    }
+
+    public function testCountsCoversWithTheSameImageOnceTheProductMediaOfTheOtherProductIsDeleted(): void
+    {
+        $mediaId = Uuid::randomHex();
+        $deletedProductId = $this->createProductWithCover($mediaId);
+        $otherProductId = $this->createProductWithCover($mediaId);
+
+        $productId = $this->createProduct(['media' => [['mediaId' => $mediaId]]]);
+        $this->updateProduct($productId, 'product_media_id', $this->coverOf($deletedProductId));
+        $otherCoverProductId = $this->createProduct(['media' => [['mediaId' => $mediaId]]]);
+        $this->updateProduct($otherCoverProductId, 'product_media_id', $this->coverOf($otherProductId));
+
+        $this->connection->executeStatement('DELETE FROM product WHERE id = :id', ['id' => Uuid::fromHexToBytes($deletedProductId)]);
+        $this->connection->executeStatement('DELETE FROM product_media WHERE id = :id', ['id' => $this->coverOf($otherProductId)]);
+
+        static::assertAffectedCount($this->collectResult($this->checker, self::ID), 3);
+        static::assertAffectedEntities($this->checker, 'product', [$productId, $otherCoverProductId, $otherProductId]);
+    }
+
+    private function createProductWithCover(?string $mediaId = null): string
     {
         $productMediaId = Uuid::randomHex();
 
         return $this->createProduct([
-            'media' => [['id' => $productMediaId, 'media' => ['id' => Uuid::randomHex()]]],
+            'media' => [['id' => $productMediaId, 'media' => ['id' => $mediaId ?? Uuid::randomHex()]]],
             'coverId' => $productMediaId,
         ]);
     }
