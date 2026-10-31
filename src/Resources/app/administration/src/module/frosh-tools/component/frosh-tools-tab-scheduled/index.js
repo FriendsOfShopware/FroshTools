@@ -130,13 +130,23 @@ Component.register('frosh-tools-tab-scheduled', {
             this.openMenuId = null;
         },
 
+        focusMenuTrigger() {
+            this.$el
+                .querySelector(
+                    '.frosh-tab-scheduled__menu-wrap > button[aria-expanded="true"]'
+                )
+                ?.focus();
+        },
+
         onMenuKeydown(event) {
             if (event.key === 'Escape' && this.openMenuId !== null) {
+                this.focusMenuTrigger();
                 this.closeMenu();
             }
         },
 
         onMenu(action, item) {
+            this.focusMenuTrigger();
             this.openMenuId = null;
             switch (action) {
                 case 'edit':

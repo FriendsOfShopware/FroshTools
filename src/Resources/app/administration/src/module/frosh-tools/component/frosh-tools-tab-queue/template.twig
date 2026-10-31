@@ -81,7 +81,7 @@
                         <th>
                             {{ $t('frosh-tools.tabs.queue.transports.worker') }}
                         </th>
-                        <th></th>
+                        <th>{{ $t('frosh-tools.actions') }}</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -241,6 +241,7 @@
                 <button
                     class="frosh-tab-queue__message-head"
                     @click="toggleMessage(index)"
+                    :aria-expanded="expandedMessages[index] === true"
                 >
                     <span class="frosh-tab-queue__message-index">{{ index + 1 }}</span>
                     <span

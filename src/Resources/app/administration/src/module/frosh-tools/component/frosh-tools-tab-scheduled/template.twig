@@ -84,7 +84,7 @@
                             v-if="canUpdate"
                             class="ft-table__actions"
                             style="width: 60px;"
-                        ></th>
+                        >{{ $t('frosh-tools.actions') }}</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -117,7 +117,7 @@
                                     class="ft-btn ft-btn--ghost ft-btn--icon"
                                     @click.stop="toggleMenu(item.id)"
                                     :aria-expanded="openMenuId === item.id"
-                                    aria-haspopup="true"
+                                    :aria-label="$t('frosh-tools.actions') + ': ' + item.name"
                                 >
                                     <ft-icon name="more"/>
                                 </button>
@@ -219,7 +219,7 @@
                             v-if="canUpdate"
                             class="ft-table__actions"
                             style="width: 60px;"
-                        ></th>
+                        >{{ $t('frosh-tools.actions') }}</th>
                     </tr>
                 </thead>
                 <tbody>

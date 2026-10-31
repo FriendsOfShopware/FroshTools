@@ -34,6 +34,18 @@ async function createWrapper({
 }
 
 describe('frosh-tools-tab-fastly', () => {
+    it('reloads statistics when the labeled timeframe selection changes', async () => {
+        const service = createService();
+        const wrapper = await createWrapper({ service });
+        await flushPromises();
+        const select = wrapper.find('select');
+        expect(select.attributes('aria-label')).toBeTruthy();
+        await select.setValue('7d');
+        await flushPromises();
+        expect(service.getFastlyStatistics).toHaveBeenLastCalledWith('7d');
+        wrapper.unmount();
+    });
+
     it('loads stats and snippets for the default timeframe', async () => {
         const service = createService();
         const wrapper = await createWrapper({ service });

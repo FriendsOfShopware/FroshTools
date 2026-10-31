@@ -21,6 +21,7 @@ Shopware.Component.register('frosh-tools-security-timeline', {
             page: 1,
             limit: 25,
             actor: null as string | null,
+            actorSearchTerm: '',
             action: null as string | null,
             actorValues: [] as string[],
             actionValues: [] as string[],
@@ -249,7 +250,16 @@ Shopware.Component.register('frosh-tools-security-timeline', {
             void this.load();
         },
 
-        async loadOptions(field: 'actor' | 'action', term = '', page = 1) {
+        searchActors(term: string) {
+            this.actorSearchTerm = term;
+            void this.loadOptions('actor');
+        },
+
+        async loadOptions(
+            field: 'actor' | 'action',
+            term = field === 'actor' ? this.actorSearchTerm : '',
+            page = 1
+        ) {
             const requestId = ++this.optionsRequestId[field];
             this.optionsLoading[field] = true;
             this.optionsError[field] = false;
@@ -297,6 +307,7 @@ Shopware.Component.register('frosh-tools-security-timeline', {
             this.clientIp = '';
             this.period = 'all';
             this.actor = null;
+            this.actorSearchTerm = '';
             this.action = null;
             this.from = '';
             this.to = '';

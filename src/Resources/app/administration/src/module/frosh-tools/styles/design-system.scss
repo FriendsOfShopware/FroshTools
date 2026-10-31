@@ -757,3 +757,14 @@ th.ft-table__sortable {
     color: var(--ft-text-soft);
     line-height: 1.5;
 }
+
+// Native controls use the same readable colors in both Administration themes.
+.ft-select {
+    width: 100%;
+    min-height: 2.5rem;
+    padding: 0.5rem 0.75rem;
+    border: 1px solid var(--ft-control-border);
+    border-radius: var(--ft-radius-sm);
+    color: var(--ft-text);
+    background: var(--ft-surface);
+}

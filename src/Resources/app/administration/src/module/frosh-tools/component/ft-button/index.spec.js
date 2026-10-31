@@ -4,6 +4,17 @@ import '../ft-icon/index.js';
 import './index.js';
 
 describe('ft-button', () => {
+    it('does not submit forms by default and allows explicit submit buttons', async () => {
+        const wrapper = await mountShopwareComponent('ft-button', {
+            slots: { default: 'Clear filters' },
+            global: { stubs: { 'ft-icon': true } },
+        });
+        expect(wrapper.attributes('type')).toBe('button');
+        await wrapper.setProps({ type: 'submit' });
+        expect(wrapper.attributes('type')).toBe('submit');
+        wrapper.unmount();
+    });
+
     it('applies variant and icon-only classes', async () => {
         const wrapper = await mountShopwareComponent('ft-button', {
             props: { variant: 'danger', iconOnly: true, icon: 'trash' },

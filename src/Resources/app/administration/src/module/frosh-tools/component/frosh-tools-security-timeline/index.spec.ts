@@ -23,7 +23,8 @@ async function mount(
             .fn()
             .mockResolvedValue({ entries: [entry], total: 30 }),
     },
-    route = {}
+    route = {},
+    realSelect = false
 ) {
     const optionsService = {
         getSecurityActivityOptions: vi.fn().mockImplementation((field) =>
@@ -47,11 +48,15 @@ async function mount(
         },
         stubs: {
             'sw-pagination': true,
-            'frosh-tools-security-activity-select': {
-                name: 'frosh-tools-security-activity-select',
-                props: ['value', 'options'],
-                template: '<div />',
-            },
+            'frosh-tools-security-activity-select': realSelect
+                ? await Shopware.Component.build(
+                      'frosh-tools-security-activity-select'
+                  )
+                : {
+                      name: 'frosh-tools-security-activity-select',
+                      props: ['value', 'options'],
+                      template: '<div />',
+                  },
         },
     });
     await flushPromises();
@@ -64,6 +69,48 @@ afterEach(() => {
 });
 
 describe('security timeline', () => {
+    it('clears actor search text and restores all choices when clearing filters', async () => {
+        const service = await mount(undefined, {}, true);
+        service.getSecurityActivityOptions.mockImplementation((field, term) =>
+            Promise.resolve({
+                values:
+                    field === 'actor'
+                        ? term
+                            ? ['alice']
+                            : ['admin', 'alice']
+                        : [],
+                hasMore: false,
+            })
+        );
+        const search = wrapper.get('input[type="search"]');
+        await search.setValue('alice');
+        await flushPromises();
+        expect(
+            wrapper
+                .findAll('select')[0]
+                .findAll('option')
+                .map((option) => option.text())
+        ).toEqual(['All actors', 'alice']);
+        await wrapper
+            .get(
+                '.frosh-security-timeline__filter-actions .ft-btn[type="button"]'
+            )
+            .trigger('click');
+        await flushPromises();
+        expect(search.element.value).toBe('');
+        expect(
+            wrapper
+                .findAll('select')[0]
+                .findAll('option')
+                .map((option) => option.text())
+        ).toEqual(['All actors', 'admin', 'alice']);
+        expect(service.getSecurityActivityOptions).toHaveBeenCalledWith(
+            'actor',
+            '',
+            1
+        );
+    });
+
     it('shows the recorded integration name and falls back to IDs for older events', async () => {
         await mount({
             getSecurityActivity: vi.fn().mockResolvedValue({
@@ -401,11 +448,9 @@ describe('security timeline', () => {
         );
         await wrapper.get('form .ft-btn[type="button"]').trigger('click');
         await flushPromises();
-        wrapper
-            .findAllComponents({
-                name: 'frosh-tools-security-activity-select',
-            })[1]
-            .vm.$emit('paginate');
+        await wrapper
+            .get('.frosh-security-timeline__select .ft-btn')
+            .trigger('click');
         await flushPromises();
         expect(service.getSecurityActivityOptions).toHaveBeenLastCalledWith(
             'action',

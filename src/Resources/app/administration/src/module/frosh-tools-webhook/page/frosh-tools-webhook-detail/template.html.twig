@@ -1,9 +1,9 @@
 <sw-page class="ft frosh-tools-webhook-detail">
     <template #smart-bar-header>
-        <h2 v-if="webhook && webhook.name">{{ webhook.name }}</h2>
-        <h2 v-else>
+        <h1 v-if="webhook && webhook.name">{{ webhook.name }}</h1>
+        <h1 v-else>
             {{ $tc('frosh-tools-webhook.detail.title') }}
-        </h2>
+        </h1>
     </template>
 
     <template #smart-bar-actions>
@@ -46,6 +46,9 @@
                     :title="$tc('frosh-tools-webhook.detail.titleEdit')"
                     position-identifier="frosh-tools-webhook-detail"
                 >
+                    <template #title>
+                        <h2 class="frosh-tools-webhook-detail__section-title">{{ $t('frosh-tools-webhook.detail.titleEdit') }}</h2>
+                    </template>
                     <sw-container
                         columns="repeat(auto-fit, minmax(250px, 1fr))"
                         gap="0px 30px"
@@ -107,6 +110,9 @@
                     :is-loading="eventLogsLoading"
                     position-identifier="frosh-tools-webhook-event-log"
                 >
+                    <template #title>
+                        <h2 class="frosh-tools-webhook-detail__section-title">{{ $t('frosh-tools-webhook.detail.eventLog.title') }}</h2>
+                    </template>
                     <template
                         v-if="eventLogs && eventLogs.length > 0"
                         #grid

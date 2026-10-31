@@ -48,6 +48,23 @@ async function createWrapper(repository = createRepository()) {
 }
 
 describe('frosh-tools-tab-state-machines', () => {
+    it('loads a diagram when the labeled native selector changes', async () => {
+        const repository = createRepository();
+        const wrapper = await createWrapper(repository);
+        await flushPromises();
+        const select = wrapper.find('select');
+        expect(select.attributes('aria-label')).toBeTruthy();
+        await select.setValue('order');
+        await flushPromises();
+        expect(repository.get).toHaveBeenCalledWith(
+            'order',
+            expect.anything(),
+            expect.anything()
+        );
+        expect(document.querySelector('#state_machine svg')).not.toBeNull();
+        wrapper.unmount();
+    });
+
     beforeEach(() => {
         document.body.innerHTML = '<div id="state_machine"></div>';
     });

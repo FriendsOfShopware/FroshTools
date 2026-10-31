@@ -1,63 +1,49 @@
 import { describe, expect, it } from 'vitest';
-import {
-    loadShopwareComponent,
-    shallowMountShopwareComponent,
-} from '@friendsofshopware/vitest-shopware-admin-bridge/test-utils';
+import { mountShopwareComponent } from '@friendsofshopware/vitest-shopware-admin-bridge/test-utils';
 import './select';
 
 describe('security activity select', () => {
-    it('allows searching and refreshes asynchronously loaded choices while open', async () => {
-        await loadShopwareComponent('sw-single-select');
-        const wrapper = await shallowMountShopwareComponent(
+    it('labels native selection, updates asynchronous choices and allows clearing', async () => {
+        const wrapper = await mountShopwareComponent(
             'frosh-tools-security-activity-select',
             {
-                global: {
-                    mocks: {
-                        isCompatEnabled: () => false,
-                    },
-                    stubs: {
-                        'sw-select-base': {
-                            template:
-                                '<div><slot name="sw-select-selection" /></div>',
-                        },
-                        'sw-select-result-list': true,
-                        'sw-select-result': true,
-                        'sw-highlight-text': true,
-                    },
-                },
                 props: {
-                    value: null,
+                    label: 'Actor',
+                    placeholder: 'All actors',
+                    showClearableButton: true,
                     options: [{ value: 'alice', label: 'Alice' }],
                 },
             }
         );
-        expect(wrapper.vm.disableSearchFunction).toBe(false);
-        await wrapper.setData({ isExpanded: true, searchTerm: 'bob' });
-        wrapper.vm.search();
-        expect(wrapper.vm.visibleResults).toEqual([]);
-        await wrapper.setProps({ options: [{ value: 'bob', label: 'Bob' }] });
-        expect(wrapper.vm.visibleResults).toEqual([
-            { value: 'bob', label: 'Bob' },
-        ]);
+        expect(wrapper.find('label').text()).toContain('Actor');
+        await wrapper.find('select').setValue('alice');
+        expect(wrapper.emitted('update:value')?.[0]).toEqual(['alice']);
         await wrapper.setProps({
-            value: 'bob',
+            value: 'alice',
             options: [
                 { value: 'alice', label: 'Alice' },
                 { value: 'bob', label: 'Bob' },
                 { value: 'hidden', label: 'Hidden', hidden: true },
             ],
         });
-        wrapper.vm.onSelectExpanded();
-        await wrapper.vm.$nextTick();
-        expect(wrapper.vm.searchTerm).toBe('Bob');
-        expect(wrapper.vm.visibleResults.map((option) => option.value)).toEqual(
-            ['alice', 'bob']
+        expect(
+            wrapper.findAll('option').map((option) => option.text())
+        ).toEqual(['All actors', 'Alice', 'Bob']);
+        await wrapper.find('select').setValue('');
+        expect(wrapper.emitted('update:value')?.[1]).toEqual([null]);
+        wrapper.unmount();
+    });
+
+    it('emits remote search without submitting the filters or changing selection', async () => {
+        const wrapper = await mountShopwareComponent(
+            'frosh-tools-security-activity-select',
+            {
+                props: { label: 'Actor', searchable: true, value: 'alice' },
+            }
         );
-        await wrapper.setData({ searchTerm: 'ali' });
-        wrapper.vm.search();
-        expect(wrapper.vm.visibleResults.map((option) => option.value)).toEqual(
-            ['alice']
-        );
+        await wrapper.find('input[type="search"]').setValue('bob');
+        expect(wrapper.emitted('search')?.[0]).toEqual(['bob']);
+        expect(wrapper.emitted('update:value')).toBeUndefined();
         wrapper.unmount();
     });
 });
