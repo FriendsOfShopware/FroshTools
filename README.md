@@ -229,7 +229,7 @@ After activation, open **Settings → Plugins → Tools** (or search for “Tool
 
 ## Configuration
 
-In the Administration, an error or warning row has **Keep as info with a reason**. The dialog explains that the row stays visible, the current value and the recommendation do not change, and the status becomes info. The reason is required and is shown as a tooltip. The same dialog removes the confirmation again. A confirmation that was set in the configuration file below stays in place until that file changes. No cache clear is required for a confirmation saved in the Administration.
+In the Administration, an error or warning row has **Show as info with a reason**. The dialog explains that the row stays visible, the current value and the recommendation do not change, and the status becomes info. The reason is required and is shown as a tooltip. The same dialog shows that reason again and can remove the confirmation. A confirmation that was set in the configuration file below stays in place until that file changes. No cache clear is required for a confirmation saved in the Administration.
 
 Optional Symfony config — create `config/packages/frosh_tools.yaml`:
 

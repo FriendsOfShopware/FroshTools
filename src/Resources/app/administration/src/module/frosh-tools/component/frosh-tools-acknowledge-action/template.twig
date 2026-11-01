@@ -19,6 +19,13 @@
             <span v-if="item.current" class="ft-mono">{{ item.current }}</span>
             <span v-if="item.recommended" class="ft-mono">{{ item.recommended }}</span>
         </p>
+        <div
+            v-if="acknowledged && item.acknowledgement"
+            class="ft-acknowledge__stored"
+        >
+            <span>{{ $t('frosh-tools.acknowledge.storedReason') }}</span>
+            <p>{{ item.acknowledgement }}</p>
+        </div>
         <label
             v-if="!acknowledged"
             class="ft-acknowledge__reason"

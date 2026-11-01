@@ -42,7 +42,7 @@ describe('frosh-tools-acknowledge-action', () => {
         await wrapper.find('.ft-acknowledge__trigger').trigger('click');
         const save = wrapper
             .findAll('.ft-btn')
-            .find((button) => button.text() === 'Keep as info');
+            .find((button) => button.text() === 'Show as info');
         await save.trigger('click');
         expect(service.acknowledgeCheck).not.toHaveBeenCalled();
 
@@ -72,6 +72,9 @@ describe('frosh-tools-acknowledge-action', () => {
             'Remove confirmation'
         );
         await wrapper.find('.ft-acknowledge__trigger').trigger('click');
+        expect(wrapper.find('.ft-acknowledge__stored').text()).toContain(
+            'Reviewed'
+        );
         const confirm = wrapper
             .findAll('button')
             .find((button) => button.text() === 'Show the alert again');

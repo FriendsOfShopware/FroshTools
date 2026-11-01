@@ -25,6 +25,21 @@
         margin: 0 0 12px;
     }
 
+    &__stored {
+        margin: 0 0 12px;
+
+        span {
+            display: block;
+            margin-bottom: 4px;
+            font-weight: 600;
+        }
+
+        p {
+            margin: 0;
+            white-space: pre-wrap;
+        }
+    }
+
     &__reason {
         display: flex;
         flex-direction: column;
