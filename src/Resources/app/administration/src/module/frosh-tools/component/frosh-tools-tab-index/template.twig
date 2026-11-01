@@ -96,6 +96,10 @@
                                 >
                                     {{ $t('frosh-tools.tabs.index.info') }}
                                 </button>
+                                <frosh-tools-acknowledge-action
+                                    :item="item"
+                                    @changed="refresh"
+                                />
                             </td>
                             <td class="ft-mono">{{ item.current }}</td>
                             <td class="ft-mono">{{ item.recommended }}</td>
@@ -104,7 +108,7 @@
                 </table>
             </div>
         </ft-panel>
-        <ft-panel
+        <ft-panel>
             :title="$t('frosh-tools.tabs.index.performance')"
             :count="performanceStatus ? performanceStatus.length : 0"
             :flush="!(performanceStatus && performanceStatus.length === 0)"
@@ -164,6 +168,10 @@
                                 >
                                     {{ $t('frosh-tools.tabs.index.info') }}
                                 </button>
+                                <frosh-tools-acknowledge-action
+                                    :item="item"
+                                    @changed="refresh"
+                                />
                             </td>
                             <td class="ft-mono">{{ item.current }}</td>
                             <td class="ft-mono">{{ item.recommended }}</td>

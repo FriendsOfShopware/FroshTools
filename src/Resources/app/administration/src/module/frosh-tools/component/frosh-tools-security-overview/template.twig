@@ -59,6 +59,10 @@
                         {{ severityLabel(finding.severity) }}
                     </ft-pill>
                     <span class="frosh-security-overview__finding-title">{{ finding.title }}</span>
+                    <frosh-tools-acknowledge-action
+                        :item="finding"
+                        @changed="$emit('changed')"
+                    />
                     <a
                         v-if="finding.url"
                         class="ft-link"

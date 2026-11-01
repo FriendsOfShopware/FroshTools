@@ -1,3 +1,4 @@
+import '../frosh-tools-acknowledge-action/index.js';
 import template from './template.twig';
 import recommendationCode from './recommendation-code.js';
 import './style.scss';

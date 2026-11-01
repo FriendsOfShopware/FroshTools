@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Frosh\Tools\Command;
 
+use Frosh\Tools\Components\AcknowledgementStore;
 use Frosh\Tools\Components\AcknowledgedChecks;
 use Frosh\Tools\Components\Health\Checker\CheckerInterface;
 use Frosh\Tools\Components\Health\DataIntegrityCollection;
@@ -29,6 +30,7 @@ class DataIntegrityCheckJsonCommand extends Command
         private readonly array $ignoredChecks,
         #[Autowire(param: 'frosh_tools.checker.acknowledged_checks')]
         private readonly array $acknowledgedChecks = [],
+        private readonly ?AcknowledgementStore $acknowledgementStore = null,
     ) {
         parent::__construct();
     }
@@ -40,7 +42,7 @@ class DataIntegrityCheckJsonCommand extends Command
             $checker->collect($collection);
         }
 
-        AcknowledgedChecks::apply($collection, $this->acknowledgedChecks);
+        AcknowledgedChecks::apply($collection, $this->acknowledgementStore?->all() ?? $this->acknowledgedChecks);
         $collection->sortByState();
         $collection->removeByIds($this->ignoredChecks);
 

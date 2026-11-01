@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Frosh\Tools\Controller;
 
 use Frosh\Tools\Acl\FroshToolsPrivileges;
+use Frosh\Tools\Components\AcknowledgementStore;
 use Frosh\Tools\Components\AcknowledgedChecks;
 use Frosh\Tools\Components\Sbom\CycloneDxSbomGenerator;
 use Frosh\Tools\Components\Security\AdminAccountService;
@@ -37,7 +38,16 @@ class SecurityController extends AbstractController
         private readonly ClockInterface $clock,
         #[Autowire(param: 'frosh_tools.checker.acknowledged_checks')]
         private readonly array $acknowledgedChecks = [],
+        private readonly ?AcknowledgementStore $acknowledgementStore = null,
     ) {
+    }
+
+    /**
+     * @return array<string, string>
+     */
+    private function resolvedAcknowledgedChecks(): array
+    {
+        return $this->acknowledgementStore?->all() ?? $this->acknowledgedChecks;
     }
 
     #[Route(path: '/security/status', name: 'api.frosh.tools.security.status', methods: ['GET'])]
@@ -48,7 +58,7 @@ class SecurityController extends AbstractController
             $checker->collect($collection);
         }
 
-        AcknowledgedChecks::apply($collection, $this->acknowledgedChecks);
+        AcknowledgedChecks::apply($collection, $this->resolvedAcknowledgedChecks());
         $collection->removeByIds($this->ignoredChecks);
         $collection->sortBySeverity();
 

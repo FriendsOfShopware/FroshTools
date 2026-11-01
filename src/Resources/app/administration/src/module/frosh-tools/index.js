@@ -1,3 +1,4 @@
+import './component/frosh-tools-acknowledge-action/index.js';
 import './component/ft-icon/index.js';
 import './component/ft-section-nav/index.ts';
 import './component/ft-button/index.js';

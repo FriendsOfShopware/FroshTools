@@ -1,0 +1,39 @@
+.ft-acknowledge {
+    display: inline;
+
+    &__trigger {
+        margin-left: 8px;
+        background: transparent;
+        border: none;
+        padding: 0;
+        font: inherit;
+        font-weight: 500;
+    }
+
+    &__warning {
+        margin: 0 0 12px;
+        padding: 12px 14px;
+        border-radius: 8px;
+        background: var(--ft-warning-bg, #fff7e8);
+        color: var(--ft-text, #1f2933);
+    }
+
+    &__check {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 8px 16px;
+        margin: 0 0 12px;
+    }
+
+    &__reason {
+        display: flex;
+        flex-direction: column;
+        gap: 6px;
+
+        textarea {
+            width: 100%;
+            min-height: 96px;
+            resize: vertical;
+        }
+    }
+}

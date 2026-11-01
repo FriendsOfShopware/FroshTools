@@ -1,3 +1,4 @@
+import '../frosh-tools-acknowledge-action/index.js';
 import template from './template.twig';
 import './style.scss';
 
@@ -37,6 +38,7 @@ Component.register('frosh-tools-security-overview', {
             default: null,
         },
     },
+    emits: ['navigate', 'changed'],
     computed: {
         groupedFindings() {
             const groups = {};

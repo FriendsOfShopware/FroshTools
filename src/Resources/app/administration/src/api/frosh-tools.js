@@ -197,6 +197,32 @@ class FroshTools extends ApiService {
             });
     }
 
+    acknowledgeCheck(id, reason) {
+        const apiRoute = `${this.getApiBasePath()}/checker/acknowledged-checks/${id}`;
+        return this.httpClient
+            .put(
+                apiRoute,
+                { reason },
+                {
+                    headers: this.getBasicHeaders(),
+                }
+            )
+            .then((response) => {
+                return ApiService.handleResponse(response);
+            });
+    }
+
+    revokeAcknowledgedCheck(id) {
+        const apiRoute = `${this.getApiBasePath()}/checker/acknowledged-checks/${id}`;
+        return this.httpClient
+            .delete(apiRoute, {
+                headers: this.getBasicHeaders(),
+            })
+            .then((response) => {
+                return ApiService.handleResponse(response);
+            });
+    }
+
     healthStatus(cached = false) {
         if (!this.loginService.isLoggedIn()) {
             return;

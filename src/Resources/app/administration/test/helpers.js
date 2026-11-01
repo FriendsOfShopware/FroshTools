@@ -28,6 +28,7 @@ export const FT_STUBS = {
             '<button type="button" class="ft-btn" @click="$emit(\'click\', $event)"><slot /></button>',
     },
     'ft-refresh-button': true,
+    'frosh-tools-acknowledge-action': true,
     'ft-severity-bar': true,
 };
 

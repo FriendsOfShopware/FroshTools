@@ -1,3 +1,4 @@
+import '../frosh-tools-acknowledge-action/index.js';
 import template from './template.twig';
 import '../frosh-tools-tab-index/style.scss';
 
