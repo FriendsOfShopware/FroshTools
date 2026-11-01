@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Frosh\Tools\Controller;
 
 use Frosh\Tools\Acl\FroshToolsPrivileges;
+use Frosh\Tools\Components\AcknowledgedChecks;
 use Frosh\Tools\Components\Sbom\CycloneDxSbomGenerator;
 use Frosh\Tools\Components\Security\AdminAccountService;
 use Frosh\Tools\Components\Security\Checker\SecurityCheckerInterface;
@@ -23,6 +24,8 @@ class SecurityController extends AbstractController
 {
     /**
      * @param SecurityCheckerInterface[] $securityCheckers
+     * @param list<string> $ignoredChecks
+     * @param array<string, string> $acknowledgedChecks
      */
     public function __construct(
         #[AutowireIterator('frosh_tools.security_checker')]
@@ -32,6 +35,8 @@ class SecurityController extends AbstractController
         private readonly CycloneDxSbomGenerator $sbomGenerator,
         private readonly AdminAccountService $adminAccountService,
         private readonly ClockInterface $clock,
+        #[Autowire(param: 'frosh_tools.checker.acknowledged_checks')]
+        private readonly array $acknowledgedChecks = [],
     ) {
     }
 
@@ -43,6 +48,7 @@ class SecurityController extends AbstractController
             $checker->collect($collection);
         }
 
+        AcknowledgedChecks::apply($collection, $this->acknowledgedChecks);
         $collection->removeByIds($this->ignoredChecks);
         $collection->sortBySeverity();
 

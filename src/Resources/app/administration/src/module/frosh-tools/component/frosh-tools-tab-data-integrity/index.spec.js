@@ -169,4 +169,36 @@ describe('frosh-tools-tab-data-integrity', () => {
             true
         );
     });
+
+    it('shows the acknowledgement only on the status pill that has a reason', async () => {
+        const reason = 'Reviewed and accepted';
+        const wrapper = await createWrapper({
+            dataIntegrityStatus: vi.fn().mockResolvedValue([
+                {
+                    id: 'duplicate-customer-emails',
+                    snippet: 'Duplicate emails',
+                    state: 'STATE_INFO',
+                    current: '2',
+                    recommended: '0',
+                    acknowledgement: reason,
+                },
+                {
+                    id: 'plain-info',
+                    snippet: 'Plain info',
+                    state: 'STATE_INFO',
+                    current: '1',
+                    recommended: '0',
+                    acknowledgement: '',
+                },
+            ]),
+        });
+        await flushPromises();
+
+        const pills = wrapper.findAll('.ft-pill');
+        expect(pills[0].attributes('title')).toBe(reason);
+        expect(pills[0].text()).toBe('Info');
+        expect(wrapper.text()).toContain('2');
+        expect(wrapper.text()).toContain('0');
+        expect(pills[1].attributes('title')).toBeUndefined();
+    });
 });

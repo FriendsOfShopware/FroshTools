@@ -21,6 +21,8 @@ class SettingsResult extends Struct
 
     public string $id;
 
+    public string $acknowledgement = '';
+
     protected string $snippet;
 
     public static function ok(string $id, string $snippet, string $current = '', string $recommended = ''): self

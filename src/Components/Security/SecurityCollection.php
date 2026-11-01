@@ -17,7 +17,8 @@ class SecurityCollection extends Collection
         SecurityFinding::SEVERITY_MEDIUM => 2,
         SecurityFinding::SEVERITY_LOW => 3,
         SecurityFinding::SEVERITY_UNKNOWN => 4,
-        SecurityFinding::SEVERITY_OK => 5,
+        SecurityFinding::SEVERITY_INFO => 5,
+        SecurityFinding::SEVERITY_OK => 6,
     ];
 
     public function sortBySeverity(): void

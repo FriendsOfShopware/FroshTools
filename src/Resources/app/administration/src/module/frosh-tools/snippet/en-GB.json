@@ -770,6 +770,7 @@
                     "medium": "Medium",
                     "low": "Low",
                     "unknown": "Unknown",
+                    "info": "Info",
                     "ok": "OK"
                 },
                 "timeline": {

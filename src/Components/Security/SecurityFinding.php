@@ -14,6 +14,7 @@ class SecurityFinding extends Struct
     public const SEVERITY_LOW = 'low';
     public const SEVERITY_OK = 'ok';
     public const SEVERITY_UNKNOWN = 'unknown';
+    public const SEVERITY_INFO = 'info';
 
     public const CATEGORY_DEPENDENCIES = 'dependencies';
     public const CATEGORY_RUNTIME = 'runtime';
@@ -33,6 +34,8 @@ class SecurityFinding extends Struct
     public string $recommended = '';
 
     public ?string $url = null;
+
+    public string $acknowledgement = '';
 
     public function __construct(
         string $id,

@@ -108,7 +108,8 @@ Component.register('frosh-tools-tab-security', {
                 (f) =>
                     f.category === 'dependencies' &&
                     f.severity !== 'ok' &&
-                    f.severity !== 'unknown'
+                    f.severity !== 'unknown' &&
+                    f.severity !== 'info'
             );
             return deps.length > 0 ? deps.length : null;
         },

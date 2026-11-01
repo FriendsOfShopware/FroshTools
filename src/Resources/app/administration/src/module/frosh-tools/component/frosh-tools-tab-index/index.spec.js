@@ -295,4 +295,47 @@ describe('frosh-tools-tab-index', () => {
             .map((cell) => cell.text());
         expect(names).toEqual([...expected, ...expected]);
     });
+
+    it('shows an acknowledged check as info with its reason and without counting it', async () => {
+        const reason =
+            'Ubuntu 24.04 revision 8.3.6-0ubuntu0.24.04.13 contains the PHP 8.3.36 security fixes';
+        const wrapper = await createWrapper({
+            healthStatus: vi.fn().mockResolvedValue([
+                {
+                    id: 'php-version',
+                    snippet: 'PHP Version',
+                    state: 'STATE_INFO',
+                    current: '8.3.6',
+                    recommended: 'min 8.3.36',
+                    acknowledgement: reason,
+                },
+            ]),
+            performanceStatus: vi.fn().mockResolvedValue([
+                {
+                    id: 'php-memory',
+                    snippet: 'Memory limit',
+                    state: 'STATE_INFO',
+                    current: '128M',
+                    recommended: '512M',
+                    acknowledgement: '',
+                },
+            ]),
+        });
+        await flushPromises();
+
+        expect(wrapper.text()).toContain('8.3.6');
+        expect(wrapper.text()).toContain('min 8.3.36');
+        expect(wrapper.text()).toContain('128M');
+
+        const pills = wrapper.findAll('.ft-pill');
+        expect(pills[0].attributes('title')).toBe(reason);
+        expect(pills[0].text()).toBe('Info');
+        expect(pills[1].attributes('title')).toBeUndefined();
+
+        const summary = wrapper.find('ft-hero-state-stub');
+        expect(summary.attributes('variant')).toBe('info');
+        expect(summary.attributes('body')).toBe(
+            'Checks: 2 · Errors: 0 · Warnings: 0'
+        );
+    });
 });

@@ -53,6 +53,12 @@ describe('frosh-tools-tab-security', () => {
         expect(wrapper.vm.findingBadge).toBe(3);
         expect(wrapper.vm.findingBadgeVariant).toBe('danger');
         expect(wrapper.vm.dependencyBadge).toBe(1);
+        wrapper.vm.findings.push({
+            category: 'dependencies',
+            severity: 'info',
+            acknowledgement: 'Kept on purpose',
+        });
+        expect(wrapper.vm.dependencyBadge).toBe(1);
         expect(wrapper.vm.activeTab).toBe('overview');
         expect(wrapper.find('ft-refresh-button-stub').exists()).toBe(true);
     });

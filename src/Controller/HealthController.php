@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Frosh\Tools\Controller;
 
 use Frosh\Tools\Acl\FroshToolsPrivileges;
+use Frosh\Tools\Components\AcknowledgedChecks;
 use Frosh\Tools\Components\Health\Checker\CheckerInterface;
 use Frosh\Tools\Components\Health\Checker\DataIntegrityChecker\AffectedEntitiesProviderInterface;
 use Frosh\Tools\Components\Health\DataIntegrityCollection;
@@ -35,6 +36,8 @@ class HealthController extends AbstractController
      * @param CheckerInterface[] $healthCheckers
      * @param CheckerInterface[] $performanceCheckers
      * @param CheckerInterface[] $dataIntegrityCheckers
+     * @param list<string> $ignoredChecks
+     * @param array<string, string> $acknowledgedChecks
      */
     public function __construct(
         #[AutowireIterator('frosh_tools.health_checker')]
@@ -46,6 +49,8 @@ class HealthController extends AbstractController
         private readonly CacheInterface $cacheObject,
         #[Autowire(param: 'frosh_tools.checker.disabled_checks')]
         private readonly array $ignoredChecks,
+        #[Autowire(param: 'frosh_tools.checker.acknowledged_checks')]
+        private readonly array $acknowledgedChecks = [],
     ) {
     }
 
@@ -57,6 +62,7 @@ class HealthController extends AbstractController
             $checker->collect($collection);
         }
 
+        AcknowledgedChecks::apply($collection, $this->acknowledgedChecks);
         $collection->sortByState();
         $collection->removeByIds($this->ignoredChecks);
 
@@ -71,6 +77,7 @@ class HealthController extends AbstractController
             $checker->collect($collection);
         }
 
+        AcknowledgedChecks::apply($collection, $this->acknowledgedChecks);
         $collection->sortByState();
         $collection->removeByIds($this->ignoredChecks);
 
@@ -92,6 +99,7 @@ class HealthController extends AbstractController
                 $checker->collect($collection);
             }
 
+            AcknowledgedChecks::apply($collection, $this->acknowledgedChecks);
             $collection->sortByState();
             $collection->removeByIds($this->ignoredChecks);
 

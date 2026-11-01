@@ -35,4 +35,39 @@ class DataIntegrityCheckJsonCommandTest extends TestCase
         static::assertIsArray($entries);
         static::assertSame(['info-check', 'ok-check'], array_column($entries, 'id'));
     }
+
+    public function testAcknowledgedCheckBecomesInfoUnlessItIsDisabled(): void
+    {
+        $checker = new class implements CheckerInterface {
+            public function collect(HealthCollection $collection): void
+            {
+                $collection->add(SettingsResult::error('php-version', 'PHP Version', '8.3.6', 'min 8.3.36'));
+                $collection->add(SettingsResult::warning('hidden', 'Hidden', 'on', 'off'));
+                $collection->add(SettingsResult::error('kept-error', 'Kept', 'bad', 'good'));
+            }
+        };
+
+        $reason = 'Ubuntu 24.04 revision 8.3.6-0ubuntu0.24.04.13 contains the PHP 8.3.36 security fixes';
+        $tester = new CommandTester(new DataIntegrityCheckJsonCommand(
+            [$checker],
+            ['hidden'],
+            [
+                'php-version' => $reason,
+                'hidden' => 'Disabled wins',
+            ],
+        ));
+
+        static::assertSame(Command::SUCCESS, $tester->execute([]));
+
+        $entries = json_decode($tester->getDisplay(), true, 512, \JSON_THROW_ON_ERROR);
+        static::assertIsArray($entries);
+        static::assertSame(['kept-error', 'php-version'], array_column($entries, 'id'));
+
+        $php = $entries[1];
+        static::assertSame(SettingsResult::INFO, $php['state']);
+        static::assertSame('8.3.6', $php['current']);
+        static::assertSame('min 8.3.36', $php['recommended']);
+        static::assertSame($reason, $php['acknowledgement']);
+        static::assertSame('', $entries[0]['acknowledgement']);
+    }
 }
