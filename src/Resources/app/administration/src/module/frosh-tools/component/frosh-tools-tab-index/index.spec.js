@@ -248,6 +248,7 @@ describe('frosh-tools-tab-index', () => {
         expect(wrapper.text()).toContain(english.kerneldebug.title);
         expect(wrapper.text()).toContain('Third party label');
         expect(wrapper.text()).toContain(english.queue.adapter.title);
+        expect(wrapper.text()).not.toContain(':flush=');
         expect(wrapper.text()).not.toContain('Kernel debug is active');
         expect(wrapper.text()).not.toContain('The sync queue is not suitable');
 

@@ -6,6 +6,7 @@ namespace Frosh\Tools\Components;
 
 use Shopware\Core\System\SystemConfig\SystemConfigService;
 use Symfony\Component\DependencyInjection\Attribute\Autowire;
+use Symfony\Component\Lock\LockFactory;
 use Symfony\Contracts\Cache\CacheInterface;
 
 /**
@@ -30,6 +31,8 @@ final class AcknowledgementStore
         #[Autowire(param: 'frosh_tools.checker.acknowledged_checks')]
         private readonly array $configuredChecks,
         private readonly CacheInterface $cacheObject,
+        #[Autowire(service: 'lock.factory')]
+        private readonly LockFactory $lockFactory,
     ) {
     }
 
@@ -59,10 +62,11 @@ final class AcknowledgementStore
             throw new \InvalidArgumentException('The reason is too long.');
         }
 
-        $stored = $this->stored();
-        $stored[$id] = $reason;
-        $this->systemConfigService->set(self::CONFIG_KEY, $stored);
-        $this->clearStatusCache();
+        $this->updateStored(static function (array $stored) use ($id, $reason): array {
+            $stored[$id] = $reason;
+
+            return $stored;
+        });
     }
 
     /**
@@ -71,12 +75,32 @@ final class AcknowledgementStore
     public function revoke(string $id): bool
     {
         $id = $this->assertId($id);
-        $stored = $this->stored();
-        unset($stored[$id]);
-        $this->systemConfigService->set(self::CONFIG_KEY, $stored);
-        $this->clearStatusCache();
+        $this->updateStored(static function (array $stored) use ($id): array {
+            unset($stored[$id]);
+
+            return $stored;
+        });
 
         return $this->isConfiguredInFile($id);
+    }
+
+    /**
+     * The whole map is one config value. The lock keeps a second save from
+     * writing a copy that was read before the first save finished.
+     *
+     * @param \Closure(array<string, string>): array<string, string> $change
+     */
+    private function updateStored(\Closure $change): void
+    {
+        $lock = $this->lockFactory->createLock('frosh-tools-acknowledged-checks');
+        $lock->acquire(true);
+
+        try {
+            $this->systemConfigService->set(self::CONFIG_KEY, $change($this->stored()));
+            $this->clearStatusCache();
+        } finally {
+            $lock->release();
+        }
     }
 
     /**

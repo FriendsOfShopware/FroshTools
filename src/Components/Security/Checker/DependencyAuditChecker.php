@@ -79,7 +79,7 @@ class DependencyAuditChecker implements SecurityCheckerInterface
             }
 
             $collection->add(new SecurityFinding(
-                'composer-audit-' . md5($packageName . '|' . $installedVersion . '|' . (string) ($advisory['advisoryId'] ?? $title)),
+                self::findingId($advisory),
                 SecurityFinding::CATEGORY_DEPENDENCIES,
                 $this->mapSeverity((string) ($advisory['severity'] ?? '')),
                 $title !== '' ? $title : 'Security advisory',
@@ -88,6 +88,22 @@ class DependencyAuditChecker implements SecurityCheckerInterface
                 isset($advisory['link']) ? (string) $advisory['link'] : null,
             ));
         }
+    }
+
+    /**
+     * @param array<string, mixed> $advisory
+     */
+    public static function findingId(array $advisory): string
+    {
+        $packageName = (string) ($advisory['packageName'] ?? '');
+        $installedVersion = isset($advisory['installedVersion']) ? (string) $advisory['installedVersion'] : '';
+        $reference = $advisory['cve'] ?? $advisory['advisoryId'] ?? null;
+        $title = (string) ($advisory['title'] ?? '');
+        if ($reference !== null && $reference !== '') {
+            $title = \sprintf('%s (%s)', $title, $reference);
+        }
+
+        return 'composer-audit-' . md5($packageName . '|' . $installedVersion . '|' . (string) ($advisory['advisoryId'] ?? $title));
     }
 
     private function mapSeverity(string $severity): string

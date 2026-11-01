@@ -1,5 +1,6 @@
 import template from './template.twig';
 import './style.scss';
+import '../frosh-tools-acknowledge-action/index.js';
 
 const { Component } = Shopware;
 
@@ -8,6 +9,7 @@ const { Component } = Shopware;
 Component.register('frosh-tools-security-dependencies', {
     template,
     inject: ['froshToolsService'],
+    emits: ['changed'],
 
     data() {
         return {
@@ -37,6 +39,22 @@ Component.register('frosh-tools-security-dependencies', {
                 this.result.advisories.length > 0
             );
         },
+        openAdvisories() {
+            return (this.result.advisories || []).filter(
+                (advisory) => !advisory.acknowledgement
+            );
+        },
+        hasOpenAdvisories() {
+            return this.openAdvisories.length > 0;
+        },
+        acknowledgedOnly() {
+            return this.hasAdvisories && !this.hasOpenAdvisories;
+        },
+        openPackageCount() {
+            return new Set(
+                this.openAdvisories.map((advisory) => advisory.packageName)
+            ).size;
+        },
         groupedAdvisories() {
             const groups = {};
             for (const advisory of this.result.advisories || []) {
@@ -57,9 +75,17 @@ Component.register('frosh-tools-security-dependencies', {
         },
 
         affectedPackages() {
-            // Unique, sorted list of the packages that actually have advisories.
+            // Unique, sorted list of packages that still have an open advisory.
             return [
-                ...new Set(this.groupedAdvisories.map((g) => g.packageName)),
+                ...new Set(
+                    this.groupedAdvisories
+                        .filter((group) =>
+                            group.advisories.some(
+                                (advisory) => !advisory.acknowledgement
+                            )
+                        )
+                        .map((group) => group.packageName)
+                ),
             ].sort();
         },
 
@@ -114,6 +140,47 @@ Component.register('frosh-tools-security-dependencies', {
             } catch {
                 return null;
             }
+        },
+
+        async onChanged() {
+            await this.load();
+            this.$emit('changed');
+        },
+
+        advisoryItem(advisory) {
+            const severity = (advisory.severity || 'medium').toLowerCase();
+
+            return {
+                id: advisory.id,
+                title:
+                    advisory.title ||
+                    advisory.cve ||
+                    advisory.advisoryId ||
+                    advisory.packageName,
+                severity: severity === 'moderate' ? 'medium' : severity,
+                acknowledgement: advisory.acknowledgement || '',
+                current: [advisory.packageName, advisory.installedVersion]
+                    .filter(Boolean)
+                    .join(' '),
+                recommended:
+                    'Update the affected dependency to a patched version',
+            };
+        },
+
+        advisoryVariant(advisory) {
+            if (advisory.acknowledgement) {
+                return 'info';
+            }
+
+            return this.severityVariant(advisory.severity);
+        },
+
+        advisoryLabel(advisory) {
+            if (advisory.acknowledgement) {
+                return this.$t('frosh-tools.info');
+            }
+
+            return this.severityLabel(advisory.severity);
         },
 
         severityVariant(severity) {

@@ -255,6 +255,12 @@
     }
 }
 
+.frosh-security-dependencies__reason {
+    margin: 6px 0 0;
+    color: var(--ft-text-soft);
+    white-space: pre-wrap;
+}
+
 .frosh-security-dependencies__cmd-copy {
     flex-shrink: 0;
     padding: 4px;

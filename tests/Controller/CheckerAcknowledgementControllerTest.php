@@ -11,6 +11,8 @@ use PHPUnit\Framework\TestCase;
 use Shopware\Core\System\SystemConfig\SystemConfigService;
 use Symfony\Component\Cache\Adapter\ArrayAdapter;
 use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\Lock\LockFactory;
+use Symfony\Component\Lock\Store\InMemoryStore;
 
 #[CoversClass(CheckerAcknowledgementController::class)]
 final class CheckerAcknowledgementControllerTest extends TestCase
@@ -63,6 +65,6 @@ final class CheckerAcknowledgementControllerTest extends TestCase
             $stored->value = $value;
         });
 
-        return new AcknowledgementStore($config, $configured, new ArrayAdapter());
+        return new AcknowledgementStore($config, $configured, new ArrayAdapter(), new LockFactory(new InMemoryStore()));
     }
 }
