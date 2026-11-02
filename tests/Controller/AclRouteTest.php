@@ -7,6 +7,7 @@ namespace Frosh\Tools\Tests\Controller;
 use Frosh\Tools\Acl\FroshToolsPrivileges;
 use Frosh\Tools\Controller\AppController;
 use Frosh\Tools\Controller\CacheController;
+use Frosh\Tools\Controller\CheckerAcknowledgementController;
 use Frosh\Tools\Controller\ComposerAuditController;
 use Frosh\Tools\Controller\ElasticsearchController;
 use Frosh\Tools\Controller\ExtensionFilesController;
@@ -73,6 +74,8 @@ class AclRouteTest extends TestCase
         yield 'health.ping' => [HealthController::class, 'pingStatus', FroshToolsPrivileges::READ];
         yield 'health.data-integrity' => [HealthController::class, 'dataIntegrityStatus', FroshToolsPrivileges::READ];
         yield 'health.data-integrity.affected' => [HealthController::class, 'dataIntegrityAffected', FroshToolsPrivileges::READ];
+        yield 'checker.acknowledge' => [CheckerAcknowledgementController::class, 'save', FroshToolsPrivileges::UPDATE];
+        yield 'checker.revoke' => [CheckerAcknowledgementController::class, 'revoke', FroshToolsPrivileges::UPDATE];
         yield 'statistics.cache' => [StatisticsController::class, 'cacheStatistics', FroshToolsPrivileges::READ];
         yield 'statistics.database' => [StatisticsController::class, 'databaseStatistics', FroshToolsPrivileges::READ];
         yield 'feature-flags.list' => [FeatureFlagController::class, 'list', FroshToolsPrivileges::READ];

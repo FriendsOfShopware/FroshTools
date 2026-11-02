@@ -5,8 +5,8 @@ declare(strict_types=1);
 namespace Frosh\Tools\Controller;
 
 use Frosh\Tools\Acl\FroshToolsPrivileges;
-use Frosh\Tools\Components\AcknowledgementStore;
 use Frosh\Tools\Components\AcknowledgedChecks;
+use Frosh\Tools\Components\AcknowledgementStore;
 use Frosh\Tools\Components\Health\Checker\CheckerInterface;
 use Frosh\Tools\Components\Health\Checker\DataIntegrityChecker\AffectedEntitiesProviderInterface;
 use Frosh\Tools\Components\Health\DataIntegrityCollection;
@@ -54,14 +54,6 @@ class HealthController extends AbstractController
         private readonly array $acknowledgedChecks = [],
         private readonly ?AcknowledgementStore $acknowledgementStore = null,
     ) {
-    }
-
-    /**
-     * @return array<string, string>
-     */
-    private function resolvedAcknowledgedChecks(): array
-    {
-        return $this->acknowledgementStore?->all() ?? $this->acknowledgedChecks;
     }
 
     #[Route(path: '/health/status', name: 'api.frosh.tools.health.status', methods: ['GET'])]
@@ -156,5 +148,13 @@ class HealthController extends AbstractController
 
             return $this->status();
         });
+    }
+
+    /**
+     * @return array<string, string>
+     */
+    private function resolvedAcknowledgedChecks(): array
+    {
+        return $this->acknowledgementStore?->all() ?? $this->acknowledgedChecks;
     }
 }

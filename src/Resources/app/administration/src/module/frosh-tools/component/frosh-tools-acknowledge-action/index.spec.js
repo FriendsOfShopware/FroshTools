@@ -13,7 +13,9 @@ const alarm = {
 };
 
 function acl(canUpdate) {
-    return { can: (privilege) => canUpdate && privilege === 'frosh_tools:update' };
+    return {
+        can: (privilege) => canUpdate && privilege === 'frosh_tools:update',
+    };
 }
 
 async function createWrapper(item, service, canUpdate = true) {

@@ -27,7 +27,7 @@ class ComposerAuditController extends AbstractController
     {
         $forceRefresh = $request->query->getBoolean('refresh');
         $result = $this->composerAuditService->audit($forceRefresh);
-        $result['advisories'] = $this->withAcknowledgements($result['advisories'] ?? []);
+        $result['advisories'] = $this->withAcknowledgements($result['advisories']);
 
         return new JsonResponse($result);
     }

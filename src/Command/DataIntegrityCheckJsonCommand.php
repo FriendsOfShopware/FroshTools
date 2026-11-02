@@ -4,8 +4,8 @@ declare(strict_types=1);
 
 namespace Frosh\Tools\Command;
 
-use Frosh\Tools\Components\AcknowledgementStore;
 use Frosh\Tools\Components\AcknowledgedChecks;
+use Frosh\Tools\Components\AcknowledgementStore;
 use Frosh\Tools\Components\Health\Checker\CheckerInterface;
 use Frosh\Tools\Components\Health\DataIntegrityCollection;
 use Symfony\Component\Console\Attribute\AsCommand;

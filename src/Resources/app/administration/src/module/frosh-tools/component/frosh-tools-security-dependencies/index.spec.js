@@ -85,9 +85,9 @@ describe('frosh-tools-security-dependencies', () => {
         expect(wrapper.vm.openAdvisories).toHaveLength(1);
         expect(wrapper.vm.affectedPackages).toEqual(['guzzlehttp/guzzle']);
         expect(wrapper.text()).toContain('Reviewed the advisory');
-        expect(wrapper.find('.frosh-security-dependencies__reason').text()).toBe(
-            'Reviewed the advisory'
-        );
+        expect(
+            wrapper.find('.frosh-security-dependencies__reason').text()
+        ).toBe('Reviewed the advisory');
     });
 
     it('copies the update command to the clipboard', async () => {
