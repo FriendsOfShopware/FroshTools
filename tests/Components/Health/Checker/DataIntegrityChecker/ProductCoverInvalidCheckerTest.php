@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Frosh\Tools\Tests\Components\Health\Checker\DataIntegrityChecker;
 
 use Frosh\Tools\Components\Health\Checker\DataIntegrityChecker\ProductCoverInvalidChecker;
+use Shopware\Core\Defaults;
 use Shopware\Core\Framework\Uuid\Uuid;
 use PHPUnit\Framework\Attributes\CoversClass;
 
@@ -29,6 +30,26 @@ class ProductCoverInvalidCheckerTest extends DataIntegrityCheckerTestCase
         $variantId = $this->createProduct(['parentId' => $mainProductId]);
 
         $this->updateProduct($variantId, 'product_media_id', $this->coverOf($mainProductId));
+
+        static::assertAffectedCount($this->collectResult($this->checker, self::ID), 0);
+        static::assertAffectedEntities($this->checker, 'product', []);
+    }
+
+    public function testReportsOkForMainProductWithTheCoverOfOneOfItsVariants(): void
+    {
+        $mainProductId = $this->createProduct();
+        $variantId = $this->createProduct(['parentId' => $mainProductId]);
+        $variantProductMediaId = Uuid::randomHex();
+        $this->connection->executeStatement(
+            'INSERT INTO product_media (id, version_id, product_id, product_version_id, media_id, position, created_at)
+             SELECT :id, :version, :product, :version, id, 1, NOW(3) FROM media LIMIT 1',
+            [
+                'id' => Uuid::fromHexToBytes($variantProductMediaId),
+                'version' => Uuid::fromHexToBytes(Defaults::LIVE_VERSION),
+                'product' => Uuid::fromHexToBytes($variantId),
+            ],
+        );
+        $this->updateProduct($mainProductId, 'product_media_id', Uuid::fromHexToBytes($variantProductMediaId));
 
         static::assertAffectedCount($this->collectResult($this->checker, self::ID), 0);
         static::assertAffectedEntities($this->checker, 'product', []);
