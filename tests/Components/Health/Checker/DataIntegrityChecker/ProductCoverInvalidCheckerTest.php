@@ -34,6 +34,17 @@ class ProductCoverInvalidCheckerTest extends DataIntegrityCheckerTestCase
         static::assertAffectedEntities($this->checker, 'product', []);
     }
 
+    public function testReportsOkForMainProductWithTheCoverOfOneOfItsVariants(): void
+    {
+        $mainProductId = $this->createProduct();
+        $variantId = $this->createProductWithCover(data: ['parentId' => $mainProductId]);
+
+        $this->updateProduct($mainProductId, 'product_media_id', $this->coverOf($variantId));
+
+        static::assertAffectedCount($this->collectResult($this->checker, self::ID), 0);
+        static::assertAffectedEntities($this->checker, 'product', []);
+    }
+
     public function testCountsMissingCoversAndCoversOfOtherProducts(): void
     {
         $otherProductId = $this->createProductWithCover();
@@ -81,13 +92,17 @@ class ProductCoverInvalidCheckerTest extends DataIntegrityCheckerTestCase
         static::assertAffectedEntities($this->checker, 'product', [$productId, $otherCoverProductId, $otherProductId]);
     }
 
-    private function createProductWithCover(?string $mediaId = null): string
+    /**
+     * @param array<string, mixed> $data
+     */
+    private function createProductWithCover(?string $mediaId = null, array $data = []): string
     {
         $productMediaId = Uuid::randomHex();
 
         return $this->createProduct([
             'media' => [['id' => $productMediaId, 'media' => ['id' => $mediaId ?? Uuid::randomHex()]]],
             'coverId' => $productMediaId,
+            ...$data,
         ]);
     }
 
