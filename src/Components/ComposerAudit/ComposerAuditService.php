@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Frosh\Tools\Components\ComposerAudit;
 
+use Composer\Autoload\ClassLoader;
 use Composer\InstalledVersions;
 use Composer\Semver\Semver;
 use Doctrine\DBAL\Connection;
@@ -183,7 +184,7 @@ class ComposerAuditService
         $resolvedProjectPath = realpath($this->projectDir);
         $projectPath = Path::canonicalize($resolvedProjectPath !== false ? $resolvedProjectPath : $this->projectDir);
 
-        foreach (InstalledVersions::getAllRawData() as $dataset) {
+        foreach ($this->loadInstalledDatasets() as $dataset) {
             $rootPackageName = $dataset['root']['name'];
             $rootPath = $dataset['root']['install_path'];
             $resolvedRootPath = realpath($rootPath);
@@ -221,6 +222,108 @@ class ComposerAuditService
         }
 
         return $packages;
+    }
+
+    /**
+     * Reads the installed package datasets fresh from disk.
+     *
+     * InstalledVersions loads vendor/composer/installed.php via require, so with OPcache
+     * (opcache.validate_timestamps=0 or a long revalidate_freq, which is typical in
+     * production) a long-running PHP-FPM keeps reporting the versions from before the last
+     * `composer update` until it is restarted. installed.json is read with
+     * file_get_contents, which OPcache does not cache, and is the same file `composer audit`
+     * inspects. Falls back to InstalledVersions when no installed.json can be found.
+     *
+     * @return list<array{root: array{name: string, install_path: string}, versions: array<string, array<string, mixed>>}>
+     */
+    private function loadInstalledDatasets(): array
+    {
+        $datasets = [];
+        foreach (array_keys(ClassLoader::getRegisteredLoaders()) as $vendorDir) {
+            $dataset = $this->readInstalledJson((string) $vendorDir);
+            if ($dataset !== null) {
+                $datasets[] = $dataset;
+            }
+        }
+
+        if ($datasets !== []) {
+            return $datasets;
+        }
+
+        $datasets = [];
+        foreach (InstalledVersions::getAllRawData() as $dataset) {
+            $datasets[] = [
+                'root' => [
+                    'name' => (string) ($dataset['root']['name'] ?? ''),
+                    'install_path' => (string) ($dataset['root']['install_path'] ?? ''),
+                ],
+                'versions' => $dataset['versions'] ?? [],
+            ];
+        }
+
+        return $datasets;
+    }
+
+    /**
+     * @return array{root: array{name: string, install_path: string}, versions: array<string, array<string, mixed>>}|null
+     */
+    private function readInstalledJson(string $vendorDir): ?array
+    {
+        $jsonFile = $vendorDir . '/composer/installed.json';
+        if (!is_file($jsonFile)) {
+            return null;
+        }
+
+        $content = @file_get_contents($jsonFile);
+        if ($content === false) {
+            return null;
+        }
+
+        try {
+            $data = json_decode($content, true, 512, \JSON_THROW_ON_ERROR);
+        } catch (\JsonException) {
+            return null;
+        }
+
+        if (!\is_array($data)) {
+            return null;
+        }
+
+        // Composer 2 wraps the list in {"packages": [...]}, Composer 1 stores the list directly.
+        $packages = isset($data['packages']) && \is_array($data['packages']) ? $data['packages'] : $data;
+
+        $versions = [];
+        foreach ($packages as $package) {
+            if (!\is_array($package) || !isset($package['name']) || !\is_string($package['name'])) {
+                continue;
+            }
+
+            $versions[$package['name']] = [
+                'pretty_version' => isset($package['version']) ? (string) $package['version'] : null,
+                'version' => isset($package['version_normalized']) ? (string) $package['version_normalized'] : null,
+            ];
+        }
+
+        // The root package (name + path) is not part of installed.json. It does not change
+        // with a `composer update`, so the possibly OPcache-stale installed.php is fine here.
+        $rootName = '';
+        $rootPath = \dirname($vendorDir);
+        $phpFile = $vendorDir . '/composer/installed.php';
+        if (is_file($phpFile)) {
+            try {
+                $installed = require $phpFile;
+                if (\is_array($installed) && isset($installed['root']) && \is_array($installed['root'])) {
+                    $rootName = (string) ($installed['root']['name'] ?? '');
+                    $rootPath = (string) ($installed['root']['install_path'] ?? $rootPath);
+                }
+            } catch (\Throwable) {
+            }
+        }
+
+        return [
+            'root' => ['name' => $rootName, 'install_path' => $rootPath],
+            'versions' => $versions,
+        ];
     }
 
     private function hasUpToDateSecurityPlugin(): bool

@@ -99,6 +99,43 @@ class ComposerAuditServiceTest extends TestCase
         static::assertSame([$path], $this->audit()['advisories'][0]['installedSources']);
     }
 
+    public function testReadsFreshVersionsFromInstalledJsonInsteadOfStaleInstalledPhp(): void
+    {
+        $vendor = sys_get_temp_dir() . '/frosh-tools-audit-' . bin2hex(random_bytes(4)) . '/vendor';
+        mkdir($vendor . '/composer', 0777, true);
+
+        try {
+            // installed.php still reports the old version, as OPcache would after `composer update`.
+            file_put_contents($vendor . '/composer/installed.php', '<?php return ' . var_export(
+                $this->dataset('shopware/production', __DIR__, '7.10.0'),
+                true,
+            ) . ';');
+            file_put_contents($vendor . '/composer/installed.json', json_encode([
+                'packages' => [
+                    ['name' => 'guzzlehttp/guzzle', 'version' => '7.15.3', 'version_normalized' => '7.15.3.0'],
+                ],
+            ], \JSON_THROW_ON_ERROR));
+
+            (new \ReflectionProperty(InstalledVersions::class, 'installed'))->setValue(null, []);
+            (new \ReflectionProperty(InstalledVersions::class, 'installedByVendor'))->setValue(null, [
+                $vendor => $this->dataset('shopware/production', __DIR__, '7.10.0'),
+            ]);
+            (new \ReflectionProperty(ClassLoader::class, 'registeredLoaders'))->setValue(null, [$vendor => new ClassLoader($vendor)]);
+
+            $result = $this->audit();
+
+            static::assertSame(1, $result['packages']);
+            static::assertSame(0, $result['vulnerable']);
+            static::assertSame([], $result['advisories']);
+        } finally {
+            @unlink($vendor . '/composer/installed.php');
+            @unlink($vendor . '/composer/installed.json');
+            @rmdir($vendor . '/composer');
+            @rmdir($vendor);
+            @rmdir(\dirname($vendor));
+        }
+    }
+
     /**
      * @return array<string, mixed>
      */
