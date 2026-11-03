@@ -24,6 +24,7 @@ class ShopmonControllerTest extends IntegrationTestCase
     protected function setUp(): void
     {
         $this->controller = static::getContainer()->get(ShopmonController::class);
+        $this->controller->remove(Context::createDefaultContext());
     }
 
     public function testStatusReturnsNotConfigured(): void
@@ -38,7 +39,7 @@ class ShopmonControllerTest extends IntegrationTestCase
         static::assertSame(['configured' => false], $status);
     }
 
-    public function testSetupCreatesIntegrationAndConfiguration(): void
+    public function testSetupReturnsCredentialsOnceWithoutStoringConfiguration(): void
     {
         $context = Context::createDefaultContext();
 
@@ -56,7 +57,14 @@ class ShopmonControllerTest extends IntegrationTestCase
         static::assertNotNull($integration, 'Setup should create the shopmon integration');
 
         $configValue = static::getContainer()->get(SystemConfigService::class)->getString(self::CONFIG_KEY);
-        static::assertNotSame('', $configValue, 'Setup should persist the integration data in the system config');
+        static::assertSame('', $configValue);
+        static::assertSame([
+            'url' => $status['shopUrl'],
+            'clientId' => $status['clientId'],
+            'clientSecret' => $status['clientSecret'],
+        ], json_decode((string) base64_decode($status['integrationData'], true), true, 512, \JSON_THROW_ON_ERROR));
+        static::assertTrue(password_verify($status['clientSecret'], $integration->getSecretAccessKey()));
+        static::assertSame(['configured' => true], $this->decodeResponse($this->controller->status($context)));
     }
 
     public function testSetupIsIdempotent(): void
@@ -68,7 +76,11 @@ class ShopmonControllerTest extends IntegrationTestCase
 
         static::assertTrue($first['configured']);
         static::assertTrue($second['configured']);
-        static::assertSame($first, $second, 'Repeated setup must preserve credentials');
+        static::assertSame(['configured' => true], $second);
+        $integration = static::getContainer()->get('integration.repository')->search(new Criteria([self::INTEGRATION_ID]), $context)->getEntities()->first();
+        static::assertNotNull($integration);
+        static::assertSame($first['clientId'], $integration->getAccessKey());
+        static::assertTrue(password_verify($first['clientSecret'], $integration->getSecretAccessKey()));
 
         $result = static::getContainer()->get('integration.repository')
             ->search(new Criteria([self::INTEGRATION_ID]), $context);
