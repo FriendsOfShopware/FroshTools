@@ -27,6 +27,11 @@ class ProductCoverInvalidChecker implements DataIntegrityCheckerInterface, Check
             OR NOT (pm.product_id = p.id
                 OR pm.product_id <=> p.parent_id
                 OR EXISTS (SELECT 1
+                           FROM product variant
+                           WHERE variant.id = pm.product_id
+                             AND variant.parent_id = p.id
+                             AND variant.version_id = p.version_id)
+                OR EXISTS (SELECT 1
                            FROM product_media own
                            WHERE own.product_id IN (p.id, p.parent_id)
                              AND own.product_version_id = p.version_id
