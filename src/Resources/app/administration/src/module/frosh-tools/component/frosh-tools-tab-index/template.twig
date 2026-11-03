@@ -96,10 +96,6 @@
                                 >
                                     {{ $t('frosh-tools.tabs.index.info') }}
                                 </button>
-                                <frosh-tools-acknowledge-action
-                                    :item="item"
-                                    @changed="refresh"
-                                />
                             </td>
                             <td class="ft-mono">{{ item.current }}</td>
                             <td class="ft-mono">{{ item.recommended }}</td>
@@ -168,10 +164,6 @@
                                 >
                                     {{ $t('frosh-tools.tabs.index.info') }}
                                 </button>
-                                <frosh-tools-acknowledge-action
-                                    :item="item"
-                                    @changed="refresh"
-                                />
                             </td>
                             <td class="ft-mono">{{ item.current }}</td>
                             <td class="ft-mono">{{ item.recommended }}</td>

@@ -5,10 +5,10 @@ declare(strict_types=1);
 namespace Frosh\Tools\Controller;
 
 use Frosh\Tools\Acl\FroshToolsPrivileges;
-use Frosh\Tools\Components\AcknowledgementStore;
 use Frosh\Tools\Components\ComposerAudit\ComposerAuditService;
 use Frosh\Tools\Components\Security\Checker\DependencyAuditChecker;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Component\DependencyInjection\Attribute\Autowire;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Routing\Attribute\Route;
@@ -16,9 +16,13 @@ use Symfony\Component\Routing\Attribute\Route;
 #[Route(path: '/api/_action/frosh-tools', defaults: ['_routeScope' => ['api'], '_acl' => [FroshToolsPrivileges::SECURITY_READ]])]
 class ComposerAuditController extends AbstractController
 {
+    /**
+     * @param array<string, mixed> $acknowledgedChecks
+     */
     public function __construct(
         private readonly ComposerAuditService $composerAuditService,
-        private readonly AcknowledgementStore $acknowledgementStore,
+        #[Autowire(param: 'frosh_tools.checker.acknowledged_checks')]
+        private readonly array $acknowledgedChecks = [],
     ) {
     }
 
@@ -39,7 +43,6 @@ class ComposerAuditController extends AbstractController
      */
     private function withAcknowledgements(array $advisories): array
     {
-        $acknowledgements = $this->acknowledgementStore->all();
         $annotated = [];
 
         foreach ($advisories as $advisory) {
@@ -48,8 +51,9 @@ class ComposerAuditController extends AbstractController
             }
 
             $id = DependencyAuditChecker::findingId($advisory);
+            $reason = $this->acknowledgedChecks[$id] ?? '';
             $advisory['id'] = $id;
-            $advisory['acknowledgement'] = $acknowledgements[$id] ?? '';
+            $advisory['acknowledgement'] = \is_string($reason) ? trim($reason) : '';
             $annotated[] = $advisory;
         }
 

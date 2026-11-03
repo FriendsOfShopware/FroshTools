@@ -14,8 +14,6 @@ final class FroshToolsPrivileges
 {
     public const READ = 'frosh_tools:read';
 
-    public const UPDATE = 'frosh_tools:update';
-
     public const CACHE_READ = 'frosh_tools_cache:read';
     public const CACHE_UPDATE = 'frosh_tools_cache:update';
 
@@ -67,7 +65,6 @@ final class FroshToolsPrivileges
     public static function allUpdate(): array
     {
         return [
-            self::UPDATE,
             self::CACHE_UPDATE,
             self::QUEUE_UPDATE,
             self::SCHEDULED_TASK_UPDATE,

@@ -229,9 +229,9 @@ After activation, open **Settings → Plugins → Tools** (or search for “Tool
 
 ## Configuration
 
-In the Administration, an error or warning row has **Show as info with a reason**. The dialog explains that the row stays visible, the current value and the recommendation do not change, and the status becomes info. The reason is required and is shown as a tooltip. The same dialog shows that reason again and can remove the confirmation. A confirmation that was set in the configuration file below stays in place until that file changes. No cache clear is required for a confirmation saved in the Administration.
+A check can stay visible as info through the Symfony config below. The current value and the recommendation do not change. The status becomes info and no longer counts as an error or a warning. The reason is required and is shown as a tooltip. The file is the record of who confirmed the check and why. `disabled_checks` still hides the row, and an id listed in both is hidden.
 
-Optional Symfony config — create `config/packages/frosh_tools.yaml`:
+Create `config/packages/frosh_tools.yaml`:
 
 ```yaml
 frosh_tools:

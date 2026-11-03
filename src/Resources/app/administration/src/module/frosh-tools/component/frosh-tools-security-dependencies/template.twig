@@ -233,11 +233,6 @@
                             v-if="adv.acknowledgement"
                             class="frosh-security-dependencies__reason"
                         >{{ adv.acknowledgement }}</p>
-                        <frosh-tools-acknowledge-action
-                            v-if="adv.id"
-                            :item="advisoryItem(adv)"
-                            @changed="onChanged"
-                        />
                         <div class="frosh-security-dependencies__advisory-meta">
                             <span v-if="adv.affectedVersions">
                                 <strong>

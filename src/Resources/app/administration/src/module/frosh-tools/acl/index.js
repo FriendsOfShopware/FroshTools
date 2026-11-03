@@ -48,7 +48,6 @@ privileges.addPrivilegeMappingEntry({
         },
         editor: {
             privileges: [
-                PRIVILEGE.UPDATE,
                 PRIVILEGE.CACHE_UPDATE,
                 PRIVILEGE.QUEUE_UPDATE,
                 PRIVILEGE.SCHEDULED_TASK_UPDATE,

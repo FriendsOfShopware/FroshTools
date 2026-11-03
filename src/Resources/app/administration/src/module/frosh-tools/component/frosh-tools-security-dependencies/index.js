@@ -1,6 +1,5 @@
 import template from './template.twig';
 import './style.scss';
-import '../frosh-tools-acknowledge-action/index.js';
 
 const { Component } = Shopware;
 
@@ -9,7 +8,6 @@ const { Component } = Shopware;
 Component.register('frosh-tools-security-dependencies', {
     template,
     inject: ['froshToolsService'],
-    emits: ['changed'],
 
     data() {
         return {
@@ -140,31 +138,6 @@ Component.register('frosh-tools-security-dependencies', {
             } catch {
                 return null;
             }
-        },
-
-        async onChanged() {
-            await this.load();
-            this.$emit('changed');
-        },
-
-        advisoryItem(advisory) {
-            const severity = (advisory.severity || 'medium').toLowerCase();
-
-            return {
-                id: advisory.id,
-                title:
-                    advisory.title ||
-                    advisory.cve ||
-                    advisory.advisoryId ||
-                    advisory.packageName,
-                severity: severity === 'moderate' ? 'medium' : severity,
-                acknowledgement: advisory.acknowledgement || '',
-                current: [advisory.packageName, advisory.installedVersion]
-                    .filter(Boolean)
-                    .join(' '),
-                recommended:
-                    'Update the affected dependency to a patched version',
-            };
         },
 
         advisoryVariant(advisory) {

@@ -3,7 +3,6 @@
  */
 export const PRIVILEGE = {
     READ: 'frosh_tools:read',
-    UPDATE: 'frosh_tools:update',
 
     CACHE_READ: 'frosh_tools_cache:read',
     CACHE_UPDATE: 'frosh_tools_cache:update',

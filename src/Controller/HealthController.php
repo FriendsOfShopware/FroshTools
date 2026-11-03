@@ -6,7 +6,6 @@ namespace Frosh\Tools\Controller;
 
 use Frosh\Tools\Acl\FroshToolsPrivileges;
 use Frosh\Tools\Components\AcknowledgedChecks;
-use Frosh\Tools\Components\AcknowledgementStore;
 use Frosh\Tools\Components\Health\Checker\CheckerInterface;
 use Frosh\Tools\Components\Health\Checker\DataIntegrityChecker\AffectedEntitiesProviderInterface;
 use Frosh\Tools\Components\Health\DataIntegrityCollection;
@@ -52,7 +51,6 @@ class HealthController extends AbstractController
         private readonly array $ignoredChecks,
         #[Autowire(param: 'frosh_tools.checker.acknowledged_checks')]
         private readonly array $acknowledgedChecks = [],
-        private readonly ?AcknowledgementStore $acknowledgementStore = null,
     ) {
     }
 
@@ -64,7 +62,7 @@ class HealthController extends AbstractController
             $checker->collect($collection);
         }
 
-        AcknowledgedChecks::apply($collection, $this->resolvedAcknowledgedChecks());
+        AcknowledgedChecks::apply($collection, $this->acknowledgedChecks);
         $collection->sortByState();
         $collection->removeByIds($this->ignoredChecks);
 
@@ -79,7 +77,7 @@ class HealthController extends AbstractController
             $checker->collect($collection);
         }
 
-        AcknowledgedChecks::apply($collection, $this->resolvedAcknowledgedChecks());
+        AcknowledgedChecks::apply($collection, $this->acknowledgedChecks);
         $collection->sortByState();
         $collection->removeByIds($this->ignoredChecks);
 
@@ -101,7 +99,7 @@ class HealthController extends AbstractController
                 $checker->collect($collection);
             }
 
-            AcknowledgedChecks::apply($collection, $this->resolvedAcknowledgedChecks());
+            AcknowledgedChecks::apply($collection, $this->acknowledgedChecks);
             $collection->sortByState();
             $collection->removeByIds($this->ignoredChecks);
 
@@ -148,13 +146,5 @@ class HealthController extends AbstractController
 
             return $this->status();
         });
-    }
-
-    /**
-     * @return array<string, string>
-     */
-    private function resolvedAcknowledgedChecks(): array
-    {
-        return $this->acknowledgementStore?->all() ?? $this->acknowledgedChecks;
     }
 }

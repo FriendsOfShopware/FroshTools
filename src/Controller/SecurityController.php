@@ -6,7 +6,6 @@ namespace Frosh\Tools\Controller;
 
 use Frosh\Tools\Acl\FroshToolsPrivileges;
 use Frosh\Tools\Components\AcknowledgedChecks;
-use Frosh\Tools\Components\AcknowledgementStore;
 use Frosh\Tools\Components\Sbom\CycloneDxSbomGenerator;
 use Frosh\Tools\Components\Security\AdminAccountService;
 use Frosh\Tools\Components\Security\Checker\SecurityCheckerInterface;
@@ -38,7 +37,6 @@ class SecurityController extends AbstractController
         private readonly ClockInterface $clock,
         #[Autowire(param: 'frosh_tools.checker.acknowledged_checks')]
         private readonly array $acknowledgedChecks = [],
-        private readonly ?AcknowledgementStore $acknowledgementStore = null,
     ) {
     }
 
@@ -50,7 +48,7 @@ class SecurityController extends AbstractController
             $checker->collect($collection);
         }
 
-        AcknowledgedChecks::apply($collection, $this->resolvedAcknowledgedChecks());
+        AcknowledgedChecks::apply($collection, $this->acknowledgedChecks);
         $collection->removeByIds($this->ignoredChecks);
         $collection->sortBySeverity();
 
@@ -92,13 +90,5 @@ class SecurityController extends AbstractController
             'Content-Type' => 'application/vnd.cyclonedx+json',
             'Content-Disposition' => 'attachment; filename="sbom.cdx.json"',
         ]);
-    }
-
-    /**
-     * @return array<string, string>
-     */
-    private function resolvedAcknowledgedChecks(): array
-    {
-        return $this->acknowledgementStore?->all() ?? $this->acknowledgedChecks;
     }
 }
