@@ -29,11 +29,18 @@ Compatible with **Shopware 6.6 and 6.7**.
 
 ## Shopmon integration
 
-Create or remove monitoring credentials in the **Shopmon** tab. FroshTools manages a dedicated ACL role and refreshes its permissions on plugin installation and updates. Repeating setup preserves existing credentials.
+Create or remove monitoring credentials in the **Shopmon** tab.
+FroshTools manages a dedicated ACL role and refreshes its permissions on plugin installation and updates.
+Repeating setup preserves existing credentials.
+The setup code and credentials are shown only once, immediately after manual creation.
+Copy the code before leaving the tab; to obtain a new code later, remove and recreate the integration and reconnect Shopmon.
+Credentials are no longer stored in system configuration, and updates delete previously stored copies.
 
 For automated setup, set both `SHOPMON_ACCESS_KEY` and `SHOPMON_ACCESS_SECRET` before installing or updating FroshTools. `APP_URL` supplies the shop URL. With either credential missing, automatic setup leaves unconfigured shops unchanged; manual setup can generate credentials.
 
-Existing integrations from FroshShopmon are adopted with their credentials and setup code intact. When uninstalling the old FroshShopmon plugin, keep its user data: its uninstall routine otherwise deletes the shared integration. Removing the integration from FroshTools deletes the integration, ACL role, and configuration for both plugins.
+Existing integrations from FroshShopmon are adopted without rotating their credentials.
+When uninstalling the old FroshShopmon plugin, keep its user data: its uninstall routine otherwise deletes the shared integration.
+Removing the integration from FroshTools deletes the integration and ACL role for both plugins.
 
 ---
 

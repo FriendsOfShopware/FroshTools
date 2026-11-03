@@ -36,7 +36,6 @@ class ShopmonIntegrationServiceTest extends IntegrationTestCase
         $this->service = new ShopmonIntegrationService(
             static::getContainer()->get('integration.repository'),
             static::getContainer()->get('acl_role.repository'),
-            static::getContainer()->get(SystemConfigService::class),
         );
         $this->service->remove(Context::createDefaultContext());
     }
@@ -65,13 +64,7 @@ class ShopmonIntegrationServiceTest extends IntegrationTestCase
                 'privileges' => ['frosh_tools:read'],
             ]],
         ]], $context);
-        $encoded = base64_encode(json_encode([
-            'url' => 'https://shop.example',
-            'clientId' => $accessKey,
-            'clientSecret' => $secret,
-        ], \JSON_THROW_ON_ERROR));
         $config = static::getContainer()->get(SystemConfigService::class);
-        $config->set(self::LEGACY_CONFIG, $encoded);
         $before = $repository->search(new Criteria([self::LEGACY_ID]), $context)->getEntities()->first();
         static::assertNotNull($before);
 
@@ -90,8 +83,9 @@ class ShopmonIntegrationServiceTest extends IntegrationTestCase
         static::assertNotNull($integration);
         static::assertSame($accessKey, $integration->getAccessKey());
         static::assertSame($before->getSecretAccessKey(), $integration->getSecretAccessKey());
-        static::assertSame($encoded, $config->getString(self::CONFIG));
-        static::assertSame($encoded, $this->service->status($context)['integrationData']);
+        static::assertSame('', $config->getString(self::CONFIG));
+        static::assertSame(['configured' => true], $this->service->status($context));
+        static::assertSame(['configured' => true], $this->service->setup($context));
 
         $role = static::getContainer()->get('acl_role.repository')->search(new Criteria([self::LEGACY_ID]), $context)->getEntities()->first();
         static::assertNotNull($role);
@@ -146,8 +140,12 @@ class ShopmonIntegrationServiceTest extends IntegrationTestCase
         static::assertSame($configured, $status['configured']);
 
         if ($configured) {
-            static::assertSame($accessKey, $status['clientId']);
-            static::assertSame($secret, $status['clientSecret']);
+            static::assertSame(['configured' => true], $status);
+            $integration = static::getContainer()->get('integration.repository')->search(new Criteria([self::ID]), $context)->getEntities()->first();
+            static::assertNotNull($integration);
+            static::assertSame($accessKey, $integration->getAccessKey());
+            static::assertTrue(password_verify($secret, $integration->getSecretAccessKey()));
+            static::assertSame('', static::getContainer()->get(SystemConfigService::class)->getString(self::CONFIG));
             $this->service->initialize($context);
             static::assertSame($status, $this->service->status($context));
         } else {
@@ -163,13 +161,14 @@ class ShopmonIntegrationServiceTest extends IntegrationTestCase
         yield 'both' => ['SWIAABCDEFGHIJKLMNOPQRSTUVWX', 'shopmon-secret', true];
     }
 
-    public function testMalformedConfigurationDoesNotReportConfigured(): void
+    public function testStatusDoesNotDependOnStoredConfiguration(): void
     {
         $context = Context::createDefaultContext();
         $this->service->setup($context);
         static::getContainer()->get(SystemConfigService::class)->set(self::CONFIG, base64_encode('{invalid'));
-        static::assertSame(['configured' => false], $this->service->status($context));
+        static::assertSame(['configured' => true], $this->service->status($context));
     }
+
     private function assertSingleShopmonRole(string $expectedId, Context $context): void
     {
         // Searching by name also detects extra roles created with a random ID.

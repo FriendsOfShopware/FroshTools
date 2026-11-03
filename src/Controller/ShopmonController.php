@@ -22,9 +22,7 @@ class ShopmonController extends AbstractController
     #[Route(path: '/shopmon', name: 'api.frosh.tools.shopmon.setup', defaults: ['_acl' => [FroshToolsPrivileges::SHOPMON_UPDATE]], methods: ['POST'])]
     public function setup(Context $context): JsonResponse
     {
-        $this->integrationService->setup($context);
-
-        return new JsonResponse($this->integrationService->status($context));
+        return new JsonResponse($this->integrationService->setup($context));
     }
 
     #[Route(path: '/shopmon', name: 'api.frosh.tools.shopmon.status', methods: ['GET'])]

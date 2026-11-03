@@ -131,9 +131,9 @@
             variant="success"
             icon="check"
             :title="$t('frosh-tools.tabs.shopmon.configured.readyTitle')"
-            :body="$t('frosh-tools.tabs.shopmon.configured.readyBody')"
+            :body="$t(status.integrationData ? 'frosh-tools.tabs.shopmon.configured.readyBody' : 'frosh-tools.tabs.shopmon.configured.credentialsHidden')"
         />
-        <ft-panel :title="$t('frosh-tools.tabs.shopmon.configured.setupCode')">
+        <ft-panel v-if="status.integrationData" :title="$t('frosh-tools.tabs.shopmon.configured.setupCode')">
             <p class="frosh-tab-shopmon__setup-hint">
                 {{ $t('frosh-tools.tabs.shopmon.configured.setupCodeHint') }}
             </p>
@@ -152,7 +152,7 @@
                 </button>
             </div>
         </ft-panel>
-        <ft-panel :title="$t('frosh-tools.tabs.shopmon.configured.nextSteps')">
+        <ft-panel v-if="status.integrationData" :title="$t('frosh-tools.tabs.shopmon.configured.nextSteps')">
             <ol class="frosh-tab-shopmon__steps">
                 <li
                     v-for="step in 3"

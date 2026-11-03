@@ -18,7 +18,6 @@ use Shopware\Core\Framework\Plugin\Context\InstallContext;
 use Shopware\Core\Framework\Plugin\Context\UninstallContext;
 use Shopware\Core\Framework\Plugin\Context\UpdateContext;
 use Shopware\Core\System\Integration\IntegrationCollection;
-use Shopware\Core\System\SystemConfig\SystemConfigService;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
 
 class FroshTools extends Plugin
@@ -81,13 +80,10 @@ class FroshTools extends Plugin
         $integrationRepository = $this->container->get('integration.repository');
         /** @var EntityRepository<AclRoleCollection> $aclRoleRepository */
         $aclRoleRepository = $this->container->get('acl_role.repository');
-        $systemConfigService = $this->container->get(SystemConfigService::class);
-        \assert($systemConfigService instanceof SystemConfigService);
 
         $service = new ShopmonIntegrationService(
             $integrationRepository,
             $aclRoleRepository,
-            $systemConfigService,
         );
         $service->initialize($context);
     }

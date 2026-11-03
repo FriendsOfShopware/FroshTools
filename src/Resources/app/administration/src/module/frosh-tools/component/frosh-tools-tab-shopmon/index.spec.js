@@ -8,8 +8,7 @@ function createService(overrides = {}) {
         getShopmonStatus: vi.fn().mockResolvedValue({ configured: false }),
         setupShopmon: vi.fn().mockResolvedValue({
             configured: true,
-            shopId: 'shop-1',
-            token: 'secret',
+            integrationData: 'one-time-setup-code',
         }),
         removeShopmon: vi.fn().mockResolvedValue({}),
         ...overrides,
@@ -51,6 +50,33 @@ describe('frosh-tools-tab-shopmon', () => {
 
         expect(service.setupShopmon).toHaveBeenCalledTimes(1);
         expect(wrapper.vm.isConfigured).toBe(true);
+        expect(wrapper.find('.frosh-tab-shopmon__setup-code').text()).toContain(
+            'one-time-setup-code'
+        );
+
+        service.getShopmonStatus.mockResolvedValue({ configured: true });
+        await wrapper.vm.loadStatus();
+        await flushPromises();
+        expect(wrapper.find('.frosh-tab-shopmon__setup-code').exists()).toBe(
+            false
+        );
+    });
+
+    it('hides credentials and setup instructions for an existing integration', async () => {
+        const wrapper = await createWrapper({
+            service: createService({
+                getShopmonStatus: vi
+                    .fn()
+                    .mockResolvedValue({ configured: true }),
+            }),
+        });
+        await flushPromises();
+
+        expect(wrapper.vm.isConfigured).toBe(true);
+        expect(wrapper.find('.frosh-tab-shopmon__setup-code').exists()).toBe(
+            false
+        );
+        expect(wrapper.find('.frosh-tab-shopmon__steps').exists()).toBe(false);
     });
 
     it('copies a credential and removes the integration', async () => {
