@@ -19,6 +19,9 @@ class ShopmonIntegrationService
     private const LEGACY_INTEGRATION_ID = 'a1b2c3d4e5f6789012345678901234ab';
 
     private const PERMISSIONS = [
+        'language:read',
+        'locale:read',
+        'log_entry:create',
         'app:read',
         'plugin:read',
         'scheduled_task:read',
