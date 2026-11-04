@@ -30,6 +30,35 @@ class RedisQueueAdapterTest extends TestCase
         static::assertSame(['125-0', '124-0'], array_map(static fn ($message) => $message->id, $messages));
     }
 
+    public function testTimestampIsDerivedFromTheStreamId(): void
+    {
+        $redis = new QueueAdapterRedis();
+        $redis->groups = [['name' => 'workers', 'last-delivered-id' => '123-4']];
+        $redis->reverseEntries = [
+            '1730729047123-5' => ['message' => json_encode(['body' => '{}', 'headers' => []], \JSON_THROW_ON_ERROR)],
+        ];
+        $adapter = $this->createAdapter($redis);
+
+        $messages = $adapter->getMessages(10);
+
+        static::assertSame('2024-11-04T14:04:07+00:00', $messages[0]->timestamp);
+    }
+
+    public function testTimestampIsAlsoSetForUndecodableMessages(): void
+    {
+        $redis = new QueueAdapterRedis();
+        $redis->groups = [['name' => 'workers', 'last-delivered-id' => '123-4']];
+        $redis->reverseEntries = [
+            '1730729047123-0' => ['message' => 'not json'],
+        ];
+        $adapter = $this->createAdapter($redis);
+
+        $messages = $adapter->getMessages(10);
+
+        static::assertSame('unknown', $messages[0]->messageClass);
+        static::assertSame('2024-11-04T14:04:07+00:00', $messages[0]->timestamp);
+    }
+
     public function testOldestAgeUsesOnlyUndeliveredMessages(): void
     {
         $milliseconds = (time() - 60) * 1000;

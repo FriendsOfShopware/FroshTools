@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Frosh\Tools\Components\Queue;
 
+use Doctrine\DBAL\ArrayParameterType;
 use Doctrine\DBAL\Connection as DbalConnection;
 use Symfony\Component\Messenger\Bridge\Doctrine\Transport\Connection as MessengerConnection;
 use Symfony\Component\Messenger\Bridge\Doctrine\Transport\DoctrineTransport;
@@ -57,6 +58,38 @@ class DoctrineQueueAdapter extends ListableQueueAdapter
         } catch (\Throwable) {
             return null;
         }
+    }
+
+    public function getMessages(int $limit): array
+    {
+        $messages = parent::getMessages($limit);
+
+        $ids = array_values(array_filter(array_column($messages, 'id')));
+        if ($ids === []) {
+            return $messages;
+        }
+
+        try {
+            $configuration = $this->getMessengerConnection()->getConfiguration();
+
+            /** @var array<string, string> $createdAt */
+            $createdAt = $this->getDbalConnection()->fetchAllKeyValue(
+                \sprintf('SELECT id, created_at FROM %s WHERE id IN (?)', $configuration['table_name']),
+                [$ids],
+                [ArrayParameterType::STRING],
+            );
+        } catch (\Throwable) {
+            return $messages;
+        }
+
+        // messenger_messages.created_at is stored in UTC
+        $utc = new \DateTimeZone('UTC');
+
+        return array_map(static function (QueueMessage $message) use ($createdAt, $utc) {
+            $value = $createdAt[$message->id] ?? null;
+
+            return $value === null ? $message : $message->withTimestamp(new \DateTimeImmutable($value, $utc));
+        }, $messages);
     }
 
     public function purge(): void

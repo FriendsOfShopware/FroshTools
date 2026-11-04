@@ -144,6 +144,7 @@ class AmqpQueueAdapter implements QueueAdapter
     private function decodeEnvelope(\AMQPEnvelope $amqpEnvelope, SerializerInterface $serializer): QueueMessage
     {
         $id = $amqpEnvelope->getMessageId() ?: (string) $amqpEnvelope->getDeliveryTag();
+        $timestamp = $amqpEnvelope->getTimestamp() ? new \DateTimeImmutable('@' . $amqpEnvelope->getTimestamp()) : null;
 
         try {
             $envelope = $serializer->decode([
@@ -151,9 +152,9 @@ class AmqpQueueAdapter implements QueueAdapter
                 'headers' => $amqpEnvelope->getHeaders(),
             ]);
 
-            return QueueMessage::fromEnvelope($envelope, $id);
+            return QueueMessage::fromEnvelope($envelope, $id, $timestamp);
         } catch (\Throwable) {
-            return QueueMessage::raw($id, (string) $amqpEnvelope->getBody());
+            return QueueMessage::raw($id, (string) $amqpEnvelope->getBody(), $timestamp);
         }
     }
 

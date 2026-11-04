@@ -176,6 +176,19 @@ class RedisQueueAdapter implements QueueAdapter
         return null;
     }
 
+    /**
+     * Redis stream ids are "<unix milliseconds>-<sequence>"
+     */
+    private static function streamIdTimestamp(string $id): ?\DateTimeImmutable
+    {
+        $milliseconds = explode('-', $id, 2)[0];
+        if (!ctype_digit($milliseconds)) {
+            return null;
+        }
+
+        return new \DateTimeImmutable('@' . intdiv((int) $milliseconds, 1000));
+    }
+
     private static function nextStreamId(string $id): string
     {
         [$milliseconds, $sequence] = array_pad(explode('-', $id, 2), 2, '0');
@@ -189,6 +202,7 @@ class RedisQueueAdapter implements QueueAdapter
     private function decodeEntry(string $id, array $entry, SerializerInterface $serializer): QueueMessage
     {
         $raw = $entry['message'] ?? '';
+        $timestamp = self::streamIdTimestamp($id);
 
         try {
             $decoded = json_decode($raw, true, 512, \JSON_THROW_ON_ERROR);
@@ -197,9 +211,9 @@ class RedisQueueAdapter implements QueueAdapter
                 'headers' => $decoded['headers'] ?? [],
             ]);
 
-            return QueueMessage::fromEnvelope($envelope, $id);
+            return QueueMessage::fromEnvelope($envelope, $id, $timestamp);
         } catch (\Throwable) {
-            return QueueMessage::raw($id, $raw);
+            return QueueMessage::raw($id, $raw, $timestamp);
         }
     }
 

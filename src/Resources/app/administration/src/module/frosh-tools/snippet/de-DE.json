@@ -588,6 +588,7 @@
                     "hint": "Nachrichten verbleiben in der Warteschlange und werden nicht konsumiert.",
                     "hintRequeue": "Nachrichten werden abgeholt und wieder eingereiht: Sie werden als redelivered markiert, die Reihenfolge kann sich ändern und aktive Worker konkurrieren um sie.",
                     "empty": "Keine Nachrichten in diesem Transport",
+                    "timestamp": "Eingereiht am",
                     "retries": "{count} Wiederholungen",
                     "failed": "Fehlgeschlagen",
                     "retry": "Erneut auf \"{transport}\" ausführen",

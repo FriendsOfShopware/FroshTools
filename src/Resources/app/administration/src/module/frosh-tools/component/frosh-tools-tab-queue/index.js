@@ -255,6 +255,17 @@ Component.register('frosh-tools-tab-queue', {
             }
             return transport.workerLastSeenSeconds <= 120 ? 'active' : 'stale';
         },
+        formatTimestamp(value) {
+            const date = value ? new Date(value) : null;
+            if (!date || Number.isNaN(date.getTime())) {
+                return '';
+            }
+
+            return date.toLocaleString(this.$i18n.locale, {
+                dateStyle: 'medium',
+                timeStyle: 'medium',
+            });
+        },
         shortClassName(className) {
             const parts = String(className).split('\\');
             return parts[parts.length - 1];

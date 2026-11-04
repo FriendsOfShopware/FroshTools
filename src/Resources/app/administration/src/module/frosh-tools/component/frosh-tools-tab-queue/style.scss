@@ -161,6 +161,12 @@
         font-weight: 600;
     }
 
+    &__message-time {
+        color: var(--ft-text-muted);
+        font-variant-numeric: tabular-nums;
+        white-space: nowrap;
+    }
+
     &__message-id {
         color: var(--ft-text-muted);
         font-family: var(--ft-mono);
