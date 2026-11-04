@@ -129,6 +129,19 @@ class ShopmonIntegrationServiceTest extends IntegrationTestCase
         static::assertContains(FroshToolsPrivileges::CACHE_UPDATE, $role->getPrivileges());
     }
 
+    public function testRoleKeepsTheBasePrivilegesShopwareGrantsEveryIntegrationRole(): void
+    {
+        $context = Context::createDefaultContext();
+        $this->service->setup($context);
+        $this->service->initialize($context);
+
+        $role = static::getContainer()->get('acl_role.repository')->search(new Criteria([self::ID]), $context)->getEntities()->first();
+        static::assertNotNull($role);
+        foreach (['language:read', 'locale:read', 'log_entry:create', 'message_queue_stats:read'] as $privilege) {
+            static::assertContains($privilege, $role->getPrivileges());
+        }
+    }
+
     #[DataProvider('environmentCredentials')]
     public function testAutomaticCreationRequiresBothEnvironmentCredentials(string $accessKey, string $secret, bool $configured): void
     {
