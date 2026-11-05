@@ -34,6 +34,32 @@ describe('frosh-tools-security-overview', () => {
         ]);
     });
 
+    it('keeps an acknowledged dependency visible without counting it as an issue', async () => {
+        const wrapper = await createWrapper([
+            ...FINDINGS,
+            {
+                id: 'cve-ack',
+                category: 'dependencies',
+                severity: 'info',
+                title: 'Acknowledged CVE',
+                acknowledgement: 'Backported by the distribution',
+            },
+        ]);
+
+        expect(wrapper.vm.dependencyIssueCount).toBe(1);
+        expect(wrapper.vm.severityVariant('info')).toBe('info');
+        const dependencies = wrapper.vm.groupedFindings.find(
+            (group) => group.category === 'dependencies'
+        );
+        expect(dependencies.findings.map((finding) => finding.title)).toEqual([
+            'Acknowledged CVE',
+        ]);
+        const pill = wrapper
+            .findAll('.ft-pill')
+            .find((node) => node.attributes('title'));
+        expect(pill.attributes('title')).toBe('Backported by the distribution');
+    });
+
     it('emits navigate when opening the dependencies section', async () => {
         const wrapper = await createWrapper();
 

@@ -771,6 +771,7 @@
                     "medium": "Mittel",
                     "low": "Niedrig",
                     "unknown": "Unbekannt",
+                    "info": "Info",
                     "ok": "OK"
                 },
                 "timeline": {
@@ -871,6 +872,8 @@
                 "allOk": "Keine bekannten Sicherheitslücken",
                 "scannedPackages": "{count} installierte Pakete gegen Packagist-Advisories geprüft.",
                 "vulnerableTitle": "{count} Sicherheitsmeldungen gefunden",
+                "acknowledgedTitle": "Als Info angezeigt",
+                "acknowledgedBody": "Die übrigen Hinweise sind mit einer Begründung bestätigt und zählen nicht mehr als offene Probleme.",
                 "vulnerableBody": "{vulnerable} von {total} installierten Paketen haben Sicherheitsmeldungen.",
                 "affected": "Betroffene Versionen",
                 "reportedAt": "Gemeldet am",

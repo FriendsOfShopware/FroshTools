@@ -55,7 +55,7 @@
                 :class="`frosh-security-overview__finding--${severityVariant(finding.severity)}`"
             >
                 <div class="frosh-security-overview__finding-head">
-                    <ft-pill :variant="severityVariant(finding.severity)">
+                    <ft-pill :variant="severityVariant(finding.severity)" :title="finding.acknowledgement || null">
                         {{ severityLabel(finding.severity) }}
                     </ft-pill>
                     <span class="frosh-security-overview__finding-title">{{ finding.title }}</span>

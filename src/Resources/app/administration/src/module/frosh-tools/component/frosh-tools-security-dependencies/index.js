@@ -37,6 +37,22 @@ Component.register('frosh-tools-security-dependencies', {
                 this.result.advisories.length > 0
             );
         },
+        openAdvisories() {
+            return (this.result.advisories || []).filter(
+                (advisory) => !advisory.acknowledgement
+            );
+        },
+        hasOpenAdvisories() {
+            return this.openAdvisories.length > 0;
+        },
+        acknowledgedOnly() {
+            return this.hasAdvisories && !this.hasOpenAdvisories;
+        },
+        openPackageCount() {
+            return new Set(
+                this.openAdvisories.map((advisory) => advisory.packageName)
+            ).size;
+        },
         groupedAdvisories() {
             const groups = {};
             for (const advisory of this.result.advisories || []) {
@@ -57,9 +73,17 @@ Component.register('frosh-tools-security-dependencies', {
         },
 
         affectedPackages() {
-            // Unique, sorted list of the packages that actually have advisories.
+            // Unique, sorted list of packages that still have an open advisory.
             return [
-                ...new Set(this.groupedAdvisories.map((g) => g.packageName)),
+                ...new Set(
+                    this.groupedAdvisories
+                        .filter((group) =>
+                            group.advisories.some(
+                                (advisory) => !advisory.acknowledgement
+                            )
+                        )
+                        .map((group) => group.packageName)
+                ),
             ].sort();
         },
 
@@ -114,6 +138,22 @@ Component.register('frosh-tools-security-dependencies', {
             } catch {
                 return null;
             }
+        },
+
+        advisoryVariant(advisory) {
+            if (advisory.acknowledgement) {
+                return 'info';
+            }
+
+            return this.severityVariant(advisory.severity);
+        },
+
+        advisoryLabel(advisory) {
+            if (advisory.acknowledgement) {
+                return this.$t('frosh-tools.info');
+            }
+
+            return this.severityLabel(advisory.severity);
         },
 
         severityVariant(severity) {

@@ -13,7 +13,8 @@ const SEVERITY_RANK = {
     medium: 2,
     low: 3,
     unknown: 4,
-    ok: 5,
+    info: 5,
+    ok: 6,
 };
 
 const SUMMARY_SEVERITIES = ['critical', 'high', 'medium', 'low'];
@@ -36,12 +37,13 @@ Component.register('frosh-tools-security-overview', {
             default: null,
         },
     },
+    emits: ['navigate'],
     computed: {
         groupedFindings() {
             const groups = {};
             for (const finding of this.findings || []) {
                 const cat = finding.category || 'configuration';
-                if (cat === 'dependencies') {
+                if (cat === 'dependencies' && finding.severity !== 'info') {
                     continue;
                 }
                 (groups[cat] = groups[cat] || []).push(finding);
@@ -119,6 +121,7 @@ Component.register('frosh-tools-security-overview', {
                 case 'medium':
                     return 'warning';
                 case 'low':
+                case 'info':
                     return 'info';
                 case 'ok':
                     return 'success';

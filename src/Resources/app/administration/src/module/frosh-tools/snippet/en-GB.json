@@ -771,6 +771,7 @@
                     "medium": "Medium",
                     "low": "Low",
                     "unknown": "Unknown",
+                    "info": "Info",
                     "ok": "OK"
                 },
                 "timeline": {
@@ -871,6 +872,8 @@
                 "allOk": "No known vulnerabilities",
                 "scannedPackages": "{count} installed packages checked against Packagist advisories.",
                 "vulnerableTitle": "{count} advisories found",
+                "acknowledgedTitle": "Shown as info",
+                "acknowledgedBody": "The remaining advisories were confirmed with a reason and no longer count as open problems.",
                 "vulnerableBody": "{vulnerable} of {total} installed packages have security advisories.",
                 "affected": "Affected versions",
                 "reportedAt": "Reported",

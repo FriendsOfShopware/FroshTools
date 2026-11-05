@@ -236,13 +236,20 @@ After activation, open **Settings → Plugins → Tools** (or search for “Tool
 
 ## Configuration
 
-Optional Symfony config — create `config/packages/frosh_tools.yaml`:
+A check can stay visible as info through the Symfony config below. The current value and the recommendation do not change. The status becomes info and no longer counts as an error or a warning. The reason is required and is shown as a tooltip. The file is the record of who confirmed the check and why. `disabled_checks` still hides the row, and an id listed in both is hidden.
+
+Create `config/packages/frosh_tools.yaml`:
 
 ```yaml
 frosh_tools:
-    # Skip specific health/performance checkers by id (when needed)
+    # Skip specific checkers by id, or keep one visible as info with a required reason.
+    # disabled_checks hides the row. acknowledged_checks leaves the computed value and
+    # recommendation in place, sets the status to info, and shows the reason as a tooltip.
+    # An id listed in both is hidden.
     checker:
         disabled_checks: []
+        acknowledged_checks:
+            php-version: "Ubuntu 24.04 revision 8.3.6-0ubuntu0.24.04.13 contains the PHP 8.3.36 security fixes"
 
     # Paths that File Checker should not offer to restore
     file_checker:

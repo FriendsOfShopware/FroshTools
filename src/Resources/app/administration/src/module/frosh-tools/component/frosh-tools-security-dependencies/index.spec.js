@@ -58,6 +58,38 @@ describe('frosh-tools-security-dependencies', () => {
         expect(wrapper.vm.severityVariant('moderate')).toBe('warning');
     });
 
+    it('shows an acknowledged advisory as info and leaves it out of the update command', async () => {
+        const wrapper = await createWrapper({
+            packages: 2,
+            vulnerable: 1,
+            advisories: [
+                {
+                    id: 'composer-audit-1',
+                    packageName: 'symfony/http-kernel',
+                    installedVersion: '6.4.0',
+                    severity: 'high',
+                    title: 'Reviewed advisory',
+                    acknowledgement: 'Reviewed the advisory',
+                },
+                {
+                    id: 'composer-audit-2',
+                    packageName: 'guzzlehttp/guzzle',
+                    installedVersion: '7.0.0',
+                    severity: 'low',
+                    title: 'Open advisory',
+                },
+            ],
+        });
+        await flushPromises();
+
+        expect(wrapper.vm.openAdvisories).toHaveLength(1);
+        expect(wrapper.vm.affectedPackages).toEqual(['guzzlehttp/guzzle']);
+        expect(wrapper.text()).toContain('Reviewed the advisory');
+        expect(
+            wrapper.find('.frosh-security-dependencies__reason').text()
+        ).toBe('Reviewed the advisory');
+    });
+
     it('copies the update command to the clipboard', async () => {
         const writeText = vi.fn().mockResolvedValue();
         vi.stubGlobal('navigator', { clipboard: { writeText } });

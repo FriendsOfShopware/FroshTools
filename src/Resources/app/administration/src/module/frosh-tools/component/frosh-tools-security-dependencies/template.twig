@@ -153,11 +153,18 @@
             :body="$t('frosh-tools.tabs.composerAudit.scannedPackages', { count: result.packages })"
         />
         <ft-hero-state
-            v-else-if="hasAdvisories"
+            v-else-if="hasOpenAdvisories"
             variant="danger"
             icon="alert"
-            :title="$t('frosh-tools.tabs.composerAudit.vulnerableTitle', { count: result.advisories.length })"
-            :body="$t('frosh-tools.tabs.composerAudit.vulnerableBody', { vulnerable: result.vulnerable, total: result.packages })"
+            :title="$t('frosh-tools.tabs.composerAudit.vulnerableTitle', { count: openAdvisories.length })"
+            :body="$t('frosh-tools.tabs.composerAudit.vulnerableBody', { vulnerable: openPackageCount, total: result.packages })"
+        />
+        <ft-hero-state
+            v-else-if="acknowledgedOnly && !isLoading"
+            variant="info"
+            icon="info"
+            :title="$t('frosh-tools.tabs.composerAudit.acknowledgedTitle')"
+            :body="$t('frosh-tools.tabs.composerAudit.acknowledgedBody')"
         />
         <div
             v-if="hasAdvisories"
@@ -202,8 +209,8 @@
                         class="frosh-security-dependencies__advisory"
                     >
                         <div class="frosh-security-dependencies__advisory-head">
-                            <ft-pill :variant="severityVariant(adv.severity)">
-                                {{ severityLabel(adv.severity) }}
+                            <ft-pill :variant="advisoryVariant(adv)" :title="adv.acknowledgement || null">
+                                {{ advisoryLabel(adv) }}
                             </ft-pill>
                             <span
                                 v-if="adv.cve"
@@ -222,6 +229,10 @@
                             </a>
                         </div>
                         <div class="frosh-security-dependencies__advisory-title">{{ adv.title }}</div>
+                        <p
+                            v-if="adv.acknowledgement"
+                            class="frosh-security-dependencies__reason"
+                        >{{ adv.acknowledgement }}</p>
                         <div class="frosh-security-dependencies__advisory-meta">
                             <span v-if="adv.affectedVersions">
                                 <strong>

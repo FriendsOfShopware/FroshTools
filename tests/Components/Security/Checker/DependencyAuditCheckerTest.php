@@ -37,6 +37,7 @@ class DependencyAuditCheckerTest extends TestCase
 
         static::assertCount(1, $collection);
         static::assertSame('guzzlehttp/guzzle 7.10.0' . $expected, $collection->first()?->current);
+        static::assertSame(DependencyAuditChecker::findingId($advisory), $collection->first()?->id);
     }
 
     public static function sourceProvider(): iterable
