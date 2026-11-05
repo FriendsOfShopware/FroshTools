@@ -588,6 +588,7 @@
                     "hint": "Messages stay in the queue and are not consumed.",
                     "hintRequeue": "Messages are fetched and requeued: they get marked as redelivered, ordering may change and active workers compete for them.",
                     "empty": "No messages in this transport",
+                    "timestamp": "Queued at",
                     "retries": "{count} retries",
                     "failed": "Failed",
                     "retry": "Retry on \"{transport}\"",

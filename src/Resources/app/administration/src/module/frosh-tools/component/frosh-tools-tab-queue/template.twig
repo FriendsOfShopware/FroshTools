@@ -263,6 +263,11 @@
                         {{ $t('frosh-tools.tabs.queue.browse.failed') }}
                     </ft-pill>
                     <span
+                        v-if="message.timestamp"
+                        class="frosh-tab-queue__message-time"
+                        :title="$t('frosh-tools.tabs.queue.browse.timestamp')"
+                    >{{ formatTimestamp(message.timestamp) }}</span>
+                    <span
                         v-if="message.id"
                         class="frosh-tab-queue__message-id"
                     >{{ message.id }}</span>

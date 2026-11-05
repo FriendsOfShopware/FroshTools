@@ -33,6 +33,20 @@ class QueueMessageTest extends TestCase
 
         static::assertSame(['media-id'], $queueMessage->body['mediaIds']);
     }
+
+    public function testTimestampIsSerializedAsAtomString(): void
+    {
+        $queueMessage = QueueMessage::fromEnvelope(new Envelope(new \stdClass()))
+            ->withTimestamp(new \DateTimeImmutable('2026-11-04 10:15:30', new \DateTimeZone('UTC')));
+
+        static::assertSame('2026-11-04T10:15:30+00:00', $queueMessage->jsonSerialize()['timestamp']);
+    }
+
+    public function testTimestampIsNullByDefault(): void
+    {
+        static::assertNull(QueueMessage::fromEnvelope(new Envelope(new \stdClass()))->jsonSerialize()['timestamp']);
+        static::assertNull(QueueMessage::raw('1', 'body')->jsonSerialize()['timestamp']);
+    }
 }
 
 class MessageWithSensitiveState

@@ -26,10 +26,11 @@ class QueueMessage implements \JsonSerializable
         public readonly array $stamps = [],
         public readonly ?string $errorMessage = null,
         public readonly ?string $originalTransport = null,
+        public readonly ?string $timestamp = null,
     ) {
     }
 
-    public static function fromEnvelope(Envelope $envelope, ?string $id = null): self
+    public static function fromEnvelope(Envelope $envelope, ?string $id = null, ?\DateTimeInterface $timestamp = null): self
     {
         $message = $envelope->getMessage();
 
@@ -58,12 +59,30 @@ class QueueMessage implements \JsonSerializable
             $stamps,
             $errorStamp !== null ? $errorStamp->getExceptionClass() . ': ' . $errorStamp->getExceptionMessage() : null,
             $failureStamp?->getOriginalReceiverName(),
+            $timestamp?->format(\DATE_ATOM),
         );
     }
 
-    public static function raw(?string $id, string $body): self
+    public static function raw(?string $id, string $body, ?\DateTimeInterface $timestamp = null): self
     {
-        return new self($id, 'unknown', 0, $body);
+        return new self($id, 'unknown', 0, $body, timestamp: $timestamp?->format(\DATE_ATOM));
+    }
+
+    /**
+     * @param \DateTimeInterface|null $timestamp when the message was put on the transport
+     */
+    public function withTimestamp(?\DateTimeInterface $timestamp): self
+    {
+        return new self(
+            $this->id,
+            $this->messageClass,
+            $this->retryCount,
+            $this->body,
+            $this->stamps,
+            $this->errorMessage,
+            $this->originalTransport,
+            $timestamp?->format(\DATE_ATOM),
+        );
     }
 
     /**
@@ -79,6 +98,7 @@ class QueueMessage implements \JsonSerializable
             'stamps' => $this->stamps,
             'errorMessage' => $this->errorMessage,
             'originalTransport' => $this->originalTransport,
+            'timestamp' => $this->timestamp,
         ];
     }
 

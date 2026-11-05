@@ -131,6 +131,7 @@
 
     &__message-head {
         display: flex;
+        flex-wrap: wrap;
         align-items: center;
         gap: 10px;
         width: 100%;
@@ -159,6 +160,12 @@
 
     &__message-class {
         font-weight: 600;
+    }
+
+    &__message-time {
+        color: var(--ft-text-muted);
+        font-variant-numeric: tabular-nums;
+        white-space: nowrap;
     }
 
     &__message-id {
