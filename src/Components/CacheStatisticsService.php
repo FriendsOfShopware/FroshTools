@@ -35,14 +35,26 @@ class CacheStatisticsService
         $misses = (int) ($stats['misses'] ?? 0);
         $total = $hits + $misses;
 
-        $usedMemory = (int) ($memory['used_memory'] ?? 0);
+        // opcache_get_status() derives used_memory and current_wasted_percentage from
+        // ZCG(accel_directives).memory_consumption, which is 0 in ZTS worker threads
+        // started after OPcache startup (e.g. FrankenPHP). That yields negative used
+        // memory and INF/NaN percentages, so use the raw INI value instead.
         $freeMemory = (int) ($memory['free_memory'] ?? 0);
         $wastedMemory = (int) ($memory['wasted_memory'] ?? 0);
-        $totalMemory = $usedMemory + $wastedMemory + $freeMemory;
+        $totalMemory = (int) \ini_get('opcache.memory_consumption') * 1024 * 1024;
+        if ($totalMemory > 0) {
+            $usedMemory = max(0, $totalMemory - $freeMemory - $wastedMemory);
+        } else {
+            $usedMemory = max(0, (int) ($memory['used_memory'] ?? 0));
+            $totalMemory = $usedMemory + $wastedMemory + $freeMemory;
+        }
 
         $maxScripts = 0;
         if ($config !== false) {
             $maxScripts = (int) $config['directives']['opcache.max_accelerated_files'];
+        }
+        if ($maxScripts <= 0) {
+            $maxScripts = (int) \ini_get('opcache.max_accelerated_files');
         }
 
         $lastRestart = null;
@@ -59,7 +71,7 @@ class CacheStatisticsService
             'freeMemory' => $freeMemory,
             'wastedMemory' => $wastedMemory,
             'totalMemory' => $totalMemory,
-            'wastedPercentage' => round((float) ($memory['current_wasted_percentage'] ?? 0), 2),
+            'wastedPercentage' => $totalMemory > 0 ? round($wastedMemory / $totalMemory * 100, 2) : 0.0,
             'cachedScripts' => (int) ($stats['num_cached_scripts'] ?? 0),
             'maxCachedScripts' => $maxScripts,
             'internedStringsUsedMemory' => (int) ($interned['used_memory'] ?? 0),
