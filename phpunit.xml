@@ -15,7 +15,8 @@
         <server name="KERNEL_CLASS" value="Shopware\Core\Kernel"/>
         <env name="APP_ENV" value="test"/>
         <env name="APP_DEBUG" value="1"/>
-        <env name="APP_SECRET" value="s$cretf0rt3st"/>
+        <!-- At least 256 bit: Shopware 6.7 signs API tokens with HMAC-SHA256 using APP_SECRET -->
+        <env name="APP_SECRET" value="s$cretf0rt3st-s$cretf0rt3st-s$cretf0rt3st"/>
         <env name="SYMFONY_DEPRECATIONS_HELPER" value="weak"/>
     </php>
     <testsuites>
