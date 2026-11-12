@@ -53,10 +53,11 @@ class StaleTokenCleanupChecker implements SecurityCheckerInterface
         $id = 'stale-customer-recovery-tokens';
         $title = 'Password recovery tokens';
 
-        $threshold = $this->now()->modify(\sprintf('-%d hour', self::RECOVERY_TOKEN_MAX_AGE_HOURS));
+        // we add one day to the configured expiration, because the scheduled task runs daily and we want to catch all tokens that are already expired
+        $threshold = $this->now()->modify(\sprintf('-%d hour', self::RECOVERY_TOKEN_MAX_AGE_HOURS + 24));
 
         $count = $this->count(
-            'SELECT COUNT(*) FROM `customer_recovery` WHERE `created_at` <= :threshold',
+            'SELECT COUNT(*) FROM `customer_recovery` WHERE `created_at` < :threshold',
             ['threshold' => $threshold],
         );
 
@@ -86,9 +87,12 @@ class StaleTokenCleanupChecker implements SecurityCheckerInterface
         $id = 'stale-payment-tokens';
         $title = 'Expired payment tokens';
 
+        // we add one day to the configured expiration, because the scheduled task runs daily and we want to catch all tokens that are already expired
+        $threshold = $this->now()->modify('-1 day');
+
         $count = $this->count(
-            'SELECT COUNT(*) FROM `payment_token` WHERE `expires` < :now',
-            ['now' => $this->now()->format(Defaults::STORAGE_DATE_TIME_FORMAT)],
+            'SELECT COUNT(*) FROM `payment_token` WHERE `expires` < :threshold',
+            ['threshold' => $threshold],
         );
 
         if ($count === null) {
@@ -117,10 +121,11 @@ class StaleTokenCleanupChecker implements SecurityCheckerInterface
         $id = 'stale-sales-channel-contexts';
         $title = 'Stale sales channel contexts';
 
-        $threshold = $this->now()->modify(\sprintf('-%d day', $this->contextExpireDays));
+        // we add one day to the configured expiration, because the scheduled task runs daily and we want to catch all sessions that are already expired
+        $threshold = $this->now()->modify(\sprintf('-%d day', $this->contextExpireDays + 1));
 
         $count = $this->count(
-            'SELECT COUNT(*) FROM `sales_channel_api_context` WHERE `updated_at` <= :threshold',
+            'SELECT COUNT(*) FROM `sales_channel_api_context` WHERE `updated_at` < :threshold',
             ['threshold' => $threshold],
         );
 
