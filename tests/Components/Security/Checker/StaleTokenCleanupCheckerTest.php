@@ -42,7 +42,7 @@ class StaleTokenCleanupCheckerTest extends TestCase
 
         $connection = $this->createConnectionMock(static function (string $sql, array $params): int {
             if (str_contains($sql, 'customer_recovery')) {
-                static::assertSame(['threshold' => self::formatExpected('2023-01-08 12:00:00')], $params);
+                static::assertSame(['threshold' => self::formatExpected('2023-01-07 12:00:00')], $params);
 
                 return 2;
             }
@@ -67,7 +67,7 @@ class StaleTokenCleanupCheckerTest extends TestCase
 
         $connection = $this->createConnectionMock(static function (string $sql, array $params): int {
             if (str_contains($sql, 'payment_token')) {
-                static::assertSame(['now' => self::formatExpected('2023-01-10 12:00:00')], $params);
+                static::assertSame(['threshold' => self::formatExpected('2023-01-09 12:00:00')], $params);
 
                 return 3;
             }
@@ -87,7 +87,7 @@ class StaleTokenCleanupCheckerTest extends TestCase
     {
         $connection = $this->createConnectionMock(static function (string $sql, array $params): int {
             if (str_contains($sql, 'sales_channel_api_context')) {
-                static::assertSame(['threshold' => self::formatExpected('2022-12-11 12:00:00')], $params);
+                static::assertSame(['threshold' => self::formatExpected('2022-12-10 12:00:00')], $params);
 
                 return 7;
             }
