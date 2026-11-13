@@ -9,7 +9,7 @@
 
     <template #smart-bar-header>
         <h1>
-            {{ $tc('frosh-tools-webhook.list.title') }}
+            {{ $t('frosh-tools-webhook.list.title') }}
             <span
                 v-if="!isLoading"
                 class="sw-page__smart-bar-amount"
@@ -28,7 +28,7 @@
             variant="primary"
             @click="$router.push({ name: 'frosh.tools.webhook.create' })"
         >
-            {{ $tc('frosh-tools-webhook.list.buttonAddWebhook') }}
+            {{ $t('frosh-tools-webhook.list.buttonAddWebhook') }}
         </sw-button>
     </template>
 
@@ -63,7 +63,7 @@
                         variant="primary"
                         @click="$router.push({ name: 'frosh.tools.webhook.create' })"
                     >
-                        {{ $tc('frosh-tools-webhook.list.buttonAddWebhook') }}
+                        {{ $t('frosh-tools-webhook.list.buttonAddWebhook') }}
                     </sw-button>
                 </template>
             </sw-empty-state>
@@ -114,7 +114,7 @@
                         </template>
 
                         <template #column-app.name="{ item }">
-                            {{ item.app ? item.app.name : $tc('frosh-tools-webhook.list.appNone') }}
+                            {{ item.app ? item.app.name : $t('frosh-tools-webhook.list.appNone') }}
                         </template>
 
                         <template #actions="{ item }">
@@ -122,14 +122,14 @@
                                 :disabled="!acl.can('frosh_tools_webhook.editor')"
                                 :router-link="{ name: 'frosh.tools.webhook.detail', params: { id: item.id } }"
                             >
-                                {{ $tc('global.default.edit') }}
+                                {{ $t('global.default.edit') }}
                             </sw-context-menu-item>
                             <sw-context-menu-item
                                 variant="danger"
                                 :disabled="!acl.can('frosh_tools_webhook.deleter')"
                                 @click="onDelete(item.id)"
                             >
-                                {{ $tc('global.default.delete') }}
+                                {{ $t('global.default.delete') }}
                             </sw-context-menu-item>
                         </template>
 
@@ -140,17 +140,17 @@
                                 @modal-close="onCloseDeleteModal"
                             >
                                 <p>
-                                    {{ $tc('frosh-tools-webhook.list.textDeleteConfirm', 0, { name: item.name }) }}
+                                    {{ $t('frosh-tools-webhook.list.textDeleteConfirm', 0, { name: item.name }) }}
                                 </p>
                                 <template #modal-footer>
                                     <sw-button @click="onCloseDeleteModal">
-                                        {{ $tc('global.default.cancel') }}
+                                        {{ $t('global.default.cancel') }}
                                     </sw-button>
                                     <sw-button
                                         variant="danger"
                                         @click="onConfirmDelete(item.id)"
                                     >
-                                        {{ $tc('global.default.delete') }}
+                                        {{ $t('global.default.delete') }}
                                     </sw-button>
                                 </template>
                             </sw-modal>

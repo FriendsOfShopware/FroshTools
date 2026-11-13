@@ -82,7 +82,7 @@ Component.register('frosh-tools-webhook-detail', {
         tooltipSave() {
             if (!this.allowSave) {
                 return {
-                    message: this.$tc('sw-privileges.tooltip.warning'),
+                    message: this.$t('sw-privileges.tooltip.warning'),
                     showOnDisabledElements: true,
                 };
             }
@@ -222,7 +222,7 @@ Component.register('frosh-tools-webhook-detail', {
                 })
                 .catch(() => {
                     this.createNotificationError({
-                        message: this.$tc(
+                        message: this.$t(
                             'frosh-tools-webhook.detail.messageSaveError'
                         ),
                     });
