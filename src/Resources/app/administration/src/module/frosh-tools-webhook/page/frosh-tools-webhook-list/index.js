@@ -48,9 +48,7 @@ Component.register('frosh-tools-webhook-list', {
                 },
                 'app-filter': {
                     property: 'app',
-                    label: this.$t(
-                        'frosh-tools-webhook.list.filter.app.label'
-                    ),
+                    label: this.$t('frosh-tools-webhook.list.filter.app.label'),
                     placeholder: this.$t(
                         'frosh-tools-webhook.list.filter.app.placeholder'
                     ),
