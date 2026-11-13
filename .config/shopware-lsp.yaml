@@ -1,0 +1,12 @@
+version: 1
+diagnostics:
+  rules:
+    'admin.twig.migration.datepicker': 'off'
+    'admin.twig.migration.number-field': 'off'
+    'admin.twig.migration.button': 'off'
+    'admin.twig.migration.card': 'off'
+    'admin.twig.migration.icon': 'off'
+    'admin.twig.migration.text-field': 'off'
+    'admin.twig.migration.switch-field': 'off'
+    'admin.twig.migration.alert': 'off'
+    'admin.state.deprecated': 'off'
