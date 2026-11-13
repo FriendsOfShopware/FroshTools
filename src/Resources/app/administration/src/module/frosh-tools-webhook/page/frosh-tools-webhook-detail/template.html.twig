@@ -2,7 +2,7 @@
     <template #smart-bar-header>
         <h1 v-if="webhook && webhook.name">{{ webhook.name }}</h1>
         <h1 v-else>
-            {{ $tc('frosh-tools-webhook.detail.title') }}
+            {{ $t('frosh-tools-webhook.detail.title') }}
         </h1>
     </template>
 
@@ -13,7 +13,7 @@
             variant="secondary"
             @click="onCancel"
         >
-            {{ $tc('global.default.cancel') }}
+            {{ $t('global.default.cancel') }}
         </sw-button>
         <sw-button-process
             v-model:process-success="isSaveSuccessful"
@@ -24,7 +24,7 @@
             :disabled="isLoading || !allowSave || undefined"
             @click.prevent="onSave"
         >
-            {{ $tc('global.default.save') }}
+            {{ $t('global.default.save') }}
         </sw-button-process>
     </template>
 
@@ -40,7 +40,7 @@
                     v-if="isManagedByApp"
                     variant="info"
                 >
-                    {{ $tc('frosh-tools-webhook.detail.managedByApp', 0, { app: webhook.app ? webhook.app.name : '' }) }}
+                    {{ $t('frosh-tools-webhook.detail.managedByApp', 0, { app: webhook.app ? webhook.app.name : '' }) }}
                 </sw-alert>
                 <sw-card
                     :title="$tc('frosh-tools-webhook.detail.titleEdit')"
@@ -158,7 +158,7 @@
                         #default
                     >
                         <p>
-                            {{ $tc('frosh-tools-webhook.detail.eventLog.messageEmpty') }}
+                            {{ $t('frosh-tools-webhook.detail.eventLog.messageEmpty') }}
                         </p>
                     </template>
                 </sw-card>

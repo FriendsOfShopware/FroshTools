@@ -39,19 +39,19 @@ Component.register('frosh-tools-webhook-list', {
             return {
                 'active-filter': {
                     property: 'active',
-                    label: this.$tc(
+                    label: this.$t(
                         'frosh-tools-webhook.list.filter.active.label'
                     ),
-                    placeholder: this.$tc(
+                    placeholder: this.$t(
                         'frosh-tools-webhook.list.filter.active.placeholder'
                     ),
                 },
                 'app-filter': {
                     property: 'app',
-                    label: this.$tc(
+                    label: this.$t(
                         'frosh-tools-webhook.list.filter.app.label'
                     ),
-                    placeholder: this.$tc(
+                    placeholder: this.$t(
                         'frosh-tools-webhook.list.filter.app.placeholder'
                     ),
                 },
@@ -94,7 +94,7 @@ Component.register('frosh-tools-webhook-list', {
             promise
                 .then(() => {
                     this.createNotificationSuccess({
-                        message: this.$tc(
+                        message: this.$t(
                             'frosh-tools-webhook.detail.messageSaveSuccess'
                         ),
                     });
@@ -102,7 +102,7 @@ Component.register('frosh-tools-webhook-list', {
                 .catch(() => {
                     this.getList();
                     this.createNotificationError({
-                        message: this.$tc(
+                        message: this.$t(
                             'frosh-tools-webhook.detail.messageSaveError'
                         ),
                     });
