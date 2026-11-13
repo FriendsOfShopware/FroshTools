@@ -64,7 +64,7 @@ class AdminAccountServiceTest extends IntegrationTestCase
             static::assertIsBool($user['passwordRecoveryPending']);
             static::assertIsArray($user['aclRoleIds']);
             static::assertIsInt($user['accessKeyCount']);
-            static::assertSame('/admin#/sw/users/permissions/user/detail/' . $user['id'], $user['adminPath']);
+            static::assertSame('/admin#/sw/users/permissions/user.detail/' . $user['id'], $user['adminPath']);
             static::assertNotNull($user['createdAt']);
         }
     }

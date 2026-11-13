@@ -17,7 +17,7 @@ use Doctrine\DBAL\Connection;
  */
 class AdminAccountService
 {
-    private const ADMIN_USER_PATH = '/admin#/sw/users/permissions/user/detail/';
+    private const ADMIN_USER_PATH = '/admin#/sw/users/permissions/user.detail/';
     private const ADMIN_INTEGRATION_PATH = '/admin#/sw/integration/index';
 
     public function __construct(private readonly Connection $connection)
