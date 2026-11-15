@@ -18,6 +18,6 @@ class ActivityCleanupTask extends ScheduledTask
 
     public static function getDefaultInterval(): int
     {
-        return self::DAILY;
+        return 86400;
     }
 }

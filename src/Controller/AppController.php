@@ -22,11 +22,13 @@ use Shopware\Core\Framework\DataAbstractionLayer\Search\Filter\EqualsFilter;
 use Shopware\Core\Framework\DataAbstractionLayer\Search\Filter\NotFilter;
 use Shopware\Core\Framework\Store\Services\StoreClient;
 use Shopware\Core\PlatformRequest;
+use Shopware\Core\System\SystemConfig\SystemConfigService;
 use Shopware\Core\System\User\UserCollection;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\DependencyInjection\Attribute\Autowire;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\HttpKernel\Exception\AccessDeniedHttpException;
 use Symfony\Component\Routing\Attribute\Route;
 
 #[Route(path: '/api/_action/frosh-tools/apps', defaults: ['_routeScope' => ['api'], '_acl' => [FroshToolsPrivileges::APPS_READ]])]
@@ -44,6 +46,7 @@ class AppController extends AbstractController
         #[Autowire(service: AppLifecycle::class)]
         private readonly AbstractAppLifecycle $appLifecycle,
         private readonly AppUrlReachability $appUrlReachability,
+        private readonly SystemConfigService $systemConfigService,
     ) {
     }
 
@@ -134,7 +137,14 @@ class AppController extends AbstractController
             }
         }
 
-        $this->shopIdProvider->deleteShopId();
+        // Early Shopware 6.6 only stores the shop ID in system config. Newer
+        // providers also clear their in-memory cache and dispatch lifecycle events.
+        // @phpstan-ignore function.alreadyNarrowedType
+        if (method_exists($this->shopIdProvider, 'deleteShopId')) {
+            $this->shopIdProvider->deleteShopId();
+        } else {
+            $this->systemConfigService->delete(ShopIdProvider::SHOP_ID_SYSTEM_CONFIG_KEY);
+        }
         $this->shopIdProvider->getShopId();
 
         return new JsonResponse([
@@ -148,7 +158,12 @@ class AppController extends AbstractController
     {
         $scopes = $request->attributes->get(PlatformRequest::ATTRIBUTE_OAUTH_SCOPES, []);
         if (!\is_array($scopes) || !\in_array(UserVerifiedScope::IDENTIFIER, $scopes, true)) {
-            throw ApiException::invalidScopeAccessToken(UserVerifiedScope::IDENTIFIER);
+            // @phpstan-ignore function.alreadyNarrowedType
+            if (method_exists(ApiException::class, 'invalidScopeAccessToken')) {
+                throw ApiException::invalidScopeAccessToken(UserVerifiedScope::IDENTIFIER);
+            }
+
+            throw new AccessDeniedHttpException(\sprintf('This access token does not have the scope "%s" to process this Request', UserVerifiedScope::IDENTIFIER));
         }
     }
 

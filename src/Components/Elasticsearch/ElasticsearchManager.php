@@ -109,10 +109,21 @@ class ElasticsearchManager
             $body = null;
         }
 
-        $response = $this->client->request($method, $path, [
-            'params' => $params,
-            'body' => $body,
-        ]);
+        // OpenSearch 2.0 has no request() convenience method yet.
+        // @phpstan-ignore function.alreadyNarrowedType
+        if (method_exists($this->client, 'request')) {
+            $response = $this->client->request($method, $path, [
+                'params' => $params,
+                'body' => $body,
+            ]);
+        } else {
+            $transport = $this->client->transport;
+            // Only used before request() was introduced; newer clients never enter this fallback.
+            // @phpstan-ignore method.deprecatedClass
+            $response = $transport->performRequest($method, $path, $params, $body);
+            // @phpstan-ignore method.deprecatedClass
+            $response = $transport->resultOrFuture($response);
+        }
 
         if (\is_callable($response)) {
             $response = $response();

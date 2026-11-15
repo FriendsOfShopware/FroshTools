@@ -18,6 +18,8 @@ use Symfony\Component\Messenger\Message\RedispatchMessage;
 use Symfony\Component\Scheduler\RecurringMessage;
 use Symfony\Component\Scheduler\Schedule;
 use Symfony\Component\Scheduler\ScheduleProviderInterface;
+use Symfony\Component\Scheduler\Trigger\PeriodicalTrigger;
+use Symfony\Component\Scheduler\Trigger\StaticMessageProvider;
 use Symfony\Contracts\Cache\CacheInterface;
 
 #[CoversClass(SymfonyScheduleCollector::class)]
@@ -72,6 +74,19 @@ class SymfonyScheduleCollectorTest extends TestCase
         static::assertSame('periodic', $messages[0]->triggerType);
         static::assertSame('app:stock:update', $messages[0]->label);
         static::assertSame([], $messages[0]->transports);
+    }
+
+    public function testEmptyStaticProviderUsesItsIdAsLabel(): void
+    {
+        $provider = new StaticMessageProvider([], 'empty-provider');
+        $recurringMessage = RecurringMessage::trigger(new PeriodicalTrigger('1 hour'), $provider);
+        $schedule = (new Schedule())->add($recurringMessage);
+
+        $schedules = (new SymfonyScheduleCollector($this->createLocator('example', $schedule)))->collect();
+
+        static::assertNull($schedules[0]->error);
+        static::assertSame('empty-provider', $schedules[0]->messages[0]->label);
+        static::assertSame(StaticMessageProvider::class, $schedules[0]->messages[0]->messageClass);
     }
 
     public function testCollectSortsTerminatedMessagesLast(): void
