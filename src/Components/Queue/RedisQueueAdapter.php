@@ -124,7 +124,9 @@ class RedisQueueAdapter implements QueueAdapter
 
         // Empty the stream but keep it (and its consumer group) alive, then drop the
         // sorted set holding delayed messages
-        $redis->xTrim($this->extractProperty($connection, 'stream'), 0);
+        // phpredis 6 changed the threshold from int to string (also for RedisCluster).
+        $threshold = version_compare((string) phpversion('redis'), '6.0.0', '>=') ? '0' : 0;
+        $redis->xTrim($this->extractProperty($connection, 'stream'), $threshold);
         $redis->del($this->extractProperty($connection, 'queue'));
     }
 
