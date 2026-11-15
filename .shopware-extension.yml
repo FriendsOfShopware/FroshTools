@@ -98,6 +98,11 @@ store:
           priority: 0
 build:
     zip:
+        pack:
+            excludes:
+                # Match .gitattributes even when packaging with --disable-git.
+                paths:
+                    - workers
         assets:
             enable_es_build_for_admin: true
             enable_es_build_for_storefront: true
