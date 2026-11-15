@@ -150,7 +150,7 @@ class SymfonyScheduleCollector
         // database or an API to yield its messages, which must not happen on a list request.
         if (!$provider instanceof StaticMessageProvider) {
             return [
-                $provider instanceof \Stringable ? (string) $provider : $provider->getId(),
+                $this->describeProviderLabel($provider),
                 $provider::class,
                 [],
             ];
@@ -172,10 +172,15 @@ class SymfonyScheduleCollector
         }
 
         if ($labels === []) {
-            return [(string) $provider, $provider::class, []];
+            return [$this->describeProviderLabel($provider), $provider::class, []];
         }
 
         return [implode(', ', $labels), implode(', ', array_unique($classes)), array_values(array_unique($transports))];
+    }
+
+    private function describeProviderLabel(MessageProviderInterface $provider): string
+    {
+        return $provider instanceof \Stringable ? (string) $provider : $provider->getId();
     }
 
     private function describeMessage(object $message): string

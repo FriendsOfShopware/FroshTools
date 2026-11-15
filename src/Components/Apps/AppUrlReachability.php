@@ -5,7 +5,6 @@ declare(strict_types=1);
 namespace Frosh\Tools\Components\Apps;
 
 use Psr\Cache\CacheItemPoolInterface;
-use Shopware\Core\Framework\Log\Package;
 use Symfony\Component\DependencyInjection\Attribute\Autowire;
 use Symfony\Contracts\HttpClient\Exception\TransportExceptionInterface;
 use Symfony\Contracts\HttpClient\HttpClientInterface;
@@ -13,7 +12,6 @@ use Symfony\Contracts\HttpClient\HttpClientInterface;
 /**
  * @internal
  */
-#[Package('framework')]
 final class AppUrlReachability
 {
     private const WORKER_URL = 'https://app-url-check.fos.gg/';

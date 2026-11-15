@@ -44,7 +44,10 @@ class TwigCacheWarmer
         $twigCacheDir = $cacheDir . '/twig';
 
         foreach ($this->getHierarchyConfigurations() as $hierarchy) {
-            $configHash = Hasher::hash($hierarchy);
+            // Match TemplateFinder's cache key on both early 6.6 and newer Shopware.
+            $configHash = class_exists(Hasher::class)
+                ? Hasher::hash($hierarchy)
+                : md5(json_encode($hierarchy, \JSON_THROW_ON_ERROR));
 
             $cache = new ConfigurableFilesystemCache($twigCacheDir);
             $cache->setConfigHash($configHash);

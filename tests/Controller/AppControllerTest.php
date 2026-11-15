@@ -50,16 +50,25 @@ class AppControllerTest extends IntegrationTestCase
     {
         $request = new Request();
         $request->attributes->set(PlatformRequest::ATTRIBUTE_OAUTH_SCOPES, ['write']);
-        $this->expectExceptionObject(ApiException::invalidScopeAccessToken(UserVerifiedScope::IDENTIFIER));
+        $this->expectExceptionObject($this->missingVerificationException());
 
         $this->controller->shopId($request);
     }
 
     public function testShopIdRejectsRequestsWithoutScopes(): void
     {
-        $this->expectExceptionObject(ApiException::invalidScopeAccessToken(UserVerifiedScope::IDENTIFIER));
+        $this->expectExceptionObject($this->missingVerificationException());
 
         $this->controller->shopId(new Request());
+    }
+
+    public function testShopIdRejectsMalformedScopes(): void
+    {
+        $request = new Request();
+        $request->attributes->set(PlatformRequest::ATTRIBUTE_OAUTH_SCOPES, UserVerifiedScope::IDENTIFIER);
+        $this->expectExceptionObject($this->missingVerificationException());
+
+        $this->controller->shopId($request);
     }
 
     public function testShopIdReturnsIdForVerifiedUserWithoutCaching(): void
@@ -142,9 +151,9 @@ class AppControllerTest extends IntegrationTestCase
             $this->controller->resetShopId($request, $context);
             static::fail('Reset must require password verification');
         } catch (ApiException|AccessDeniedHttpException $exception) {
-            static::assertSame(ApiException::invalidScopeAccessToken(UserVerifiedScope::IDENTIFIER)::class, $exception::class);
+            static::assertSame($this->missingVerificationException()::class, $exception::class);
             static::assertSame(
-                ApiException::invalidScopeAccessToken(UserVerifiedScope::IDENTIFIER)->getMessage(),
+                $this->missingVerificationException()->getMessage(),
                 $exception->getMessage(),
             );
         }
@@ -156,7 +165,7 @@ class AppControllerTest extends IntegrationTestCase
 
     public function testResetShopIdRejectsRequestsWithoutScopes(): void
     {
-        $this->expectExceptionObject(ApiException::invalidScopeAccessToken(UserVerifiedScope::IDENTIFIER));
+        $this->expectExceptionObject($this->missingVerificationException());
 
         $this->controller->resetShopId(new Request(), Context::createDefaultContext());
     }
@@ -237,5 +246,14 @@ class AppControllerTest extends IntegrationTestCase
     private function decodeResponse(JsonResponse $response): array
     {
         return json_decode((string) $response->getContent(), true, 512, \JSON_THROW_ON_ERROR);
+    }
+
+    private function missingVerificationException(): ApiException|AccessDeniedHttpException
+    {
+        if (method_exists(ApiException::class, 'invalidScopeAccessToken')) {
+            return ApiException::invalidScopeAccessToken(UserVerifiedScope::IDENTIFIER);
+        }
+
+        return new AccessDeniedHttpException(\sprintf('This access token does not have the scope "%s" to process this Request', UserVerifiedScope::IDENTIFIER));
     }
 }
