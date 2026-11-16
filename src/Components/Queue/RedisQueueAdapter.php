@@ -40,15 +40,15 @@ class RedisQueueAdapter implements QueueAdapter
 
     public function getMessageCount(): ?int
     {
-        if ($this->transport instanceof MessageCountAwareInterface) {
-            try {
-                return $this->transport->getMessageCount();
-            } catch (\Throwable) {
-                return null;
-            }
-        }
+        try {
+            $connection = $this->extractProperty($this->transport, 'connection');
+            $redis = $this->getRedis($connection);
+            $stream = $this->extractProperty($connection, 'stream');
 
-        return null;
+            return $redis->xLen($stream);
+        } catch (\Throwable) {
+            return null;
+        }
     }
 
     public function getOldestMessageAge(): ?int
