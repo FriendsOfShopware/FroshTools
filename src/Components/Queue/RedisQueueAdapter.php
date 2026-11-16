@@ -44,8 +44,21 @@ class RedisQueueAdapter implements QueueAdapter
             $connection = $this->extractProperty($this->transport, 'connection');
             $redis = $this->getRedis($connection);
             $stream = $this->extractProperty($connection, 'stream');
+            $lastDeliveredId = $this->getLastDeliveredId($redis, $connection);
 
-            return $redis->xLen($stream);
+            if ($lastDeliveredId === null) {
+                return 0;
+            }
+
+            $start = self::nextStreamId($lastDeliveredId);
+            $total = 0;
+
+            while ($entries = $redis->xRange($stream, $start, '+', 100)) {
+                $total += \count($entries);
+                $start = self::nextStreamId((string) array_key_last($entries));
+            }
+
+            return $total;
         } catch (\Throwable) {
             return null;
         }
