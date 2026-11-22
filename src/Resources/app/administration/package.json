@@ -11,12 +11,12 @@
     },
     "dependencies": {
         "diff-match-patch": "^1.0.5",
-        "lucide-static": "^1.72.0",
+        "lucide-static": "^1.75.0",
         "mermaid": "^12.3.0"
     },
     "devDependencies": {
         "@friendsofshopware/vitest-shopware-admin-bridge": "^0.2.1",
-        "vitest": "^5.1.0"
+        "vitest": "^5.1.1"
     },
     "license": "MIT"
 }
