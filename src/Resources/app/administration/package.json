@@ -15,7 +15,7 @@
         "mermaid": "^12.3.0"
     },
     "devDependencies": {
-        "@friendsofshopware/vitest-shopware-admin-bridge": "^0.2.1",
+        "@friendsofshopware/vitest-shopware-admin-bridge": "^0.2.2",
         "vitest": "^5.1.1"
     },
     "license": "MIT"
